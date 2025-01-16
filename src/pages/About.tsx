@@ -1,10 +1,25 @@
 import { Card } from "@/components/ui/card";
-import { Shield, UserCheck, Award } from "lucide-react";
+import { Shield, UserCheck, Award, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const About = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto py-12">
+        <div className="flex items-center mb-8">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour
+          </Button>
+        </div>
+
         <h1 className="text-4xl font-bold text-center mb-4">À propos d'IDFinder</h1>
         <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">
           Notre mission est de faciliter la restitution des pièces d'identité perdues tout en récompensant l'honnêteté citoyenne.
