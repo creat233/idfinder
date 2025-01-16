@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
@@ -12,12 +13,16 @@ export const Hero = () => {
           Recevez une récompense de 1000 CHF pour chaque carte restituée.
         </p>
         <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <Button size="lg" variant="secondary">
-            Signaler une carte trouvée
-          </Button>
-          <Button size="lg" variant="outline">
-            En savoir plus
-          </Button>
+          <Link to="/signaler">
+            <Button size="lg" variant="secondary">
+              Signaler une carte trouvée
+            </Button>
+          </Link>
+          <Link to="/about">
+            <Button size="lg" variant="outline">
+              En savoir plus
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
