@@ -4,7 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Award, Bell, CreditCard, User, Edit2, Save } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const Profile = () => {
   const { toast } = useToast();
@@ -33,6 +35,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-accent">
+      <Header />
       <div className="container mx-auto py-12">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
@@ -48,15 +51,20 @@ const Profile = () => {
               </div>
             </div>
             <Button
+              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
               variant={isEditing ? "default" : "outline"}
-              onClick={() => setIsEditing(!isEditing)}
             >
               {isEditing ? (
-                <Save className="w-4 h-4 mr-2" />
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Sauvegarder
+                </>
               ) : (
-                <Edit2 className="w-4 h-4 mr-2" />
+                <>
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Modifier
+                </>
               )}
-              {isEditing ? "Sauvegarder" : "Modifier"}
             </Button>
           </div>
 
@@ -112,7 +120,7 @@ const Profile = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span>Total des récompenses</span>
-                  <span className="font-bold">2000 CHF</span>
+                  <span className="font-bold">2000 Fr</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Cartes restituées</span>
@@ -120,7 +128,7 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span>En attente de paiement</span>
-                  <span className="font-bold text-orange-500">1000 CHF</span>
+                  <span className="font-bold text-orange-500">1000 Fr</span>
                 </div>
               </div>
             </Card>
@@ -140,7 +148,7 @@ const Profile = () => {
                 <div className="border-l-4 border-green-500 pl-4 py-2 bg-green-50 rounded">
                   <p className="font-medium">Récompense reçue</p>
                   <p className="text-sm text-muted-foreground">
-                    Vous avez reçu 1000 CHF pour une carte restituée.
+                    Vous avez reçu 1000 Fr pour une carte restituée.
                   </p>
                 </div>
               </div>
@@ -173,14 +181,9 @@ const Profile = () => {
               </div>
             </Card>
           </div>
-
-          {isEditing && (
-            <div className="mt-6 flex justify-end">
-              <Button onClick={handleSave}>Sauvegarder les modifications</Button>
-            </div>
-          )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
