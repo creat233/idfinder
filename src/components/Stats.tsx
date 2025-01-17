@@ -1,20 +1,41 @@
+import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
+
 export const Stats = () => {
   return (
-    <section id="stats" className="py-16 bg-accent">
-      <div className="container mx-auto">
+    <section className="py-12 bg-gray-50">
+      <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">150+</div>
-            <div className="text-lg text-primary/80">Cartes retrouvées</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">150,000 CHF</div>
-            <div className="text-lg text-primary/80">Récompenses distribuées</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">98%</div>
-            <div className="text-lg text-primary/80">Taux de satisfaction</div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Card className="p-6 text-center">
+              <h3 className="text-4xl font-bold text-primary mb-2">1'000 CHF</h3>
+              <p className="text-gray-600">Récompense pour les découvreurs</p>
+            </Card>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <Card className="p-6 text-center">
+              <h3 className="text-4xl font-bold text-primary mb-2">3'000 CHF</h3>
+              <p className="text-gray-600">Frais de récupération</p>
+            </Card>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <Card className="p-6 text-center">
+              <h3 className="text-4xl font-bold text-primary mb-2">24h</h3>
+              <p className="text-gray-600">Délai moyen de récupération</p>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </section>
