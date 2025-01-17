@@ -40,7 +40,7 @@ export const Hero = () => {
             <div className="flex gap-4">
               <Input
                 type="search"
-                placeholder="Rechercher votre pièce d'identité..."
+                placeholder="Entrez le numéro de votre pièce d'identité..."
                 className="flex-grow"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
