@@ -12,7 +12,7 @@ export const Stats = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card className="p-6 text-center">
-              <h3 className="text-4xl font-bold text-primary mb-2">1'000 CHF</h3>
+              <h3 className="text-4xl font-bold text-primary mb-2">2'000 CHF</h3>
               <p className="text-gray-600">Récompense pour les découvreurs</p>
             </Card>
           </motion.div>
@@ -22,7 +22,7 @@ export const Stats = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <Card className="p-6 text-center">
-              <h3 className="text-4xl font-bold text-primary mb-2">3'000 CHF</h3>
+              <h3 className="text-4xl font-bold text-primary mb-2">5'000 CHF</h3>
               <p className="text-gray-600">Frais de récupération</p>
             </Card>
           </motion.div>

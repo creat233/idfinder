@@ -46,7 +46,7 @@ const About = () => {
             <Award className="w-12 h-12 text-secondary mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">Récompenses Justes</h3>
             <p className="text-gray-600">
-              1000 CHF de récompense pour chaque carte restituée
+              2000 CHF de récompense pour chaque carte restituée
             </p>
           </Card>
         </div>
@@ -57,7 +57,7 @@ const About = () => {
             IDFinder est né de la volonté de créer une solution innovante pour faciliter la restitution des pièces d'identité perdues. Notre plateforme combine technologie et confiance pour créer un service bénéfique pour tous.
           </p>
           <p className="text-gray-600 mb-6">
-            Depuis notre création, nous avons déjà permis la restitution de nombreuses pièces d'identité et distribué plus de 150,000 CHF de récompenses à nos utilisateurs.
+            Depuis notre création, nous avons déjà permis la restitution de nombreuses pièces d'identité et distribué plus de 150'000 CHF de récompenses à nos utilisateurs.
           </p>
         </div>
       </div>
