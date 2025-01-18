@@ -19,6 +19,7 @@ const Login = () => {
       if (event === 'USER_UPDATED') {
         supabase.auth.getSession().then(({ error }) => {
           if (error) {
+            console.log("Auth session error:", error);
             setError(getErrorMessage(error));
           } else {
             setError(null);
@@ -34,7 +35,11 @@ const Login = () => {
   }, [navigate]);
 
   const getErrorMessage = (error: AuthError) => {
-    console.log("Auth error:", error);
+    console.log("Auth error details:", {
+      code: error.code,
+      message: error.message,
+      status: error.status
+    });
     
     if (error instanceof AuthApiError) {
       switch (error.code) {
@@ -43,7 +48,7 @@ const Login = () => {
         case 'invalid_credentials':
           return "Email ou mot de passe incorrect. Veuillez vérifier vos informations.";
         case 'email_not_confirmed':
-          return "Veuillez vérifier votre boîte mail et cliquer sur le lien de confirmation pour activer votre compte.";
+          return "Un email de confirmation a été envoyé à votre adresse. Veuillez cliquer sur le lien dans l'email pour activer votre compte avant de vous connecter.";
         case 'user_not_found':
           return "Aucun utilisateur trouvé avec ces identifiants.";
         case 'invalid_grant':
@@ -51,6 +56,7 @@ const Login = () => {
         case 'too_many_attempts':
           return "Trop de tentatives. Veuillez patienter quelques minutes avant de réessayer.";
         default:
+          console.warn("Unhandled auth error code:", error.code);
           return "Une erreur s'est produite. Veuillez réessayer.";
       }
     }
