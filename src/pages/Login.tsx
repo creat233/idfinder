@@ -49,10 +49,10 @@ const Login = () => {
         case 'invalid_grant':
           return "Identifiants de connexion invalides.";
         default:
-          return error.message;
+          return "Une erreur s'est produite. Veuillez réessayer.";
       }
     }
-    return error.message;
+    return "Une erreur s'est produite. Veuillez réessayer.";
   };
 
   return (
@@ -83,6 +83,35 @@ const Login = () => {
                 }
               }
             }
+          }}
+          localization={{
+            variables: {
+              sign_in: {
+                email_label: 'Adresse email',
+                password_label: 'Mot de passe',
+                button_label: 'Se connecter',
+                loading_button_label: 'Connexion en cours...',
+                social_provider_text: 'Se connecter avec {{provider}}',
+                link_text: "Vous avez déjà un compte ? Connectez-vous",
+              },
+              sign_up: {
+                email_label: 'Adresse email',
+                password_label: 'Mot de passe',
+                button_label: "S'inscrire",
+                loading_button_label: 'Inscription en cours...',
+                social_provider_text: "S'inscrire avec {{provider}}",
+                link_text: "Vous n'avez pas de compte ? Inscrivez-vous",
+                confirmation_text: 'Vérifiez vos emails pour confirmer votre inscription',
+              },
+              forgotten_password: {
+                email_label: 'Adresse email',
+                password_label: 'Mot de passe',
+                button_label: 'Envoyer les instructions',
+                loading_button_label: 'Envoi en cours...',
+                link_text: 'Mot de passe oublié ?',
+                confirmation_text: 'Vérifiez vos emails pour réinitialiser votre mot de passe',
+              },
+            },
           }}
           theme="light"
           providers={[]}
