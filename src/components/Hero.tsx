@@ -23,9 +23,12 @@ export const Hero = () => {
         .from('reported_cards')
         .select('*')
         .ilike('card_number', `%${searchQuery}%`)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Search error:", error);
+        throw error;
+      }
 
       if (data) {
         toast({
@@ -40,9 +43,10 @@ export const Hero = () => {
         });
       }
     } catch (error: any) {
+      console.error("Search error details:", error);
       toast({
-        title: "Erreur",
-        description: error.message,
+        title: "Erreur de recherche",
+        description: "Une erreur s'est produite lors de la recherche. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
