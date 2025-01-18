@@ -43,7 +43,7 @@ const Login = () => {
         case 'invalid_credentials':
           return "Email ou mot de passe incorrect. Veuillez vérifier vos informations.";
         case 'email_not_confirmed':
-          return "Veuillez vérifier votre email pour confirmer votre inscription avant de vous connecter.";
+          return "Veuillez vérifier votre boîte mail et cliquer sur le lien de confirmation pour activer votre compte.";
         case 'user_not_found':
           return "Aucun utilisateur trouvé avec ces identifiants.";
         case 'invalid_grant':
