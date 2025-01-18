@@ -12,15 +12,23 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         navigate("/");
       }
       if (event === 'USER_UPDATED') {
-        setError(null);
+        const { error } = await supabase.auth.getSession();
+        if (error) {
+          setError(getErrorMessage(error));
+        } else {
+          setError(null);
+        }
       }
       if (event === 'SIGNED_OUT') {
         setError(null);
+      }
+      if (event === 'SIGNED_UP') {
+        setError("Veuillez vérifier votre email pour confirmer votre compte.");
       }
     });
 
@@ -28,6 +36,12 @@ const Login = () => {
   }, [navigate]);
 
   const getErrorMessage = (error: AuthError) => {
+    console.log("Auth error:", error);
+    
+    if (error.message.includes("over_email_send_rate_limit")) {
+      return "Pour des raisons de sécurité, veuillez attendre quelques secondes avant de réessayer.";
+    }
+    
     switch (error.message) {
       case "Invalid login credentials":
         return "Email ou mot de passe incorrect. Veuillez vérifier vos informations.";
@@ -36,11 +50,6 @@ const Login = () => {
       default:
         return "Une erreur s'est produite. Veuillez réessayer.";
     }
-  };
-
-  const handleError = (error: AuthError) => {
-    console.error("Auth error:", error);
-    setError(getErrorMessage(error));
   };
 
   return (
@@ -74,7 +83,6 @@ const Login = () => {
           }}
           theme="light"
           providers={[]}
-          onError={handleError}
         />
       </motion.div>
     </div>
