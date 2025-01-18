@@ -47,7 +47,7 @@ const Login = () => {
         case 'user_not_found':
           return "Aucun utilisateur trouvé avec ces identifiants.";
         case 'invalid_grant':
-          return "Identifiants de connexion invalides.";
+          return "Email ou mot de passe incorrect. Veuillez vérifier vos informations.";
         case 'too_many_attempts':
           return "Trop de tentatives. Veuillez patienter quelques minutes avant de réessayer.";
         default:
