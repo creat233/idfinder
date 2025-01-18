@@ -1,18 +1,53 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const Hero = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement search functionality when backend is ready
-    console.log("Searching for:", searchQuery);
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    try {
+      const { data, error } = await supabase
+        .from('reported_cards')
+        .select('*')
+        .ilike('card_number', `%${searchQuery}%`)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        toast({
+          title: "Carte trouvée !",
+          description: "Une carte correspondant à votre recherche a été trouvée.",
+        });
+      } else {
+        toast({
+          title: "Aucune carte trouvée",
+          description: "Aucune carte correspondant à votre recherche n'a été trouvée.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   return (
@@ -45,9 +80,15 @@ export const Hero = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button type="submit">
-                <Search className="h-4 w-4 mr-2" />
-                Rechercher
+              <Button type="submit" disabled={isSearching}>
+                {isSearching ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Search className="h-4 w-4 mr-2" />
+                    Rechercher
+                  </>
+                )}
               </Button>
             </div>
           </form>

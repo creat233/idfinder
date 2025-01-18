@@ -9,7 +9,63 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+        }
+        Relationships: []
+      }
+      reported_cards: {
+        Row: {
+          card_number: string
+          created_at: string
+          description: string | null
+          found_date: string
+          id: string
+          location: string
+          photo_url: string | null
+          reporter_id: string
+          status: string | null
+        }
+        Insert: {
+          card_number: string
+          created_at?: string
+          description?: string | null
+          found_date: string
+          id?: string
+          location: string
+          photo_url?: string | null
+          reporter_id: string
+          status?: string | null
+        }
+        Update: {
+          card_number?: string
+          created_at?: string
+          description?: string | null
+          found_date?: string
+          id?: string
+          location?: string
+          photo_url?: string | null
+          reporter_id?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
