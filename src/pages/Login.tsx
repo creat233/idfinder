@@ -47,6 +47,8 @@ const Login = () => {
         return "Email ou mot de passe incorrect. Veuillez vérifier vos informations.";
       case "Email not confirmed":
         return "Veuillez vérifier votre email avant de vous connecter.";
+      case "User not found":
+        return "Aucun utilisateur trouvé avec ces identifiants.";
       default:
         return "Une erreur s'est produite. Veuillez réessayer.";
     }
