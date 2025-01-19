@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Upload, Loader2 } from "lucide-react";
+import { MapPin, Upload, Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -15,39 +15,80 @@ const SignalerCarte = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     address: "",
-    date: "",
+    date: new Date().toISOString().split('T')[0],
     description: "",
     cardNumber: "",
   });
   const [file, setFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    if (!formData.cardNumber.trim()) {
+      newErrors.cardNumber = "Le numéro de carte est requis";
+    } else if (!/^\d{10,14}$/.test(formData.cardNumber.trim())) {
+      newErrors.cardNumber = "Le numéro de carte doit contenir entre 10 et 14 chiffres";
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = "L'adresse est requise";
+    }
+
+    if (!formData.date) {
+      newErrors.date = "La date est requise";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      toast({
+        title: "Erreur de validation",
+        description: "Veuillez corriger les erreurs dans le formulaire",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const user = (await supabase.auth.getUser()).data.user;
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Utilisateur non authentifié");
 
       let photoUrl = null;
       if (file) {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
         const { error: uploadError, data } = await supabase.storage
           .from('card_photos')
           .upload(fileName, file);
 
-        if (uploadError) throw uploadError;
-        if (data) photoUrl = data.path;
+        if (uploadError) {
+          throw new Error("Erreur lors du téléchargement de la photo");
+        }
+        
+        if (data) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('card_photos')
+            .getPublicUrl(fileName);
+          photoUrl = publicUrl;
+        }
       }
 
       const { error } = await supabase.from('reported_cards').insert({
         reporter_id: user.id,
-        card_number: formData.cardNumber,
-        location: formData.address,
+        card_number: formData.cardNumber.trim(),
+        location: formData.address.trim(),
         found_date: formData.date,
-        description: formData.description,
+        description: formData.description.trim(),
         photo_url: photoUrl,
+        status: 'pending'
       });
 
       if (error) throw error;
@@ -58,9 +99,10 @@ const SignalerCarte = () => {
       });
       navigate("/");
     } catch (error: any) {
+      console.error('Error submitting form:', error);
       toast({
         title: "Erreur",
-        description: error.message,
+        description: error.message || "Une erreur est survenue lors de l'envoi du signalement",
         variant: "destructive",
       });
     } finally {
@@ -79,14 +121,25 @@ const SignalerCarte = () => {
         });
         return;
       }
+      
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(selectedFile.type)) {
+        toast({
+          title: "Type de fichier non supporté",
+          description: "Veuillez sélectionner une image au format JPG ou PNG",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       setFile(selectedFile);
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="container mx-auto py-12">
+      <div className="container mx-auto py-12 px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Signaler une carte trouvée</h1>
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,7 +150,14 @@ const SignalerCarte = () => {
                 placeholder="Numéro de la carte d'identité"
                 value={formData.cardNumber}
                 onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
+                className={errors.cardNumber ? "border-red-500" : ""}
               />
+              {errors.cardNumber && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.cardNumber}
+                </p>
+              )}
             </div>
             
             <div>
@@ -108,11 +168,18 @@ const SignalerCarte = () => {
                   placeholder="Adresse" 
                   value={formData.address}
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  className={errors.address ? "border-red-500" : ""}
                 />
                 <Button variant="outline" size="icon" type="button">
                   <MapPin className="h-4 w-4" />
                 </Button>
               </div>
+              {errors.address && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.address}
+                </p>
+              )}
             </div>
             
             <div>
@@ -122,7 +189,14 @@ const SignalerCarte = () => {
                 type="date" 
                 value={formData.date}
                 onChange={(e) => setFormData({...formData, date: e.target.value})}
+                className={errors.date ? "border-red-500" : ""}
               />
+              {errors.date && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  {errors.date}
+                </p>
+              )}
             </div>
             
             <div>
@@ -144,7 +218,7 @@ const SignalerCarte = () => {
                   className="hidden"
                   id="photo-upload"
                 />
-                <label htmlFor="photo-upload">
+                <label htmlFor="photo-upload" className="cursor-pointer">
                   <Button 
                     variant="outline" 
                     className="w-full"
