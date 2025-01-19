@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Upload, Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -9,6 +8,9 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FormField } from "@/components/card-report/FormField";
+import { LocationField } from "@/components/card-report/LocationField";
+import { PhotoUpload } from "@/components/card-report/PhotoUpload";
 
 const SignalerCarte = () => {
   const { toast } = useToast();
@@ -169,62 +171,30 @@ const SignalerCarte = () => {
           )}
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">Numéro de la carte</label>
-              <Input
-                required
-                placeholder="Numéro de la carte d'identité"
-                value={formData.cardNumber}
-                onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
-                className={errors.cardNumber ? "border-red-500" : ""}
-              />
-              {errors.cardNumber && (
-                <p className="mt-1 text-sm text-red-500 flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {errors.cardNumber}
-                </p>
-              )}
-            </div>
+            <FormField
+              label="Numéro de la carte"
+              value={formData.cardNumber}
+              onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
+              error={errors.cardNumber}
+              required
+              placeholder="Numéro de la carte d'identité"
+            />
             
-            <div>
-              <label className="block text-sm font-medium mb-2">Lieu où la carte a été trouvée</label>
-              <div className="flex gap-2">
-                <Input 
-                  required
-                  placeholder="Adresse" 
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  className={errors.address ? "border-red-500" : ""}
-                />
-                <Button variant="outline" size="icon" type="button">
-                  <MapPin className="h-4 w-4" />
-                </Button>
-              </div>
-              {errors.address && (
-                <p className="mt-1 text-sm text-red-500 flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {errors.address}
-                </p>
-              )}
-            </div>
+            <LocationField
+              value={formData.address}
+              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              error={errors.address}
+            />
             
-            <div>
-              <label className="block text-sm font-medium mb-2">Date de découverte</label>
-              <Input 
-                required
-                type="date" 
-                value={formData.date}
-                onChange={(e) => setFormData({...formData, date: e.target.value})}
-                className={errors.date ? "border-red-500" : ""}
-                max={new Date().toISOString().split('T')[0]}
-              />
-              {errors.date && (
-                <p className="mt-1 text-sm text-red-500 flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {errors.date}
-                </p>
-              )}
-            </div>
+            <FormField
+              label="Date de découverte"
+              type="date"
+              value={formData.date}
+              onChange={(e) => setFormData({...formData, date: e.target.value})}
+              error={errors.date}
+              required
+              max={new Date().toISOString().split('T')[0]}
+            />
             
             <div>
               <label className="block text-sm font-medium mb-2">Description des circonstances</label>
@@ -235,29 +205,10 @@ const SignalerCarte = () => {
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium mb-2">Photo de la carte (optionnel)</label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="photo-upload"
-                />
-                <label htmlFor="photo-upload" className="cursor-pointer">
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
-                    type="button"
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {file ? file.name : "Ajouter une photo"}
-                  </Button>
-                </label>
-                <p className="mt-2 text-sm text-gray-500">PNG, JPG jusqu'à 5MB</p>
-              </div>
-            </div>
+            <PhotoUpload
+              file={file}
+              onFileChange={handleFileChange}
+            />
             
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
