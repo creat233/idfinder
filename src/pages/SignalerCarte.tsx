@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SignalerCarte = () => {
   const { toast } = useToast();
@@ -21,6 +22,7 @@ const SignalerCarte = () => {
   });
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -37,6 +39,12 @@ const SignalerCarte = () => {
 
     if (!formData.date) {
       newErrors.date = "La date est requise";
+    } else {
+      const selectedDate = new Date(formData.date);
+      const today = new Date();
+      if (selectedDate > today) {
+        newErrors.date = "La date ne peut pas être dans le futur";
+      }
     }
 
     setErrors(newErrors);
@@ -45,6 +53,7 @@ const SignalerCarte = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploadError(null);
     
     if (!validateForm()) {
       toast({
@@ -59,7 +68,15 @@ const SignalerCarte = () => {
 
     try {
       const user = (await supabase.auth.getUser()).data.user;
-      if (!user) throw new Error("Utilisateur non authentifié");
+      if (!user) {
+        toast({
+          title: "Non autorisé",
+          description: "Vous devez être connecté pour signaler une carte",
+          variant: "destructive",
+        });
+        navigate("/login");
+        return;
+      }
 
       let photoUrl = null;
       if (file) {
@@ -70,6 +87,7 @@ const SignalerCarte = () => {
           .upload(fileName, file);
 
         if (uploadError) {
+          setUploadError("Erreur lors du téléchargement de la photo. Veuillez réessayer.");
           throw new Error("Erreur lors du téléchargement de la photo");
         }
         
@@ -133,6 +151,7 @@ const SignalerCarte = () => {
       }
       
       setFile(selectedFile);
+      setUploadError(null);
     }
   };
 
@@ -142,6 +161,13 @@ const SignalerCarte = () => {
       <div className="container mx-auto py-12 px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Signaler une carte trouvée</h1>
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
+          {uploadError && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{uploadError}</AlertDescription>
+            </Alert>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-2">Numéro de la carte</label>
@@ -190,6 +216,7 @@ const SignalerCarte = () => {
                 value={formData.date}
                 onChange={(e) => setFormData({...formData, date: e.target.value})}
                 className={errors.date ? "border-red-500" : ""}
+                max={new Date().toISOString().split('T')[0]}
               />
               {errors.date && (
                 <p className="mt-1 text-sm text-red-500 flex items-center">
