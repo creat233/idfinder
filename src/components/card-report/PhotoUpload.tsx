@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Upload, Image as ImageIcon } from "lucide-react";
+import { Upload, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PhotoUploadProps {
   file: File | null;
@@ -11,6 +12,7 @@ interface PhotoUploadProps {
 export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
   const { toast } = useToast();
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
     }
   };
 
-  const validateAndHandleFile = (file: File) => {
+  const validateAndHandleFile = async (file: File) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
@@ -61,14 +63,32 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
       return;
     }
 
-    // Create a synthetic event to match the expected type
-    const syntheticEvent = {
-      target: {
-        files: [file]
-      }
-    } as unknown as React.ChangeEvent<HTMLInputElement>;
-    
-    onFileChange(syntheticEvent);
+    try {
+      setIsUploading(true);
+
+      // Create a synthetic event to match the expected type
+      const syntheticEvent = {
+        target: {
+          files: [file]
+        }
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      
+      onFileChange(syntheticEvent);
+
+      toast({
+        title: "Photo sélectionnée",
+        description: "La photo sera téléchargée lors de la soumission du formulaire",
+      });
+    } catch (error) {
+      console.error('Error handling file:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la sélection du fichier",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -88,14 +108,21 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
           onChange={handleFileInputChange}
           className="hidden"
           id="photo-upload"
+          disabled={isUploading}
         />
         <label htmlFor="photo-upload" className="cursor-pointer">
           <Button 
             variant="outline" 
             className="w-full"
             type="button"
+            disabled={isUploading}
           >
-            {file ? (
+            {isUploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Chargement...
+              </>
+            ) : file ? (
               <>
                 <ImageIcon className="mr-2 h-4 w-4" />
                 {file.name}
@@ -108,7 +135,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
             )}
           </Button>
         </label>
-        {!file && (
+        {!file && !isUploading && (
           <div className="mt-2">
             <p className="text-sm text-gray-500">
               Glissez et déposez une image ici ou cliquez pour sélectionner
