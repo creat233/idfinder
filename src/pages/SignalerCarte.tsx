@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import FormField from "@/components/card-report/FormField";
-import LocationField from "@/components/card-report/LocationField";
+import { FormField } from "@/components/card-report/FormField";
+import { LocationField } from "@/components/card-report/LocationField";
 import PhotoUpload from "@/components/card-report/PhotoUpload";
 
 const formSchema = z.object({
