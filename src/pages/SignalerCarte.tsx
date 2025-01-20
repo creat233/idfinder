@@ -130,31 +130,9 @@ const SignalerCarte = () => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        toast({
-          title: "Fichier trop volumineux",
-          description: "La taille du fichier ne doit pas dépasser 5MB",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (!allowedTypes.includes(selectedFile.type)) {
-        toast({
-          title: "Type de fichier non supporté",
-          description: "Veuillez sélectionner une image au format JPG ou PNG",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setFile(selectedFile);
-      setUploadError(null);
-    }
+  const handleFileChange = (newFile: File | null) => {
+    setFile(newFile);
+    setUploadError(null);
   };
 
   return (

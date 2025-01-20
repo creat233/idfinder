@@ -24,7 +24,6 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
   };
 
   const validateFile = (file: File): boolean => {
-    // Vérifier le type de fichier
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (!allowedTypes.includes(file.type)) {
       toast({
@@ -35,8 +34,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
       return false;
     }
 
-    // Vérifier la taille du fichier (5MB maximum)
-    const maxSize = 5 * 1024 * 1024; // 5MB en octets
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       toast({
         variant: "destructive",
@@ -69,13 +67,6 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
   const handleFileUpload = async (file: File) => {
     try {
       setIsUploading(true);
-
-      const syntheticEvent = {
-        target: {
-          files: [file]
-        }
-      };
-
       onFileChange(file);
       
       toast({
