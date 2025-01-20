@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ const SignalerCarte = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const mounted = useRef(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,17 +40,26 @@ const SignalerCarte = () => {
     },
   });
 
+  useEffect(() => {
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (!mounted.current) return;
       setIsSubmitting(true);
       
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Vous devez être connecté pour signaler une carte",
-        });
+        if (mounted.current) {
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Vous devez être connecté pour signaler une carte",
+          });
+        }
         return;
       }
 
@@ -89,27 +99,34 @@ const SignalerCarte = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Signalement envoyé",
-        description: "Votre signalement a été enregistré avec succès",
-      });
-
-      navigate("/");
+      if (mounted.current) {
+        toast({
+          title: "Signalement envoyé",
+          description: "Votre signalement a été enregistré avec succès",
+        });
+        navigate("/");
+      }
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi du signalement",
-      });
+      if (mounted.current) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'envoi du signalement",
+        });
+      }
     } finally {
-      setIsSubmitting(false);
+      if (mounted.current) {
+        setIsSubmitting(false);
+      }
     }
   };
 
   const handleFileChange = (newFile: File | null) => {
-    setFile(newFile);
-    setUploadError(null);
+    if (mounted.current) {
+      setFile(newFile);
+      setUploadError(null);
+    }
   };
 
   return (
