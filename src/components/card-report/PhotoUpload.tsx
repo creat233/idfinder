@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Upload, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 interface PhotoUploadProps {
   file: File | null;
@@ -65,8 +64,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
 
     try {
       setIsUploading(true);
-
-      // Create a synthetic event to match the expected type
+      
       const syntheticEvent = {
         target: {
           files: [file]
@@ -93,9 +91,8 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-2">Photo de la carte (facultatif)</label>
       <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors
+        className={`border-2 border-dashed rounded-lg p-6 transition-colors
           ${isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'}
           ${file ? 'bg-gray-50' : ''}`}
         onDragOver={handleDragOver}
@@ -136,7 +133,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
           </Button>
         </label>
         {!file && !isUploading && (
-          <div className="mt-2">
+          <div className="mt-2 text-center">
             <p className="text-sm text-gray-500">
               Glissez et déposez une image ici ou cliquez pour sélectionner
             </p>
