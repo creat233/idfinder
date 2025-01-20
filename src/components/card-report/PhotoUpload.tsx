@@ -1,27 +1,26 @@
-import { Upload, Image as ImageIcon, Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { Loader2, Upload, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface PhotoUploadProps {
-  file: File | null;
   onFileChange: (file: File | null) => void;
+  currentFile: File | null;
 }
 
-export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
-  const [isDragging, setIsDragging] = useState(false);
+const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const { toast } = useToast();
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      if (validateFile(file)) {
+        handleFileUpload(file);
+      }
+    }
+  }, []);
 
   const validateFile = (file: File): boolean => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -29,7 +28,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
       toast({
         variant: "destructive",
         title: "Type de fichier non supporté",
-        description: "Veuillez sélectionner une image au format JPG ou PNG."
+        description: "Veuillez sélectionner une image au format JPG ou PNG",
       });
       return false;
     }
@@ -39,7 +38,7 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
       toast({
         variant: "destructive",
         title: "Fichier trop volumineux",
-        description: "La taille du fichier ne doit pas dépasser 5MB."
+        description: "La taille du fichier ne doit pas dépasser 5MB",
       });
       return false;
     }
@@ -47,22 +46,15 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
     return true;
   };
 
-  const handleDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && validateFile(droppedFile)) {
-      await handleFileUpload(droppedFile);
-    }
-  };
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && validateFile(selectedFile)) {
-      await handleFileUpload(selectedFile);
-    }
-  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png']
+    },
+    maxSize: 5 * 1024 * 1024,
+    multiple: false
+  });
 
   const handleFileUpload = async (file: File) => {
     try {
@@ -71,75 +63,78 @@ export const PhotoUpload = ({ file, onFileChange }: PhotoUploadProps) => {
       
       toast({
         title: "Photo ajoutée avec succès",
-        description: "La photo a été ajoutée à votre signalement."
+        description: "La photo a été ajoutée à votre signalement",
       });
     } catch (error) {
       console.error('Erreur lors du téléchargement:', error);
       toast({
         variant: "destructive",
         title: "Erreur lors du téléchargement",
-        description: "Une erreur est survenue lors de l'ajout de la photo. Veuillez réessayer."
+        description: "Une erreur est survenue lors du téléchargement de la photo",
       });
     } finally {
       setIsUploading(false);
     }
   };
 
+  const handleRemoveFile = () => {
+    onFileChange(null);
+  };
+
   return (
-    <div>
-      <label className="block text-sm font-medium mb-2">Photo de la carte (facultatif)</label>
+    <div className="w-full space-y-4">
+      <label className="block text-sm font-medium text-gray-700">
+        Photo de la carte (facultatif)
+      </label>
+      
       <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors
-          ${isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'}
-          ${file ? 'bg-gray-50' : ''}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        {...getRootProps()}
+        className={cn(
+          "border-2 border-dashed rounded-lg p-6 cursor-pointer transition-colors",
+          isDragActive ? "border-primary bg-primary/5" : "border-gray-300 hover:border-primary",
+          "flex flex-col items-center justify-center text-center"
+        )}
       >
+        <input {...getInputProps()} />
+        
         {isUploading ? (
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center space-y-2">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="mt-2 text-sm text-gray-500">Téléchargement en cours...</p>
+            <p className="text-sm text-gray-500">Téléchargement en cours...</p>
           </div>
-        ) : file ? (
-          <div className="flex flex-col items-center justify-center">
-            <ImageIcon className="h-8 w-8 text-primary mb-2" />
-            <p className="text-sm font-medium">{file.name}</p>
-            <p className="text-xs text-gray-500 mt-1">
-              {(file.size / 1024 / 1024).toFixed(2)} MB
-            </p>
-            <button
-              onClick={() => onFileChange(null)}
-              className="mt-2 text-sm text-red-600 hover:text-red-700"
-            >
-              Supprimer
-            </button>
+        ) : currentFile ? (
+          <div className="flex flex-col items-center space-y-2">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-500">{currentFile.name}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFile();
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         ) : (
-          <>
-            <label className="cursor-pointer flex flex-col items-center justify-center">
-              <Upload className="h-8 w-8 text-gray-400" />
-              <input
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileSelect}
-              />
-              <span className="mt-2 block text-sm font-medium text-gray-900">
-                Ajouter une photo
-              </span>
-            </label>
-            <div className="mt-2">
+          <div className="flex flex-col items-center space-y-2">
+            <Upload className="h-8 w-8 text-gray-400" />
+            <div className="space-y-1">
               <p className="text-sm text-gray-500">
-                Glissez et déposez une image ici ou cliquez pour sélectionner
+                Glissez et déposez votre photo ici, ou cliquez pour sélectionner
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400">
                 JPG ou PNG jusqu'à 5MB
               </p>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
   );
 };
+
+export default PhotoUpload;

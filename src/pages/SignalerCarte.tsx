@@ -1,132 +1,109 @@
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2, AlertCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FormField } from "@/components/card-report/FormField";
-import { LocationField } from "@/components/card-report/LocationField";
-import { PhotoUpload } from "@/components/card-report/PhotoUpload";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import FormField from "@/components/card-report/FormField";
+import LocationField from "@/components/card-report/LocationField";
+import PhotoUpload from "@/components/card-report/PhotoUpload";
+
+const formSchema = z.object({
+  cardNumber: z.string()
+    .min(1, "Le numéro de la carte est requis")
+    .regex(/^\d+$/, "Le numéro de la carte doit contenir uniquement des chiffres"),
+  location: z.string()
+    .min(1, "Le lieu de découverte est requis"),
+  foundDate: z.string()
+    .min(1, "La date de découverte est requise"),
+  description: z.string()
+    .optional(),
+});
 
 const SignalerCarte = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    address: "",
-    date: new Date().toISOString().split('T')[0],
-    description: "",
-    cardNumber: "",
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
-    
-    if (!formData.cardNumber.trim()) {
-      newErrors.cardNumber = "Le numéro de carte est requis";
-    } else if (!/^\d{10,14}$/.test(formData.cardNumber.trim())) {
-      newErrors.cardNumber = "Le numéro de carte doit contenir entre 10 et 14 chiffres";
-    }
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      cardNumber: "",
+      location: "",
+      foundDate: "",
+      description: "",
+    },
+  });
 
-    if (!formData.address.trim()) {
-      newErrors.address = "L'adresse est requise";
-    }
-
-    if (!formData.date) {
-      newErrors.date = "La date est requise";
-    } else {
-      const selectedDate = new Date(formData.date);
-      const today = new Date();
-      if (selectedDate > today) {
-        newErrors.date = "La date ne peut pas être dans le futur";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUploadError(null);
-    
-    if (!validateForm()) {
-      toast({
-        title: "Erreur de validation",
-        description: "Veuillez corriger les erreurs dans le formulaire",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      setIsSubmitting(true);
+      
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) {
         toast({
-          title: "Non autorisé",
-          description: "Vous devez être connecté pour signaler une carte",
           variant: "destructive",
+          title: "Erreur",
+          description: "Vous devez être connecté pour signaler une carte",
         });
-        navigate("/login");
         return;
       }
 
       let photoUrl = null;
       if (file) {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${crypto.randomUUID()}.${fileExt}`;
-        const { error: uploadError, data } = await supabase.storage
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
           .from('card_photos')
-          .upload(fileName, file);
+          .upload(filePath, file);
 
         if (uploadError) {
-          setUploadError("Erreur lors du téléchargement de la photo. Veuillez réessayer.");
-          throw new Error("Erreur lors du téléchargement de la photo");
+          throw uploadError;
         }
-        
-        if (data) {
-          const { data: { publicUrl } } = supabase.storage
-            .from('card_photos')
-            .getPublicUrl(fileName);
-          photoUrl = publicUrl;
-        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('card_photos')
+          .getPublicUrl(filePath);
+
+        photoUrl = publicUrl;
       }
 
-      const { error } = await supabase.from('reported_cards').insert({
-        reporter_id: user.id,
-        card_number: formData.cardNumber.trim(),
-        location: formData.address.trim(),
-        found_date: formData.date,
-        description: formData.description.trim(),
-        photo_url: photoUrl,
-        status: 'pending'
-      });
+      const { error } = await supabase
+        .from('reported_cards')
+        .insert([
+          {
+            reporter_id: user.id,
+            card_number: values.cardNumber,
+            location: values.location,
+            found_date: values.foundDate,
+            description: values.description || null,
+            photo_url: photoUrl,
+          },
+        ]);
 
       if (error) throw error;
 
       toast({
         title: "Signalement envoyé",
-        description: "Nous examinerons votre signalement dans les plus brefs délais.",
+        description: "Votre signalement a été enregistré avec succès",
       });
+
       navigate("/");
-    } catch (error: any) {
-      console.error('Error submitting form:', error);
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
       toast({
-        title: "Erreur",
-        description: error.message || "Une erreur est survenue lors de l'envoi du signalement",
         variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi du signalement",
       });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -136,72 +113,66 @@ const SignalerCarte = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="container mx-auto py-12 px-4">
-        <h1 className="text-4xl font-bold text-center mb-8">Signaler une carte trouvée</h1>
-        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
-          {uploadError && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{uploadError}</AlertDescription>
-            </Alert>
-          )}
-          
-          <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="container max-w-2xl py-10">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Signaler une carte trouvée</h1>
+          <p className="text-muted-foreground mt-2">
+            Remplissez ce formulaire pour signaler une carte d'identité que vous avez trouvée
+          </p>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
+              control={form.control}
+              name="cardNumber"
               label="Numéro de la carte"
-              value={formData.cardNumber}
-              onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
-              error={errors.cardNumber}
-              required
-              placeholder="Numéro de la carte d'identité"
+              placeholder="Entrez le numéro de la carte"
             />
-            
+
             <LocationField
-              value={formData.address}
-              onChange={(e) => setFormData({...formData, address: e.target.value})}
-              error={errors.address}
+              control={form.control}
+              name="location"
+              label="Lieu de découverte"
+              placeholder="Où avez-vous trouvé la carte ?"
             />
-            
+
             <FormField
+              control={form.control}
+              name="foundDate"
               label="Date de découverte"
               type="date"
-              value={formData.date}
-              onChange={(e) => setFormData({...formData, date: e.target.value})}
-              error={errors.date}
-              required
-              max={new Date().toISOString().split('T')[0]}
+              placeholder="Quand avez-vous trouvé la carte ?"
             />
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">Description des circonstances</label>
-              <Textarea 
-                placeholder="Décrivez où et comment vous avez trouvé la carte..." 
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-              />
-            </div>
-            
+
+            <FormField
+              control={form.control}
+              name="description"
+              label="Description (facultatif)"
+              placeholder="Ajoutez des détails supplémentaires"
+              textarea
+            />
+
             <PhotoUpload
-              file={file}
               onFileChange={handleFileChange}
+              currentFile={file}
             />
-            
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Envoi en cours...
-                </>
-              ) : (
-                "Soumettre le signalement"
-              )}
+
+            {uploadError && (
+              <p className="text-sm text-red-500 mt-2">{uploadError}</p>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Envoi en cours..." : "Envoyer le signalement"}
             </Button>
           </form>
-        </div>
+        </Form>
       </div>
-      <Footer />
     </div>
   );
 };
