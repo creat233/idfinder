@@ -1,62 +1,55 @@
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle } from "lucide-react";
-import { useController, Control } from "react-hook-form";
+import { Control, useController } from "react-hook-form";
 
-interface FormFieldProps {
+export interface FormFieldProps {
   name: string;
-  control: Control<any>;
   label: string;
+  placeholder: string;
+  control: Control<any>;
   type?: string;
-  error?: string;
-  required?: boolean;
-  max?: string;
-  placeholder?: string;
   textarea?: boolean;
 }
 
-export const FormField = ({ 
+export function FormField({
   name,
-  control,
-  label, 
-  type = "text",
-  error,
-  required,
-  max,
+  label,
   placeholder,
-  textarea
-}: FormFieldProps) => {
-  const { field } = useController({
+  control,
+  type = "text",
+  textarea = false,
+}: FormFieldProps) {
+  const {
+    field,
+    fieldState: { error },
+  } = useController({
     name,
     control,
   });
 
   return (
-    <div>
-      <label className="block text-sm font-medium mb-2">{label}</label>
+    <div className="space-y-2">
+      <Label htmlFor={name}>{label}</Label>
       {textarea ? (
         <Textarea
-          required={required}
+          id={name}
           placeholder={placeholder}
           {...field}
           className={error ? "border-red-500" : ""}
         />
       ) : (
         <Input
-          required={required}
+          id={name}
           type={type}
           placeholder={placeholder}
           {...field}
           className={error ? "border-red-500" : ""}
-          max={max}
         />
       )}
       {error && (
-        <p className="mt-1 text-sm text-red-500 flex items-center">
-          <AlertCircle className="h-4 w-4 mr-1" />
-          {error}
-        </p>
+        <p className="text-sm text-red-500">{error.message}</p>
       )}
     </div>
   );
-};
+}

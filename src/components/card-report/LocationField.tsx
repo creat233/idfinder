@@ -1,48 +1,41 @@
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { MapPin, AlertCircle } from "lucide-react";
-import { useController, Control } from "react-hook-form";
+import { Label } from "@/components/ui/label";
+import { Control, useController } from "react-hook-form";
 
-interface LocationFieldProps {
+export interface LocationFieldProps {
   name: string;
-  control: Control<any>;
   label: string;
-  error?: string;
-  placeholder?: string;
+  placeholder: string;
+  control: Control<any>;
 }
 
-export const LocationField = ({ 
+export function LocationField({
   name,
-  control,
   label,
-  error,
-  placeholder 
-}: LocationFieldProps) => {
-  const { field } = useController({
+  placeholder,
+  control,
+}: LocationFieldProps) {
+  const {
+    field,
+    fieldState: { error },
+  } = useController({
     name,
     control,
   });
 
   return (
-    <div>
-      <label className="block text-sm font-medium mb-2">{label}</label>
-      <div className="flex gap-2">
-        <Input 
-          required
-          placeholder={placeholder}
-          {...field}
-          className={error ? "border-red-500" : ""}
-        />
-        <Button variant="outline" size="icon" type="button">
-          <MapPin className="h-4 w-4" />
-        </Button>
-      </div>
+    <div className="space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        id={name}
+        type="text"
+        placeholder={placeholder}
+        {...field}
+        className={error ? "border-red-500" : ""}
+      />
       {error && (
-        <p className="mt-1 text-sm text-red-500 flex items-center">
-          <AlertCircle className="h-4 w-4 mr-1" />
-          {error}
-        </p>
+        <p className="text-sm text-red-500">{error.message}</p>
       )}
     </div>
   );
-};
+}
