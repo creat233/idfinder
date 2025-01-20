@@ -3,10 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Award, Bell, CreditCard, User, Edit2, Save } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
   const { toast } = useToast();
@@ -17,21 +18,54 @@ const Profile = () => {
     phone: "+41 XX XXX XX XX",
     iban: "CH XX XXXX XXXX XXXX XXXX X"
   });
+  const mounted = useRef(true);
 
-  const handleSave = () => {
-    setIsEditing(false);
-    toast({
-      title: "Profil mis à jour",
-      description: "Vos informations ont été enregistrées avec succès.",
-    });
+  useEffect(() => {
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      // Only proceed if component is still mounted
+      if (!mounted.current) return;
+      
+      setIsEditing(false);
+      toast({
+        title: "Profil mis à jour",
+        description: "Vos informations ont été enregistrées avec succès.",
+      });
+    } catch (error) {
+      if (mounted.current) {
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la mise à jour du profil.",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleAddBankAccount = () => {
+    if (!mounted.current) return;
+    
     toast({
       title: "Ajout de compte bancaire",
       description: "Cette fonctionnalité sera bientôt disponible.",
     });
   };
+
+  const handleInputChange = (field: keyof typeof userInfo, value: string) => {
+    if (!mounted.current) return;
+    
+    setUserInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  if (!mounted.current) return null;
 
   return (
     <div className="min-h-screen bg-accent">
@@ -80,9 +114,7 @@ const Profile = () => {
                   <Input
                     id="name"
                     value={userInfo.name}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, name: e.target.value })
-                    }
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                     disabled={!isEditing}
                   />
                 </div>
@@ -92,9 +124,7 @@ const Profile = () => {
                     id="email"
                     type="email"
                     value={userInfo.email}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, email: e.target.value })
-                    }
+                    onChange={(e) => handleInputChange('email', e.target.value)}
                     disabled={!isEditing}
                   />
                 </div>
@@ -103,9 +133,7 @@ const Profile = () => {
                   <Input
                     id="phone"
                     value={userInfo.phone}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, phone: e.target.value })
-                    }
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
                     disabled={!isEditing}
                   />
                 </div>
@@ -165,9 +193,7 @@ const Profile = () => {
                   <Input
                     id="iban"
                     value={userInfo.iban}
-                    onChange={(e) =>
-                      setUserInfo({ ...userInfo, iban: e.target.value })
-                    }
+                    onChange={(e) => handleInputChange('iban', e.target.value)}
                     disabled={!isEditing}
                   />
                 </div>
