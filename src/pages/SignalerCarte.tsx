@@ -1,195 +1,177 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { toast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { MapPin, Upload, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FormField } from "@/components/card-report/FormField";
-import { LocationField } from "@/components/card-report/LocationField";
-import PhotoUpload from "@/components/card-report/PhotoUpload";
-
-const formSchema = z.object({
-  cardNumber: z.string()
-    .min(1, "Le numéro de la carte est requis")
-    .regex(/^\d+$/, "Le numéro de la carte doit contenir uniquement des chiffres"),
-  location: z.string()
-    .min(1, "Le lieu de découverte est requis"),
-  foundDate: z.string()
-    .min(1, "La date de découverte est requise"),
-  description: z.string()
-    .optional(),
-});
+import { useNavigate } from "react-router-dom";
 
 const SignalerCarte = () => {
+  const { toast } = useToast();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const mounted = useRef(true);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      cardNumber: "",
-      location: "",
-      foundDate: "",
-      description: "",
-    },
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    address: "",
+    date: "",
+    description: "",
+    cardNumber: "",
   });
+  const [file, setFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      if (!mounted.current) return;
-      setIsSubmitting(true);
-      
       const user = (await supabase.auth.getUser()).data.user;
-      if (!user) {
-        if (mounted.current) {
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: "Vous devez être connecté pour signaler une carte",
-          });
-        }
-        return;
-      }
+      if (!user) throw new Error("User not authenticated");
 
       let photoUrl = null;
       if (file) {
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError, data } = await supabase.storage
           .from('card_photos')
-          .upload(filePath, file);
+          .upload(fileName, file);
 
-        if (uploadError) {
-          throw uploadError;
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('card_photos')
-          .getPublicUrl(filePath);
-
-        photoUrl = publicUrl;
+        if (uploadError) throw uploadError;
+        if (data) photoUrl = data.path;
       }
 
-      const { error } = await supabase
-        .from('reported_cards')
-        .insert([
-          {
-            reporter_id: user.id,
-            card_number: values.cardNumber,
-            location: values.location,
-            found_date: values.foundDate,
-            description: values.description || null,
-            photo_url: photoUrl,
-          },
-        ]);
+      const { error } = await supabase.from('reported_cards').insert({
+        reporter_id: user.id,
+        card_number: formData.cardNumber,
+        location: formData.address,
+        found_date: formData.date,
+        description: formData.description,
+        photo_url: photoUrl,
+      });
 
       if (error) throw error;
 
-      if (mounted.current) {
-        toast({
-          title: "Signalement envoyé",
-          description: "Votre signalement a été enregistré avec succès",
-        });
-        navigate("/");
-      }
-    } catch (error) {
-      console.error('Erreur lors de la soumission:', error);
-      if (mounted.current) {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'envoi du signalement",
-        });
-      }
+      toast({
+        title: "Signalement envoyé",
+        description: "Nous examinerons votre signalement dans les plus brefs délais.",
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
-      if (mounted.current) {
-        setIsSubmitting(false);
-      }
+      setIsLoading(false);
     }
   };
 
-  const handleFileChange = (newFile: File | null) => {
-    if (mounted.current) {
-      setFile(newFile);
-      setUploadError(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Fichier trop volumineux",
+          description: "La taille du fichier ne doit pas dépasser 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setFile(selectedFile);
     }
   };
 
   return (
-    <div className="container max-w-2xl py-10">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Signaler une carte trouvée</h1>
-          <p className="text-muted-foreground mt-2">
-            Remplissez ce formulaire pour signaler une carte d'identité que vous avez trouvée
-          </p>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="cardNumber"
-              label="Numéro de la carte"
-              placeholder="Entrez le numéro de la carte"
-            />
-
-            <LocationField
-              control={form.control}
-              name="location"
-              label="Lieu de découverte"
-              placeholder="Où avez-vous trouvé la carte ?"
-            />
-
-            <FormField
-              control={form.control}
-              name="foundDate"
-              label="Date de découverte"
-              type="date"
-              placeholder="Quand avez-vous trouvé la carte ?"
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              label="Description (facultatif)"
-              placeholder="Ajoutez des détails supplémentaires"
-              textarea
-            />
-
-            <PhotoUpload
-              onFileChange={handleFileChange}
-              currentFile={file}
-            />
-
-            {uploadError && (
-              <p className="text-sm text-red-500 mt-2">{uploadError}</p>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Envoi en cours..." : "Envoyer le signalement"}
+    <div className="min-h-screen bg-white">
+      <Header />
+      <div className="container mx-auto py-12">
+        <h1 className="text-4xl font-bold text-center mb-8">Signaler une carte trouvée</h1>
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">Numéro de la carte</label>
+              <Input
+                required
+                placeholder="Numéro de la carte d'identité"
+                value={formData.cardNumber}
+                onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Lieu où la carte a été trouvée</label>
+              <div className="flex gap-2">
+                <Input 
+                  required
+                  placeholder="Adresse" 
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                />
+                <Button variant="outline" size="icon" type="button">
+                  <MapPin className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Date de découverte</label>
+              <Input 
+                required
+                type="date" 
+                value={formData.date}
+                onChange={(e) => setFormData({...formData, date: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Description des circonstances</label>
+              <Textarea 
+                placeholder="Décrivez où et comment vous avez trouvé la carte..." 
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">Photo de la carte (optionnel)</label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="photo-upload"
+                />
+                <label htmlFor="photo-upload">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    type="button"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {file ? file.name : "Ajouter une photo"}
+                  </Button>
+                </label>
+                <p className="mt-2 text-sm text-gray-500">PNG, JPG jusqu'à 5MB</p>
+              </div>
+            </div>
+            
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Envoi en cours...
+                </>
+              ) : (
+                "Soumettre le signalement"
+              )}
             </Button>
           </form>
-        </Form>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -20,28 +20,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
-
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (mounted) {
-        setSession(session);
-        setLoading(false);
-      }
-    };
-
-    checkSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted) {
-        setSession(session);
-      }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
     });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   if (loading) {
@@ -59,8 +47,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2000);
-    return () => clearTimeout(timer);
+    setTimeout(() => setIsLoading(false), 2000);
   }, []);
 
   return (
@@ -68,7 +55,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {isLoading ? (
             <motion.div
               key="loader"
