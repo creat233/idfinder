@@ -21,21 +21,28 @@ const Profile = () => {
 
   useEffect(() => {
     const getUserData = async () => {
+      if (!mounted.current) return;
+      
       try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) {
           console.error('Session error:', sessionError);
-          if (mounted.current) {
-            toast({
-              title: "Erreur de session",
-              description: "Impossible de récupérer vos informations. Veuillez vous reconnecter.",
-              variant: "destructive",
-            });
-          }
+          toast({
+            title: "Erreur de session",
+            description: "Impossible de récupérer vos informations. Veuillez vous reconnecter.",
+            variant: "destructive",
+          });
           return;
         }
 
-        if (!session?.user || !mounted.current) return;
+        if (!session?.user) {
+          toast({
+            title: "Non connecté",
+            description: "Veuillez vous connecter pour accéder à votre profil.",
+            variant: "destructive",
+          });
+          return;
+        }
 
         setUserEmail(session.user.email || "");
 
@@ -43,17 +50,15 @@ const Profile = () => {
           .from('profiles')
           .select('first_name, last_name')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
 
         if (profileError) {
           console.error('Profile error:', profileError);
-          if (mounted.current) {
-            toast({
-              title: "Erreur",
-              description: "Impossible de charger les informations du profil.",
-              variant: "destructive",
-            });
-          }
+          toast({
+            title: "Erreur",
+            description: "Impossible de charger les informations du profil.",
+            variant: "destructive",
+          });
           return;
         }
 
@@ -88,11 +93,18 @@ const Profile = () => {
 
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) throw sessionError;
+      if (sessionError) {
+        toast({
+          title: "Erreur",
+          description: "Session invalide. Veuillez vous reconnecter.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       if (!session?.user) {
         toast({
-          title: "Erreur",
+          title: "Non connecté",
           description: "Vous devez être connecté pour modifier votre profil.",
           variant: "destructive",
         });
@@ -105,29 +117,33 @@ const Profile = () => {
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
-          first_name: firstName,
+          first_name: firstName || null,
           last_name: lastName || null,
         })
         .eq('id', session.user.id);
 
-      if (updateError) throw updateError;
-
-      if (mounted.current) {
-        setIsEditing(false);
-        toast({
-          title: "Succès",
-          description: "Votre profil a été mis à jour avec succès.",
-        });
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      if (mounted.current) {
+      if (updateError) {
+        console.error('Update error:', updateError);
         toast({
           title: "Erreur",
-          description: "Une erreur est survenue lors de la mise à jour du profil.",
+          description: "Impossible de mettre à jour le profil.",
           variant: "destructive",
         });
+        return;
       }
+
+      setIsEditing(false);
+      toast({
+        title: "Succès",
+        description: "Votre profil a été mis à jour avec succès.",
+      });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la mise à jour du profil.",
+        variant: "destructive",
+      });
     }
   };
 
