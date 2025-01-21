@@ -22,35 +22,54 @@ const Profile = () => {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        if (!mounted.current) return;
-        
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-        
-        if (session?.user && mounted.current) {
-          setUserEmail(session.user.email || "");
-          
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('first_name, last_name')
-            .eq('id', session.user.id)
-            .single();
-          
-          if (profileError) throw profileError;
-          
-          if (profileData && mounted.current) {
-            setUserInfo(prev => ({
-              ...prev,
-              name: `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim(),
-            }));
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          if (mounted.current) {
+            toast({
+              title: "Erreur de session",
+              description: "Impossible de récupérer vos informations. Veuillez vous reconnecter.",
+              variant: "destructive",
+            });
           }
+          return;
+        }
+
+        if (!session?.user || !mounted.current) return;
+
+        setUserEmail(session.user.email || "");
+
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profileError) {
+          console.error('Profile error:', profileError);
+          if (mounted.current) {
+            toast({
+              title: "Erreur",
+              description: "Impossible de charger les informations du profil.",
+              variant: "destructive",
+            });
+          }
+          return;
+        }
+
+        if (profileData && mounted.current) {
+          const fullName = `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim();
+          setUserInfo(prev => ({
+            ...prev,
+            name: fullName,
+          }));
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
         if (mounted.current) {
           toast({
             title: "Erreur",
-            description: "Impossible de charger les informations du profil.",
+            description: "Une erreur est survenue lors du chargement du profil.",
             variant: "destructive",
           });
         }
@@ -58,7 +77,7 @@ const Profile = () => {
     };
 
     getUserData();
-    
+
     return () => {
       mounted.current = false;
     };
@@ -66,12 +85,19 @@ const Profile = () => {
 
   const handleSave = async () => {
     if (!mounted.current) return;
-    
+
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
-      
-      if (!session?.user) throw new Error("Utilisateur non connecté");
+
+      if (!session?.user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour modifier votre profil.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const [firstName, ...lastNameParts] = userInfo.name.split(' ');
       const lastName = lastNameParts.join(' ');
@@ -85,12 +111,12 @@ const Profile = () => {
         .eq('id', session.user.id);
 
       if (updateError) throw updateError;
-      
+
       if (mounted.current) {
         setIsEditing(false);
         toast({
-          title: "Profil mis à jour",
-          description: "Vos informations ont été enregistrées avec succès.",
+          title: "Succès",
+          description: "Votre profil a été mis à jour avec succès.",
         });
       }
     } catch (error) {
@@ -111,14 +137,11 @@ const Profile = () => {
 
   const handleInputChange = (field: keyof typeof userInfo, value: string) => {
     if (!mounted.current) return;
-    
     setUserInfo(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
-  if (!mounted.current) return null;
 
   return (
     <div className="min-h-screen bg-accent">
