@@ -20,19 +20,37 @@ const Index = () => {
   return (
     <AnimatePresence mode="wait">
       <motion.div 
-        className="min-h-screen bg-white flex flex-col"
+        className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white flex flex-col"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <Header />
         <main className="flex-grow">
           <Hero />
-          <Stats />
-          <HowItWorks />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <Stats />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
+            <HowItWorks />
+          </motion.div>
         </main>
-        <Footer />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9, duration: 0.5 }}
+        >
+          <Footer />
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );
