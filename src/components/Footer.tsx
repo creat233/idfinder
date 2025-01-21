@@ -52,8 +52,8 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Contact</h4>
             <p className="text-primary-foreground/80">
-              Email: contact@idfinder.ch<br />
-              Tél: +41 XX XXX XX XX
+              Email: mcard1100@gmail.com<br />
+              Tél: +221781540779
             </p>
           </div>
         </div>
