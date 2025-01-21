@@ -22,18 +22,21 @@ const Profile = () => {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        if (!mounted.current) return;
+        
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        
         if (session?.user && mounted.current) {
           setUserEmail(session.user.email || "");
           
-          // Fetch user profile data from profiles table
-          const { data: profileData, error } = await supabase
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('first_name, last_name')
             .eq('id', session.user.id)
             .single();
           
-          if (error) throw error;
+          if (profileError) throw profileError;
           
           if (profileData && mounted.current) {
             setUserInfo(prev => ({
@@ -55,22 +58,25 @@ const Profile = () => {
     };
 
     getUserData();
+    
     return () => {
       mounted.current = false;
     };
   }, [toast]);
 
   const handleSave = async () => {
+    if (!mounted.current) return;
+    
     try {
-      if (!mounted.current) return;
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       
-      const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) throw new Error("Utilisateur non connecté");
 
       const [firstName, ...lastNameParts] = userInfo.name.split(' ');
       const lastName = lastNameParts.join(' ');
 
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({
           first_name: firstName,
@@ -78,13 +84,15 @@ const Profile = () => {
         })
         .eq('id', session.user.id);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
       
-      setIsEditing(false);
-      toast({
-        title: "Profil mis à jour",
-        description: "Vos informations ont été enregistrées avec succès.",
-      });
+      if (mounted.current) {
+        setIsEditing(false);
+        toast({
+          title: "Profil mis à jour",
+          description: "Vos informations ont été enregistrées avec succès.",
+        });
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
       if (mounted.current) {
