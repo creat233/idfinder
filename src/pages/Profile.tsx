@@ -12,22 +12,73 @@ import { supabase } from "@/integrations/supabase/client";
 const Profile = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const [userInfo, setUserInfo] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+41 XX XXX XX XX"
+    name: "",
+    phone: ""
   });
   const mounted = useRef(true);
 
   useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user && mounted.current) {
+          setUserEmail(session.user.email || "");
+          
+          // Fetch user profile data from profiles table
+          const { data: profileData, error } = await supabase
+            .from('profiles')
+            .select('first_name, last_name')
+            .eq('id', session.user.id)
+            .single();
+          
+          if (error) throw error;
+          
+          if (profileData && mounted.current) {
+            setUserInfo(prev => ({
+              ...prev,
+              name: `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim(),
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        if (mounted.current) {
+          toast({
+            title: "Erreur",
+            description: "Impossible de charger les informations du profil.",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
+    getUserData();
     return () => {
       mounted.current = false;
     };
-  }, []);
+  }, [toast]);
 
   const handleSave = async () => {
     try {
       if (!mounted.current) return;
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) throw new Error("Utilisateur non connecté");
+
+      const [firstName, ...lastNameParts] = userInfo.name.split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          first_name: firstName,
+          last_name: lastName || null,
+        })
+        .eq('id', session.user.id);
+
+      if (error) throw error;
       
       setIsEditing(false);
       toast({
@@ -35,6 +86,7 @@ const Profile = () => {
         description: "Vos informations ont été enregistrées avec succès.",
       });
     } catch (error) {
+      console.error('Error updating profile:', error);
       if (mounted.current) {
         toast({
           title: "Erreur",
@@ -116,9 +168,9 @@ const Profile = () => {
                   <Input
                     id="email"
                     type="email"
-                    value={userInfo.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    disabled={!isEditing}
+                    value={userEmail}
+                    disabled={true}
+                    className="bg-gray-100"
                   />
                 </div>
                 <div className="space-y-2">
@@ -128,6 +180,7 @@ const Profile = () => {
                     value={userInfo.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     disabled={!isEditing}
+                    placeholder="+221 XX XXX XX XX"
                   />
                 </div>
               </div>
