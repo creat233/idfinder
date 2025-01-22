@@ -52,7 +52,7 @@ const Profile = () => {
           .from('profiles')
           .select('first_name, last_name, phone')
           .eq('id', session.user.id)
-          .maybeSingle();
+          .single();
 
         if (profileError) {
           console.error('Profile error:', profileError);
