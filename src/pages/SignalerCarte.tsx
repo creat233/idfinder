@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FormField } from "@/components/card-report/FormField";
 import { LocationField } from "@/components/card-report/LocationField";
 import PhotoUpload from "@/components/card-report/PhotoUpload";
+import { ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
   cardNumber: z.string()
@@ -131,6 +132,17 @@ const SignalerCarte = () => {
 
   return (
     <div className="container max-w-2xl py-10">
+      <div className="flex items-center mb-8">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Retour
+        </Button>
+      </div>
+
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Signaler une carte trouvée</h1>

@@ -2,15 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Edit2, Save, MessageSquare } from "lucide-react";
+import { User, Edit2, Save, MessageSquare, ArrowLeft } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userInfo, setUserInfo] = useState({
@@ -48,7 +50,7 @@ const Profile = () => {
 
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('first_name, last_name')
+          .select('first_name, last_name, phone')
           .eq('id', session.user.id)
           .maybeSingle();
 
@@ -67,17 +69,16 @@ const Profile = () => {
           setUserInfo(prev => ({
             ...prev,
             name: fullName,
+            phone: profileData.phone || ""
           }));
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
-        if (mounted.current) {
-          toast({
-            title: "Erreur",
-            description: "Une erreur est survenue lors du chargement du profil.",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors du chargement du profil.",
+          variant: "destructive",
+        });
       }
     };
 
@@ -119,6 +120,7 @@ const Profile = () => {
         .update({
           first_name: firstName || null,
           last_name: lastName || null,
+          phone: userInfo.phone || null
         })
         .eq('id', session.user.id);
 
@@ -163,6 +165,17 @@ const Profile = () => {
     <div className="min-h-screen bg-accent">
       <Header />
       <div className="container mx-auto py-12">
+        <div className="flex items-center mb-8">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour
+          </Button>
+        </div>
+
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-6">
