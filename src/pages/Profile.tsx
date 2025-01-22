@@ -1,151 +1,106 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { User, Edit2, Save, MessageSquare, ArrowLeft } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
-  const [userInfo, setUserInfo] = useState({
-    name: "",
-    phone: ""
-  });
-  const mounted = useRef(true);
 
   useEffect(() => {
-    const getUserData = async () => {
-      if (!mounted.current) return;
-      
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) {
-          console.error('Session error:', sessionError);
-          toast({
-            title: "Erreur de session",
-            description: "Impossible de récupérer vos informations. Veuillez vous reconnecter.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (!session?.user) {
-          toast({
-            title: "Non connecté",
-            description: "Veuillez vous connecter pour accéder à votre profil.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        setUserEmail(session.user.email || "");
-
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('first_name, last_name, phone')
-          .eq('id', session.user.id)
-          .single();
-
-        if (profileError) {
-          console.error('Profile error:', profileError);
-          toast({
-            title: "Erreur",
-            description: "Impossible de charger les informations du profil.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (profileData && mounted.current) {
-          const fullName = `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim();
-          setUserInfo(prev => ({
-            ...prev,
-            name: fullName,
-            phone: profileData.phone || ""
-          }));
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        toast({
-          title: "Erreur",
-          description: "Une erreur est survenue lors du chargement du profil.",
-          variant: "destructive",
-        });
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      if (session) {
+        await getProfile(session);
       }
+      setLoading(false);
     };
 
-    getUserData();
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        getProfile(session);
+      }
+    });
 
     return () => {
-      mounted.current = false;
+      subscription.unsubscribe();
     };
-  }, [toast]);
+  }, []);
 
-  const handleSave = async () => {
-    if (!mounted.current) return;
-
+  const getProfile = async (session: any) => {
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) {
-        toast({
-          title: "Erreur",
-          description: "Session invalide. Veuillez vous reconnecter.",
-          variant: "destructive",
-        });
-        return;
+      setLoading(true);
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, phone')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profileError) {
+        throw profileError;
       }
 
-      if (!session?.user) {
-        toast({
-          title: "Non connecté",
-          description: "Vous devez être connecté pour modifier votre profil.",
-          variant: "destructive",
-        });
-        return;
+      if (profile) {
+        setFirstName(profile.first_name || "");
+        setLastName(profile.last_name || "");
+        setPhone(profile.phone || "");
       }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger le profil",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      const [firstName, ...lastNameParts] = userInfo.name.split(' ');
-      const lastName = lastNameParts.join(' ');
+  const updateProfile = async () => {
+    try {
+      setLoading(true);
 
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({
-          first_name: firstName || null,
-          last_name: lastName || null,
-          phone: userInfo.phone || null
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
         })
         .eq('id', session.user.id);
 
-      if (updateError) {
-        console.error('Update error:', updateError);
-        toast({
-          title: "Erreur",
-          description: "Impossible de mettre à jour le profil.",
-          variant: "destructive",
-        });
-        return;
-      }
+      if (error) throw error;
 
-      setIsEditing(false);
       toast({
         title: "Succès",
-        description: "Votre profil a été mis à jour avec succès.",
+        description: "Profil mis à jour avec succès",
       });
+      setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la mise à jour du profil.",
         variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de mettre à jour le profil",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,121 +108,97 @@ const Profile = () => {
     window.location.href = "mailto:mcard1100@gmail.com";
   };
 
-  const handleInputChange = (field: keyof typeof userInfo, value: string) => {
-    if (!mounted.current) return;
-    setUserInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-accent">
+    <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto py-12">
-        <div className="flex items-center mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Retour
-          </Button>
-        </div>
+      <main className="container mx-auto px-4 py-8">
+        <Button
+          variant="ghost"
+          className="mb-6"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Retour
+        </Button>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-6">
-              <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center">
-                <User className="w-12 h-12 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">Mon Profil</h1>
-                <p className="text-muted-foreground">
-                  Gérez vos informations personnelles
-                </p>
-              </div>
+        <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
+          <h1 className="text-2xl font-bold mb-6">Mon Profil</h1>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Prénom</label>
+              <Input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                disabled={!isEditing}
+              />
             </div>
-            <Button
-              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-              variant={isEditing ? "default" : "outline"}
-            >
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Nom</label>
+              <Input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Téléphone</label>
+              <Input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div className="flex justify-end space-x-4 mt-6">
               {isEditing ? (
                 <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Sauvegarder
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsEditing(false)}
+                    disabled={loading}
+                  >
+                    Annuler
+                  </Button>
+                  <Button
+                    onClick={updateProfile}
+                    disabled={loading}
+                  >
+                    Enregistrer
+                  </Button>
                 </>
               ) : (
-                <>
-                  <Edit2 className="w-4 h-4 mr-2" />
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  disabled={loading}
+                >
                   Modifier
-                </>
+                </Button>
               )}
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <h2 className="text-xl font-semibold mb-4">Support & FAQ</h2>
+            <Button
+              variant="outline"
+              onClick={handleContactSupport}
+              className="w-full"
+            >
+              Contacter le support
             </Button>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                Informations Personnelles
-              </h2>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nom complet</Label>
-                  <Input
-                    id="name"
-                    value={userInfo.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={userEmail}
-                    disabled={true}
-                    className="bg-gray-100"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Téléphone</Label>
-                  <Input
-                    id="phone"
-                    value={userInfo.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    disabled={!isEditing}
-                    placeholder="+221 XX XXX XX XX"
-                  />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-primary" />
-                Support
-              </h2>
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  Notre équipe de support est disponible pour répondre à toutes vos questions.
-                </p>
-                <Button 
-                  className="w-full"
-                  onClick={handleContactSupport}
-                >
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Contacter le support
-                </Button>
-              </div>
-            </Card>
-          </div>
         </div>
-      </div>
-      <Footer />
+      </main>
     </div>
   );
 };
