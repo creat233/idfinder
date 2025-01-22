@@ -4,10 +4,12 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
   const mounted = useRef(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -19,9 +21,22 @@ const Login = () => {
 
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session && mounted.current) {
-        navigate("/");
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_UP') {
+        toast({
+          title: "Compte créé avec succès",
+          description: "Vous pouvez maintenant vous connecter",
+        });
+      } else if (event === 'SIGNED_IN') {
+        if (mounted.current) {
+          navigate("/");
+        }
+      } else if (event === 'USER_DELETED') {
+        toast({
+          title: "Erreur",
+          description: "L'utilisateur existe déjà. Veuillez vous connecter.",
+          variant: "destructive",
+        });
       }
     });
 
@@ -29,7 +44,7 @@ const Login = () => {
       mounted.current = false;
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
