@@ -22,7 +22,7 @@ const Login = () => {
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_UP') {
+      if (event === 'SIGNED_IN' && session?.user.created_at === session?.user.last_sign_in_at) {
         toast({
           title: "Compte créé avec succès",
           description: "Vous pouvez maintenant vous connecter",
@@ -31,7 +31,7 @@ const Login = () => {
         if (mounted.current) {
           navigate("/");
         }
-      } else if (event === 'USER_DELETED') {
+      } else if (event === 'USER_UPDATED') {
         toast({
           title: "Erreur",
           description: "L'utilisateur existe déjà. Veuillez vous connecter.",
