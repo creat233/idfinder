@@ -52,9 +52,13 @@ const SignalerCarte = () => {
   });
 
   useEffect(() => {
+    mounted.current = true;
+
     return () => {
       mounted.current = false;
-      form.reset();
+      if (form) {
+        form.reset();
+      }
     };
   }, [form]);
 
@@ -121,11 +125,13 @@ const SignalerCarte = () => {
       }
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi du signalement",
-      });
+      if (mounted.current) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'envoi du signalement",
+        });
+      }
     } finally {
       if (mounted.current) {
         setIsSubmitting(false);
