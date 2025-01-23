@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { useToast, toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -37,7 +37,6 @@ const SignalerCarte = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const mounted = useRef(true);
   const { toast } = useToast();
 
@@ -116,7 +115,10 @@ const SignalerCarte = () => {
         title: "Signalement envoyé",
         description: "Votre signalement a été enregistré avec succès",
       });
-      navigate("/");
+      
+      if (mounted.current) {
+        navigate("/");
+      }
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
       toast({
@@ -134,7 +136,6 @@ const SignalerCarte = () => {
   const handleFileChange = (newFile: File | null) => {
     if (mounted.current) {
       setFile(newFile);
-      setUploadError(null);
     }
   };
 
@@ -217,10 +218,6 @@ const SignalerCarte = () => {
               onFileChange={handleFileChange}
               currentFile={file}
             />
-
-            {uploadError && (
-              <p className="text-sm text-red-500 mt-2">{uploadError}</p>
-            )}
 
             <Button
               type="submit"
