@@ -54,12 +54,14 @@ const SignalerCarte = () => {
   useEffect(() => {
     mounted.current = true;
 
-    return () => {
+    const cleanup = () => {
       mounted.current = false;
       if (form) {
         form.reset();
       }
     };
+
+    return cleanup;
   }, [form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -115,12 +117,11 @@ const SignalerCarte = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Signalement envoyé",
-        description: "Votre signalement a été enregistré avec succès",
-      });
-      
       if (mounted.current) {
+        toast({
+          title: "Signalement envoyé",
+          description: "Votre signalement a été enregistré avec succès",
+        });
         navigate("/");
       }
     } catch (error) {
@@ -175,9 +176,12 @@ const SignalerCarte = () => {
             <div className="space-y-2">
               <Label htmlFor="documentType">Type de document</Label>
               <Select
-                name="documentType"
-                onValueChange={(value) => form.setValue("documentType", value)}
                 defaultValue={form.getValues("documentType")}
+                onValueChange={(value) => {
+                  if (mounted.current) {
+                    form.setValue("documentType", value);
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Sélectionnez le type de document" />
