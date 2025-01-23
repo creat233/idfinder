@@ -38,6 +38,7 @@ export type Database = {
           card_number: string
           created_at: string
           description: string | null
+          document_type: string
           found_date: string
           id: string
           location: string
@@ -49,6 +50,7 @@ export type Database = {
           card_number: string
           created_at?: string
           description?: string | null
+          document_type?: string
           found_date: string
           id?: string
           location: string
@@ -60,6 +62,7 @@ export type Database = {
           card_number?: string
           created_at?: string
           description?: string | null
+          document_type?: string
           found_date?: string
           id?: string
           location?: string
