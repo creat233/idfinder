@@ -11,11 +11,20 @@ import { FormField } from "@/components/card-report/FormField";
 import { LocationField } from "@/components/card-report/LocationField";
 import PhotoUpload from "@/components/card-report/PhotoUpload";
 import { ArrowLeft } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
+  documentType: z.string().min(1, "Le type de document est requis"),
   cardNumber: z.string()
-    .min(1, "Le numéro de la carte est requis")
-    .regex(/^\d+$/, "Le numéro de la carte doit contenir uniquement des chiffres"),
+    .min(1, "Le numéro du document est requis")
+    .regex(/^\d+$/, "Le numéro du document doit contenir uniquement des chiffres"),
   location: z.string()
     .min(1, "Le lieu de découverte est requis"),
   foundDate: z.string()
@@ -34,6 +43,7 @@ const SignalerCarte = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      documentType: "id",
       cardNumber: "",
       location: "",
       foundDate: "",
@@ -58,7 +68,7 @@ const SignalerCarte = () => {
           toast({
             variant: "destructive",
             title: "Erreur",
-            description: "Vous devez être connecté pour signaler une carte",
+            description: "Vous devez être connecté pour signaler un document",
           });
         }
         return;
@@ -95,6 +105,7 @@ const SignalerCarte = () => {
             found_date: values.foundDate,
             description: values.description || null,
             photo_url: photoUrl,
+            document_type: values.documentType,
           },
         ]);
 
@@ -145,26 +156,43 @@ const SignalerCarte = () => {
 
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Signaler une carte trouvée</h1>
+          <h1 className="text-3xl font-bold">Signaler un document trouvé</h1>
           <p className="text-muted-foreground mt-2">
-            Remplissez ce formulaire pour signaler une carte d'identité que vous avez trouvée
+            Remplissez ce formulaire pour signaler un document d'identité que vous avez trouvé
           </p>
         </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="documentType">Type de document</Label>
+              <Select
+                onValueChange={(value) => form.setValue("documentType", value)}
+                defaultValue={form.getValues("documentType")}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez le type de document" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="id">Carte d'identité</SelectItem>
+                  <SelectItem value="driver">Permis de conduire</SelectItem>
+                  <SelectItem value="passport">Passeport</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <FormField
               control={form.control}
               name="cardNumber"
-              label="Numéro de la carte"
-              placeholder="Entrez le numéro de la carte"
+              label="Numéro du document"
+              placeholder="Entrez le numéro du document"
             />
 
             <LocationField
               control={form.control}
               name="location"
               label="Lieu de découverte"
-              placeholder="Où avez-vous trouvé la carte ?"
+              placeholder="Où avez-vous trouvé le document ?"
             />
 
             <FormField
@@ -172,7 +200,7 @@ const SignalerCarte = () => {
               name="foundDate"
               label="Date de découverte"
               type="date"
-              placeholder="Quand avez-vous trouvé la carte ?"
+              placeholder="Quand avez-vous trouvé le document ?"
             />
 
             <FormField
