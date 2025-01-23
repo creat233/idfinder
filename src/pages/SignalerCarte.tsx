@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { useToast, toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -55,7 +55,6 @@ const SignalerCarte = () => {
   useEffect(() => {
     return () => {
       mounted.current = false;
-      // Cleanup any pending form state
       form.reset();
     };
   }, [form]);
@@ -68,13 +67,11 @@ const SignalerCarte = () => {
       
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) {
-        if (mounted.current) {
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: "Vous devez être connecté pour signaler un document",
-          });
-        }
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Vous devez être connecté pour signaler un document",
+        });
         return;
       }
 
@@ -115,22 +112,18 @@ const SignalerCarte = () => {
 
       if (error) throw error;
 
-      if (mounted.current) {
-        toast({
-          title: "Signalement envoyé",
-          description: "Votre signalement a été enregistré avec succès",
-        });
-        navigate("/");
-      }
+      toast({
+        title: "Signalement envoyé",
+        description: "Votre signalement a été enregistré avec succès",
+      });
+      navigate("/");
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
-      if (mounted.current) {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'envoi du signalement",
-        });
-      }
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi du signalement",
+      });
     } finally {
       if (mounted.current) {
         setIsSubmitting(false);
