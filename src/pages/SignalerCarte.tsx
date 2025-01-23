@@ -55,12 +55,15 @@ const SignalerCarte = () => {
   useEffect(() => {
     return () => {
       mounted.current = false;
+      // Cleanup any pending form state
+      form.reset();
     };
-  }, []);
+  }, [form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!mounted.current) return;
+    
     try {
-      if (!mounted.current) return;
       setIsSubmitting(true);
       
       const user = (await supabase.auth.getUser()).data.user;
@@ -142,6 +145,10 @@ const SignalerCarte = () => {
     }
   };
 
+  if (!mounted.current) {
+    return null;
+  }
+
   return (
     <div className="container max-w-2xl py-10">
       <div className="flex items-center mb-8">
@@ -168,6 +175,7 @@ const SignalerCarte = () => {
             <div className="space-y-2">
               <Label htmlFor="documentType">Type de document</Label>
               <Select
+                name="documentType"
                 onValueChange={(value) => form.setValue("documentType", value)}
                 defaultValue={form.getValues("documentType")}
               >
