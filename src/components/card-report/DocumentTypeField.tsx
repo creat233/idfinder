@@ -37,8 +37,10 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
         <SelectContent 
-          position="popper" 
-          className="bg-white border border-gray-200 shadow-lg z-50"
+          align="start"
+          side="bottom"
+          position="popper"
+          className="bg-white border border-gray-200 shadow-lg"
         >
           <SelectItem value="id" className="cursor-pointer hover:bg-gray-100">
             Carte d'identité
