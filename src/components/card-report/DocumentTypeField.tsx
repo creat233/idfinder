@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface DocumentTypeFieldProps {
   form: UseFormReturn<any>;
@@ -18,19 +19,21 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
   } = useController({
     name: "documentType",
     control: form.control,
+    defaultValue: "id",
   });
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-        Type de document
-      </label>
+      <Label htmlFor="documentType">Type de document</Label>
       <Select
         value={field.value}
         onValueChange={field.onChange}
         defaultValue="id"
       >
-        <SelectTrigger className="w-full bg-white border-gray-200 hover:bg-gray-50">
+        <SelectTrigger 
+          id="documentType"
+          className={`w-full bg-white ${error ? "border-destructive" : "border-input"}`}
+        >
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
