@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UseFormReturn } from "react-hook-form";
 
 interface PhotoUploadProps {
-  onFileChange: (file: File | null) => void;
-  currentFile: File | null;
+  form: UseFormReturn<any>;
 }
 
-export const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => {
+export const PhotoUpload = ({ form }: PhotoUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const currentFile = form.watch("photoUrl") ? new File([], form.watch("photoUrl")) : null;
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -59,7 +60,7 @@ export const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => 
   const handleFileUpload = async (file: File) => {
     try {
       setIsUploading(true);
-      onFileChange(file);
+      form.setValue("photoUrl", file.name, { shouldValidate: true });
       
       toast({
         title: "Photo ajoutée avec succès",
@@ -78,7 +79,7 @@ export const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => 
   };
 
   const handleRemoveFile = () => {
-    onFileChange(null);
+    form.setValue("photoUrl", "", { shouldValidate: true });
   };
 
   return (
