@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,6 +14,7 @@ import { LocationField } from "@/components/card-report/LocationField";
 import { PhotoUpload } from "@/components/card-report/PhotoUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { FormField } from "@/components/card-report/FormField";
 
 interface FormValues {
   cardNumber?: string;
@@ -91,13 +90,13 @@ const SignalerCarte = () => {
               <label className="text-sm font-medium">Type de document</label>
               <Select
                 name="documentType"
-                onValueChange={(value) => form.setValue("documentType", value)}
                 defaultValue={form.getValues("documentType")}
+                onValueChange={(value) => form.setValue("documentType", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Sélectionnez le type de document" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectItem value="id">Carte d'identité</SelectItem>
                   <SelectItem value="driver_license">Permis de conduire</SelectItem>
                   <SelectItem value="passport">Passeport</SelectItem>
@@ -105,31 +104,30 @@ const SignalerCarte = () => {
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Numéro de la carte</label>
-              <Input
-                {...form.register("cardNumber")}
-                placeholder="Entrez le numéro de la carte"
-              />
-            </div>
+            <FormField
+              name="cardNumber"
+              label="Numéro de la carte"
+              placeholder="Entrez le numéro de la carte"
+              control={form.control}
+            />
 
             <LocationField form={form} />
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Date de découverte</label>
-              <Input
-                type="date"
-                {...form.register("foundDate")}
-              />
-            </div>
+            <FormField
+              name="foundDate"
+              label="Date de découverte"
+              type="date"
+              placeholder=""
+              control={form.control}
+            />
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Description</label>
-              <Textarea
-                {...form.register("description")}
-                placeholder="Ajoutez des détails sur l'endroit où vous avez trouvé la carte"
-              />
-            </div>
+            <FormField
+              name="description"
+              label="Description"
+              placeholder="Ajoutez des détails sur l'endroit où vous avez trouvé la carte"
+              control={form.control}
+              textarea
+            />
 
             <PhotoUpload form={form} />
 
