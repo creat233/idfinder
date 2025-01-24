@@ -54,14 +54,12 @@ const SignalerCarte = () => {
   useEffect(() => {
     mounted.current = true;
 
-    const cleanup = () => {
+    return () => {
       mounted.current = false;
       if (form) {
         form.reset();
       }
     };
-
-    return cleanup;
   }, [form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -176,14 +174,17 @@ const SignalerCarte = () => {
             <div className="space-y-2">
               <Label htmlFor="documentType">Type de document</Label>
               <Select
+                name="documentType"
                 defaultValue={form.getValues("documentType")}
                 onValueChange={(value) => {
                   if (mounted.current) {
-                    form.setValue("documentType", value);
+                    form.setValue("documentType", value, {
+                      shouldValidate: true,
+                    });
                   }
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger id="documentType">
                   <SelectValue placeholder="Sélectionnez le type de document" />
                 </SelectTrigger>
                 <SelectContent>
