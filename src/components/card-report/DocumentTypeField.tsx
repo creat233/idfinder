@@ -6,12 +6,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useRef } from "react";
 
 interface DocumentTypeFieldProps {
   form: UseFormReturn<any>;
 }
 
 export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
+  const portalRef = useRef<HTMLDivElement | null>(null);
   const {
     field,
     fieldState: { error },
@@ -19,6 +21,22 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
     name: "documentType",
     control: form.control,
   });
+
+  useEffect(() => {
+    // Create portal container if it doesn't exist
+    if (!portalRef.current) {
+      portalRef.current = document.createElement('div');
+      portalRef.current.id = 'select-portal';
+      document.body.appendChild(portalRef.current);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (portalRef.current && document.body.contains(portalRef.current)) {
+        document.body.removeChild(portalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="space-y-2">
@@ -33,7 +51,10 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
         <SelectTrigger className="w-full bg-white border-gray-200 hover:bg-gray-50">
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg">
+        <SelectContent 
+          className="bg-white border border-gray-200 shadow-lg"
+          container={portalRef.current}
+        >
           <SelectItem value="id" className="cursor-pointer hover:bg-gray-100">
             Carte d'identité
           </SelectItem>
