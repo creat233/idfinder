@@ -40,6 +40,7 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           align="start"
           side="bottom"
           position="popper"
+          sideOffset={4}
           className="bg-white border border-gray-200 rounded-lg shadow-lg min-w-[240px] p-1"
         >
           <SelectItem value="id" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
