@@ -1,12 +1,10 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Control, UseFormReturn, useController } from "react-hook-form";
+import { Input } from "@/components/ui/input";
 
 export interface LocationFieldProps {
   name?: string;
   label?: string;
   placeholder?: string;
-  control?: Control<any>;
   form: UseFormReturn<any>;
 }
 
@@ -26,16 +24,16 @@ export function LocationField({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
+      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        {label}
+      </label>
       <Input
-        id={name}
-        type="text"
         placeholder={placeholder}
         {...field}
-        className={error ? "border-red-500" : ""}
+        className={error ? "border-destructive" : ""}
       />
       {error && (
-        <p className="text-sm text-red-500">{error.message}</p>
+        <p className="text-sm text-destructive">{error.message}</p>
       )}
     </div>
   );

@@ -1,21 +1,8 @@
-import { useEffect, useRef } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -23,27 +10,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { PhotoUpload } from "@/components/card-report/PhotoUpload";
+import { useToast } from "@/hooks/use-toast";
+import { Header } from "@/components/Header";
 import { LocationField } from "@/components/card-report/LocationField";
+import { PhotoUpload } from "@/components/card-report/PhotoUpload";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
-const formSchema = z.object({
-  cardNumber: z.string().min(1, "Le numéro de la carte est requis"),
-  location: z.string().min(1, "La localisation est requise"),
-  foundDate: z.string().min(1, "La date de découverte est requise"),
-  description: z.string().optional(),
-  documentType: z.string().min(1, "Le type de document est requis"),
-  photoUrl: z.string().optional(),
-});
+interface FormValues {
+  cardNumber?: string;
+  location?: string;
+  foundDate?: string;
+  description?: string;
+  documentType?: string;
+  photoUrl?: string;
+}
 
-export default function SignalerCarte() {
-  const mounted = useRef(true);
+const SignalerCarte = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<FormValues>({
     defaultValues: {
       cardNumber: "",
       location: "",
@@ -54,52 +42,31 @@ export default function SignalerCarte() {
     },
   });
 
-  useEffect(() => {
-    mounted.current = true;
-
-    return () => {
-      mounted.current = false;
-      if (form) {
-        form.reset();
-      }
-    };
-  }, [form]);
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: FormValues) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Vous devez être connecté pour signaler une carte",
-        });
-        navigate("/login");
-        return;
-      }
+      setIsSubmitting(true);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
 
       const { error } = await supabase.from("reported_cards").insert({
-        card_number: values.cardNumber,
-        location: values.location,
-        found_date: values.foundDate,
-        description: values.description,
-        document_type: values.documentType,
-        photo_url: values.photoUrl,
-        reporter_id: session.user.id,
+        card_number: data.cardNumber,
+        location: data.location,
+        found_date: data.foundDate,
+        description: data.description,
+        document_type: data.documentType,
+        photo_url: data.photoUrl,
+        reporter_id: user.id,
       });
 
       if (error) throw error;
 
       toast({
-        title: "Succès",
-        description: "La carte a été signalée avec succès",
+        title: "Carte signalée avec succès",
+        description: "Merci d'avoir signalé cette carte",
       });
 
-      if (mounted.current) {
-        form.reset();
-        navigate("/");
-      }
+      navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
@@ -107,60 +74,27 @@ export default function SignalerCarte() {
         title: "Erreur",
         description: "Une erreur est survenue lors de la soumission du formulaire",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto py-6 px-4 space-y-6">
-        <h1 className="text-2xl font-bold">Signaler une carte trouvée</h1>
-        <Form {...form}>
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-2xl font-bold mb-6">Signaler une carte trouvée</h1>
+
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="cardNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Numéro de la carte</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <LocationField form={form} />
-
-            <FormField
-              control={form.control}
-              name="foundDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date de découverte</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <div className="space-y-2">
-              <Label htmlFor="documentType">Type de document</Label>
+              <label className="text-sm font-medium">Type de document</label>
               <Select
                 name="documentType"
+                onValueChange={(value) => form.setValue("documentType", value)}
                 defaultValue={form.getValues("documentType")}
-                onValueChange={(value) => {
-                  if (mounted.current) {
-                    form.setValue("documentType", value, {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
               >
-                <SelectTrigger id="documentType">
+                <SelectTrigger>
                   <SelectValue placeholder="Sélectionnez le type de document" />
                 </SelectTrigger>
                 <SelectContent>
@@ -171,28 +105,46 @@ export default function SignalerCarte() {
               </Select>
             </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description (optionnel)</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Numéro de la carte</label>
+              <Input
+                {...form.register("cardNumber")}
+                placeholder="Entrez le numéro de la carte"
+              />
+            </div>
+
+            <LocationField form={form} />
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Date de découverte</label>
+              <Input
+                type="date"
+                {...form.register("foundDate")}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Description</label>
+              <Textarea
+                {...form.register("description")}
+                placeholder="Ajoutez des détails sur l'endroit où vous avez trouvé la carte"
+              />
+            </div>
 
             <PhotoUpload form={form} />
 
-            <Button type="submit" className="w-full">
-              Signaler la carte
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Envoi en cours..." : "Signaler la carte"}
             </Button>
           </form>
-        </Form>
+        </div>
       </main>
     </div>
   );
-}
+};
+
+export default SignalerCarte;
