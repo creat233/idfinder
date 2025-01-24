@@ -6,12 +6,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 
 interface DocumentTypeFieldProps {
   form: UseFormReturn<any>;
 }
 
 export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
+  const [mounted, setMounted] = useState(false);
   const {
     field,
     fieldState: { error },
@@ -19,6 +21,15 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
     name: "documentType",
     control: form.control,
   });
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="space-y-2">
@@ -33,7 +44,15 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
         <SelectTrigger className="w-full bg-white border-gray-200 hover:bg-gray-50">
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+        <SelectContent
+          ref={(ref) => {
+            if (ref) {
+              ref.style.zIndex = "50";
+            }
+          }}
+          position="popper"
+          className="bg-white border border-gray-200 shadow-lg"
+        >
           <SelectItem value="id" className="cursor-pointer hover:bg-gray-100">
             Carte d'identité
           </SelectItem>
