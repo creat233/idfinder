@@ -10,7 +10,7 @@ interface PhotoUploadProps {
   currentFile: File | null;
 }
 
-const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => {
+export const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -136,5 +136,3 @@ const PhotoUpload = ({ onFileChange, currentFile }: PhotoUploadProps) => {
     </div>
   );
 };
-
-export default PhotoUpload;

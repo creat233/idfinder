@@ -1,12 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Control, useController } from "react-hook-form";
+import { Control, UseFormReturn, useController } from "react-hook-form";
 
 export interface LocationFieldProps {
   name: string;
   label: string;
   placeholder: string;
   control: Control<any>;
+  form?: UseFormReturn<any>;
 }
 
 export function LocationField({
