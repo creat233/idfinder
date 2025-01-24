@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { LocationField } from "@/components/card-report/LocationField";
 import { PhotoUpload } from "@/components/card-report/PhotoUpload";
+import { DocumentTypeField } from "@/components/card-report/DocumentTypeField";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { FormField } from "@/components/card-report/FormField";
@@ -86,32 +80,7 @@ const SignalerCarte = () => {
           <h1 className="text-2xl font-bold mb-6">Signaler une carte trouvée</h1>
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Type de document</label>
-              <Select
-                name="documentType"
-                defaultValue={form.getValues("documentType")}
-                onValueChange={(value) => form.setValue("documentType", value)}
-              >
-                <SelectTrigger className="w-full bg-white border-gray-200 hover:bg-gray-50">
-                  <SelectValue placeholder="Sélectionnez le type de document" />
-                </SelectTrigger>
-                <SelectContent 
-                  position="popper"
-                  className="bg-white border border-gray-200 shadow-lg"
-                >
-                  <SelectItem value="id" className="cursor-pointer hover:bg-gray-100">
-                    Carte d'identité
-                  </SelectItem>
-                  <SelectItem value="driver_license" className="cursor-pointer hover:bg-gray-100">
-                    Permis de conduire
-                  </SelectItem>
-                  <SelectItem value="passport" className="cursor-pointer hover:bg-gray-100">
-                    Passeport
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <DocumentTypeField form={form} />
 
             <FormField
               name="cardNumber"
