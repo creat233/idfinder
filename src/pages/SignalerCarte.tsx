@@ -1,16 +1,21 @@
-import { useForm } from "react-hook-form";
+import { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { FormField } from "@/components/card-report/FormField";
-import { LocationField } from "@/components/card-report/LocationField";
-import PhotoUpload from "@/components/card-report/PhotoUpload";
-import { ArrowLeft } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -19,35 +24,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { PhotoUpload } from "@/components/card-report/PhotoUpload";
+import { LocationField } from "@/components/card-report/LocationField";
 
 const formSchema = z.object({
+  cardNumber: z.string().min(1, "Le numéro de la carte est requis"),
+  location: z.string().min(1, "La localisation est requise"),
+  foundDate: z.string().min(1, "La date de découverte est requise"),
+  description: z.string().optional(),
   documentType: z.string().min(1, "Le type de document est requis"),
-  cardNumber: z.string()
-    .min(1, "Le numéro du document est requis")
-    .regex(/^\d+$/, "Le numéro du document doit contenir uniquement des chiffres"),
-  location: z.string()
-    .min(1, "Le lieu de découverte est requis"),
-  foundDate: z.string()
-    .min(1, "La date de découverte est requise"),
-  description: z.string()
-    .optional(),
+  photoUrl: z.string().optional(),
 });
 
-const SignalerCarte = () => {
-  const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
+export default function SignalerCarte() {
   const mounted = useRef(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      documentType: "id",
       cardNumber: "",
       location: "",
       foundDate: "",
       description: "",
+      documentType: "id",
+      photoUrl: "",
     },
   });
 
@@ -63,114 +66,87 @@ const SignalerCarte = () => {
   }, [form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!mounted.current) return;
-    
     try {
-      setIsSubmitting(true);
+      const { data: { session } } = await supabase.auth.getSession();
       
-      const user = (await supabase.auth.getUser()).data.user;
-      if (!user) {
+      if (!session) {
         toast({
           variant: "destructive",
           title: "Erreur",
-          description: "Vous devez être connecté pour signaler un document",
+          description: "Vous devez être connecté pour signaler une carte",
         });
+        navigate("/login");
         return;
       }
 
-      let photoUrl = null;
-      if (file) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('card_photos')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('card_photos')
-          .getPublicUrl(filePath);
-
-        photoUrl = publicUrl;
-      }
-
-      const { error } = await supabase
-        .from('reported_cards')
-        .insert([
-          {
-            reporter_id: user.id,
-            card_number: values.cardNumber,
-            location: values.location,
-            found_date: values.foundDate,
-            description: values.description || null,
-            photo_url: photoUrl,
-            document_type: values.documentType,
-          },
-        ]);
+      const { error } = await supabase.from("reported_cards").insert({
+        card_number: values.cardNumber,
+        location: values.location,
+        found_date: values.foundDate,
+        description: values.description,
+        document_type: values.documentType,
+        photo_url: values.photoUrl,
+        reporter_id: session.user.id,
+      });
 
       if (error) throw error;
 
+      toast({
+        title: "Succès",
+        description: "La carte a été signalée avec succès",
+      });
+
       if (mounted.current) {
-        toast({
-          title: "Signalement envoyé",
-          description: "Votre signalement a été enregistré avec succès",
-        });
+        form.reset();
         navigate("/");
       }
     } catch (error) {
-      console.error('Erreur lors de la soumission:', error);
-      if (mounted.current) {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'envoi du signalement",
-        });
-      }
-    } finally {
-      if (mounted.current) {
-        setIsSubmitting(false);
-      }
+      console.error("Error submitting form:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la soumission du formulaire",
+      });
     }
   };
-
-  const handleFileChange = (newFile: File | null) => {
-    if (mounted.current) {
-      setFile(newFile);
-    }
-  };
-
-  if (!mounted.current) {
-    return null;
-  }
 
   return (
-    <div className="container max-w-2xl py-10">
-      <div className="flex items-center mb-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Retour
-        </Button>
-      </div>
-
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Signaler un document trouvé</h1>
-          <p className="text-muted-foreground mt-2">
-            Remplissez ce formulaire pour signaler un document d'identité que vous avez trouvé
-          </p>
-        </div>
-
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto py-6 px-4 space-y-6">
+        <h1 className="text-2xl font-bold">Signaler une carte trouvée</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="cardNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Numéro de la carte</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <LocationField form={form} />
+
+            <FormField
+              control={form.control}
+              name="foundDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date de découverte</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="space-y-2">
               <Label htmlFor="documentType">Type de document</Label>
               <Select
@@ -189,7 +165,7 @@ const SignalerCarte = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="id">Carte d'identité</SelectItem>
-                  <SelectItem value="driver">Permis de conduire</SelectItem>
+                  <SelectItem value="driver_license">Permis de conduire</SelectItem>
                   <SelectItem value="passport">Passeport</SelectItem>
                 </SelectContent>
               </Select>
@@ -197,51 +173,26 @@ const SignalerCarte = () => {
 
             <FormField
               control={form.control}
-              name="cardNumber"
-              label="Numéro du document"
-              placeholder="Entrez le numéro du document"
-            />
-
-            <LocationField
-              control={form.control}
-              name="location"
-              label="Lieu de découverte"
-              placeholder="Où avez-vous trouvé le document ?"
-            />
-
-            <FormField
-              control={form.control}
-              name="foundDate"
-              label="Date de découverte"
-              type="date"
-              placeholder="Quand avez-vous trouvé le document ?"
-            />
-
-            <FormField
-              control={form.control}
               name="description"
-              label="Description (facultatif)"
-              placeholder="Ajoutez des détails supplémentaires"
-              textarea
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description (optionnel)</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <PhotoUpload
-              onFileChange={handleFileChange}
-              currentFile={file}
-            />
+            <PhotoUpload form={form} />
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Envoi en cours..." : "Envoyer le signalement"}
+            <Button type="submit" className="w-full">
+              Signaler la carte
             </Button>
           </form>
         </Form>
-      </div>
+      </main>
     </div>
   );
-};
-
-export default SignalerCarte;
+}
