@@ -93,13 +93,22 @@ const SignalerCarte = () => {
                 defaultValue={form.getValues("documentType")}
                 onValueChange={(value) => form.setValue("documentType", value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full bg-white border-gray-200 hover:bg-gray-50">
                   <SelectValue placeholder="Sélectionnez le type de document" />
                 </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="id">Carte d'identité</SelectItem>
-                  <SelectItem value="driver_license">Permis de conduire</SelectItem>
-                  <SelectItem value="passport">Passeport</SelectItem>
+                <SelectContent 
+                  position="popper"
+                  className="bg-white border border-gray-200 shadow-lg"
+                >
+                  <SelectItem value="id" className="cursor-pointer hover:bg-gray-100">
+                    Carte d'identité
+                  </SelectItem>
+                  <SelectItem value="driver_license" className="cursor-pointer hover:bg-gray-100">
+                    Permis de conduire
+                  </SelectItem>
+                  <SelectItem value="passport" className="cursor-pointer hover:bg-gray-100">
+                    Passeport
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
