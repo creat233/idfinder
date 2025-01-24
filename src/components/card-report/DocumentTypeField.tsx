@@ -7,14 +7,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { useEffect, useRef } from "react";
 
 interface DocumentTypeFieldProps {
   form: UseFormReturn<any>;
 }
 
 export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
-  const portalRef = useRef<HTMLDivElement>(null);
   const {
     field,
     fieldState: { error },
@@ -23,18 +21,6 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
     control: form.control,
     defaultValue: "id",
   });
-
-  useEffect(() => {
-    // Create portal container
-    const portalContainer = document.createElement('div');
-    portalContainer.id = 'document-type-portal';
-    document.body.appendChild(portalContainer);
-
-    return () => {
-      // Cleanup portal container on unmount
-      document.body.removeChild(portalContainer);
-    };
-  }, []);
 
   return (
     <div className="space-y-2">
@@ -51,10 +37,8 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
         <SelectContent 
-          ref={portalRef}
           position="popper" 
           className="bg-white border border-gray-200 shadow-lg z-50"
-          container={document.getElementById('document-type-portal')}
         >
           <SelectItem value="id" className="cursor-pointer hover:bg-gray-100">
             Carte d'identité
