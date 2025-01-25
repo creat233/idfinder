@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
@@ -188,12 +188,13 @@ const Profile = () => {
           </div>
 
           <div className="mt-12">
-            <h2 className="text-xl font-semibold mb-4">Support & FAQ</h2>
+            <h2 className="text-xl font-semibold mb-4">Assistance et FAQ</h2>
             <Button
               variant="outline"
               onClick={handleContactSupport}
-              className="w-full"
+              className="w-full flex items-center justify-center gap-2"
             >
+              <MessageSquare className="h-4 w-4" />
               Contacter le support
             </Button>
           </div>
