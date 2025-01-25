@@ -4,6 +4,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface PhotoUploadProps {
   form: UseFormReturn<any>;
@@ -11,7 +12,7 @@ export interface PhotoUploadProps {
 
 export function PhotoUpload({ form }: PhotoUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
-  const currentFile = form.watch("photoUrl") ? new File([], form.watch("photoUrl")) : null;
+  const currentFile = form.watch("photoUrl");
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -40,7 +41,26 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
   const handleFileUpload = async (file: File) => {
     try {
       setIsUploading(true);
-      form.setValue("photoUrl", file.name, { shouldValidate: true });
+      
+      // Create a unique file name
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `card_photos/${fileName}`;
+
+      // Upload file to Supabase Storage
+      const { error: uploadError, data } = await supabase.storage
+        .from('card_photos')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('card_photos')
+        .getPublicUrl(filePath);
+
+      // Set the URL in the form
+      form.setValue("photoUrl", publicUrl, { shouldValidate: true });
       
       toast({
         title: "Photo ajoutée avec succès",
@@ -78,7 +98,11 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
             <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
           ) : currentFile ? (
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">{currentFile.name}</span>
+              <img 
+                src={currentFile} 
+                alt="Aperçu" 
+                className="h-20 w-20 object-cover rounded"
+              />
               <button
                 type="button"
                 onClick={(e) => {
