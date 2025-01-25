@@ -36,16 +36,10 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
         >
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
-        <SelectContent 
-          ref={(ref) => {
-            if (ref) {
-              ref.setAttribute('data-portal', 'true');
-            }
-          }}
+        <SelectContent
           align="start"
           side="bottom"
           position="popper"
-          sideOffset={4}
           className="bg-white border border-gray-200 rounded-lg shadow-lg min-w-[240px] p-1 z-50"
         >
           <SelectItem value="id" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
