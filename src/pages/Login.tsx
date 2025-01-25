@@ -124,7 +124,6 @@ const Login = () => {
                   loading_button_label: "Connexion en cours...",
                   password_input_placeholder: "Votre mot de passe",
                   email_input_placeholder: "Votre adresse email",
-                  forgot_password_text: "Mot de passe oublié ?",
                   link_text: "Vous n'avez pas de compte ? Inscrivez-vous"
                 },
                 sign_up: {
@@ -134,11 +133,10 @@ const Login = () => {
                   loading_button_label: "Inscription en cours...",
                   password_input_placeholder: "Choisissez un mot de passe",
                   email_input_placeholder: "Votre adresse email",
-                  link_text: "Déjà inscrit ? Connectez-vous",
+                  link_text: "Déjà inscrit ? Connectez-vous"
                 },
                 forgotten_password: {
                   email_label: "Email",
-                  password_label: "Mot de passe",
                   button_label: "Réinitialiser le mot de passe",
                   loading_button_label: "Envoi en cours...",
                   link_text: "Retour à la connexion"
