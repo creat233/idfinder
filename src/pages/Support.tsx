@@ -26,7 +26,7 @@ const Support = () => {
           </Button>
         </div>
 
-        <h1 className="text-4xl font-bold text-center mb-12">Support & FAQ</h1>
+        <h1 className="text-4xl font-bold text-center mb-12">Assistance et FAQ</h1>
         
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="mb-12">
@@ -56,7 +56,8 @@ const Support = () => {
             <MessageSquare className="w-12 h-12 text-secondary mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-4">Besoin d'aide supplémentaire ?</h2>
             <p className="text-gray-600 mb-6">
-              Notre équipe de support est disponible pour répondre à toutes vos questions
+              Notre équipe d'assistance est disponible pour répondre à toutes vos questions<br />
+              Email: {supportEmail}
             </p>
             <Button size="lg" onClick={handleContactSupport}>Contacter le support</Button>
           </Card>

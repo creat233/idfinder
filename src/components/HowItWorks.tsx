@@ -16,7 +16,7 @@ export const HowItWorks = () => {
     {
       icon: <CreditCard className="w-12 h-12 text-secondary mx-auto mb-4" />,
       title: "3. Recevez votre récompense",
-      description: "Obtenez 1000 CHF une fois la carte restituée à son propriétaire"
+      description: "Obtenez 2000 Fr une fois la carte restituée à son propriétaire"
     }
   ];
 
