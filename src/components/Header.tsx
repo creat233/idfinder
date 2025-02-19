@@ -29,11 +29,8 @@ export const Header = () => {
   return (
     <header className="w-full bg-primary py-4">
       <div className="container mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="FinderID Logo" className="w-8 h-8" />
-          <span className="text-primary-foreground text-2xl font-bold">
-            FinderID
-          </span>
+        <Link to="/" className="text-primary-foreground text-2xl font-bold">
+          FinderID
         </Link>
         
         {/* Mobile menu button */}
