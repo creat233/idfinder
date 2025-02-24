@@ -125,7 +125,7 @@ const Login = () => {
                   loading_button_label: "Connexion en cours...",
                   password_input_placeholder: "Votre mot de passe",
                   email_input_placeholder: "Votre adresse email",
-                  link_text: "Vous n'avez pas de compte ? Inscrivez-vous"
+                  link_text: "Créer un nouveau compte"
                 },
                 sign_up: {
                   email_label: "Email",
