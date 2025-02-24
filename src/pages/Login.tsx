@@ -134,7 +134,7 @@ const Login = () => {
                   loading_button_label: "Inscription en cours...",
                   password_input_placeholder: "Choisissez un mot de passe",
                   email_input_placeholder: "Votre adresse email",
-                  link_text: "Créer un nouveau compte"
+                  link_text: "Se connecter"
                 },
                 forgotten_password: {
                   email_label: "Email",
