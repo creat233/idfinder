@@ -27,7 +27,7 @@ const Login = () => {
       if (event === 'SIGNED_IN' && session?.user.created_at === session?.user.last_sign_in_at) {
         toast({
           title: "Compte créé avec succès",
-          description: "Votre compte a été créé. Veuillez appuyer sur 'Se connecter' pour continuer.",
+          description: "Vous pouvez maintenant vous connecter",
         });
       } else if (event === 'SIGNED_IN') {
         if (mounted.current) {
@@ -134,7 +134,7 @@ const Login = () => {
                   loading_button_label: "Inscription en cours...",
                   password_input_placeholder: "Choisissez un mot de passe",
                   email_input_placeholder: "Votre adresse email",
-                  link_text: "Se connecter"
+                  link_text: "Créer un nouveau compte"
                 },
                 forgotten_password: {
                   email_label: "Email",
