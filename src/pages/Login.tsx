@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "@supabase/auth-ui-react";
@@ -139,7 +140,7 @@ const Login = () => {
                   email_label: "Email",
                   button_label: "Réinitialiser le mot de passe",
                   loading_button_label: "Envoi en cours...",
-                  link_text: "Retour à la connexion"
+                  link_text: "Mot de passe oublié ?"
                 },
               },
             }}
