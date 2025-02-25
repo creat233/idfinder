@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -81,9 +82,24 @@ const App = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.5, opacity: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-4xl font-bold text-primary"
+                className="flex flex-col items-center space-y-4"
               >
-                Sama Pièce
+                <motion.img
+                  src="/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png"
+                  alt="Logo"
+                  className="w-24 h-24"
+                  initial={{ rotate: -180, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                />
+                <motion.div
+                  className="text-4xl font-bold text-primary"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  Sama Pièce
+                </motion.div>
               </motion.div>
             </motion.div>
           ) : (

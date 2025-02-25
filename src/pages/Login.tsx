@@ -56,12 +56,20 @@ const Login = () => {
         transition={{ duration: 0.5 }}
         className="max-w-md w-full space-y-8"
       >
-        <div>
+        <div className="flex flex-col items-center">
+          <motion.img
+            src="/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png"
+            alt="Logo"
+            className="w-20 h-20 mb-4"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          />
           <motion.h2 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mt-6 text-center text-4xl font-extrabold text-gray-900 mb-2"
+            className="mt-2 text-center text-4xl font-extrabold text-gray-900 mb-2"
           >
             Sama Pièce
           </motion.h2>
@@ -134,7 +142,7 @@ const Login = () => {
                   loading_button_label: "Inscription en cours...",
                   password_input_placeholder: "Choisissez un mot de passe",
                   email_input_placeholder: "Votre adresse email",
-                  link_text: "Créer un nouveau compte"
+                  link_text: "Se connecter"
                 },
                 forgotten_password: {
                   email_label: "Email",
