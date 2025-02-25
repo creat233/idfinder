@@ -73,14 +73,22 @@ const Login = () => {
           >
             Sama Pièce
           </motion.h2>
-          <motion.p 
+          <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-center text-lg text-gray-600"
+            className="text-center space-y-3 max-w-sm mb-6"
           >
-            Connectez-vous pour accéder à votre compte
-          </motion.p>
+            <p className="text-lg text-gray-600">
+              Connectez-vous pour accéder à votre compte
+            </p>
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm">
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Bienvenue sur Sama Pièce, votre plateforme dédiée à la gestion simplifiée de vos pièces d'identité perdues. 
+                Signalez, retrouvez et restituez facilement les documents égarés grâce à notre communauté solidaire.
+              </p>
+            </div>
+          </motion.div>
         </div>
         
         <motion.div 
