@@ -26,6 +26,7 @@ const Support = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const supportEmail = "mcard1100@gmail.com";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,7 +38,7 @@ const Support = () => {
   });
 
   const handleContactSupport = () => {
-    window.location.href = `mailto:${supportEmail}`;
+    window.open(`mailto:${supportEmail}`, "_blank");
   };
 
   const handleEmergencyNumbers = () => {
@@ -45,17 +46,34 @@ const Support = () => {
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Form submitted:", values);
+    setIsSubmitting(true);
     
-    // Envoyer l'email à mcard1100@gmail.com (simulé ici)
-    window.location.href = `mailto:${supportEmail}?subject=Message de ${values.name}&body=${values.message}%0A%0AEmail de contact: ${values.email}`;
-    
-    toast({
-      title: "Message envoyé",
-      description: "Nous vous répondrons dans les plus brefs délais.",
-    });
-    
-    form.reset();
+    try {
+      console.log("Form submitted:", values);
+      
+      // Format subject and body properly for mailto
+      const subject = encodeURIComponent(`Message de ${values.name}`);
+      const body = encodeURIComponent(`${values.message}\n\nEmail de contact: ${values.email}`);
+      
+      // Open mail client in a new window
+      window.open(`mailto:${supportEmail}?subject=${subject}&body=${body}`, "_blank");
+      
+      toast({
+        title: "Message envoyé",
+        description: "Votre message a été préparé dans votre application de messagerie.",
+      });
+      
+      form.reset();
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast({
+        title: "Erreur",
+        description: "Un problème est survenu lors de l'envoi du message. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const fadeInUp = {
@@ -115,7 +133,9 @@ const Support = () => {
                     Notre équipe d'assistance est disponible pour répondre à toutes vos questions<br />
                     Email: {supportEmail}
                   </p>
-                  <Button size="lg" onClick={handleContactSupport} className="w-full">Contacter le support</Button>
+                  <Button size="lg" onClick={handleContactSupport} className="w-full">
+                    Contacter le support
+                  </Button>
                 </Card>
               </motion.div>
               
@@ -194,10 +214,23 @@ const Support = () => {
                       )}
                     />
                     
-                    <Button type="submit" className="w-full sm:w-auto flex items-center gap-2">
-                      <Send className="h-4 w-4" />
+                    <Button 
+                      type="submit" 
+                      className="w-full sm:w-auto flex items-center gap-2"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></span>
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
                       Envoyer le message
                     </Button>
+                    
+                    <p className="text-xs text-gray-500 mt-2">
+                      En cliquant sur "Envoyer le message", votre application de messagerie s'ouvrira 
+                      avec les détails pré-remplis. Veuillez envoyer l'email pour compléter votre demande.
+                    </p>
                   </form>
                 </Form>
               </Card>
