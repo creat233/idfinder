@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import SignalerCarte from "./pages/SignalerCarte";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support";
+import NumeroUrgence from "./pages/NumeroUrgence";
 import About from "./pages/About";
 import Login from "./pages/Login";
 
@@ -110,6 +111,7 @@ const App = () => {
                 <Route path="/signaler" element={<ProtectedRoute><SignalerCarte /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+                <Route path="/numeros-urgence" element={<ProtectedRoute><NumeroUrgence /></ProtectedRoute>} />
                 <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
               </Routes>
             </BrowserRouter>
