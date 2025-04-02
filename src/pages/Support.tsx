@@ -11,15 +11,29 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+  name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
+  email: z.string().email({ message: "Veuillez entrer une adresse email valide" }),
+  message: z.string().min(10, { message: "Le message doit contenir au moins 10 caractères" })
+});
 
 const Support = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const supportEmail = "mcard1100@gmail.com";
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: ""
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      message: ""
+    }
   });
 
   const handleContactSupport = () => {
@@ -30,18 +44,18 @@ const Support = () => {
     navigate('/numeros-urgence');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log("Form submitted:", values);
+    
+    // Envoyer l'email à mcard1100@gmail.com (simulé ici)
+    window.location.href = `mailto:${supportEmail}?subject=Message de ${values.name}&body=${values.message}%0A%0AEmail de contact: ${values.email}`;
+    
     toast({
       title: "Message envoyé",
       description: "Nous vous répondrons dans les plus brefs délais.",
     });
-    setFormData({ name: "", email: "", message: "" });
+    
+    form.reset();
   };
 
   const fadeInUp = {
@@ -131,49 +145,61 @@ const Support = () => {
                   <HelpCircle className="mr-2 h-6 w-6 text-primary" />
                   Contactez-nous
                 </h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium">Nom</label>
-                      <Input 
-                        id="name" 
-                        name="name" 
-                        value={formData.name} 
-                        onChange={handleInputChange} 
-                        placeholder="Votre nom" 
-                        required 
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nom</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Votre nom" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>E-MAIL</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="votre-email@exemple.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium">Email</label>
-                      <Input 
-                        id="email" 
-                        name="email" 
-                        type="email" 
-                        value={formData.email} 
-                        onChange={handleInputChange} 
-                        placeholder="votre-email@exemple.com" 
-                        required 
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium">Message</label>
-                    <Textarea 
-                      id="message" 
-                      name="message" 
-                      value={formData.message} 
-                      onChange={handleInputChange} 
-                      placeholder="Comment pouvons-nous vous aider ?" 
-                      rows={5} 
-                      required 
+                    
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Comment pouvons-nous vous aider ?" 
+                              rows={5} 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <Button type="submit" className="w-full sm:w-auto">
-                    <Send className="mr-2 h-4 w-4" />
-                    Envoyer le message
-                  </Button>
-                </form>
+                    
+                    <Button type="submit" className="w-full sm:w-auto flex items-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Envoyer le message
+                    </Button>
+                  </form>
+                </Form>
               </Card>
             </motion.div>
             
