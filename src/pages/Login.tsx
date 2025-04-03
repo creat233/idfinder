@@ -137,7 +137,7 @@ const Login = () => {
                 sign_in: {
                   email_label: "Email",
                   password_label: "Mot de passe",
-                  button_label: "Se connecter",
+                  button_label: "Créer un nouveau compte",
                   loading_button_label: "Connexion en cours...",
                   password_input_placeholder: "Votre mot de passe",
                   email_input_placeholder: "Votre adresse email",
