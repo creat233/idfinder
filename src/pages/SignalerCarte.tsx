@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { LocationField } from "@/components/card-report/LocationField";
 import { PhotoUpload } from "@/components/card-report/PhotoUpload";
@@ -21,7 +22,6 @@ interface FormValues {
 
 const SignalerCarte = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<FormValues>({
@@ -54,7 +54,7 @@ const SignalerCarte = () => {
 
       if (error) throw error;
 
-      toast({
+      toast.default({
         title: "Carte signalée avec succès",
         description: "Merci d'avoir signalé cette carte",
       });
@@ -62,8 +62,7 @@ const SignalerCarte = () => {
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast({
-        variant: "destructive",
+      toast.destructive({
         title: "Erreur",
         description: "Une erreur est survenue lors de la soumission du formulaire",
       });

@@ -1,6 +1,7 @@
+
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
@@ -18,8 +19,7 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
       if (file.size > 5 * 1024 * 1024) {
-        toast({
-          variant: "destructive",
+        toast.destructive({
           title: "Erreur",
           description: "La taille du fichier ne doit pas dépasser 5 Mo",
         });
@@ -62,14 +62,13 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
       // Set the URL in the form
       form.setValue("photoUrl", publicUrl, { shouldValidate: true });
       
-      toast({
+      toast.default({
         title: "Photo ajoutée avec succès",
         description: "Votre photo a été téléchargée",
       });
     } catch (error) {
       console.error("Error uploading file:", error);
-      toast({
-        variant: "destructive",
+      toast.destructive({
         title: "Erreur",
         description: "Une erreur est survenue lors du téléchargement de la photo",
       });
