@@ -5,7 +5,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { 
   Form, 
@@ -24,7 +24,6 @@ import * as z from "zod";
 const Login = () => {
   const navigate = useNavigate();
   const mounted = useRef(true);
-  const { toast } = useToast();
   const [view, setView] = useState<"sign_in" | "sign_up">("sign_in");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,8 +37,14 @@ const Login = () => {
     phone: z.string().min(1, "Le numéro de téléphone est requis"),
   });
 
-  // Initialize form with validation
-  const form = useForm<z.infer<typeof registerSchema>>({
+  // Schema for login form
+  const loginSchema = z.object({
+    email: z.string().email("Email invalide"),
+    password: z.string().min(1, "Le mot de passe est requis"),
+  });
+
+  // Initialize registration form with validation
+  const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
@@ -50,7 +55,16 @@ const Login = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+  // Initialize login form with validation
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onRegister = async (values: z.infer<typeof registerSchema>) => {
     setLoading(true);
     setError(null);
     
@@ -73,7 +87,7 @@ const Login = () => {
         return;
       }
 
-      toast({
+      toast.default({
         title: "Compte créé avec succès",
         description: "Vous pouvez maintenant vous connecter",
       });
@@ -82,6 +96,30 @@ const Login = () => {
     } catch (err) {
       console.error("Registration error:", err);
       setError("Une erreur s'est produite lors de l'inscription");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onLogin = async (values: z.infer<typeof loginSchema>) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Une erreur s'est produite lors de la connexion");
     } finally {
       setLoading(false);
     }
@@ -99,7 +137,7 @@ const Login = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user.created_at === session?.user.last_sign_in_at) {
-        toast({
+        toast.default({
           title: "Compte créé avec succès",
           description: "Vous pouvez maintenant vous connecter",
         });
@@ -108,10 +146,9 @@ const Login = () => {
           navigate("/");
         }
       } else if (event === 'USER_UPDATED') {
-        toast({
+        toast.destructive({
           title: "Erreur",
           description: "L'utilisateur existe déjà. Veuillez vous connecter.",
-          variant: "destructive",
         });
       }
     });
@@ -120,7 +157,7 @@ const Login = () => {
       mounted.current = false;
       subscription.unsubscribe();
     };
-  }, [navigate, toast]);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -176,78 +213,66 @@ const Login = () => {
         >
           {view === "sign_in" ? (
             <>
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: '#9b87f5',
-                        brandAccent: '#7E69AB',
-                        inputBackground: 'white',
-                        inputBorder: '#E2E8F0',
-                        inputBorderHover: '#9b87f5',
-                        inputBorderFocus: '#7E69AB',
-                      },
-                      borderWidths: {
-                        buttonBorderWidth: '1px',
-                        inputBorderWidth: '1px',
-                      },
-                      radii: {
-                        borderRadiusButton: '0.5rem',
-                        buttonBorderRadius: '0.5rem',
-                        inputBorderRadius: '0.5rem',
-                      },
-                    },
-                  },
-                  className: {
-                    container: 'space-y-4',
-                    button: 'w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90 transition-opacity duration-200',
-                    input: 'w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#9b87f5] transition-all duration-200',
-                    label: 'block text-sm font-medium text-gray-700 mb-1',
-                    anchor: 'text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200',
-                  },
-                }}
-                theme="default"
-                providers={[]}
-                localization={{
-                  variables: {
-                    sign_in: {
-                      email_label: "Email",
-                      password_label: "Mot de passe",
-                      button_label: "Se connecter",
-                      loading_button_label: "Connexion en cours...",
-                      password_input_placeholder: "Votre mot de passe",
-                      email_input_placeholder: "Votre adresse email",
-                      link_text: "Créer un nouveau compte"
-                    },
-                    sign_up: {
-                      email_label: "Email",
-                      password_label: "Mot de passe",
-                      button_label: "S'inscrire",
-                      loading_button_label: "Inscription en cours...",
-                      password_input_placeholder: "Choisissez un mot de passe",
-                      email_input_placeholder: "Votre adresse email",
-                      link_text: "Se connecter"
-                    },
-                    forgotten_password: {
-                      email_label: "Email",
-                      button_label: "Réinitialiser le mot de passe",
-                      loading_button_label: "Envoi en cours...",
-                      link_text: "Mot de passe oublié ?"
-                    },
-                  },
-                }}
-              />
-              <div className="mt-4 text-center">
-                <button 
-                  onClick={() => setView("sign_up")} 
-                  className="text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200 text-sm font-medium"
-                >
-                  Créer un compte avec des informations supplémentaires
-                </button>
-              </div>
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              <h3 className="text-lg font-medium mb-4">Connexion</h3>
+              <Form {...loginForm}>
+                <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
+                  <FormField
+                    control={loginForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="Votre adresse email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={loginForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mot de passe</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="Votre mot de passe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
+                    disabled={loading}
+                  >
+                    {loading ? 'Connexion en cours...' : 'Se connecter'}
+                  </Button>
+                  
+                  <div className="text-center mt-4">
+                    <p className="text-sm text-gray-600 mb-2">
+                      <a href="#" className="text-[#7E69AB] hover:text-[#6E59A5]">
+                        Mot de passe oublié ?
+                      </a>
+                    </p>
+                    <button 
+                      type="button"
+                      onClick={() => setView("sign_up")}
+                      className="text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200 text-sm font-medium"
+                    >
+                      Créer un compte avec des informations supplémentaires
+                    </button>
+                  </div>
+                </form>
+              </Form>
             </>
           ) : (
             <>
@@ -257,11 +282,11 @@ const Login = () => {
                 </Alert>
               )}
               <h3 className="text-lg font-medium mb-4">Créer un nouveau compte</h3>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
@@ -274,7 +299,7 @@ const Login = () => {
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={registerForm.control}
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
@@ -289,7 +314,7 @@ const Login = () => {
                   </div>
                   
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
@@ -303,7 +328,7 @@ const Login = () => {
                   />
                   
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -317,7 +342,7 @@ const Login = () => {
                   />
                   
                   <FormField
-                    control={form.control}
+                    control={registerForm.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
