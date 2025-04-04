@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { SupportSection } from "@/components/profile/SupportSection";
+import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { useProfile } from "@/hooks/useProfile";
 
 const Profile = () => {
@@ -59,8 +60,13 @@ const Profile = () => {
     window.location.href = "mailto:mcard1100@gmail.com";
   };
 
-  if (loading) {
-    return <div>Chargement...</div>;
+  if (loading || profileLoading) {
+    return (
+      <>
+        <Header />
+        <ProfileSkeleton />
+      </>
+    );
   }
 
   return (
