@@ -1,8 +1,7 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, UserX } from "lucide-react";
 
 export const ProfileSkeleton = () => {
   return (
@@ -43,6 +42,10 @@ export const ProfileSkeleton = () => {
           <div className="mt-12">
             <h2 className="text-xl font-semibold mb-4">Assistance et FAQ</h2>
             <Skeleton className="h-10 w-full" />
+          </div>
+
+          <div className="mt-8 border-t pt-8">
+            <Skeleton className="h-10 w-48" />
           </div>
         </div>
       </div>
