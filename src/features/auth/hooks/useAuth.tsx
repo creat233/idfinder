@@ -36,7 +36,24 @@ export const useAuth = () => {
 
       if (authError) {
         setError(authError.message);
-        return;
+        return false;
+      }
+
+      // Insert or update profile data explicitly to ensure it's saved
+      if (authData?.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({
+            id: authData.user.id,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            phone: values.phone
+          });
+
+        if (profileError) {
+          console.error("Profile update error:", profileError);
+          // Don't fail registration if profile update fails
+        }
       }
 
       toast.default({

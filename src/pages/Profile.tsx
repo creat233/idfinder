@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -45,21 +46,33 @@ const Profile = () => {
     try {
       setLoading(true);
 
+      // First try to get profile data from the auth metadata
+      const userData = session.user.user_metadata;
+      let profileData = {
+        first_name: userData?.first_name || "",
+        last_name: userData?.last_name || "",
+        phone: userData?.phone || ""
+      };
+
+      // Then try to get data from the profiles table
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('first_name, last_name, phone')
         .eq('id', session.user.id)
         .single();
 
-      if (profileError) {
-        throw profileError;
+      if (!profileError && profile) {
+        // Prefer database profile data over metadata if available
+        profileData = {
+          first_name: profile.first_name || profileData.first_name,
+          last_name: profile.last_name || profileData.last_name,
+          phone: profile.phone || profileData.phone
+        };
       }
 
-      if (profile) {
-        setFirstName(profile.first_name || "");
-        setLastName(profile.last_name || "");
-        setPhone(profile.phone || "");
-      }
+      setFirstName(profileData.first_name);
+      setLastName(profileData.last_name);
+      setPhone(profileData.phone);
     } catch (error) {
       console.error('Error loading profile:', error);
       toast({
