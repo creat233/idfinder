@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -46,7 +45,6 @@ const Profile = () => {
     try {
       setLoading(true);
 
-      // First try to get profile data from the auth metadata
       const userData = session.user.user_metadata;
       let profileData = {
         first_name: userData?.first_name || "",
@@ -54,7 +52,6 @@ const Profile = () => {
         phone: userData?.phone || ""
       };
 
-      // Then try to get data from the profiles table
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('first_name, last_name, phone')
@@ -62,7 +59,6 @@ const Profile = () => {
         .single();
 
       if (!profileError && profile) {
-        // Prefer database profile data over metadata if available
         profileData = {
           first_name: profile.first_name || profileData.first_name,
           last_name: profile.last_name || profileData.last_name,
@@ -92,8 +88,6 @@ const Profile = () => {
       const { error } = await supabase
         .from('profiles')
         .update({
-          first_name: firstName,
-          last_name: lastName,
           phone: phone,
         })
         .eq('id', session.user.id);
@@ -102,7 +96,7 @@ const Profile = () => {
 
       toast({
         title: "Succès",
-        description: "Profil mis à jour avec succès",
+        description: "Numéro de téléphone mis à jour avec succès",
       });
       setIsEditing(false);
     } catch (error) {
@@ -147,8 +141,8 @@ const Profile = () => {
               <Input
                 type="text"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                disabled={!isEditing}
+                disabled={true}
+                className="bg-gray-100"
               />
             </div>
 
@@ -157,8 +151,8 @@ const Profile = () => {
               <Input
                 type="text"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                disabled={!isEditing}
+                disabled={true}
+                className="bg-gray-100"
               />
             </div>
 
@@ -194,7 +188,7 @@ const Profile = () => {
                   onClick={() => setIsEditing(true)}
                   disabled={loading}
                 >
-                  Modifier
+                  Modifier le téléphone
                 </Button>
               )}
             </div>
