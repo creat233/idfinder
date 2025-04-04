@@ -1,21 +1,29 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft, MessageSquare } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
+import { ProfileForm } from "@/components/profile/ProfileForm";
+import { SupportSection } from "@/components/profile/SupportSection";
+import { useProfile } from "@/hooks/useProfile";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const {
+    loading: profileLoading,
+    firstName,
+    lastName,
+    phone,
+    isEditing,
+    setPhone,
+    setIsEditing,
+    getProfile,
+    updateProfile
+  } = useProfile();
 
   useEffect(() => {
     const getSession = async () => {
@@ -41,73 +49,9 @@ const Profile = () => {
     };
   }, []);
 
-  const getProfile = async (session: any) => {
-    try {
-      setLoading(true);
-
-      const userData = session.user.user_metadata;
-      let profileData = {
-        first_name: userData?.first_name || "",
-        last_name: userData?.last_name || "",
-        phone: userData?.phone || ""
-      };
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('first_name, last_name, phone')
-        .eq('id', session.user.id)
-        .single();
-
-      if (!profileError && profile) {
-        profileData = {
-          first_name: profile.first_name || profileData.first_name,
-          last_name: profile.last_name || profileData.last_name,
-          phone: profile.phone || profileData.phone
-        };
-      }
-
-      setFirstName(profileData.first_name);
-      setLastName(profileData.last_name);
-      setPhone(profileData.phone);
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de charger le profil",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateProfile = async () => {
-    try {
-      setLoading(true);
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          phone: phone,
-        })
-        .eq('id', session.user.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Succès",
-        description: "Numéro de téléphone mis à jour avec succès",
-      });
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de mettre à jour le profil",
-      });
-    } finally {
-      setLoading(false);
+  const handleUpdateProfile = () => {
+    if (session) {
+      updateProfile(session);
     }
   };
 
@@ -134,77 +78,19 @@ const Profile = () => {
 
         <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
           <h1 className="text-2xl font-bold mb-6">Mon Profil</h1>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Prénom</label>
-              <Input
-                type="text"
-                value={firstName}
-                disabled={true}
-                className="bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Nom</label>
-              <Input
-                type="text"
-                value={lastName}
-                disabled={true}
-                className="bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Téléphone</label>
-              <Input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                disabled={!isEditing}
-              />
-            </div>
-
-            <div className="flex justify-end space-x-4 mt-6">
-              {isEditing ? (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEditing(false)}
-                    disabled={loading}
-                  >
-                    Annuler
-                  </Button>
-                  <Button
-                    onClick={updateProfile}
-                    disabled={loading}
-                  >
-                    Enregistrer
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  disabled={loading}
-                >
-                  Modifier le téléphone
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-12">
-            <h2 className="text-xl font-semibold mb-4">Assistance et FAQ</h2>
-            <Button
-              variant="outline"
-              onClick={handleContactSupport}
-              className="w-full flex items-center justify-center gap-2"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Contacter le support
-            </Button>
-          </div>
+          
+          <ProfileForm
+            firstName={firstName}
+            lastName={lastName}
+            phone={phone}
+            isEditing={isEditing}
+            loading={profileLoading}
+            setPhone={setPhone}
+            setIsEditing={setIsEditing}
+            updateProfile={handleUpdateProfile}
+          />
+          
+          <SupportSection handleContactSupport={handleContactSupport} />
         </div>
       </main>
     </div>
