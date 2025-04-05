@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -49,6 +50,12 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Emergency category colors */
+    --police-color: 221.2 83.2% 53.3%;
+    --medical-color: 0 84.2% 60.2%;
+    --fire-color: 24.6 95% 53.1%;
+    --other-color: 262.1 83.3% 57.8%;
   }
 
   .dark {
@@ -98,4 +105,24 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom styles for mapbox map markers */
+.mapboxgl-popup {
+  z-index: 1;
+}
+
+.mapboxgl-popup-content {
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+}
+
+.marker-police, .marker-medical, .marker-fire, .marker-other {
+  transition: transform 0.2s ease;
+}
+
+.marker-police:hover, .marker-medical:hover, .marker-fire:hover, .marker-other:hover {
+  transform: scale(1.1);
 }

@@ -37,7 +37,7 @@ export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMap
   }
 
   return (
-    <div className={`relative ${height} rounded-lg overflow-hidden border border-gray-200`}>
+    <div className={`relative ${height} rounded-lg overflow-hidden border border-gray-200 shadow-md`}>
       <div ref={mapContainer} className="absolute inset-0" />
       {!isMobile && mapLoaded && <MapCategoryBadges selectedCategory={selectedCategory} map={map} />}
     </div>

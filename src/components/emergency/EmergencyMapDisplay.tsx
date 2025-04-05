@@ -15,6 +15,7 @@ export const EmergencyMapDisplay = ({ showMap, activeCategory }: EmergencyMapDis
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className="mb-8 rounded-lg overflow-hidden"
     >
       <EmergencyMap selectedCategory={activeCategory} />

@@ -1,5 +1,5 @@
 
-import { Search, MapPin, Filter } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,10 +27,10 @@ export const EmergencySearchFilter = ({
   const isMobile = useIsMobile();
 
   const categories = [
-    { id: "police", label: "Police", color: "bg-blue-500" },
-    { id: "medical", label: "Médical", color: "bg-red-500" },
-    { id: "fire", label: "Incendie", color: "bg-orange-500" },
-    { id: "other", label: "Autres", color: "bg-purple-500" }
+    { id: "police", label: "Police", color: "bg-blue-500 hover:bg-blue-600" },
+    { id: "medical", label: "Médical", color: "bg-red-500 hover:bg-red-600" },
+    { id: "fire", label: "Incendie", color: "bg-orange-500 hover:bg-orange-600" },
+    { id: "other", label: "Autres", color: "bg-purple-500 hover:bg-purple-600" }
   ];
 
   return (
@@ -50,7 +50,7 @@ export const EmergencySearchFilter = ({
           {categories.map(category => (
             <Badge 
               key={category.id}
-              className={`cursor-pointer ${activeCategory === category.id ? category.color + ' text-white' : 'bg-gray-100'}`}
+              className={`cursor-pointer transition-all duration-200 ${activeCategory === category.id ? category.color + ' text-white shadow-md' : 'bg-gray-100 hover:bg-gray-200'}`}
               onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
             >
               {category.label}
@@ -63,7 +63,7 @@ export const EmergencySearchFilter = ({
             <DrawerTrigger asChild>
               <Button 
                 variant="outline" 
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-secondary hover:text-white transition-colors"
               >
                 <MapPin className="h-4 w-4" />
                 Voir la carte
@@ -79,7 +79,7 @@ export const EmergencySearchFilter = ({
         ) : (
           <Button 
             variant="outline" 
-            className="flex items-center gap-2"
+            className={`flex items-center gap-2 transition-colors ${showMap ? 'bg-secondary/10 text-secondary hover:bg-secondary hover:text-white' : 'hover:bg-secondary hover:text-white'}`}
             onClick={() => setShowMap(!showMap)}
           >
             <MapPin className="h-4 w-4" />
