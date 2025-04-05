@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+
+import { useRef, useState, useEffect } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
