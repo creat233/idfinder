@@ -9,6 +9,10 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { EmergencyMap } from "@/components/map/EmergencyMap";
+import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type EmergencyNumberType = {
   service: string;
@@ -22,6 +26,7 @@ const NumeroUrgence = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showMap, setShowMap] = useState(false);
+  const isMobile = useIsMobile();
 
   const emergencyNumbers: EmergencyNumberType[] = [
     { 
@@ -114,6 +119,17 @@ const NumeroUrgence = () => {
     }
   };
 
+  const MapComponent = () => (
+    <motion.div 
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      className="mb-8 rounded-lg overflow-hidden"
+    >
+      <EmergencyMap selectedCategory={activeCategory} />
+    </motion.div>
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -166,39 +182,39 @@ const NumeroUrgence = () => {
                   </Badge>
                 ))}
               </div>
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2"
-                onClick={() => setShowMap(!showMap)}
-              >
-                <MapPin className="h-4 w-4" />
-                {showMap ? "Masquer la carte" : "Afficher la carte"}
-              </Button>
+              
+              {isMobile ? (
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-2"
+                    >
+                      <MapPin className="h-4 w-4" />
+                      Voir la carte
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent className="h-[85vh]">
+                    <div className="p-4 h-full">
+                      <h3 className="font-semibold text-lg mb-4">Carte des services d'urgence</h3>
+                      <EmergencyMap height="h-[70vh]" selectedCategory={activeCategory} />
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2"
+                  onClick={() => setShowMap(!showMap)}
+                >
+                  <MapPin className="h-4 w-4" />
+                  {showMap ? "Masquer la carte" : "Afficher la carte"}
+                </Button>
+              )}
             </div>
           </div>
 
-          {showMap && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mb-8 rounded-lg overflow-hidden border border-gray-200"
-            >
-              <div className="bg-gray-100 p-4 h-80 flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-gray-200 opacity-50"></div>
-                <div className="absolute inset-0" style={{ 
-                  backgroundImage: `url('https://www.openstreetmap.org/export/embed.html?bbox=-17.5479,14.6042,-17.4261,14.7677&layer=mapnik')`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'grayscale(0.5)'
-                }}></div>
-                <div className="relative z-10 bg-white p-4 rounded-lg shadow-lg">
-                  <p className="font-medium text-center">Carte de localisation des services d'urgence</p>
-                  <p className="text-sm text-gray-600 text-center mt-2">Cette fonctionnalité sera bientôt disponible</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
+          {showMap && !isMobile && <MapComponent />}
 
           <motion.div 
             variants={containerVariants}
