@@ -14,16 +14,17 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 const NumeroUrgence = () => {
-  const { searchTerm, setSearchTerm, activeCategory, setActiveCategory, showMap, setShowMap, filteredNumbers } = useEmergencyNumbers();
+  const { 
+    searchTerm, 
+    setSearchTerm, 
+    activeCategory, 
+    setActiveCategory, 
+    showMap, 
+    setShowMap, 
+    filteredNumbers 
+  } = useEmergencyNumbers();
+  
   const [showDocuments, setShowDocuments] = useState(false);
-
-  const handleMapToggle = () => {
-    setShowMap(!showMap);
-    if (!showMap) {
-      // Reset active category when map is shown
-      setActiveCategory(null);
-    }
-  };
 
   const handleDocumentsToggle = () => {
     setShowDocuments(!showDocuments);

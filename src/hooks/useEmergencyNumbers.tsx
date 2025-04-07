@@ -1,77 +1,72 @@
 
 import { useState, useMemo } from "react";
+import { emergencyLocations } from "@/components/map/data/emergencyLocationsData";
 
 export type EmergencyNumberType = {
-  service: string;
+  name: string;
   number: string;
-  description: string;
-  category: "police" | "medical" | "fire" | "other";
-}
+  category: string;
+  description?: string;
+};
+
+const emergencyNumbers: EmergencyNumberType[] = [
+  {
+    name: "Police Nationale",
+    number: "17",
+    category: "police",
+    description: "Urgences police et sécurité"
+  },
+  {
+    name: "Pompiers",
+    number: "18",
+    category: "fire",
+    description: "Incendies, accidents et secours"
+  },
+  {
+    name: "SAMU",
+    number: "15",
+    category: "medical",
+    description: "Urgences médicales"
+  },
+  {
+    name: "Numéro d'urgence européen",
+    number: "112",
+    category: "other",
+    description: "Toutes urgences (valable dans toute l'Union Européenne)"
+  },
+  {
+    name: "Centre Anti-Poison",
+    number: "818 00 15 15",
+    category: "medical",
+    description: "Intoxications et expositions à des substances toxiques"
+  },
+  {
+    name: "Gendarmerie Nationale",
+    number: "800 00 20 20",
+    category: "police",
+    description: "Sécurité en zones rurales et périurbaines"
+  }
+];
 
 export const useEmergencyNumbers = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [showMap, setShowMap] = useState(false);
-
-  const emergencyNumbers: EmergencyNumberType[] = [
-    { 
-      service: "Police Nationale", 
-      number: "17", 
-      description: "Pour signaler un crime, un délit ou une situation dangereuse",
-      category: "police"
-    },
-    { 
-      service: "Sapeurs-Pompiers", 
-      number: "18", 
-      description: "Pour les urgences médicales, les incendies et les secours",
-      category: "fire" 
-    },
-    { 
-      service: "SAMU (Service d'Aide Médicale Urgente)", 
-      number: "1515", 
-      description: "Pour les urgences médicales graves nécessitant une intervention médicale",
-      category: "medical" 
-    },
-    { 
-      service: "Gendarmerie", 
-      number: "800 00 20 20", 
-      description: "Numéro vert de la Gendarmerie Nationale",
-      category: "police" 
-    },
-    { 
-      service: "Centre Anti-Poison", 
-      number: "818 00 15 15", 
-      description: "Pour les cas d'empoisonnement ou d'intoxication",
-      category: "medical" 
-    },
-    { 
-      service: "SOS Médecin", 
-      number: "33 889 15 15", 
-      description: "Service de médecins à domicile disponible 24h/24",
-      category: "medical" 
-    },
-    { 
-      service: "Croix-Rouge Sénégalaise", 
-      number: "33 823 39 92", 
-      description: "Assistance humanitaire et premiers secours",
-      category: "other" 
-    },
-    { 
-      service: "Protection Civile", 
-      number: "33 889 31 00", 
-      description: "Pour les catastrophes naturelles et situations d'urgence collective",
-      category: "other" 
-    }
-  ];
+  const [showMap, setShowMap] = useState<boolean>(false);
 
   const filteredNumbers = useMemo(() => {
-    return emergencyNumbers.filter(item => {
-      const matchesSearch = item.service.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return emergencyNumbers.filter((item) => {
+      // Filter by search term
+      const matchesSearch = 
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.number.includes(searchTerm) ||
+        (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      // Filter by category if an active category is selected
       const matchesCategory = activeCategory ? item.category === activeCategory : true;
+
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, activeCategory, emergencyNumbers]);
+  }, [searchTerm, activeCategory]);
 
   return {
     searchTerm,
@@ -80,6 +75,6 @@ export const useEmergencyNumbers = () => {
     setActiveCategory,
     showMap,
     setShowMap,
-    filteredNumbers
+    filteredNumbers,
   };
 };

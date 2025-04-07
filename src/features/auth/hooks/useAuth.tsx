@@ -56,7 +56,7 @@ export const useAuth = () => {
         }
       }
 
-      toast.default({
+      toast({
         title: "Compte créé avec succès",
         description: "Vous pouvez maintenant vous connecter",
       });
@@ -111,7 +111,7 @@ export const useAuth = () => {
         return false;
       }
 
-      toast.default({
+      toast({
         title: "Email envoyé",
         description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe",
       });
@@ -138,7 +138,7 @@ export const useAuth = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user.created_at === session?.user.last_sign_in_at) {
-        toast.default({
+        toast({
           title: "Compte créé avec succès",
           description: "Vous pouvez maintenant vous connecter",
         });
@@ -147,12 +147,13 @@ export const useAuth = () => {
           navigate("/");
         }
       } else if (event === 'USER_UPDATED') {
-        toast.destructive({
+        toast({
+          variant: "destructive",
           title: "Erreur",
           description: "L'utilisateur existe déjà. Veuillez vous connecter.",
         });
       } else if (event === 'PASSWORD_RECOVERY') {
-        toast.default({
+        toast({
           title: "Réinitialisation du mot de passe",
           description: "Veuillez suivre les instructions pour réinitialiser votre mot de passe",
         });

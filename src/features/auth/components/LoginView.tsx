@@ -42,7 +42,7 @@ const LoginView = () => {
                 onClick={() => setView("sign_up")}
                 className="text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200 text-sm font-medium"
               >
-                Créer un compte avec des informations supplémentaires
+                Créer un compte
               </button>
             </div>
           </AuthCard>
