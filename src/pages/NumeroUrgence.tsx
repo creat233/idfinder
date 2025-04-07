@@ -14,9 +14,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 const NumeroUrgence = () => {
-  const { filteredNumbers, setSearchQuery, setFilter } = useEmergencyNumbers();
+  const { searchTerm, setSearchTerm, activeCategory, setActiveCategory, filteredNumbers } = useEmergencyNumbers();
   const [showMap, setShowMap] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showDocuments, setShowDocuments] = useState(false);
 
   const handleMapToggle = () => {
@@ -30,7 +29,6 @@ const NumeroUrgence = () => {
   const handleCategoryClick = (category: string | null) => {
     setActiveCategory(category);
     setShowMap(true); // Show map when category is clicked
-    setFilter(category);
   };
 
   const handleDocumentsToggle = () => {
@@ -47,10 +45,12 @@ const NumeroUrgence = () => {
           
           <div className="max-w-4xl mx-auto">
             <EmergencySearchFilter 
-              onSearchChange={setSearchQuery} 
-              onCategoryClick={handleCategoryClick}
-              onMapToggle={handleMapToggle}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
               showMap={showMap}
+              setShowMap={setShowMap}
             />
             
             <EmergencyMapDisplay 
