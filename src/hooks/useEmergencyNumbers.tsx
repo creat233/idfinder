@@ -3,45 +3,45 @@ import { useState, useMemo } from "react";
 import { emergencyLocations } from "@/components/map/data/emergencyLocationsData";
 
 export type EmergencyNumberType = {
-  name: string;
+  service: string;
   number: string;
-  category: string;
-  description?: string;
+  description: string;
+  category: "police" | "medical" | "fire" | "other";
 };
 
 const emergencyNumbers: EmergencyNumberType[] = [
   {
-    name: "Police Nationale",
+    service: "Police Nationale",
     number: "17",
     category: "police",
     description: "Urgences police et sécurité"
   },
   {
-    name: "Pompiers",
+    service: "Pompiers",
     number: "18",
     category: "fire",
     description: "Incendies, accidents et secours"
   },
   {
-    name: "SAMU",
+    service: "SAMU",
     number: "15",
     category: "medical",
     description: "Urgences médicales"
   },
   {
-    name: "Numéro d'urgence européen",
+    service: "Numéro d'urgence européen",
     number: "112",
     category: "other",
     description: "Toutes urgences (valable dans toute l'Union Européenne)"
   },
   {
-    name: "Centre Anti-Poison",
+    service: "Centre Anti-Poison",
     number: "818 00 15 15",
     category: "medical",
     description: "Intoxications et expositions à des substances toxiques"
   },
   {
-    name: "Gendarmerie Nationale",
+    service: "Gendarmerie Nationale",
     number: "800 00 20 20",
     category: "police",
     description: "Sécurité en zones rurales et périurbaines"
@@ -57,7 +57,7 @@ export const useEmergencyNumbers = () => {
     return emergencyNumbers.filter((item) => {
       // Filter by search term
       const matchesSearch = 
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.number.includes(searchTerm) ||
         (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
