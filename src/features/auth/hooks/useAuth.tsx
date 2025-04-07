@@ -97,6 +97,35 @@ export const useAuth = () => {
     }
   };
 
+  const onResetPassword = async (values: { email: string }) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+        redirectTo: `${window.location.origin}/login`,
+      });
+
+      if (error) {
+        setError(error.message);
+        return false;
+      }
+
+      toast.default({
+        title: "Email envoyé",
+        description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe",
+      });
+      
+      return true;
+    } catch (err) {
+      console.error("Password reset error:", err);
+      setError("Une erreur s'est produite lors de l'envoi de l'email");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -122,6 +151,11 @@ export const useAuth = () => {
           title: "Erreur",
           description: "L'utilisateur existe déjà. Veuillez vous connecter.",
         });
+      } else if (event === 'PASSWORD_RECOVERY') {
+        toast.default({
+          title: "Réinitialisation du mot de passe",
+          description: "Veuillez suivre les instructions pour réinitialiser votre mot de passe",
+        });
       }
     });
 
@@ -136,6 +170,7 @@ export const useAuth = () => {
     error,
     onLogin,
     onRegister,
+    onResetPassword,
     setError
   };
 };
