@@ -150,10 +150,10 @@ const About = () => {
             <Card className="overflow-hidden">
               <div className="h-40 bg-gradient-to-r from-primary/80 to-secondary/80"></div>
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-1">Amadou Diop</h3>
+                <h3 className="text-xl font-bold mb-1">Mouhameth Mbodji</h3>
                 <p className="text-gray-500 mb-3">Fondateur & CEO</p>
                 <p className="text-gray-600">
-                  Passionné par les technologies et l'entrepreneuriat social, Amadou a fondé FinderID pour résoudre un problème quotidien au Sénégal.
+                  Passionné par les technologies et l'entrepreneuriat social, Mouhameth a fondé FinderID pour résoudre un problème quotidien au Sénégal.
                 </p>
               </CardContent>
             </Card>
@@ -161,10 +161,10 @@ const About = () => {
             <Card className="overflow-hidden">
               <div className="h-40 bg-gradient-to-r from-primary/80 to-secondary/80"></div>
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-1">Fatou Ndiaye</h3>
-                <p className="text-gray-500 mb-3">Directrice Technique</p>
+                <h3 className="text-xl font-bold mb-1">Mouhameth Mbodji</h3>
+                <p className="text-gray-500 mb-3">Directeur Technique</p>
                 <p className="text-gray-600">
-                  Experte en développement web et mobile, Fatou assure que notre plateforme reste sécurisée et performante.
+                  Expert en développement web et mobile, Mouhameth assure que notre plateforme reste sécurisée et performante.
                 </p>
               </CardContent>
             </Card>
@@ -172,10 +172,10 @@ const About = () => {
             <Card className="overflow-hidden">
               <div className="h-40 bg-gradient-to-r from-primary/80 to-secondary/80"></div>
               <CardContent className="pt-6">
-                <h3 className="text-xl font-bold mb-1">Moussa Sall</h3>
+                <h3 className="text-xl font-bold mb-1">Mouhameth Mbodji</h3>
                 <p className="text-gray-500 mb-3">Responsable Relations Publiques</p>
                 <p className="text-gray-600">
-                  Avec son expertise en communication, Moussa développe des partenariats stratégiques pour étendre notre impact.
+                  Avec son expertise en communication, Mouhameth développe des partenariats stratégiques pour étendre notre impact.
                 </p>
               </CardContent>
             </Card>
