@@ -43,5 +43,12 @@ export const emergencyLocations: EmergencyLocation[] = [
     category: "other",
     address: "Boulevard du Sud, Point E, Dakar",
     phone: "33 823 39 92"
+  },
+  {
+    name: "Clinique MEDIC'KANE",
+    coordinates: [-17.4500, 14.6800],
+    category: "medical",
+    address: "Dakar, Sénégal",
+    phone: "33 824 25 25"
   }
 ];
