@@ -14,7 +14,7 @@ export const Faq = () => {
         <AccordionItem value="item-1">
           <AccordionTrigger>Comment fonctionne la récompense ?</AccordionTrigger>
           <AccordionContent>
-            Vous recevez 2000 Fr pour chaque carte d'identité restituée à son propriétaire légitime. La récompense est versée une fois que le propriétaire a payé les frais de récupération de 5000 Fr.
+            Vous recevez 2000 Fr pour chaque carte d'identité restituée à son propriétaire légitime. La récompense est versée une fois que le propriétaire a payé les frais de récupération de 7000 Fr.
           </AccordionContent>
         </AccordionItem>
         

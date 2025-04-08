@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
@@ -26,7 +27,7 @@ export const Stats = () => {
             className="transform transition-all duration-300"
           >
             <Card className="p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
-              <h3 className="text-4xl font-bold text-primary mb-2">5'000 Fr</h3>
+              <h3 className="text-4xl font-bold text-primary mb-2">7'000 Fr</h3>
               <p className="text-gray-600">Frais de récupération</p>
             </Card>
           </motion.div>
