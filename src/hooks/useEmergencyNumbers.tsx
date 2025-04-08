@@ -45,6 +45,12 @@ const emergencyNumbers: EmergencyNumberType[] = [
     number: "800 00 20 20",
     category: "police",
     description: "Sécurité en zones rurales et périurbaines"
+  },
+  {
+    service: "Clinique Medic'Kane",
+    number: "33 867 46 77",
+    category: "medical",
+    description: "Clinique médicale privée avec services d'urgence"
   }
 ];
 
