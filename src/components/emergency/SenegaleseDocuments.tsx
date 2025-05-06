@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
-import { CreditCard, FileText, Building } from "lucide-react";
+import { CreditCard, FileText, DrivingLicense } from "lucide-react";
 
 export const SenegaleseDocuments = () => {
   const containerVariants = {
@@ -44,7 +44,7 @@ export const SenegaleseDocuments = () => {
         className="text-gray-600 mb-8"
       >
         Pour obtenir ou renouveler vos documents d&apos;identité tels que la carte nationale d&apos;identité, 
-        le passeport ordinaire et le permis de construire au Sénégal, voici les procédures à suivre, 
+        le passeport ordinaire et le permis de conduire au Sénégal, voici les procédures à suivre, 
         ainsi que les démarches en cas de perte de ces documents.
       </motion.p>
 
@@ -151,11 +151,11 @@ export const SenegaleseDocuments = () => {
 
         <motion.div variants={itemVariants}>
           <Card className="mb-4 overflow-hidden border-l-4 border-l-orange-500">
-            <AccordionItem value="permit" className="border-none">
+            <AccordionItem value="driver_license" className="border-none">
               <AccordionTrigger className="px-6 py-4">
                 <div className="flex items-center gap-3">
-                  <Building className="h-5 w-5 text-orange-500" />
-                  <h3 className="text-lg font-medium">Permis de construire</h3>
+                  <DrivingLicense className="h-5 w-5 text-orange-500" />
+                  <h3 className="text-lg font-medium">Permis de conduire</h3>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-4">
@@ -165,34 +165,34 @@ export const SenegaleseDocuments = () => {
                     <div className="space-y-2">
                       <p className="font-medium">Documents requis:</p>
                       <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        <li>Demande manuscrite adressée au maire de la commune concernée</li>
-                        <li>Copie du titre de propriété du terrain</li>
-                        <li>Plans de situation et de délimitation du terrain certifiés par le service du Cadastre</li>
-                        <li>Cinq jeux de plans de construction architecturaux à l&apos;échelle 1/100e</li>
-                        <li>Fiche de renseignement sur le projet</li>
-                        <li>Devis descriptif du projet</li>
-                        <li>Plan de fosses septiques ou indication du système d&apos;évacuation des eaux usées</li>
-                        <li>Taxe d&apos;urbanisme (entre 1 000 et 5 000 FCFA) et timbre fiscal de 1 000 FCFA</li>
+                        <li>Carte nationale d'identité en cours de validité (original et copie)</li>
+                        <li>Certificat médical d'aptitude physique à la conduite de moins de 3 mois</li>
+                        <li>Trois photos d'identité récentes</li>
+                        <li>Quittance de paiement des droits d'examen (variable selon la catégorie)</li>
+                        <li>Attestation de formation d'une auto-école agréée</li>
                       </ul>
                     </div>
                     
                     <div className="mt-3 space-y-2">
                       <p className="font-medium">Procédure:</p>
                       <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        <li>Soumettre le dossier complet au service d&apos;urbanisme de la commune concernée</li>
-                        <li>Le délai d&apos;étude du dossier est d&apos;environ 3 mois</li>
-                        <li>Dans la région de Dakar, la procédure peut être dématérialisée via la plateforme TéléDac, réduisant le délai à 28 jours pour les dossiers simples et 40 jours pour les dossiers complexes</li>
+                        <li>S'inscrire dans une auto-école reconnue pour suivre la formation théorique et pratique</li>
+                        <li>Passer l'examen du code de la route</li>
+                        <li>Après réussite au code, passer l'examen pratique de conduite</li>
+                        <li>Une fois les deux examens réussis, le permis de conduire est délivré dans un délai d'environ 2 à 4 semaines</li>
                       </ul>
                     </div>
                   </div>
                   
                   <div>
-                    <h4 className="font-medium mb-2">En cas de perte:</h4>
+                    <h4 className="font-medium mb-2">En cas de perte ou de vol:</h4>
                     <div className="space-y-2">
                       <p className="font-medium">Procédure:</p>
                       <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                        <li>Obtenir un certificat de perte auprès des autorités compétentes</li>
-                        <li>Faire une demande de duplicata du permis de construire en présentant le certificat de perte</li>
+                        <li>Déposer une déclaration de perte auprès du commissariat de police</li>
+                        <li>Se rendre au centre de délivrance des permis avec la déclaration de perte</li>
+                        <li>Fournir une copie de la carte nationale d'identité, deux photos d'identité et payer les frais de duplicata</li>
+                        <li>Le duplicata est généralement délivré sous 7 à 14 jours</li>
                       </ul>
                     </div>
                   </div>
