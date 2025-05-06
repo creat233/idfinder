@@ -1,52 +1,95 @@
+
 import { CheckCircle, Search, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const HowItWorks = () => {
   const steps = [
     {
-      icon: <Search className="w-12 h-12 text-secondary mx-auto mb-4" />,
+      icon: <Search className="w-16 h-16 text-secondary mx-auto mb-6" />,
       title: "1. Signalez une carte",
-      description: "Remplissez le formulaire avec les détails de la carte d'identité trouvée"
+      description: "Remplissez le formulaire avec les détails de la carte d'identité que vous avez trouvée"
     },
     {
-      icon: <CheckCircle className="w-12 h-12 text-secondary mx-auto mb-4" />,
+      icon: <CheckCircle className="w-16 h-16 text-secondary mx-auto mb-6" />,
       title: "2. Vérification",
-      description: "Notre équipe vérifie les informations et contacte le propriétaire"
+      description: "Notre équipe vérifie les informations et contacte le propriétaire du document dans les plus brefs délais"
     },
     {
-      icon: <CreditCard className="w-12 h-12 text-secondary mx-auto mb-4" />,
+      icon: <CreditCard className="w-16 h-16 text-secondary mx-auto mb-6" />,
       title: "3. Recevez votre récompense",
-      description: "Obtenez 2000 Fr une fois la carte restituée à son propriétaire"
+      description: "Obtenez 2000 Fr une fois que la carte est restituée à son propriétaire légitime"
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.3
+      } 
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <section id="how-it-works" className="py-16 bg-white">
-      <div className="container mx-auto">
+    <section id="how-it-works" className="py-20 bg-white relative">
+      {/* Cercle décoratif */}
+      <div className="hidden md:block absolute top-10 left-10 w-64 h-64 rounded-full bg-primary/5 -z-10"></div>
+      <div className="hidden md:block absolute bottom-10 right-10 w-48 h-48 rounded-full bg-secondary/5 -z-10"></div>
+      
+      <div className="container mx-auto px-4">
         <motion.h2 
-          className="text-3xl md:text-4xl font-bold text-center mb-12"
+          className="text-3xl md:text-4xl font-bold text-center mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           Comment ça marche ?
         </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <motion.p
+          className="text-xl text-gray-600 text-center max-w-3xl mx-auto mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          Un processus simple et efficace pour signaler et récupérer les pièces d'identité perdues
+        </motion.p>
+        
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 relative"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {/* Ligne de connexion entre les étapes (visible uniquement sur desktop) */}
+          <div className="hidden md:block absolute top-1/4 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
+          
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              className="text-center p-6 rounded-lg hover:bg-gray-50 transition-colors duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              whileHover={{ scale: 1.05 }}
+              variants={itemVariants}
+              className="z-10"
             >
-              {step.icon}
-              <h3 className="text-xl font-bold mb-4">{step.title}</h3>
-              <p className="text-gray-600">{step.description}</p>
+              <Card className="h-full text-center p-8 hover:shadow-xl transition-all duration-300 border-0">
+                <CardContent className="p-0">
+                  <div className="bg-white rounded-full p-4 inline-block mb-2">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">{step.title}</h3>
+                  <p className="text-gray-600">{step.description}</p>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

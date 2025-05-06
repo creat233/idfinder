@@ -1,6 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -54,67 +55,100 @@ export const Hero = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.3 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } }
+  };
+
   return (
-    <motion.section 
-      className="py-20 bg-gradient-to-b from-white to-gray-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="container mx-auto px-4">
+    <section className="relative py-20 md:py-32 bg-gradient-to-b from-primary/5 to-white overflow-hidden">
+      {/* Cercles décoratifs */}
+      <div className="absolute top-0 left-0 w-96 h-96 rounded-full bg-secondary/10 -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-primary/10 translate-x-1/3 translate-y-1/3"></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div 
           className="text-center max-w-3xl mx-auto"
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <h1 className="text-5xl font-bold text-primary mb-6">
+          <motion.h1 
+            variants={itemVariants} 
+            className="text-4xl md:text-6xl font-bold text-primary mb-6 leading-tight"
+          >
             Retrouvez vos papiers d'identité perdus
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Une solution simple et sécurisée pour récupérer vos documents d'identité égarés
-          </p>
+          </motion.h1>
           
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
-            <div className="flex gap-4">
-              <Input
-                type="search"
-                placeholder="Entrez le numéro de votre pièce d'identité..."
-                className="flex-grow"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Button type="submit" disabled={isSearching}>
+          <motion.p 
+            variants={itemVariants}
+            className="text-xl md:text-2xl text-gray-600 mb-10"
+          >
+            Une solution simple, sécurisée et efficace pour récupérer vos documents d'identité égarés
+          </motion.p>
+          
+          <motion.form 
+            onSubmit={handleSearch} 
+            variants={itemVariants}
+            className="max-w-2xl mx-auto mb-10 relative"
+          >
+            <div className="flex gap-4 items-center">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Entrez le numéro de votre pièce d'identité..."
+                  className="pl-10 py-6 text-lg"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button 
+                type="submit" 
+                disabled={isSearching}
+                size="lg"
+                className="py-6 px-8"
+              >
                 {isSearching ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <>
-                    <Search className="h-4 w-4 mr-2" />
+                    <Search className="h-5 w-5 mr-2" />
                     Rechercher
                   </>
                 )}
               </Button>
             </div>
-          </form>
+          </motion.form>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.div 
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
             <Button 
               size="lg" 
               onClick={() => navigate("/signaler")}
-              className="bg-secondary hover:bg-secondary/90"
+              className="bg-secondary hover:bg-secondary/90 py-6 px-8 text-lg group"
             >
               Signaler une carte trouvée
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button 
               size="lg" 
               variant="outline"
               onClick={() => navigate("/support")}
+              className="py-6 px-8 text-lg"
             >
               Comment ça marche ?
             </Button>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 };

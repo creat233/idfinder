@@ -1,48 +1,76 @@
+
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Facebook, Twitter, Instagram, Mail, Phone } from "lucide-react";
 
 export const Footer = () => {
+  const currentYear = new Date().getFullYear();
+  
   return (
-    <footer className="bg-primary text-primary-foreground py-12">
+    <footer className="bg-primary text-primary-foreground pt-16 pb-8">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">IDFinder</h3>
-            <p className="text-primary-foreground/80">
-              La solution sécurisée pour retrouver les pièces d'identité perdues
+            <div className="flex items-center gap-2 mb-4">
+              <img 
+                src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+                alt="FinderID Logo" 
+                className="w-10 h-10"
+              />
+              <h3 className="text-2xl font-bold">FinderID</h3>
+            </div>
+            <p className="text-primary-foreground/80 mb-6">
+              La solution sécurisée pour retrouver les pièces d'identité perdues au Sénégal
             </p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4">Navigation</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-lg mb-5">Navigation</h4>
+            <ul className="space-y-3">
               <li>
-                <Link to="/" className="hover:text-secondary transition-colors">
+                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors inline-block">
                   Accueil
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-secondary transition-colors">
+                <Link to="/about" className="text-primary-foreground/80 hover:text-secondary transition-colors inline-block">
                   À propos
                 </Link>
               </li>
               <li>
-                <Link to="/support" className="hover:text-secondary transition-colors">
+                <Link to="/support" className="text-primary-foreground/80 hover:text-secondary transition-colors inline-block">
                   Support
+                </Link>
+              </li>
+              <li>
+                <Link to="/numeros-urgence" className="text-primary-foreground/80 hover:text-secondary transition-colors inline-block">
+                  Numéros d'urgence
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4">Services</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-lg mb-5">Services</h4>
+            <ul className="space-y-3">
               <li>
-                <Link to="/signaler" className="hover:text-secondary transition-colors">
+                <Link to="/signaler" className="text-primary-foreground/80 hover:text-secondary transition-colors inline-block">
                   Signaler une carte
                 </Link>
               </li>
               <li>
-                <Link to="/profile" className="hover:text-secondary transition-colors">
+                <Link to="/profile" className="text-primary-foreground/80 hover:text-secondary transition-colors inline-block">
                   Mon profil
                 </Link>
               </li>
@@ -50,16 +78,22 @@ export const Footer = () => {
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4">Contact</h4>
-            <p className="text-primary-foreground/80">
-              Email: mcard1100@gmail.com<br />
-              Tél: +221781540779
-            </p>
+            <h4 className="font-semibold text-lg mb-5">Contact</h4>
+            <ul className="space-y-3">
+              <li className="flex items-center">
+                <Mail className="h-4 w-4 mr-2 text-secondary" />
+                <span className="text-primary-foreground/80">mcard1100@gmail.com</span>
+              </li>
+              <li className="flex items-center">
+                <Phone className="h-4 w-4 mr-2 text-secondary" />
+                <span className="text-primary-foreground/80">+221781540779</span>
+              </li>
+            </ul>
           </div>
         </div>
         
-        <div className="mt-8 pt-8 border-t border-primary-foreground/20 text-center text-primary-foreground/60">
-          <p>&copy; {new Date().getFullYear()} IDFinder. Tous droits réservés.</p>
+        <div className="mt-12 pt-8 border-t border-primary-foreground/20 text-center text-primary-foreground/60">
+          <p>&copy; {currentYear} FinderID. Tous droits réservés.</p>
         </div>
       </div>
     </footer>
