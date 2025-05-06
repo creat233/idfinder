@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { DocumentSection, DocumentSubSection } from "./DocumentSection";
 
 export const CNIDocument = ({ itemVariants }: { itemVariants: any }) => {
   return (
@@ -21,40 +22,38 @@ export const CNIDocument = ({ itemVariants }: { itemVariants: any }) => {
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <div>
-                <h4 className="font-medium mb-2">Obtention pour la première fois:</h4>
-                <div className="space-y-2">
-                  <p className="font-medium">Documents requis:</p>
-                  <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                    <li>Acte de naissance de l&apos;intéressé</li>
-                    <li>Carte nationale d&apos;identité de l&apos;un des parents (pour les mineurs)</li>
-                    <li>Quittance de paiement des frais de timbre</li>
-                  </ul>
-                </div>
+              <DocumentSection title="Obtention pour la première fois:">
+                <DocumentSubSection 
+                  title="Documents requis:"
+                  items={[
+                    "Acte de naissance de l&apos;intéressé",
+                    "Carte nationale d&apos;identité de l&apos;un des parents (pour les mineurs)",
+                    "Quittance de paiement des frais de timbre"
+                  ]}
+                />
                 
-                <div className="mt-3 space-y-2">
-                  <p className="font-medium">Procédure:</p>
-                  <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                    <li>Se présenter à la mairie de votre lieu de résidence avec les documents requis</li>
-                    <li>Remplir le formulaire de demande fourni par la mairie</li>
-                    <li>Payer les frais de timbre et obtenir la quittance correspondante</li>
-                    <li>Le délai de délivrance est généralement de 15 jours</li>
-                  </ul>
-                </div>
-              </div>
+                <DocumentSubSection 
+                  title="Procédure:"
+                  items={[
+                    "Se présenter à la mairie de votre lieu de résidence avec les documents requis",
+                    "Remplir le formulaire de demande fourni par la mairie",
+                    "Payer les frais de timbre et obtenir la quittance correspondante",
+                    "Le délai de délivrance est généralement de 15 jours"
+                  ]}
+                />
+              </DocumentSection>
               
-              <div>
-                <h4 className="font-medium mb-2">En cas de perte ou de vol:</h4>
-                <div className="space-y-2">
-                  <p className="font-medium">Procédure:</p>
-                  <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                    <li>Déposer une plainte auprès du commissariat de police de votre localité</li>
-                    <li>Présenter la plainte au service de l&apos;état civil de votre mairie</li>
-                    <li>Fournir les documents requis pour une nouvelle demande de CNI</li>
-                    <li>Suivre la procédure d&apos;obtention pour la première fois</li>
-                  </ul>
-                </div>
-              </div>
+              <DocumentSection title="En cas de perte ou de vol:">
+                <DocumentSubSection 
+                  title="Procédure:"
+                  items={[
+                    "Déposer une plainte auprès du commissariat de police de votre localité",
+                    "Présenter la plainte au service de l&apos;état civil de votre mairie",
+                    "Fournir les documents requis pour une nouvelle demande de CNI",
+                    "Suivre la procédure d&apos;obtention pour la première fois"
+                  ]}
+                />
+              </DocumentSection>
             </div>
           </AccordionContent>
         </AccordionItem>

@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { DocumentSection, DocumentSubSection } from "./DocumentSection";
 
 export const DriverLicenseDocument = ({ itemVariants }: { itemVariants: any }) => {
   return (
@@ -21,42 +22,40 @@ export const DriverLicenseDocument = ({ itemVariants }: { itemVariants: any }) =
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <div>
-                <h4 className="font-medium mb-2">Obtention:</h4>
-                <div className="space-y-2">
-                  <p className="font-medium">Documents requis:</p>
-                  <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                    <li>Carte nationale d'identité en cours de validité (original et copie)</li>
-                    <li>Certificat médical d'aptitude physique à la conduite de moins de 3 mois</li>
-                    <li>Trois photos d'identité récentes</li>
-                    <li>Quittance de paiement des droits d'examen (variable selon la catégorie)</li>
-                    <li>Attestation de formation d'une auto-école agréée</li>
-                  </ul>
-                </div>
+              <DocumentSection title="Obtention:">
+                <DocumentSubSection 
+                  title="Documents requis:"
+                  items={[
+                    "Carte nationale d'identité en cours de validité (original et copie)",
+                    "Certificat médical d'aptitude physique à la conduite de moins de 3 mois",
+                    "Trois photos d'identité récentes",
+                    "Quittance de paiement des droits d'examen (variable selon la catégorie)",
+                    "Attestation de formation d'une auto-école agréée"
+                  ]}
+                />
                 
-                <div className="mt-3 space-y-2">
-                  <p className="font-medium">Procédure:</p>
-                  <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                    <li>S'inscrire dans une auto-école reconnue pour suivre la formation théorique et pratique</li>
-                    <li>Passer l'examen du code de la route</li>
-                    <li>Après réussite au code, passer l'examen pratique de conduite</li>
-                    <li>Une fois les deux examens réussis, le permis de conduire est délivré dans un délai d'environ 2 à 4 semaines</li>
-                  </ul>
-                </div>
-              </div>
+                <DocumentSubSection 
+                  title="Procédure:"
+                  items={[
+                    "S'inscrire dans une auto-école reconnue pour suivre la formation théorique et pratique",
+                    "Passer l'examen du code de la route",
+                    "Après réussite au code, passer l'examen pratique de conduite",
+                    "Une fois les deux examens réussis, le permis de conduire est délivré dans un délai d'environ 2 à 4 semaines"
+                  ]}
+                />
+              </DocumentSection>
               
-              <div>
-                <h4 className="font-medium mb-2">En cas de perte ou de vol:</h4>
-                <div className="space-y-2">
-                  <p className="font-medium">Procédure:</p>
-                  <ul className="list-disc pl-5 text-gray-600 space-y-1">
-                    <li>Déposer une déclaration de perte auprès du commissariat de police</li>
-                    <li>Se rendre au centre de délivrance des permis avec la déclaration de perte</li>
-                    <li>Fournir une copie de la carte nationale d'identité, deux photos d'identité et payer les frais de duplicata</li>
-                    <li>Le duplicata est généralement délivré sous 7 à 14 jours</li>
-                  </ul>
-                </div>
-              </div>
+              <DocumentSection title="En cas de perte ou de vol:">
+                <DocumentSubSection 
+                  title="Procédure:"
+                  items={[
+                    "Déposer une déclaration de perte auprès du commissariat de police",
+                    "Se rendre au centre de délivrance des permis avec la déclaration de perte",
+                    "Fournir une copie de la carte nationale d'identité, deux photos d'identité et payer les frais de duplicata",
+                    "Le duplicata est généralement délivré sous 7 à 14 jours"
+                  ]}
+                />
+              </DocumentSection>
             </div>
           </AccordionContent>
         </AccordionItem>
