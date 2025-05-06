@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
-import { CreditCard, FileText, DrivingLicense } from "lucide-react";
+import { CreditCard, FileText, Car } from "lucide-react";
 
 export const SenegaleseDocuments = () => {
   const containerVariants = {
@@ -154,7 +154,7 @@ export const SenegaleseDocuments = () => {
             <AccordionItem value="driver_license" className="border-none">
               <AccordionTrigger className="px-6 py-4">
                 <div className="flex items-center gap-3">
-                  <DrivingLicense className="h-5 w-5 text-orange-500" />
+                  <Car className="h-5 w-5 text-orange-500" />
                   <h3 className="text-lg font-medium">Permis de conduire</h3>
                 </div>
               </AccordionTrigger>
