@@ -1,7 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Instagram, Mail, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone } from "lucide-react";
+import { TikTok } from "./icons/TikTok";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -23,14 +23,17 @@ export const Footer = () => {
               La solution sécurisée pour retrouver les pièces d'identité perdues au Sénégal
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <a href="https://www.facebook.com/finderid" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 <Facebook className="w-5 h-5" />
+                <span className="sr-only">Facebook</span>
               </a>
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <a href="https://www.instagram.com/finderid" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                 <Instagram className="w-5 h-5" />
+                <span className="sr-only">Instagram</span>
+              </a>
+              <a href="https://www.tiktok.com/@finderid" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <TikTok className="w-5 h-5" />
+                <span className="sr-only">TikTok</span>
               </a>
             </div>
           </div>
