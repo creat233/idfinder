@@ -77,22 +77,34 @@ export const Stats = () => {
           
           <div className="flex flex-wrap justify-center items-center gap-8">
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
-                <span className="text-xl font-bold text-blue-600">Wave</span>
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2 overflow-hidden p-1">
+                <img 
+                  src="/lovable-uploads/6fd77bb0-272a-46f6-82b7-417047489a7d.png" 
+                  alt="Wave Logo" 
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <p className="text-sm text-gray-600">Wave</p>
             </div>
             
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
-                <span className="text-xl font-bold text-orange-500">OM</span>
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2 overflow-hidden p-1">
+                <img 
+                  src="/lovable-uploads/8f3481ca-fab7-44c7-af85-2491f0990db7.png" 
+                  alt="Orange Money Logo" 
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <p className="text-sm text-gray-600">Orange Money</p>
             </div>
             
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
-                <span className="text-xl font-bold text-purple-600">YAS</span>
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2 overflow-hidden p-1">
+                <img 
+                  src="/lovable-uploads/0d36aee8-a33f-434f-9129-78c3e70bac9b.png" 
+                  alt="YAS Logo" 
+                  className="w-16 h-16 object-contain"
+                />
               </div>
               <p className="text-sm text-gray-600">YAS</p>
             </div>
