@@ -117,11 +117,11 @@ export const useMapMarkers = (
         bounds.extend(location.coordinates as [number, number]);
       });
       map.current.fitBounds(bounds, { padding: 50, animate: true });
-    } else if (filteredLocations.length === locations.length) {
-      // If all locations are displayed, center on Dakar
+    } else if (filteredLocations.length === locations.length && !selectedCategory) {
+      // If all locations are displayed and no category is selected, center on Senegal
       map.current.flyTo({
-        center: [-17.4676, 14.6937],
-        zoom: 12,
+        center: [-14.4529, 14.4974],
+        zoom: 6.5,
         essential: true,
         animate: true
       });

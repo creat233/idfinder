@@ -15,7 +15,7 @@ export const MapTokenInput = ({ setMapboxToken, height }: MapTokenInputProps) =>
           <h3 className="font-bold">Configuration requise</h3>
         </div>
         <p className="text-sm text-gray-600 mb-4">
-          Pour afficher la carte des services d'urgence, veuillez entrer votre clé d'API Mapbox.
+          Pour afficher la carte des services d'urgence au Sénégal, veuillez entrer votre clé d'API Mapbox.
           Vous pouvez en obtenir une gratuitement sur <a href="https://www.mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">mapbox.com</a>
         </p>
         <input

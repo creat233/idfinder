@@ -16,8 +16,8 @@ export const useMapSetup = (mapboxToken: string, mapContainer: React.RefObject<H
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: "mapbox://styles/mapbox/streets-v12",
-        center: [-17.4676, 14.6937], // Center on Dakar, Senegal
-        zoom: 12,
+        center: [-14.4529, 14.4974], // Centre sur le Sénégal
+        zoom: 6.5, // Vue d'ensemble du pays
       });
 
       // Add navigation controls

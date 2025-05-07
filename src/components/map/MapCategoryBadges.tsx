@@ -19,13 +19,17 @@ export const MapCategoryBadges = ({ activeCategory, selectedCategory, onCategory
     if (map?.current) {
       switch(category) {
         case "police":
-          map.current.flyTo({ center: [-17.4676, 14.6937], zoom: 14 });
+          map.current.flyTo({ center: [-17.4443, 14.6928], zoom: 10 });
           break;
         case "medical":
-          map.current.flyTo({ center: [-17.4376, 14.6737], zoom: 14 });
+          map.current.flyTo({ center: [-17.4376, 14.6737], zoom: 10 });
           break;
         case "fire":
-          map.current.flyTo({ center: [-17.4376, 14.6837], zoom: 14 });
+          map.current.flyTo({ center: [-17.4376, 14.6837], zoom: 10 });
+          break;
+        case "other":
+          // Center view of whole Senegal
+          map.current.flyTo({ center: [-14.4529, 14.4974], zoom: 6.5 });
           break;
       }
     }
@@ -52,6 +56,12 @@ export const MapCategoryBadges = ({ activeCategory, selectedCategory, onCategory
           onClick={() => handleCategoryClick("fire")}
         >
           Pompiers
+        </Badge>
+        <Badge 
+          className={`cursor-pointer hover:bg-purple-600 transition-colors ${currentCategory === "other" ? "bg-purple-500 shadow-md" : "bg-gray-100 text-gray-700 hover:text-white"}`}
+          onClick={() => handleCategoryClick("other")}
+        >
+          Autres
         </Badge>
       </div>
     );
