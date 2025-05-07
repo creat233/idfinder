@@ -8,7 +8,6 @@ import { Header } from "@/components/Header";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { SupportSection } from "@/components/profile/SupportSection";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
-import { DeleteAccountDialog } from "@/components/profile/DeleteAccountDialog";
 import { useProfile } from "@/hooks/useProfile";
 
 const Profile = () => {
@@ -21,12 +20,10 @@ const Profile = () => {
     lastName,
     phone,
     isEditing,
-    isDeletingAccount,
     setPhone,
     setIsEditing,
     getProfile,
-    updateProfile,
-    deleteAccount
+    updateProfile
   } = useProfile();
 
   useEffect(() => {
@@ -100,17 +97,6 @@ const Profile = () => {
           />
           
           <SupportSection handleContactSupport={handleContactSupport} />
-          
-          <div className="mt-8 border-t pt-8">
-            <h2 className="text-xl font-semibold mb-4 text-destructive">Zone de danger</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Attention, la suppression de votre compte est irréversible. Toutes vos données seront définitivement supprimées.
-            </p>
-            <DeleteAccountDialog 
-              isDeleting={isDeletingAccount}
-              onDeleteAccount={deleteAccount}
-            />
-          </div>
         </div>
       </main>
     </div>
