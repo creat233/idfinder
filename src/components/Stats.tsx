@@ -62,6 +62,46 @@ export const Stats = () => {
             </motion.div>
           ))}
         </div>
+        
+        {/* Section des partenaires de paiement */}
+        <motion.div
+          className="mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <h3 className="text-2xl font-semibold text-center mb-6">Nos partenaires de paiement</h3>
+          <p className="text-center text-gray-600 mb-8">
+            Effectuez vos paiements facilement via nos partenaires
+          </p>
+          
+          <div className="flex flex-wrap justify-center items-center gap-8">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
+                <span className="text-xl font-bold text-blue-600">Wave</span>
+              </div>
+              <p className="text-sm text-gray-600">Wave</p>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
+                <span className="text-xl font-bold text-orange-500">OM</span>
+              </div>
+              <p className="text-sm text-gray-600">Orange Money</p>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
+                <span className="text-xl font-bold text-purple-600">YAS</span>
+              </div>
+              <p className="text-sm text-gray-600">YAS</p>
+            </div>
+          </div>
+          
+          <p className="text-center text-gray-500 mt-8 text-sm">
+            Ces options de paiement sont disponibles pour les récompenses des découvreurs et les frais de récupération
+          </p>
+        </motion.div>
       </div>
     </section>
   );
