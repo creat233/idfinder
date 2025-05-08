@@ -1,9 +1,13 @@
 
-import { CheckCircle, Search, CreditCard } from "lucide-react";
+import { CheckCircle, Search, CreditCard, PhoneCall } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export const HowItWorks = () => {
+  const navigate = useNavigate();
+  
   const steps = [
     {
       icon: <Search className="w-16 h-16 text-secondary mx-auto mb-6" />,
@@ -16,8 +20,13 @@ export const HowItWorks = () => {
       description: "Notre équipe vérifie les informations et contacte le propriétaire du document dans les plus brefs délais"
     },
     {
+      icon: <PhoneCall className="w-16 h-16 text-secondary mx-auto mb-6" />,
+      title: "3. Contactez FinderID",
+      description: "Appelez notre service client au 77 123 45 67 pour organiser la récupération de votre carte"
+    },
+    {
       icon: <CreditCard className="w-16 h-16 text-secondary mx-auto mb-6" />,
-      title: "3. Recevez votre récompense",
+      title: "4. Recevez votre récompense",
       description: "Obtenez 2000 Fr une fois que la carte est restituée à son propriétaire légitime"
     }
   ];
@@ -35,6 +44,10 @@ export const HowItWorks = () => {
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 }
+  };
+  
+  const handleCallSupport = () => {
+    window.location.href = "tel:77 123 45 67";
   };
 
   return (
@@ -63,7 +76,7 @@ export const HowItWorks = () => {
         </motion.p>
         
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 relative"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative mb-12"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -89,6 +102,33 @@ export const HowItWorks = () => {
               </Card>
             </motion.div>
           ))}
+        </motion.div>
+        
+        <motion.div
+          className="text-center max-w-xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 flex flex-col items-center">
+            <img 
+              src="/lovable-uploads/6c6264f8-36ef-4a98-b7b3-44231cd5d48e.png" 
+              alt="Vérification" 
+              className="w-24 h-24 mb-4"
+            />
+            <h3 className="text-2xl font-bold mb-2">Service d'appel FinderID</h3>
+            <p className="text-gray-600 mb-4">
+              Après avoir retrouvé votre carte sur notre plateforme, contactez directement notre service clientèle pour organiser sa récupération
+            </p>
+            <Button 
+              size="lg" 
+              onClick={handleCallSupport}
+              className="flex items-center gap-2"
+            >
+              <PhoneCall className="w-5 h-5" />
+              Appeler maintenant: 77 123 45 67
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>

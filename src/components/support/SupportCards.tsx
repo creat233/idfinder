@@ -16,6 +16,10 @@ export const SupportCards = ({ supportEmail, handleContactSupport }: SupportCard
   const handleEmergencyNumbers = () => {
     navigate('/numeros-urgence');
   };
+  
+  const handleCallSupport = () => {
+    window.location.href = "tel:77 123 45 67";
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -45,9 +49,15 @@ export const SupportCards = ({ supportEmail, handleContactSupport }: SupportCard
             Notre équipe d'assistance est disponible pour répondre à toutes vos questions<br />
             Email: {supportEmail}
           </p>
-          <Button size="lg" onClick={handleContactSupport} className="w-full">
-            Contacter le support
-          </Button>
+          <div className="space-y-4">
+            <Button size="lg" onClick={handleContactSupport} className="w-full">
+              Contacter par email
+            </Button>
+            <Button size="lg" variant="outline" onClick={handleCallSupport} className="w-full">
+              <PhoneCall className="mr-2 h-5 w-5" />
+              Appeler: 77 123 45 67
+            </Button>
+          </div>
         </Card>
       </motion.div>
       
