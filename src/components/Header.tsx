@@ -2,14 +2,28 @@
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, LogOut } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Handle scroll effect for fixed header
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
 
   const handleLogout = async () => {
     try {
@@ -27,7 +41,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="w-full bg-primary py-4">
+    <header className={`w-full bg-primary py-4 fixed top-0 left-0 right-0 z-50 transition-shadow ${scrolled ? 'shadow-md' : ''}`}>
       <div className="container mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img 
@@ -75,7 +89,7 @@ export const Header = () => {
 
         {/* Mobile navigation */}
         {isMenuOpen && (
-          <div className="absolute top-16 left-0 right-0 bg-primary p-4 md:hidden">
+          <div className="absolute top-16 left-0 right-0 bg-primary p-4 md:hidden shadow-lg">
             <nav className="flex flex-col gap-4">
               <Link 
                 to="/about" 

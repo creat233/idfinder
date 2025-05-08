@@ -30,7 +30,7 @@ const Index = () => {
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <Header />
-        <main className="flex-grow">
+        <main className="flex-grow pt-20">
           <Hero />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
