@@ -18,7 +18,7 @@ export const EmergencyMapDisplay = ({ showMap, activeCategory }: EmergencyMapDis
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="mb-8 rounded-lg overflow-hidden"
     >
-      <EmergencyMap selectedCategory={activeCategory} />
+      <EmergencyMap selectedCategory={activeCategory} height="h-96" />
     </motion.div>
   );
 };

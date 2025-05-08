@@ -112,8 +112,8 @@ export const HowItWorks = () => {
         >
           <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 flex flex-col items-center">
             <img 
-              src="/lovable-uploads/6c6264f8-36ef-4a98-b7b3-44231cd5d48e.png" 
-              alt="Vérification" 
+              src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+              alt="Logo FinderID" 
               className="w-24 h-24 mb-4"
             />
             <h3 className="text-2xl font-bold mb-2">Service d'appel FinderID</h3>

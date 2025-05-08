@@ -1,61 +1,62 @@
 
 import { useRef, useState, useEffect } from "react";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { MapTokenInput } from "./MapTokenInput";
-import { useMapSetup } from "./hooks/useMapSetup";
-import { useMapMarkers } from "./hooks/useMapMarkers";
 import { MapCategoryBadges } from "./MapCategoryBadges";
-import { emergencyLocations } from "./data/emergencyLocationsData";
 import { EmergencyMapProps } from "./types/EmergencyMapTypes";
 
 export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMapProps) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>("");
-  const [showTokenInput, setShowTokenInput] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(selectedCategory);
   const isMobile = useIsMobile();
-
-  // Initialize map when token is provided
-  useEffect(() => {
-    if (!mapboxToken && !showTokenInput) {
-      setShowTokenInput(true);
-    }
-  }, [mapboxToken, showTokenInput]);
 
   useEffect(() => {
     setActiveCategory(selectedCategory);
   }, [selectedCategory]);
 
-  const { map, mapLoaded } = useMapSetup(mapboxToken, mapContainer);
-  
-  // Handle markers on the map
-  useMapMarkers(mapLoaded, map, emergencyLocations, selectedCategory);
-  
   // Handle category click in the map view
   const handleCategoryClick = (category: string) => {
     setActiveCategory(category);
   };
 
-  // Show token input if no token is provided
-  if (showTokenInput && !mapboxToken) {
-    return <MapTokenInput setMapboxToken={(token) => {
-      setMapboxToken(token);
-      setShowTokenInput(false);
-    }} height={height} />;
-  }
+  // Formater le paramètre de recherche selon la catégorie
+  const getGoogleMapsSearchParam = () => {
+    if (!activeCategory) return "senegal";
+    
+    switch (activeCategory) {
+      case "police":
+        return "commissariats+de+police+senegal";
+      case "medical":
+        return "hopitaux+senegal";
+      case "fire":
+        return "sapeurs+pompiers+senegal";
+      default:
+        return "senegal";
+    }
+  };
+
+  const searchParam = getGoogleMapsSearchParam();
+  const googleMapsUrl = `https://www.google.com/maps/embed/v1/search?key=AIzaSyDmJ_ZIpYTZQ3OmBV7QkwwbUMJqGFVCmSQ&q=${searchParam}&center=14.4974,-14.4529&zoom=6`;
 
   return (
     <div className={`relative ${height} rounded-lg overflow-hidden border border-gray-200 shadow-md`}>
-      <div ref={mapContainer} className="absolute inset-0" />
-      {!isMobile && mapLoaded && (
-        <MapCategoryBadges 
-          activeCategory={activeCategory} 
-          selectedCategory={selectedCategory}
-          onCategoryClick={handleCategoryClick}
-          map={map} 
-        />
+      <iframe 
+        src={googleMapsUrl}
+        className="absolute inset-0 w-full h-full" 
+        style={{ border: 0 }} 
+        allowFullScreen={false} 
+        loading="lazy" 
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Google Maps Sénégal"
+      ></iframe>
+      
+      {!isMobile && (
+        <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
+          <MapCategoryBadges 
+            activeCategory={activeCategory} 
+            selectedCategory={selectedCategory}
+            onCategoryClick={handleCategoryClick}
+          />
+        </div>
       )}
     </div>
   );
