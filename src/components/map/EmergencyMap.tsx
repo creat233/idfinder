@@ -41,6 +41,7 @@ export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMap
         href={getGoogleMapsUrl()} 
         className="absolute inset-0 block"
         showIcon={false}
+        useInAppBrowser={true}
         title="Google Maps"
       >
         <div 

@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
@@ -29,6 +28,7 @@ export const Footer = () => {
                 href="https://www.facebook.com/profile.php?id=61573756376174" 
                 className="text-primary-foreground/80 hover:text-secondary transition-colors"
                 showIcon={false}
+                useInAppBrowser={true}
               >
                 <Facebook className="w-5 h-5" />
                 <span className="sr-only">Facebook</span>
@@ -37,6 +37,7 @@ export const Footer = () => {
                 href="https://www.instagram.com/finderid.info?igsh=MXdrNjk4bjQwY3NudA%3D%3D&utm_source=qr" 
                 className="text-primary-foreground/80 hover:text-secondary transition-colors"
                 showIcon={false}
+                useInAppBrowser={true}
               >
                 <Instagram className="w-5 h-5" />
                 <span className="sr-only">Instagram</span>
@@ -45,6 +46,7 @@ export const Footer = () => {
                 href="https://www.tiktok.com/@finderid.info?_t=ZM-8w964za6L5z&_r=1" 
                 className="text-primary-foreground/80 hover:text-secondary transition-colors"
                 showIcon={false}
+                useInAppBrowser={true}
               >
                 <TikTok className="w-5 h-5" />
                 <span className="sr-only">TikTok</span>

@@ -11,7 +11,7 @@ export const DocumentFooter = ({ itemVariants }: { itemVariants: any }) => {
       <p className="text-gray-600 text-sm">
         <strong>Remarques:</strong> Les procédures peuvent varier légèrement selon les communes et les spécificités de chaque dossier.
         Il est recommandé de contacter les services compétents pour obtenir des informations à jour et spécifiques à votre situation.
-        Pour plus de détails, vous pouvez consulter les sites officiels tels que <ExternalLink href="https://senegalservices.sn" className="text-blue-500 hover:underline">Sénégal Services</ExternalLink> et le <ExternalLink href="https://interieur.gouv.sn" className="text-blue-500 hover:underline">Ministère de l&apos;Intérieur</ExternalLink>.
+        Pour plus de détails, vous pouvez consulter les sites officiels tels que <ExternalLink href="https://senegalservices.sn" className="text-blue-500 hover:underline" useInAppBrowser={true}>Sénégal Services</ExternalLink> et le <ExternalLink href="https://interieur.gouv.sn" className="text-blue-500 hover:underline" useInAppBrowser={true}>Ministère de l&apos;Intérieur</ExternalLink>.
       </p>
     </motion.div>
   );

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ExternalLink as ExternalLinkIcon, X } from "lucide-react";
+import { ExternalLink as ExternalLinkIcon, Globe } from "lucide-react";
+import { InAppBrowser } from "./in-app-browser";
 
 interface ExternalLinkProps {
   href: string;
@@ -10,6 +11,7 @@ interface ExternalLinkProps {
   className?: string;
   showIcon?: boolean;
   title?: string;
+  useInAppBrowser?: boolean;
 }
 
 export const ExternalLink = ({ 
@@ -17,20 +19,27 @@ export const ExternalLink = ({
   children, 
   className = "", 
   showIcon = true,
-  title = "Lien externe"
+  title = "Lien externe",
+  useInAppBrowser = true
 }: ExternalLinkProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isBrowserOpen, setIsBrowserOpen] = useState(false);
   const [url, setUrl] = useState(href);
 
   const handleLinkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setUrl(href); // Ensure we have the latest URL
-    setIsOpen(true);
+    setIsConfirmOpen(true);
   };
 
   const handleOpenExternal = () => {
     window.open(url, '_blank');
-    setIsOpen(false);
+    setIsConfirmOpen(false);
+  };
+
+  const handleOpenInApp = () => {
+    setIsConfirmOpen(false);
+    setIsBrowserOpen(true);
   };
 
   return (
@@ -44,7 +53,8 @@ export const ExternalLink = ({
         {showIcon && <ExternalLinkIcon className="ml-1 inline-block h-4 w-4" />}
       </a>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      {/* Confirmation Dialog */}
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
@@ -55,17 +65,31 @@ export const ExternalLink = ({
               </div>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex flex-row justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
+          <DialogFooter className="flex flex-col sm:flex-row justify-end gap-2">
+            <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
               Annuler
             </Button>
-            <Button onClick={handleOpenExternal}>
+            {useInAppBrowser && (
+              <Button variant="default" onClick={handleOpenInApp} className="flex-1 sm:flex-auto">
+                <Globe className="mr-2 h-4 w-4" />
+                Ouvrir dans l'application
+              </Button>
+            )}
+            <Button variant="secondary" onClick={handleOpenExternal}>
               <ExternalLinkIcon className="mr-2 h-4 w-4" />
-              Ouvrir le lien
+              Ouvrir dans un nouvel onglet
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* In-App Browser */}
+      <InAppBrowser
+        isOpen={isBrowserOpen}
+        onClose={() => setIsBrowserOpen(false)}
+        url={url}
+        title={title}
+      />
     </>
   );
 };
