@@ -1,9 +1,10 @@
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MapCategoryBadges } from "./MapCategoryBadges";
 import { EmergencyMapProps } from "./types/EmergencyMapTypes";
+import { ExternalLink } from "@/components/ui/external-link";
 
 export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMapProps) => {
   const [activeCategory, setActiveCategory] = useState<string | null>(selectedCategory);
@@ -34,29 +35,31 @@ export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMap
     }
   };
 
-  const handleMapClick = () => {
-    window.open(getGoogleMapsUrl(), '_blank');
-  };
-
   return (
     <div className={`relative ${height} rounded-lg overflow-hidden border border-gray-200 shadow-md`}>
-      <div 
-        className="absolute inset-0 bg-cover bg-center cursor-pointer flex items-center justify-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1426604966848-d7adac402bff?q=80&w=1280&auto=format')" }}
-        onClick={handleMapClick}
+      <ExternalLink 
+        href={getGoogleMapsUrl()} 
+        className="absolute inset-0 block"
+        showIcon={false}
+        title="Google Maps"
       >
-        <div className="absolute inset-0 bg-black/20 flex flex-col items-center justify-center">
-          <Navigation className="w-12 h-12 text-white mb-2" />
-          <p className="text-white font-semibold text-lg">Voir sur Google Maps</p>
-          {activeCategory && (
-            <span className="mt-2 bg-primary/80 text-white px-3 py-1 rounded-full text-sm">
-              {activeCategory === "police" ? "Commissariats" : 
-               activeCategory === "medical" ? "Hôpitaux" : 
-               activeCategory === "fire" ? "Sapeurs Pompiers" : ""}
-            </span>
-          )}
+        <div 
+          className="absolute inset-0 bg-cover bg-center cursor-pointer flex items-center justify-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1426604966848-d7adac402bff?q=80&w=1280&auto=format')" }}
+        >
+          <div className="absolute inset-0 bg-black/20 flex flex-col items-center justify-center">
+            <Navigation className="w-12 h-12 text-white mb-2" />
+            <p className="text-white font-semibold text-lg">Voir sur Google Maps</p>
+            {activeCategory && (
+              <span className="mt-2 bg-primary/80 text-white px-3 py-1 rounded-full text-sm">
+                {activeCategory === "police" ? "Commissariats" : 
+                 activeCategory === "medical" ? "Hôpitaux" : 
+                 activeCategory === "fire" ? "Sapeurs Pompiers" : ""}
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      </ExternalLink>
       
       {!isMobile && (
         <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">

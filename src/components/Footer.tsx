@@ -1,7 +1,9 @@
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
 import { TikTok } from "./icons/TikTok";
+import { ExternalLink } from "@/components/ui/external-link";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -23,18 +25,30 @@ export const Footer = () => {
               La solution sécurisée pour retrouver les pièces d'identité perdues au Sénégal
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/profile.php?id=61573756376174" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              <ExternalLink 
+                href="https://www.facebook.com/profile.php?id=61573756376174" 
+                className="text-primary-foreground/80 hover:text-secondary transition-colors"
+                showIcon={false}
+              >
                 <Facebook className="w-5 h-5" />
                 <span className="sr-only">Facebook</span>
-              </a>
-              <a href="https://www.instagram.com/finderid.info?igsh=MXdrNjk4bjQwY3NudA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              </ExternalLink>
+              <ExternalLink 
+                href="https://www.instagram.com/finderid.info?igsh=MXdrNjk4bjQwY3NudA%3D%3D&utm_source=qr" 
+                className="text-primary-foreground/80 hover:text-secondary transition-colors"
+                showIcon={false}
+              >
                 <Instagram className="w-5 h-5" />
                 <span className="sr-only">Instagram</span>
-              </a>
-              <a href="https://www.tiktok.com/@finderid.info?_t=ZM-8w964za6L5z&_r=1" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+              </ExternalLink>
+              <ExternalLink 
+                href="https://www.tiktok.com/@finderid.info?_t=ZM-8w964za6L5z&_r=1" 
+                className="text-primary-foreground/80 hover:text-secondary transition-colors"
+                showIcon={false}
+              >
                 <TikTok className="w-5 h-5" />
                 <span className="sr-only">TikTok</span>
-              </a>
+              </ExternalLink>
             </div>
           </div>
           
