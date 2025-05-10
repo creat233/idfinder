@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ExternalLink as ExternalLinkIcon, Globe } from "lucide-react";
+import { ExternalLink as ExternalLinkIcon, Globe, Shield } from "lucide-react";
 import { InAppBrowser } from "./in-app-browser";
+import { Badge } from "@/components/ui/badge";
 
 interface ExternalLinkProps {
   href: string;
@@ -55,27 +56,47 @@ export const ExternalLink = ({
 
       {/* Confirmation Dialog */}
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
+            <DialogTitle className="flex items-center">
+              <Shield className="h-5 w-5 mr-2 text-blue-500" />
+              {title}
+            </DialogTitle>
             <DialogDescription>
               Vous êtes sur le point de visiter un site externe:
-              <div className="my-2 bg-gray-50 p-2 rounded-md break-all">
-                {url}
-              </div>
             </DialogDescription>
           </DialogHeader>
+          
+          <div className="my-3">
+            <div className="bg-gray-50 p-3 rounded-md break-all border border-gray-200">
+              <Badge variant="outline" className="mb-2 bg-blue-50">URL</Badge>
+              <p className="text-sm font-mono word-break">{url}</p>
+            </div>
+          </div>
+          
           <DialogFooter className="flex flex-col sm:flex-row justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsConfirmOpen(false)}
+              className="sm:order-1"
+            >
               Annuler
             </Button>
             {useInAppBrowser && (
-              <Button variant="default" onClick={handleOpenInApp} className="flex-1 sm:flex-auto">
+              <Button 
+                variant="default" 
+                onClick={handleOpenInApp} 
+                className="flex-1 sm:flex-auto sm:order-3"
+              >
                 <Globe className="mr-2 h-4 w-4" />
                 Ouvrir dans l'application
               </Button>
             )}
-            <Button variant="secondary" onClick={handleOpenExternal}>
+            <Button 
+              variant="secondary" 
+              onClick={handleOpenExternal}
+              className="sm:order-2"
+            >
               <ExternalLinkIcon className="mr-2 h-4 w-4" />
               Ouvrir dans un nouvel onglet
             </Button>
@@ -93,3 +114,4 @@ export const ExternalLink = ({
     </>
   );
 };
+
