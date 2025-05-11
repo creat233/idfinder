@@ -45,17 +45,17 @@ export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMap
         title="Google Maps"
       >
         <div 
-          className="absolute inset-0 bg-cover bg-center cursor-pointer"
-          style={{ 
-            backgroundImage: "url('/lovable-uploads/4968f2dc-16b8-4944-8459-d483fb1fafd5.png')",
-            backgroundRepeat: "no-repeat" 
+          className="absolute inset-0 bg-black cursor-pointer"
+          style={{
+            backgroundSize: "cover",
+            backgroundPosition: "center"
           }}
         >
-          <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
-            <Navigation className="w-12 h-12 text-white mb-2" />
-            <p className="text-white font-semibold text-lg">Voir sur Google Maps</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <Navigation className="w-16 h-16 text-white mb-4" stroke="white" strokeWidth={1.5} />
+            <p className="text-white font-semibold text-2xl">Voir sur Google Maps</p>
             {activeCategory && (
-              <span className="mt-2 bg-primary/80 text-white px-3 py-1 rounded-full text-sm">
+              <span className="mt-4 bg-primary/80 text-white px-4 py-1.5 rounded-full text-lg">
                 {activeCategory === "police" ? "Commissariats" : 
                  activeCategory === "medical" ? "Hôpitaux" : 
                  activeCategory === "fire" ? "Sapeurs Pompiers" : ""}
