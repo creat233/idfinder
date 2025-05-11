@@ -1,18 +1,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2, ArrowRight } from "lucide-react";
+import { Search, Loader2, ArrowRight, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FoundCardResult } from "@/components/card-report/FoundCardResult";
 
 export const Hero = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [foundCard, setFoundCard] = useState<any>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,11 +34,13 @@ export const Hero = () => {
       }
 
       if (data) {
+        setFoundCard(data);
         toast({
           title: "Carte trouvée !",
           description: "Une carte correspondant à votre recherche a été trouvée.",
         });
       } else {
+        setFoundCard(null);
         toast({
           title: "Aucune carte trouvée",
           description: "Aucune carte correspondant à votre recherche n'a été trouvée.",
@@ -125,6 +129,17 @@ export const Hero = () => {
               </Button>
             </div>
           </motion.form>
+
+          {foundCard && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-10"
+            >
+              <FoundCardResult cardData={foundCard} />
+            </motion.div>
+          )}
 
           <motion.div 
             variants={itemVariants}
