@@ -44,6 +44,7 @@ export type Database = {
           location: string
           photo_url: string | null
           reporter_id: string
+          reporter_phone: string | null
           status: string | null
         }
         Insert: {
@@ -56,6 +57,7 @@ export type Database = {
           location: string
           photo_url?: string | null
           reporter_id: string
+          reporter_phone?: string | null
           status?: string | null
         }
         Update: {
@@ -68,6 +70,7 @@ export type Database = {
           location?: string
           photo_url?: string | null
           reporter_id?: string
+          reporter_phone?: string | null
           status?: string | null
         }
         Relationships: []

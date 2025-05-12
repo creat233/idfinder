@@ -94,7 +94,10 @@ const SignalerCarte = () => {
         reporter_phone: userPhone, // Ajout du numéro de téléphone
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error submitting form:", error);
+        throw error;
+      }
 
       toast.default({
         title: "Carte signalée avec succès",
@@ -102,7 +105,7 @@ const SignalerCarte = () => {
       });
 
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting form:", error);
       toast.destructive({
         title: "Erreur",
