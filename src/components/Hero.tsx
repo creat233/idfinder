@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2, ArrowRight } from "lucide-react";
+import { Search, Loader2, ArrowRight, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,29 +15,43 @@ export const Hero = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [foundCard, setFoundCard] = useState<any>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Veuillez entrer un numéro de carte",
+        description: "Le champ de recherche ne peut pas être vide",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSearching(true);
-    setFoundCard(null); // Réinitialiser les résultats précédents
+    setSearchError(null);
+    setFoundCard(null);
     
     try {
-      // Rechercher la carte sans utiliser la jointure qui cause l'erreur
+      // Rechercher la carte et joindre les informations du profil pour avoir le numéro de téléphone
       const { data, error } = await supabase
         .from('reported_cards')
-        .select('*')
+        .select(`
+          *,
+          profiles:reporter_id (
+            phone
+          )
+        `)
         .ilike('card_number', `%${searchQuery}%`)
         .maybeSingle();
 
       if (error) {
         console.error("Search error:", error);
+        setSearchError("Une erreur s'est produite lors de la recherche. Veuillez réessayer.");
         throw error;
       }
 
       if (data) {
-        // Si on trouve une carte, on l'affiche
         setFoundCard(data);
         toast({
           title: "Carte trouvée !",
@@ -53,6 +67,7 @@ export const Hero = () => {
       }
     } catch (error: any) {
       console.error("Search error details:", error);
+      setSearchError(error.message || "Une erreur s'est produite lors de la recherche");
       toast({
         title: "Erreur de recherche",
         description: "Une erreur s'est produite lors de la recherche. Veuillez réessayer.",
@@ -105,13 +120,13 @@ export const Hero = () => {
             variants={itemVariants}
             className="max-w-2xl mx-auto mb-10 relative"
           >
-            <div className="flex gap-4 items-center">
-              <div className="relative flex-grow">
+            <div className="flex flex-col sm:flex-row gap-4 items-center">
+              <div className="relative flex-grow w-full">
                 <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Entrez le numéro de votre pièce d'identité..."
-                  className="pl-10 py-6 text-lg"
+                  className="pl-10 py-6 text-lg w-full"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   disabled={isSearching}
@@ -121,7 +136,7 @@ export const Hero = () => {
                 type="submit" 
                 disabled={isSearching}
                 size="lg"
-                className="py-6 px-8"
+                className="py-6 px-8 w-full sm:w-auto"
               >
                 {isSearching ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -133,6 +148,10 @@ export const Hero = () => {
                 )}
               </Button>
             </div>
+            
+            {searchError && (
+              <p className="text-destructive text-sm mt-2">{searchError}</p>
+            )}
           </motion.form>
 
           {foundCard && (
