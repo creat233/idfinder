@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, CreditCard, ArrowRight } from "lucide-react";
+import { MapPin, Calendar, CreditCard, ArrowRight, Phone } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -16,6 +16,10 @@ interface FoundCardResultProps {
     found_date: string;
     location: string;
     id: string;
+    reporter_phone?: string;
+    profiles?: {
+      phone: string | null;
+    };
   };
 }
 
@@ -35,6 +39,9 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
       description: "Votre demande de récupération a été enregistrée. Vous serez contacté prochainement.",
     });
   };
+
+  // Récupérer le numéro de téléphone du déclarant
+  const reporterPhone = cardData.reporter_phone || (cardData.profiles && cardData.profiles.phone);
 
   // Formater le type de document pour l'affichage
   const getDocumentTypeLabel = (type: string) => {
@@ -105,6 +112,18 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
                 <p className="font-semibold">{cardData.location}</p>
               </div>
             </div>
+            
+            {reporterPhone && (
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-full">
+                  <Phone className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Contact déclarant</p>
+                  <p className="font-semibold">{reporterPhone}</p>
+                </div>
+              </div>
+            )}
 
             <div className="mt-2 pt-4 border-t">
               <p className="text-sm text-center text-muted-foreground">
@@ -141,6 +160,11 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
             <p className="text-sm font-medium">
               Numéro de carte: <span className="font-bold">{cardData.card_number}</span>
             </p>
+            {reporterPhone && (
+              <p className="text-sm font-medium">
+                Vous pouvez contacter directement le déclarant au: <span className="font-bold">{reporterPhone}</span>
+              </p>
+            )}
           </div>
           
           <DialogFooter>

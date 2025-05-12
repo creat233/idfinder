@@ -22,9 +22,15 @@ export const Hero = () => {
 
     setIsSearching(true);
     try {
+      // Rechercher la carte et joindre les informations du profil pour avoir le numéro de téléphone
       const { data, error } = await supabase
         .from('reported_cards')
-        .select('*')
+        .select(`
+          *,
+          profiles:reporter_id (
+            phone
+          )
+        `)
         .ilike('card_number', `%${searchQuery}%`)
         .maybeSingle();
 
