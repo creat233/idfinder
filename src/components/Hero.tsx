@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Loader2, ArrowRight, MapPin } from "lucide-react";
+import { Search, Loader2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,16 +21,13 @@ export const Hero = () => {
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
+    setFoundCard(null); // Réinitialiser les résultats précédents
+    
     try {
-      // Rechercher la carte et joindre les informations du profil pour avoir le numéro de téléphone
+      // Rechercher la carte sans utiliser la jointure qui cause l'erreur
       const { data, error } = await supabase
         .from('reported_cards')
-        .select(`
-          *,
-          profiles:reporter_id (
-            phone
-          )
-        `)
+        .select('*')
         .ilike('card_number', `%${searchQuery}%`)
         .maybeSingle();
 
@@ -40,6 +37,7 @@ export const Hero = () => {
       }
 
       if (data) {
+        // Si on trouve une carte, on l'affiche
         setFoundCard(data);
         toast({
           title: "Carte trouvée !",
@@ -116,6 +114,7 @@ export const Hero = () => {
                   className="pl-10 py-6 text-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  disabled={isSearching}
                 />
               </div>
               <Button 
