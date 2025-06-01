@@ -1,13 +1,37 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Smartphone, Shield, Zap } from "lucide-react";
+import { Download, Smartphone, Shield, Zap, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 export const DownloadSection = () => {
+  const { toast } = useToast();
+
   const handleDownloadAPK = () => {
-    // This would link to your actual APK download
-    window.open('#', '_blank');
+    try {
+      // Créer un lien de téléchargement vers le fichier APK
+      const link = document.createElement('a');
+      link.href = '/apk/idfinder.apk'; // Chemin vers votre fichier APK
+      link.download = 'FinderID.apk';
+      link.target = '_blank';
+      
+      // Déclencher le téléchargement
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({
+        title: "Téléchargement commencé",
+        description: "Le fichier APK est en cours de téléchargement",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur de téléchargement",
+        description: "Impossible de télécharger le fichier APK",
+      });
+    }
   };
 
   return (
@@ -60,6 +84,19 @@ export const DownloadSection = () => {
                     <span>Optimisée pour mobile</span>
                   </div>
                 </div>
+
+                {/* Avertissement pour les sources inconnues */}
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium text-amber-800 mb-1">Installation requise</p>
+                      <p className="text-amber-700">
+                        Activez "Sources inconnues" dans les paramètres Android pour installer l'APK.
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 
                 <Button 
                   onClick={handleDownloadAPK}
@@ -86,7 +123,7 @@ export const DownloadSection = () => {
           >
             <div className="space-y-6">
               <h3 className="text-2xl font-semibold text-gray-800">
-                Pourquoi télécharger l'application ?
+                Comment installer l'APK ?
               </h3>
               
               <div className="space-y-4">
@@ -95,8 +132,8 @@ export const DownloadSection = () => {
                     <span className="text-primary font-bold">1</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">Accès hors ligne</h4>
-                    <p className="text-gray-600">Consultez vos informations même sans connexion internet</p>
+                    <h4 className="font-semibold text-gray-800">Téléchargez l'APK</h4>
+                    <p className="text-gray-600">Cliquez sur le bouton pour télécharger le fichier APK</p>
                   </div>
                 </div>
                 
@@ -105,8 +142,8 @@ export const DownloadSection = () => {
                     <span className="text-primary font-bold">2</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">Notifications push</h4>
-                    <p className="text-gray-600">Recevez des alertes en temps réel sur vos documents</p>
+                    <h4 className="font-semibold text-gray-800">Activez les sources inconnues</h4>
+                    <p className="text-gray-600">Paramètres > Sécurité > Sources inconnues</p>
                   </div>
                 </div>
                 
@@ -115,8 +152,8 @@ export const DownloadSection = () => {
                     <span className="text-primary font-bold">3</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">Performance optimisée</h4>
-                    <p className="text-gray-600">Application native plus rapide et plus fluide</p>
+                    <h4 className="font-semibold text-gray-800">Installez l'application</h4>
+                    <p className="text-gray-600">Ouvrez le fichier APK téléchargé et suivez les instructions</p>
                   </div>
                 </div>
               </div>
