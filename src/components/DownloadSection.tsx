@@ -12,7 +12,7 @@ export const DownloadSection = () => {
     try {
       // Créer un lien de téléchargement vers le fichier APK
       const link = document.createElement('a');
-      link.href = '/apk/idfinder.apk'; // Chemin vers votre fichier APK
+      link.href = '/FinderID.apk'; // Chemin vers votre fichier APK dans le dossier public
       link.download = 'FinderID.apk';
       link.target = '_blank';
       
@@ -143,7 +143,7 @@ export const DownloadSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800">Activez les sources inconnues</h4>
-                    <p className="text-gray-600">Paramètres > Sécurité > Sources inconnues</p>
+                    <p className="text-gray-600">Paramètres &gt; Sécurité &gt; Sources inconnues</p>
                   </div>
                 </div>
                 
