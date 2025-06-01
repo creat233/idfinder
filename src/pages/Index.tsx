@@ -6,6 +6,7 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { Footer } from "@/components/Footer";
 import { Testimonials } from "@/components/Testimonials";
 import { FeaturesSection } from "@/components/FeaturesSection";
+import { DownloadSection } from "@/components/DownloadSection";
 import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -45,6 +46,13 @@ const Index = () => {
             transition={{ delay: 0.6, duration: 0.5 }}
           >
             <FeaturesSection />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
+            <DownloadSection />
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
