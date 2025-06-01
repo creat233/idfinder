@@ -10,9 +10,9 @@ export const DownloadSection = () => {
 
   const handleDownloadAPK = () => {
     try {
-      // Créer un lien de téléchargement vers le fichier APK
+      // Utiliser votre lien localhost pour télécharger l'APK
       const link = document.createElement('a');
-      link.href = '/FinderID.apk'; // Chemin vers votre fichier APK dans le dossier public
+      link.href = 'http://localhost:8081/FinderID.apk';
       link.download = 'FinderID.apk';
       link.target = '_blank';
       
@@ -45,7 +45,7 @@ export const DownloadSection = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Téléchargez l'application mobile
+            Téléchargez l'application mobile FinderID
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Accédez à FinderID directement depuis votre smartphone Android
@@ -59,38 +59,38 @@ export const DownloadSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <Card className="p-6">
+            <Card className="p-6 border-2 border-green-200 shadow-lg">
               <CardHeader className="text-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Smartphone className="w-8 h-8 text-primary" />
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Smartphone className="w-10 h-10 text-green-600" />
                 </div>
-                <CardTitle className="text-2xl">Application Android</CardTitle>
+                <CardTitle className="text-2xl text-green-800">Application Android</CardTitle>
                 <CardDescription className="text-lg">
                   Version mobile optimisée pour Android
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Shield className="w-5 h-5 text-green-600" />
-                    <span>Application sécurisée et fiable</span>
+                    <span className="text-gray-700">Application sécurisée et fiable</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Zap className="w-5 h-5 text-blue-600" />
-                    <span>Interface rapide et intuitive</span>
+                    <span className="text-gray-700">Interface rapide et intuitive</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Smartphone className="w-5 h-5 text-purple-600" />
-                    <span>Optimisée pour mobile</span>
+                    <span className="text-gray-700">Optimisée pour mobile</span>
                   </div>
                 </div>
 
                 {/* Avertissement pour les sources inconnues */}
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium text-amber-800 mb-1">Installation requise</p>
+                      <p className="font-semibold text-amber-800 mb-2">⚠️ Installation requise</p>
                       <p className="text-amber-700">
                         Activez "Sources inconnues" dans les paramètres Android pour installer l'APK.
                       </p>
@@ -98,18 +98,26 @@ export const DownloadSection = () => {
                   </div>
                 </div>
                 
-                <Button 
-                  onClick={handleDownloadAPK}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg"
-                  size="lg"
-                >
-                  <Download className="w-5 h-5 mr-2" />
-                  Télécharger APK Android
-                </Button>
+                {/* Bouton de téléchargement bien visible */}
+                <div className="pt-4">
+                  <Button 
+                    onClick={handleDownloadAPK}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                    size="lg"
+                  >
+                    <Download className="w-6 h-6 mr-3" />
+                    📱 Télécharger APK Android
+                  </Button>
+                </div>
                 
-                <p className="text-sm text-gray-500 text-center">
-                  Compatible avec Android 6.0 et versions ultérieures
-                </p>
+                <div className="text-center pt-2">
+                  <p className="text-sm text-gray-500">
+                    ✅ Compatible avec Android 6.0 et versions ultérieures
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Taille: ~10 MB • Version: 1.0.0
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -123,39 +131,47 @@ export const DownloadSection = () => {
           >
             <div className="space-y-6">
               <h3 className="text-2xl font-semibold text-gray-800">
-                Comment installer l'APK ?
+                📋 Comment installer l'APK ?
               </h3>
               
               <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-primary font-bold">1</span>
+                <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white font-bold">1</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">Téléchargez l'APK</h4>
-                    <p className="text-gray-600">Cliquez sur le bouton pour télécharger le fichier APK</p>
+                    <h4 className="font-semibold text-gray-800">📥 Téléchargez l'APK</h4>
+                    <p className="text-gray-600">Cliquez sur le bouton vert pour télécharger le fichier APK</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-primary font-bold">2</span>
+                <div className="flex items-start gap-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <div className="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white font-bold">2</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">Activez les sources inconnues</h4>
+                    <h4 className="font-semibold text-gray-800">🔓 Activez les sources inconnues</h4>
                     <p className="text-gray-600">Paramètres &gt; Sécurité &gt; Sources inconnues</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-primary font-bold">3</span>
+                <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white font-bold">3</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800">Installez l'application</h4>
+                    <h4 className="font-semibold text-gray-800">📲 Installez l'application</h4>
                     <p className="text-gray-600">Ouvrez le fichier APK téléchargé et suivez les instructions</p>
                   </div>
                 </div>
+              </div>
+
+              {/* Lien direct visible */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-sm text-gray-600 mb-2">Lien direct de téléchargement:</p>
+                <code className="text-xs bg-white p-2 rounded border break-all">
+                  http://localhost:8081/FinderID.apk
+                </code>
               </div>
             </div>
           </motion.div>
