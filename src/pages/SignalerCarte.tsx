@@ -61,12 +61,12 @@ const SignalerCarte = () => {
       if (error) throw error;
 
       if (data.documentType === "student_card") {
-        toast({
+        toast.default({
           title: "Carte étudiante signalée avec succès",
           description: "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter",
         });
       } else {
-        toast({
+        toast.default({
           title: "Carte signalée avec succès",
           description: "Merci d'avoir signalé cette carte",
         });
@@ -75,8 +75,7 @@ const SignalerCarte = () => {
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast({
-        variant: "destructive",
+      toast.destructive({
         title: "Erreur",
         description: "Une erreur est survenue lors de la soumission du formulaire",
       });
