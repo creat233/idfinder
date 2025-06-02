@@ -1,25 +1,35 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Smartphone, Shield, Zap, AlertCircle } from "lucide-react";
+import { Download, Smartphone, Shield, Zap, AlertCircle, ExternalLink, Copy } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export const DownloadSection = () => {
   const { toast } = useToast();
+  const [showDirectLink, setShowDirectLink] = useState(false);
+  const downloadUrl = 'http://localhost:8081/FinderID.apk';
 
   const handleDownloadAPK = () => {
     try {
-      // Utiliser votre lien localhost pour télécharger l'APK
-      const link = document.createElement('a');
-      link.href = 'http://localhost:8081/FinderID.apk';
-      link.download = 'FinderID.apk';
-      link.target = '_blank';
+      // Détecter si on est sur mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
-      // Déclencher le téléchargement
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      if (isMobile) {
+        // Sur mobile, ouvrir directement le lien
+        window.open(downloadUrl, '_blank');
+      } else {
+        // Sur desktop, utiliser la méthode de téléchargement classique
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'FinderID.apk';
+        link.target = '_blank';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
       toast({
         title: "Téléchargement commencé",
@@ -32,6 +42,30 @@ export const DownloadSection = () => {
         description: "Impossible de télécharger le fichier APK",
       });
     }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(downloadUrl);
+      toast({
+        title: "Lien copié !",
+        description: "Vous pouvez maintenant le coller dans votre navigateur",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de copier le lien",
+      });
+    }
+  };
+
+  const handleDirectLink = () => {
+    window.open(downloadUrl, '_blank');
+    toast({
+      title: "Ouverture du lien",
+      description: "Le téléchargement devrait commencer automatiquement",
+    });
   };
 
   return (
@@ -98,8 +132,8 @@ export const DownloadSection = () => {
                   </div>
                 </div>
                 
-                {/* Bouton de téléchargement bien visible */}
-                <div className="pt-4">
+                {/* Boutons de téléchargement */}
+                <div className="space-y-3">
                   <Button 
                     onClick={handleDownloadAPK}
                     className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
@@ -108,6 +142,46 @@ export const DownloadSection = () => {
                     <Download className="w-6 h-6 mr-3" />
                     📱 Télécharger APK Android
                   </Button>
+
+                  {/* Boutons alternatifs pour mobile */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button 
+                      onClick={handleDirectLink}
+                      variant="outline"
+                      className="text-sm py-2"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Lien direct
+                    </Button>
+                    <Button 
+                      onClick={handleCopyLink}
+                      variant="outline"
+                      className="text-sm py-2"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copier lien
+                    </Button>
+                  </div>
+                  
+                  <Button 
+                    onClick={() => setShowDirectLink(!showDirectLink)}
+                    variant="ghost"
+                    className="w-full text-sm text-gray-600"
+                  >
+                    {showDirectLink ? 'Masquer' : 'Afficher'} le lien de téléchargement
+                  </Button>
+                  
+                  {showDirectLink && (
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                      <p className="text-xs text-gray-600 mb-2">Lien direct :</p>
+                      <div className="bg-white p-2 rounded border text-xs font-mono break-all select-all">
+                        {downloadUrl}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        💡 Copiez ce lien et collez-le dans votre navigateur mobile
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="text-center pt-2">
@@ -141,7 +215,7 @@ export const DownloadSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800">📥 Téléchargez l'APK</h4>
-                    <p className="text-gray-600">Cliquez sur le bouton vert pour télécharger le fichier APK</p>
+                    <p className="text-gray-600">Cliquez sur le bouton vert ou utilisez le lien direct</p>
                   </div>
                 </div>
                 
@@ -166,12 +240,14 @@ export const DownloadSection = () => {
                 </div>
               </div>
 
-              {/* Lien direct visible */}
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-600 mb-2">Lien direct de téléchargement:</p>
-                <code className="text-xs bg-white p-2 rounded border break-all">
-                  http://localhost:8081/FinderID.apk
-                </code>
+              {/* Conseils pour mobile */}
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <h4 className="font-semibold text-purple-800 mb-2">💡 Conseils pour mobile :</h4>
+                <ul className="text-sm text-purple-700 space-y-1">
+                  <li>• Si le téléchargement ne démarre pas, utilisez le "Lien direct"</li>
+                  <li>• Vous pouvez copier le lien et l'ouvrir dans un autre navigateur</li>
+                  <li>• Assurez-vous d'avoir une connexion internet stable</li>
+                </ul>
               </div>
             </div>
           </motion.div>
