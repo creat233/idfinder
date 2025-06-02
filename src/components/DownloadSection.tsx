@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, Smartphone, Shield, Zap, AlertCircle, ExternalLink, Copy } from "lucide-react";
@@ -9,31 +8,22 @@ import { useState } from "react";
 export const DownloadSection = () => {
   const { toast } = useToast();
   const [showDirectLink, setShowDirectLink] = useState(false);
-  const downloadUrl = 'http://localhost:8081/FinderID.apk';
+  const downloadUrl = '/FinderID (1).apk';
 
   const handleDownloadAPK = () => {
     try {
-      // Détecter si on est sur mobile
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      // Créer un lien de téléchargement direct vers le fichier APK local
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = 'FinderID.apk';
       
-      if (isMobile) {
-        // Sur mobile, ouvrir directement le lien
-        window.open(downloadUrl, '_blank');
-      } else {
-        // Sur desktop, utiliser la méthode de téléchargement classique
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = 'FinderID.apk';
-        link.target = '_blank';
-        
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       toast({
         title: "Téléchargement commencé",
-        description: "Le fichier APK est en cours de téléchargement",
+        description: "Le fichier APK FinderID est en cours de téléchargement",
       });
     } catch (error) {
       toast({
@@ -46,7 +36,8 @@ export const DownloadSection = () => {
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(downloadUrl);
+      const fullUrl = window.location.origin + downloadUrl;
+      await navigator.clipboard.writeText(fullUrl);
       toast({
         title: "Lien copié !",
         description: "Vous pouvez maintenant le coller dans votre navigateur",
@@ -175,7 +166,7 @@ export const DownloadSection = () => {
                     <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                       <p className="text-xs text-gray-600 mb-2">Lien direct :</p>
                       <div className="bg-white p-2 rounded border text-xs font-mono break-all select-all">
-                        {downloadUrl}
+                        {window.location.origin + downloadUrl}
                       </div>
                       <p className="text-xs text-gray-500 mt-2">
                         💡 Copiez ce lien et collez-le dans votre navigateur mobile
@@ -189,7 +180,7 @@ export const DownloadSection = () => {
                     ✅ Compatible avec Android 6.0 et versions ultérieures
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    Taille: ~10 MB • Version: 1.0.0
+                    FinderID APK • Version: 1.0.0
                   </p>
                 </div>
               </CardContent>
