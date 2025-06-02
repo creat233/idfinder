@@ -35,12 +35,17 @@ const SignalerCarte = () => {
     },
   });
 
+  const watchedDocumentType = form.watch("documentType");
+
   const onSubmit = async (data: FormValues) => {
     try {
       setIsSubmitting(true);
 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
+
+      // Pour les cartes étudiantes, on définit un statut spécial
+      const status = data.documentType === "student_card" ? "public_contact" : "pending";
 
       const { error } = await supabase.from("reported_cards").insert({
         card_number: data.cardNumber,
@@ -50,19 +55,28 @@ const SignalerCarte = () => {
         document_type: data.documentType,
         photo_url: data.photoUrl,
         reporter_id: user.id,
+        status: status,
       });
 
       if (error) throw error;
 
-      toast.default({
-        title: "Carte signalée avec succès",
-        description: "Merci d'avoir signalé cette carte",
-      });
+      if (data.documentType === "student_card") {
+        toast({
+          title: "Carte étudiante signalée avec succès",
+          description: "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter",
+        });
+      } else {
+        toast({
+          title: "Carte signalée avec succès",
+          description: "Merci d'avoir signalé cette carte",
+        });
+      }
 
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast.destructive({
+      toast({
+        variant: "destructive",
         title: "Erreur",
         description: "Une erreur est survenue lors de la soumission du formulaire",
       });
@@ -107,6 +121,17 @@ const SignalerCarte = () => {
             />
 
             <PhotoUpload form={form} />
+
+            {watchedDocumentType === "student_card" && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="font-semibold text-blue-800 mb-2">Service gratuit pour cartes étudiantes</h3>
+                <p className="text-sm text-blue-700">
+                  En signalant une carte étudiante, votre numéro de téléphone sera visible directement 
+                  pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit 
+                  pour faciliter la récupération des cartes étudiantes.
+                </p>
+              </div>
+            )}
 
             <Button
               type="submit"
