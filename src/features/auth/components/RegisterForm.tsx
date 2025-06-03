@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { CountrySelect } from "@/components/auth/CountrySelect";
 
 // Schema for registration form
 const registerSchema = z.object({
@@ -20,6 +21,7 @@ const registerSchema = z.object({
   firstName: z.string().min(1, "Le prénom est requis"),
   lastName: z.string().min(1, "Le nom est requis"),
   phone: z.string().min(1, "Le numéro de téléphone est requis"),
+  country: z.string().min(1, "Le pays est requis"),
 });
 
 type RegisterFormProps = {
@@ -37,6 +39,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
       firstName: "",
       lastName: "",
       phone: "",
+      country: "SN",
     },
   });
 
@@ -71,6 +74,20 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
             )}
           />
         </div>
+        
+        <FormField
+          control={form.control}
+          name="country"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pays de résidence</FormLabel>
+              <FormControl>
+                <CountrySelect control={form.control} name="country" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         
         <FormField
           control={form.control}

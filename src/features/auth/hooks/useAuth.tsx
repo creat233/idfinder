@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +16,7 @@ export const useAuth = () => {
     firstName: string;
     lastName: string;
     phone: string;
+    country: string;
   }) => {
     setLoading(true);
     setError(null);
@@ -31,6 +31,7 @@ export const useAuth = () => {
             first_name: values.firstName,
             last_name: values.lastName,
             phone: values.phone,
+            country: values.country,
           },
         },
       });
@@ -48,7 +49,8 @@ export const useAuth = () => {
             id: authData.user.id,
             first_name: values.firstName,
             last_name: values.lastName,
-            phone: values.phone
+            phone: values.phone,
+            country: values.country
           });
 
         if (profileError) {

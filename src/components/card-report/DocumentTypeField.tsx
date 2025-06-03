@@ -51,6 +51,15 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           <SelectItem value="passport" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
             Passeport
           </SelectItem>
+          <SelectItem value="vehicle_registration" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte grise véhicule
+          </SelectItem>
+          <SelectItem value="motorcycle_registration" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte grise moto
+          </SelectItem>
+          <SelectItem value="residence_permit" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte de séjour
+          </SelectItem>
           <SelectItem value="student_card" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100 text-green-600 font-medium">
             Carte étudiante (Gratuit - Contact direct)
           </SelectItem>
