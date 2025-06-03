@@ -1,46 +1,93 @@
-
 export const translations = {
   SN: {
-    appName: "FinderID Sénégal",
-    welcomeMessage: "Bienvenue sur FinderID Sénégal - Retrouvez vos documents perdus",
-    documentTypes: {
-      id: "Carte d'identité nationale",
-      driver_license: "Permis de conduire",
-      passport: "Passeport",
-      vehicle_registration: "Carte grise véhicule",
-      motorcycle_registration: "Carte grise moto",
-      residence_permit: "Carte de séjour",
-      student_card: "Carte étudiante"
+    fr: {
+      appName: "FinderID Sénégal",
+      welcomeMessage: "Bienvenue sur FinderID Sénégal - Retrouvez vos documents perdus",
+      documentTypes: {
+        id: "Carte d'identité nationale",
+        driver_license: "Permis de conduire",
+        passport: "Passeport",
+        vehicle_registration: "Carte grise véhicule",
+        motorcycle_registration: "Carte grise moto",
+        residence_permit: "Carte de séjour",
+        student_card: "Carte étudiante"
+      },
+      deliveryOption: "🚚 Livraison à domicile disponible dans tout le Sénégal"
     },
-    deliveryOption: "🚚 Livraison à domicile disponible dans tout le Sénégal"
+    en: {
+      appName: "FinderID Senegal",
+      welcomeMessage: "Welcome to FinderID Senegal - Find your lost documents",
+      documentTypes: {
+        id: "National Identity Card",
+        driver_license: "Driver's License",
+        passport: "Passport",
+        vehicle_registration: "Vehicle Registration",
+        motorcycle_registration: "Motorcycle Registration",
+        residence_permit: "Residence Permit",
+        student_card: "Student Card"
+      },
+      deliveryOption: "🚚 Home delivery available throughout Senegal"
+    }
   },
   CI: {
-    appName: "FinderID Côte d'Ivoire",
-    welcomeMessage: "Bienvenue sur FinderID Côte d'Ivoire - Retrouvez vos documents perdus",
-    documentTypes: {
-      id: "Carte nationale d'identité",
-      driver_license: "Permis de conduire",
-      passport: "Passeport",
-      vehicle_registration: "Carte grise véhicule",
-      motorcycle_registration: "Carte grise moto",
-      residence_permit: "Attestation de résidence",
-      student_card: "Carte étudiante"
+    fr: {
+      appName: "FinderID Côte d'Ivoire",
+      welcomeMessage: "Bienvenue sur FinderID Côte d'Ivoire - Retrouvez vos documents perdus",
+      documentTypes: {
+        id: "Carte nationale d'identité",
+        driver_license: "Permis de conduire",
+        passport: "Passeport",
+        vehicle_registration: "Carte grise véhicule",
+        motorcycle_registration: "Carte grise moto",
+        residence_permit: "Attestation de résidence",
+        student_card: "Carte étudiante"
+      },
+      deliveryOption: "🚚 Livraison à domicile disponible à Abidjan et environs"
     },
-    deliveryOption: "🚚 Livraison à domicile disponible à Abidjan et environs"
+    en: {
+      appName: "FinderID Ivory Coast",
+      welcomeMessage: "Welcome to FinderID Ivory Coast - Find your lost documents",
+      documentTypes: {
+        id: "National Identity Card",
+        driver_license: "Driver's License",
+        passport: "Passport",
+        vehicle_registration: "Vehicle Registration",
+        motorcycle_registration: "Motorcycle Registration",
+        residence_permit: "Residence Certificate",
+        student_card: "Student Card"
+      },
+      deliveryOption: "🚚 Home delivery available in Abidjan and surroundings"
+    }
   },
   ML: {
-    appName: "FinderID Mali",
-    welcomeMessage: "Bienvenue sur FinderID Mali - Retrouvez vos documents perdus",
-    documentTypes: {
-      id: "Carte d'identité NINA",
-      driver_license: "Permis de conduire",
-      passport: "Passeport",
-      vehicle_registration: "Carte grise véhicule",
-      motorcycle_registration: "Carte grise moto",
-      residence_permit: "Carte de séjour",
-      student_card: "Carte étudiante"
+    fr: {
+      appName: "FinderID Mali",
+      welcomeMessage: "Bienvenue sur FinderID Mali - Retrouvez vos documents perdus",
+      documentTypes: {
+        id: "Carte d'identité NINA",
+        driver_license: "Permis de conduire",
+        passport: "Passeport",
+        vehicle_registration: "Carte grise véhicule",
+        motorcycle_registration: "Carte grise moto",
+        residence_permit: "Carte de séjour",
+        student_card: "Carte étudiante"
+      },
+      deliveryOption: "🚚 Livraison à domicile disponible à Bamako"
     },
-    deliveryOption: "🚚 Livraison à domicile disponible à Bamako"
+    en: {
+      appName: "FinderID Mali",
+      welcomeMessage: "Welcome to FinderID Mali - Find your lost documents",
+      documentTypes: {
+        id: "NINA Identity Card",
+        driver_license: "Driver's License",
+        passport: "Passport",
+        vehicle_registration: "Vehicle Registration",
+        motorcycle_registration: "Motorcycle Registration",
+        residence_permit: "Residence Permit",
+        student_card: "Student Card"
+      },
+      deliveryOption: "🚚 Home delivery available in Bamako"
+    }
   },
   BF: {
     appName: "FinderID Burkina Faso",
@@ -100,30 +147,47 @@ export const translations = {
   },
   // Ajouter d'autres pays avec des traductions par défaut
   default: {
-    appName: "FinderID",
-    welcomeMessage: "Bienvenue sur FinderID - Retrouvez vos documents perdus",
-    documentTypes: {
-      id: "Carte d'identité",
-      driver_license: "Permis de conduire",
-      passport: "Passeport",
-      vehicle_registration: "Carte grise véhicule",
-      motorcycle_registration: "Carte grise moto",
-      residence_permit: "Carte de séjour",
-      student_card: "Carte étudiante"
+    fr: {
+      appName: "FinderID",
+      welcomeMessage: "Bienvenue sur FinderID - Retrouvez vos documents perdus",
+      documentTypes: {
+        id: "Carte d'identité",
+        driver_license: "Permis de conduire",
+        passport: "Passeport",
+        vehicle_registration: "Carte grise véhicule",
+        motorcycle_registration: "Carte grise moto",
+        residence_permit: "Carte de séjour",
+        student_card: "Carte étudiante"
+      },
+      deliveryOption: "🚚 Livraison à domicile disponible"
     },
-    deliveryOption: "🚚 Livraison à domicile disponible"
+    en: {
+      appName: "FinderID",
+      welcomeMessage: "Welcome to FinderID - Find your lost documents",
+      documentTypes: {
+        id: "Identity Card",
+        driver_license: "Driver's License",
+        passport: "Passport",
+        vehicle_registration: "Vehicle Registration",
+        motorcycle_registration: "Motorcycle Registration",
+        residence_permit: "Residence Permit",
+        student_card: "Student Card"
+      },
+      deliveryOption: "🚚 Home delivery available"
+    }
   }
 };
 
-export const getTranslation = (countryCode: string, key: string): string => {
+export const getTranslation = (countryCode: string, language: string, key: string): string => {
   const countryTranslations = translations[countryCode as keyof typeof translations] || translations.default;
+  const langTranslations = countryTranslations[language as keyof typeof countryTranslations] || countryTranslations.fr;
   
   // Pour les types de documents
   if (key.startsWith('documentTypes.')) {
     const docType = key.replace('documentTypes.', '');
-    return countryTranslations.documentTypes[docType as keyof typeof countryTranslations.documentTypes] || key;
+    return langTranslations.documentTypes[docType as keyof typeof langTranslations.documentTypes] || key;
   }
   
   // Pour les autres clés
-  return countryTranslations[key as keyof typeof countryTranslations] || key;
+  return langTranslations[key as keyof typeof langTranslations] || key;
 };
