@@ -42,7 +42,7 @@ export const useTranslation = () => {
   };
 
   const t = (key: string): string => {
-    return getTranslation(currentCountry as any, currentLanguage as any, key);
+    return getTranslation(currentCountry, currentLanguage, key);
   };
 
   return { 
