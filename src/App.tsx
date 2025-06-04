@@ -90,7 +90,7 @@ const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (session) {
-    return <Navigate to="/signaler" />;
+    return <Navigate to="/" />;
   }
 
   return <>{children}</>;
@@ -145,7 +145,7 @@ const App = () => {
           ) : (
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<AuthenticatedRedirect><Index /></AuthenticatedRedirect>} />
+                <Route path="/" element={<Index />} />
                 <Route path="/login" element={<AuthenticatedRedirect><Login /></AuthenticatedRedirect>} />
                 <Route path="/demo" element={<Demo />} />
                 <Route path="/signaler" element={<ProtectedRoute><SignalerCarte /></ProtectedRoute>} />
