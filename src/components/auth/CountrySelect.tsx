@@ -15,8 +15,11 @@ interface CountrySelectProps {
 }
 
 const countries = [
-  // Pays d'Afrique de l'Ouest
   { code: "SN", name: "Sénégal", flag: "🇸🇳" },
+  { code: "FR", name: "France", flag: "🇫🇷" },
+  { code: "MA", name: "Maroc", flag: "🇲🇦" },
+  { code: "DZ", name: "Algérie", flag: "🇩🇿" },
+  { code: "TN", name: "Tunisie", flag: "🇹🇳" },
   { code: "CI", name: "Côte d'Ivoire", flag: "🇨🇮" },
   { code: "ML", name: "Mali", flag: "🇲🇱" },
   { code: "BF", name: "Burkina Faso", flag: "🇧🇫" },
@@ -26,31 +29,11 @@ const countries = [
   { code: "GM", name: "Gambie", flag: "🇬🇲" },
   { code: "GW", name: "Guinée-Bissau", flag: "🇬🇼" },
   { code: "CV", name: "Cap-Vert", flag: "🇨🇻" },
-  { code: "LR", name: "Libéria", flag: "🇱🇷" },
-  { code: "SL", name: "Sierra Leone", flag: "🇸🇱" },
-  { code: "GH", name: "Ghana", flag: "🇬🇭" },
-  { code: "TG", name: "Togo", flag: "🇹🇬" },
-  { code: "BJ", name: "Bénin", flag: "🇧🇯" },
-  { code: "NG", name: "Nigeria", flag: "🇳🇬" },
-  
-  // Pays du Maghreb
-  { code: "MA", name: "Maroc", flag: "🇲🇦" },
-  { code: "DZ", name: "Algérie", flag: "🇩🇿" },
-  { code: "TN", name: "Tunisie", flag: "🇹🇳" },
-  { code: "LY", name: "Libye", flag: "🇱🇾" },
-  { code: "EG", name: "Égypte", flag: "🇪🇬" },
-  
-  // Pays européens (migration)
-  { code: "FR", name: "France", flag: "🇫🇷" },
   { code: "ES", name: "Espagne", flag: "🇪🇸" },
   { code: "IT", name: "Italie", flag: "🇮🇹" },
   { code: "DE", name: "Allemagne", flag: "🇩🇪" },
   { code: "BE", name: "Belgique", flag: "🇧🇪" },
   { code: "CH", name: "Suisse", flag: "🇨🇭" },
-  { code: "PT", name: "Portugal", flag: "🇵🇹" },
-  { code: "NL", name: "Pays-Bas", flag: "🇳🇱" },
-  
-  // Amérique du Nord
   { code: "CA", name: "Canada", flag: "🇨🇦" },
   { code: "US", name: "États-Unis", flag: "🇺🇸" },
 ];

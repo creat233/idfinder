@@ -1,83 +1,142 @@
 
-type Country = "SN" | "FR" | "US" | "CA";
-type Language = "fr" | "en";
-
-interface Translations {
-  [key: string]: {
-    [key in Language]: string;
-  };
+export interface Translations {
+  [key: string]: string;
 }
 
-const translations: Translations = {
-  appName: {
-    fr: "Sama Pièce",
-    en: "Sama Pièce"
+export const translations: { [country: string]: Translations } = {
+  SN: {
+    // Français - Sénégal
+    "app.name": "Sama Pièce",
+    "auth.login": "Se connecter",
+    "auth.register": "Créer un compte",
+    "auth.email": "Email",
+    "auth.password": "Mot de passe",
+    "auth.firstName": "Prénom",
+    "auth.lastName": "Nom",
+    "auth.phone": "Téléphone",
+    "auth.country": "Pays de résidence",
+    "document.id": "Carte d'identité",
+    "document.driver_license": "Permis de conduire",
+    "document.passport": "Passeport",
+    "document.vehicle_registration": "Carte grise véhicule",
+    "document.motorcycle_registration": "Carte grise moto",
+    "document.residence_permit": "Carte de séjour",
+    "document.student_card": "Carte étudiante",
+    "form.cardNumber": "Numéro de la carte",
+    "form.location": "Lieu de découverte",
+    "form.foundDate": "Date de découverte",
+    "form.description": "Description",
+    "button.submit": "Signaler la carte",
+    "success.cardReported": "Carte signalée avec succès",
+    "success.studentCard": "Carte étudiante signalée avec succès",
   },
-  welcomeMessage: {
-    fr: "Retrouvez facilement vos pièces d'identité perdues grâce à notre communauté solidaire. Signalez, recherchez et récupérez vos documents en toute simplicité.",
-    en: "Easily find your lost identity documents thanks to our supportive community. Report, search and recover your documents with ease."
+  FR: {
+    // Français - France
+    "app.name": "TrouvePièce",
+    "auth.login": "Se connecter",
+    "auth.register": "Créer un compte",
+    "auth.email": "Email",
+    "auth.password": "Mot de passe",
+    "auth.firstName": "Prénom",
+    "auth.lastName": "Nom",
+    "auth.phone": "Téléphone",
+    "auth.country": "Pays de résidence",
+    "document.id": "Carte d'identité",
+    "document.driver_license": "Permis de conduire",
+    "document.passport": "Passeport",
+    "document.vehicle_registration": "Carte grise",
+    "document.motorcycle_registration": "Carte grise moto",
+    "document.residence_permit": "Titre de séjour",
+    "document.student_card": "Carte étudiante",
+    "form.cardNumber": "Numéro du document",
+    "form.location": "Lieu de découverte",
+    "form.foundDate": "Date de découverte",
+    "form.description": "Description",
+    "button.submit": "Signaler le document",
+    "success.cardReported": "Document signalé avec succès",
+    "success.studentCard": "Carte étudiante signalée avec succès",
   },
-  signalCard: {
-    fr: "Signaler une carte trouvée",
-    en: "Report a found card"
+  MA: {
+    // Français - Maroc
+    "app.name": "TrouvePièce",
+    "auth.login": "Se connecter",
+    "auth.register": "Créer un compte",
+    "auth.email": "Email",
+    "auth.password": "Mot de passe",
+    "auth.firstName": "Prénom",
+    "auth.lastName": "Nom",
+    "auth.phone": "Téléphone",
+    "auth.country": "Pays de résidence",
+    "document.id": "Carte d'identité nationale",
+    "document.driver_license": "Permis de conduire",
+    "document.passport": "Passeport",
+    "document.vehicle_registration": "Carte grise véhicule",
+    "document.motorcycle_registration": "Carte grise moto",
+    "document.residence_permit": "Carte de séjour",
+    "document.student_card": "Carte étudiante",
+    "form.cardNumber": "Numéro du document",
+    "form.location": "Lieu de découverte",
+    "form.foundDate": "Date de découverte",
+    "form.description": "Description",
+    "button.submit": "Signaler le document",
+    "success.cardReported": "Document signalé avec succès",
+    "success.studentCard": "Carte étudiante signalée avec succès",
   },
-  searchCard: {
-    fr: "Rechercher ma carte",
-    en: "Search my card"
+  US: {
+    // English - United States
+    "app.name": "FindMyID",
+    "auth.login": "Sign In",
+    "auth.register": "Create Account",
+    "auth.email": "Email",
+    "auth.password": "Password",
+    "auth.firstName": "First Name",
+    "auth.lastName": "Last Name",
+    "auth.phone": "Phone",
+    "auth.country": "Country of residence",
+    "document.id": "ID Card",
+    "document.driver_license": "Driver's License",
+    "document.passport": "Passport",
+    "document.vehicle_registration": "Vehicle Registration",
+    "document.motorcycle_registration": "Motorcycle Registration",
+    "document.residence_permit": "Residence Permit",
+    "document.student_card": "Student Card",
+    "form.cardNumber": "Document Number",
+    "form.location": "Found Location",
+    "form.foundDate": "Date Found",
+    "form.description": "Description",
+    "button.submit": "Report Document",
+    "success.cardReported": "Document reported successfully",
+    "success.studentCard": "Student card reported successfully",
   },
-  profile: {
-    fr: "Profil",
-    en: "Profile"
-  },
-  settings: {
-    fr: "Paramètres",
-    en: "Settings"
-  },
-  language: {
-    fr: "Langue",
-    en: "Language"
-  },
-  french: {
-    fr: "Français",
-    en: "French"
-  },
-  english: {
-    fr: "Anglais",
-    en: "English"
-  },
-  demo: {
-    fr: "Démo",
-    en: "Demo"
-  },
-  downloadApp: {
-    fr: "Télécharger l'app",
-    en: "Download app"
-  },
-  viewDemo: {
-    fr: "Voir la démo",
-    en: "View demo"
-  },
-  howItWorks: {
-    fr: "Comment ça marche ?",
-    en: "How it works?"
-  },
-  getStarted: {
-    fr: "Commencer maintenant",
-    en: "Get started now"
-  }
 };
 
-export const getTranslation = (country: Country, language: Language, key: string): string => {
-  const translation = translations[key];
-  if (!translation) {
-    console.warn(`Translation key '${key}' not found`);
-    return key;
-  }
-  
-  return translation[language] || translation.fr || key;
-};
+export function getTranslation(country: string, key: string): string {
+  return translations[country]?.[key] || translations.SN[key] || key;
+}
 
-export const getAvailableLanguages = (): Array<{code: Language, name: string, flag: string}> => [
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "en", name: "English", flag: "🇬🇧" }
-];
+export function getCountryFromCode(code: string): string {
+  const countryMap: { [key: string]: string } = {
+    SN: "Sénégal",
+    FR: "France",
+    MA: "Maroc",
+    DZ: "Algérie",
+    TN: "Tunisie",
+    CI: "Côte d'Ivoire",
+    ML: "Mali",
+    BF: "Burkina Faso",
+    NE: "Niger",
+    GN: "Guinée",
+    MR: "Mauritanie",
+    GM: "Gambie",
+    GW: "Guinée-Bissau",
+    CV: "Cap-Vert",
+    ES: "Espagne",
+    IT: "Italie",
+    DE: "Allemagne",
+    BE: "Belgique",
+    CH: "Suisse",
+    CA: "Canada",
+    US: "États-Unis",
+  };
+  return countryMap[code] || code;
+}

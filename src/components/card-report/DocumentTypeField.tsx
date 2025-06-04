@@ -8,14 +8,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { useTranslation } from "@/hooks/useTranslation";
 
 interface DocumentTypeFieldProps {
   form: UseFormReturn<any>;
 }
 
 export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
-  const { t } = useTranslation();
   const {
     field,
     fieldState: { error },
@@ -24,16 +22,6 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
     control: form.control,
     defaultValue: "id",
   });
-
-  const documentTypes = [
-    { value: "id", label: t("documentTypes.id") },
-    { value: "driver_license", label: t("documentTypes.driver_license") },
-    { value: "passport", label: t("documentTypes.passport") },
-    { value: "vehicle_registration", label: t("documentTypes.vehicle_registration") },
-    { value: "motorcycle_registration", label: t("documentTypes.motorcycle_registration") },
-    { value: "residence_permit", label: t("documentTypes.residence_permit") },
-    { value: "student_card", label: t("documentTypes.student_card") + " (Gratuit - Contact direct)" },
-  ];
 
   return (
     <div className="space-y-2">
@@ -54,20 +42,29 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           position="popper"
           sideOffset={5}
         >
-          {documentTypes.map((docType) => (
-            <SelectItem 
-              key={docType.value} 
-              value={docType.value} 
-              className={`cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100 ${
-                docType.value === "student_card" ? "text-green-600 font-medium" : ""
-              }`}
-            >
-              {docType.label}
-            </SelectItem>
-          ))}
+          <SelectItem value="id" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte d'identité
+          </SelectItem>
+          <SelectItem value="driver_license" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Permis de conduire
+          </SelectItem>
+          <SelectItem value="passport" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Passeport
+          </SelectItem>
+          <SelectItem value="vehicle_registration" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte grise véhicule
+          </SelectItem>
+          <SelectItem value="motorcycle_registration" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte grise moto
+          </SelectItem>
+          <SelectItem value="residence_permit" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100">
+            Carte de séjour
+          </SelectItem>
+          <SelectItem value="student_card" className="cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100 text-green-600 font-medium">
+            Carte étudiante (Gratuit - Contact direct)
+          </SelectItem>
         </SelectContent>
       </Select>
-      
       {field.value === "student_card" && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
           <p className="text-sm text-green-700">
@@ -75,25 +72,6 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           </p>
         </div>
       )}
-      
-      {/* Nouvelle section pour la livraison à domicile */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
-        <div className="flex items-start gap-2">
-          <span className="text-lg">📦</span>
-          <div>
-            <p className="text-sm text-blue-700 font-medium">
-              Option de livraison à domicile
-            </p>
-            <p className="text-xs text-blue-600 mt-1">
-              {t("deliveryOption")}
-            </p>
-            <p className="text-xs text-blue-600 mt-1">
-              Coût de livraison : 2000 FCFA (négociable selon la distance)
-            </p>
-          </div>
-        </div>
-      </div>
-      
       {error && (
         <p className="text-sm text-destructive">{error.message}</p>
       )}
