@@ -44,6 +44,26 @@ const translations: Translations = {
   english: {
     fr: "Anglais",
     en: "English"
+  },
+  demo: {
+    fr: "Démo",
+    en: "Demo"
+  },
+  downloadApp: {
+    fr: "Télécharger l'app",
+    en: "Download app"
+  },
+  viewDemo: {
+    fr: "Voir la démo",
+    en: "View demo"
+  },
+  howItWorks: {
+    fr: "Comment ça marche ?",
+    en: "How it works?"
+  },
+  getStarted: {
+    fr: "Commencer maintenant",
+    en: "Get started now"
   }
 };
 
