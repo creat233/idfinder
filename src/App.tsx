@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -56,6 +57,45 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (mounted.current) {
+        setSession(session);
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted.current) {
+        setSession(session);
+      }
+    });
+
+    return () => {
+      mounted.current = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  if (loading) {
+    return null;
+  }
+
+  if (session) {
+    return <Navigate to="/signaler" />;
+  }
+
+  return <>{children}</>;
+};
+
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -105,8 +145,8 @@ const App = () => {
           ) : (
             <BrowserRouter>
               <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                <Route path="/" element={<AuthenticatedRedirect><Index /></AuthenticatedRedirect>} />
+                <Route path="/login" element={<AuthenticatedRedirect><Login /></AuthenticatedRedirect>} />
                 <Route path="/demo" element={<Demo />} />
                 <Route path="/signaler" element={<ProtectedRoute><SignalerCarte /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
