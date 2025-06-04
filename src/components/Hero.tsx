@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Search, MapPin, Phone } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
