@@ -89,7 +89,8 @@ const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  if (session) {
+  // Only redirect to home if user is on login page and is authenticated
+  if (session && window.location.pathname === '/login') {
     return <Navigate to="/" />;
   }
 
