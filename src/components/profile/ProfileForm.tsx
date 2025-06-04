@@ -1,6 +1,9 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LanguageSelect } from "./LanguageSelect";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ProfileFormProps {
   firstName: string;
@@ -23,6 +26,13 @@ export const ProfileForm = ({
   setIsEditing,
   updateProfile
 }: ProfileFormProps) => {
+  const { currentLanguage, changeLanguage } = useTranslation();
+  const form = useForm({
+    defaultValues: {
+      language: currentLanguage
+    }
+  });
+
   return (
     <div className="space-y-4">
       <div>
@@ -54,6 +64,13 @@ export const ProfileForm = ({
           disabled={!isEditing}
         />
       </div>
+
+      <LanguageSelect
+        control={form.control}
+        name="language"
+        currentLanguage={currentLanguage}
+        onLanguageChange={changeLanguage}
+      />
 
       <div className="flex justify-end space-x-4 mt-6">
         {isEditing ? (
