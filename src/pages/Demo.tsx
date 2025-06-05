@@ -1,13 +1,11 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Phone, Download, CheckCircle, Camera, Clock, Users } from "lucide-react";
+import { MapPin, Phone, Download, CheckCircle, Camera, Clock, Users } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,23 +13,6 @@ const Demo = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'search' | 'report'>('search');
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      toast({
-        title: "Recherche vide",
-        description: "Veuillez entrer un numéro de pièce d'identité pour rechercher",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    toast({
-      title: "Recherche en cours...",
-      description: `Recherche du document: ${searchQuery}`,
-    });
-  };
 
   const searchSteps = [
     {
@@ -122,28 +103,6 @@ const Demo = () => {
                 Découvrez comment Sama Pièce vous aide à retrouver vos documents perdus 
                 ou à signaler des pièces trouvées en quelques clics seulement.
               </p>
-              
-              {/* Search Bar */}
-              <div className="max-w-2xl mx-auto mb-8">
-                <div className="flex gap-2 bg-white rounded-full p-2 shadow-lg">
-                  <div className="flex-1 flex items-center gap-2 px-4">
-                    <Search className="h-5 w-5 text-gray-400" />
-                    <Input
-                      placeholder="Entrez le numéro de votre pièce d'identité..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="border-0 focus:ring-0 text-gray-800 bg-transparent"
-                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    />
-                  </div>
-                  <Button 
-                    onClick={handleSearch}
-                    className="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-6"
-                  >
-                    Rechercher
-                  </Button>
-                </div>
-              </div>
               
               {/* Download Button */}
               <motion.div
