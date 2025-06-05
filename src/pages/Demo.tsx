@@ -19,7 +19,7 @@ const Demo = () => {
       title: "1. Recherchez votre document",
       description: "Utilisez notre moteur de recherche avancé",
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
-      icon: <Search className="w-6 h-6" />
+      icon: <MapPin className="w-6 h-6" />
     },
     {
       title: "2. Localisez votre pièce",
@@ -236,7 +236,7 @@ const Demo = () => {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <Search className="w-5 h-5 mr-2" />
+                  <MapPin className="w-5 h-5 mr-2" />
                   J'ai perdu ma pièce
                 </Button>
                 <Button
@@ -295,6 +295,8 @@ const Demo = () => {
           </div>
         </section>
 
+        {/* Success Stories and CTA sections */}
+        
         {/* Success Stories */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">

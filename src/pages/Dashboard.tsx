@@ -1,31 +1,13 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
-import { Search, ArrowRight, Users, Clock, Award, Share2, Download, Link } from "lucide-react";
+import { ArrowRight, Users, Clock, Award, Share2, Download, Link } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { CardSearchForm } from "@/components/card-search/CardSearchForm";
 
 const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
-
-  const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      toast({
-        title: "Recherche vide",
-        description: "Veuillez entrer un numéro de pièce d'identité pour rechercher",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    toast({
-      title: "Recherche en cours...",
-      description: `Recherche du document: ${searchQuery}`,
-    });
-  };
 
   const handleInviteFriend = () => {
     const siteUrl = window.location.origin;
@@ -75,26 +57,9 @@ const Dashboard = () => {
             Une solution simple, sécurisée et efficace pour récupérer vos documents d'identité égarés
           </p>
           
-          {/* Search Bar */}
+          {/* Search Form */}
           <div className="max-w-2xl mx-auto mb-8">
-            <div className="flex gap-2 bg-white rounded-full p-2 shadow-lg">
-              <div className="flex-1 flex items-center gap-2 px-4">
-                <Search className="h-5 w-5 text-gray-400" />
-                <Input
-                  placeholder="Entrez le numéro de votre pièce d'identité..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="border-0 focus:ring-0 text-gray-800 bg-transparent"
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                />
-              </div>
-              <Button 
-                onClick={handleSearch}
-                className="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-6"
-              >
-                Rechercher
-              </Button>
-            </div>
+            <CardSearchForm />
           </div>
           
           {/* Action Buttons */}
@@ -213,11 +178,7 @@ const Dashboard = () => {
                 variant="outline" 
                 className="w-full border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
                 onClick={() => {
-                  const searchInput = document.querySelector('input[placeholder*="numéro"]') as HTMLInputElement;
-                  if (searchInput) {
-                    searchInput.focus();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               >
                 Rechercher ma carte
