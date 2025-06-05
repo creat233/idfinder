@@ -4,14 +4,34 @@ import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, MapPin, Phone, Download, CheckCircle, Camera, Clock, Users } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useToast } from "@/hooks/use-toast";
 
 const Demo = () => {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'search' | 'report'>('search');
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Recherche vide",
+        description: "Veuillez entrer un numéro de pièce d'identité pour rechercher",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    toast({
+      title: "Recherche en cours...",
+      description: `Recherche du document: ${searchQuery}`,
+    });
+  };
 
   const searchSteps = [
     {
@@ -23,7 +43,7 @@ const Demo = () => {
     {
       title: "2. Localisez votre pièce",
       description: "Visualisez l'emplacement exact où elle a été trouvée",
-      image: "/lovable-uploads/6fd77bb0-272a-46f6-82b7-417047489a7d.png",
+      image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <MapPin className="w-6 h-6" />
     },
     {
@@ -34,8 +54,8 @@ const Demo = () => {
     },
     {
       title: "4. Récupérez votre document",
-      description: "Organisez la récupération ou demandez une livraison",
-      image: "/lovable-uploads/6fd77bb0-272a-46f6-82b7-417047489a7d.png",
+      description: "Organisez la récupération ou demandez une livraison (frais à votre charge)",
+      image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <CheckCircle className="w-6 h-6" />
     }
   ];
@@ -50,7 +70,7 @@ const Demo = () => {
     {
       title: "2. Indiquez le lieu",
       description: "Précisez où vous avez trouvé le document",
-      image: "/lovable-uploads/6fd77bb0-272a-46f6-82b7-417047489a7d.png",
+      image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <MapPin className="w-6 h-6" />
     },
     {
@@ -60,9 +80,9 @@ const Demo = () => {
       icon: <Clock className="w-6 h-6" />
     },
     {
-      title: "4. Aidez quelqu'un",
-      description: "Le propriétaire vous contactera pour récupérer son document",
-      image: "/lovable-uploads/6fd77bb0-272a-46f6-82b7-417047489a7d.png",
+      title: "4. Recevez votre récompense",
+      description: "Gagnez 2000 Fr une fois le document restitué au propriétaire",
+      image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <Users className="w-6 h-6" />
     }
   ];
@@ -74,6 +94,11 @@ const Demo = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    toast({
+      title: "Téléchargement démarré",
+      description: "L'application FinderID est en cours de téléchargement",
+    });
   };
 
   return (
@@ -98,6 +123,28 @@ const Demo = () => {
                 ou à signaler des pièces trouvées en quelques clics seulement.
               </p>
               
+              {/* Search Bar */}
+              <div className="max-w-2xl mx-auto mb-8">
+                <div className="flex gap-2 bg-white rounded-full p-2 shadow-lg">
+                  <div className="flex-1 flex items-center gap-2 px-4">
+                    <Search className="h-5 w-5 text-gray-400" />
+                    <Input
+                      placeholder="Entrez le numéro de votre pièce d'identité..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="border-0 focus:ring-0 text-gray-800 bg-transparent"
+                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    />
+                  </div>
+                  <Button 
+                    onClick={handleSearch}
+                    className="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-6"
+                  >
+                    Rechercher
+                  </Button>
+                </div>
+              </div>
+              
               {/* Download Button */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -121,28 +168,28 @@ const Demo = () => {
               {/* Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
                 <div className="text-center">
-                  <div className="text-3xl font-bold">500+</div>
-                  <div className="text-purple-200">Documents retrouvés</div>
+                  <div className="text-3xl font-bold">2000 Fr</div>
+                  <div className="text-purple-200">Récompense trouveur</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold">98%</div>
-                  <div className="text-purple-200">Taux de réussite</div>
+                  <div className="text-3xl font-bold">7000 Fr</div>
+                  <div className="text-purple-200">Frais récupération</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold">24h</div>
                   <div className="text-purple-200">Temps moyen</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold">🆓</div>
-                  <div className="text-purple-200">Service gratuit</div>
+                  <div className="text-3xl font-bold">🚚</div>
+                  <div className="text-purple-200">Livraison disponible</div>
                 </div>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* Interactive Demo Section */}
-        <section className="py-20">
+        {/* Pricing Info Section */}
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -152,10 +199,69 @@ const Demo = () => {
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Comment ça marche ?
+                Comment ça fonctionne financièrement ?
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <Card className="border-2 border-green-200 bg-green-50">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                    💰
+                  </div>
+                  <CardTitle className="text-2xl text-green-700">Pour le trouveur</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-4xl font-bold text-green-600 mb-4">2000 Fr</div>
+                  <p className="text-gray-700">
+                    Récompense versée automatiquement une fois le document restitué au propriétaire
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-blue-200 bg-blue-50">
+                <CardHeader className="text-center">
+                  <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                    📄
+                  </div>
+                  <CardTitle className="text-2xl text-blue-700">Pour le propriétaire</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-4xl font-bold text-blue-600 mb-4">7000 Fr</div>
+                  <p className="text-gray-700 mb-4">
+                    Frais de récupération incluant la récompense du trouveur et les frais de service
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    + Frais de livraison si vous choisissez cette option
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="mt-8 text-center">
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                <strong>Option livraison :</strong> Nous proposons un service de livraison à domicile 
+                pour vous faire parvenir votre document récupéré. Les frais de livraison sont à la charge du propriétaire.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo Section */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Processus étape par étape
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Choisissez votre scénario et découvrez le processus étape par étape
+                Choisissez votre scénario et découvrez le processus
               </p>
             </motion.div>
 
@@ -217,7 +323,7 @@ const Demo = () => {
                       <img 
                         src={step.image} 
                         alt={step.title}
-                        className="w-full h-32 object-cover rounded-lg mb-4 border border-gray-200"
+                        className="w-full h-32 object-contain rounded-lg mb-4 border border-gray-200"
                       />
                       <CardDescription className="text-gray-600">
                         {step.description}
@@ -231,7 +337,7 @@ const Demo = () => {
         </section>
 
         {/* Success Stories */}
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -254,19 +360,22 @@ const Demo = () => {
                   name: "Fatou Diop",
                   story: "J'ai retrouvé ma carte d'identité perdue en moins de 12h grâce à Sama Pièce !",
                   type: "Carte d'identité",
-                  time: "12 heures"
+                  time: "12 heures",
+                  cost: "7000 Fr"
                 },
                 {
                   name: "Mamadou Fall",
                   story: "Quelqu'un avait trouvé mon permis de conduire. Le contact s'est fait rapidement.",
                   type: "Permis de conduire",
-                  time: "6 heures"
+                  time: "6 heures",
+                  cost: "7000 Fr"
                 },
                 {
                   name: "Aissatou Ba",
-                  story: "J'ai pu aider une personne à récupérer sa carte étudiante. Service formidable !",
+                  story: "J'ai pu aider une personne à récupérer sa carte étudiante et j'ai reçu ma récompense !",
                   type: "Carte étudiante",
-                  time: "24 heures"
+                  time: "24 heures",
+                  reward: "2000 Fr"
                 }
               ].map((testimonial, index) => (
                 <motion.div
@@ -284,9 +393,11 @@ const Demo = () => {
                         </div>
                         <div>
                           <CardTitle className="text-lg">{testimonial.name}</CardTitle>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-wrap">
                             <Badge variant="secondary">{testimonial.type}</Badge>
                             <Badge variant="outline">{testimonial.time}</Badge>
+                            {testimonial.cost && <Badge className="bg-blue-100 text-blue-700">{testimonial.cost}</Badge>}
+                            {testimonial.reward && <Badge className="bg-green-100 text-green-700">{testimonial.reward}</Badge>}
                           </div>
                         </div>
                       </div>
