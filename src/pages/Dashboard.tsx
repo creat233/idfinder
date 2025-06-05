@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { Search, ArrowRight, Users, Clock, Award, Share2, Download, Link } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
 
   const handleSearch = () => {
     if (!searchQuery.trim()) {
@@ -211,7 +212,13 @@ const Dashboard = () => {
               <Button 
                 variant="outline" 
                 className="w-full border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-                onClick={() => document.querySelector('input[placeholder*="numéro"]')?.focus()}
+                onClick={() => {
+                  const searchInput = document.querySelector('input[placeholder*="numéro"]') as HTMLInputElement;
+                  if (searchInput) {
+                    searchInput.focus();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
               >
                 Rechercher ma carte
               </Button>
