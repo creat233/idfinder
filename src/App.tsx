@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AnimatePresence, motion } from "framer-motion";
 import Index from "./pages/Index";
 import Demo from "./pages/Demo";
+import Dashboard from "./pages/Dashboard";
 import SignalerCarte from "./pages/SignalerCarte";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support";
@@ -89,9 +90,9 @@ const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  // Only redirect to home if user is on login page and is authenticated
-  if (session && window.location.pathname === '/login') {
-    return <Navigate to="/" />;
+  // If user is authenticated, redirect to dashboard instead of login
+  if (session) {
+    return <Navigate to="/dashboard" />;
   }
 
   return <>{children}</>;
@@ -146,8 +147,9 @@ const App = () => {
           ) : (
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<AuthenticatedRedirect><Index /></AuthenticatedRedirect>} />
                 <Route path="/login" element={<AuthenticatedRedirect><Login /></AuthenticatedRedirect>} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/demo" element={<Demo />} />
                 <Route path="/signaler" element={<ProtectedRoute><SignalerCarte /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

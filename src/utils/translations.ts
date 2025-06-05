@@ -64,6 +64,30 @@ const translations: Translations = {
   getStarted: {
     fr: "Commencer maintenant",
     en: "Get started now"
+  },
+  documentTypes: {
+    fr: {
+      id: "Carte d'identité nationale",
+      driver_license: "Permis de conduire", 
+      passport: "Passeport",
+      vehicle_registration: "Carte grise véhicule",
+      motorcycle_registration: "Carte grise moto",
+      residence_permit: "Titre de séjour",
+      student_card: "Carte étudiante"
+    },
+    en: {
+      id: "National ID Card",
+      driver_license: "Driver's License",
+      passport: "Passport", 
+      vehicle_registration: "Vehicle Registration",
+      motorcycle_registration: "Motorcycle Registration",
+      residence_permit: "Residence Permit",
+      student_card: "Student Card"
+    }
+  },
+  deliveryOption: {
+    fr: "Nous proposons un service de livraison à domicile pour vous faire parvenir votre document récupéré.",
+    en: "We offer a home delivery service to get your recovered document to you."
   }
 };
 
