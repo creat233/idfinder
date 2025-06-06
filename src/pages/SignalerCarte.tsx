@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { Header } from "@/components/Header";
 import { LocationField } from "@/components/card-report/LocationField";
 import { PhotoUpload } from "@/components/card-report/PhotoUpload";
@@ -23,6 +23,7 @@ interface FormValues {
 const SignalerCarte = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -61,24 +62,24 @@ const SignalerCarte = () => {
       if (error) throw error;
 
       if (data.documentType === "student_card") {
-        toast.default({
-          title: "Carte étudiante signalée avec succès",
-          description: "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter",
-        });
+        showSuccess(
+          "Carte étudiante signalée avec succès",
+          "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter"
+        );
       } else {
-        toast.default({
-          title: "Carte signalée avec succès",
-          description: "Merci d'avoir signalé cette carte",
-        });
+        showSuccess(
+          "Carte signalée avec succès",
+          "Merci d'avoir signalé cette carte"
+        );
       }
 
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast.destructive({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la soumission du formulaire",
-      });
+      showError(
+        "Erreur",
+        "Une erreur est survenue lors de la soumission du formulaire"
+      );
     } finally {
       setIsSubmitting(false);
     }

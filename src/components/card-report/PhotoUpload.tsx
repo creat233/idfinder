@@ -1,4 +1,3 @@
-
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "@/hooks/use-toast";
@@ -14,12 +13,13 @@ export interface PhotoUploadProps {
 export function PhotoUpload({ form }: PhotoUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const currentFile = form.watch("photoUrl");
+  const { showSuccess, showError } = useToast();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
       if (file.size > 5 * 1024 * 1024) {
-        toast.destructive({
+        showError({
           title: "Erreur",
           description: "La taille du fichier ne doit pas dépasser 5 Mo",
         });
@@ -62,16 +62,10 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
       // Set the URL in the form
       form.setValue("photoUrl", publicUrl, { shouldValidate: true });
       
-      toast.default({
-        title: "Photo ajoutée avec succès",
-        description: "Votre photo a été téléchargée",
-      });
+      showSuccess("Photo ajoutée avec succès", "Votre photo a été téléchargée");
     } catch (error) {
       console.error("Error uploading file:", error);
-      toast.destructive({
-        title: "Erreur",
-        description: "Une erreur est survenue lors du téléchargement de la photo",
-      });
+      showError("Erreur", "Une erreur est survenue lors du téléchargement de la photo");
     } finally {
       setIsUploading(false);
     }

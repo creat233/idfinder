@@ -1,10 +1,10 @@
 
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 
 export const useProfile = () => {
-  const { toast } = useToast();
+  const { showSuccess, showError } = useToast();
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -41,11 +41,7 @@ export const useProfile = () => {
       setPhone(profileData.phone);
     } catch (error) {
       console.error('Error loading profile:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de charger le profil",
-      });
+      showError("Erreur", "Impossible de charger le profil");
     } finally {
       setLoading(false);
     }
@@ -64,18 +60,11 @@ export const useProfile = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Succès",
-        description: "Numéro de téléphone mis à jour avec succès",
-      });
+      showSuccess("Succès", "Numéro de téléphone mis à jour avec succès");
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de mettre à jour le profil",
-      });
+      showError("Erreur", "Impossible de mettre à jour le profil");
     } finally {
       setLoading(false);
     }
