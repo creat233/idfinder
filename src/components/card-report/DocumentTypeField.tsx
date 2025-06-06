@@ -26,13 +26,13 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
   });
 
   const documentTypes = [
-    { value: "id", label: t("documentTypes.id") },
-    { value: "driver_license", label: t("documentTypes.driver_license") },
-    { value: "passport", label: t("documentTypes.passport") },
-    { value: "vehicle_registration", label: t("documentTypes.vehicle_registration") },
-    { value: "motorcycle_registration", label: t("documentTypes.motorcycle_registration") },
-    { value: "residence_permit", label: t("documentTypes.residence_permit") },
-    { value: "student_card", label: t("documentTypes.student_card") + " (Gratuit - Contact direct)" },
+    { value: "id", label: "Carte d'identité nationale" },
+    { value: "driver_license", label: "Permis de conduire" },
+    { value: "passport", label: "Passeport" },
+    { value: "vehicle_registration", label: "Carte grise véhicule" },
+    { value: "motorcycle_registration", label: "Carte grise moto" },
+    { value: "residence_permit", label: "Carte de séjour" },
+    { value: "student_card", label: "Carte étudiante (Gratuit - Contact direct)" },
   ];
 
   return (
@@ -45,22 +45,18 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
       >
         <SelectTrigger 
           id="documentType"
-          className={`w-full bg-white border ${error ? "border-destructive" : "border-input hover:border-primary"} rounded-lg px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+          className={`w-full ${error ? "border-destructive" : ""}`}
         >
           <SelectValue placeholder="Sélectionnez le type de document" />
         </SelectTrigger>
-        <SelectContent
-          className="bg-white border border-gray-200 rounded-lg shadow-lg min-w-[240px] p-1"
-          position="popper"
-          sideOffset={5}
-        >
+        <SelectContent>
           {documentTypes.map((docType) => (
             <SelectItem 
               key={docType.value} 
               value={docType.value} 
-              className={`cursor-pointer rounded-md px-3 py-2 text-base hover:bg-gray-100 ${
+              className={
                 docType.value === "student_card" ? "text-green-600 font-medium" : ""
-              }`}
+              }
             >
               {docType.label}
             </SelectItem>
@@ -76,7 +72,6 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
         </div>
       )}
       
-      {/* Nouvelle section pour la livraison à domicile */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
         <div className="flex items-start gap-2">
           <span className="text-lg">📦</span>
@@ -85,7 +80,7 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
               Option de livraison à domicile
             </p>
             <p className="text-xs text-blue-600 mt-1">
-              {t("deliveryOption")}
+              Pour tous les types de documents, nous proposons un service de livraison à domicile
             </p>
             <p className="text-xs text-blue-600 mt-1">
               Coût de livraison : 2000 FCFA (négociable selon la distance)
