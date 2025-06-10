@@ -26,8 +26,7 @@ export const DashboardSearch = () => {
 
   const handleSearch = async () => {
     if (!searchNumber.trim()) {
-      toast({
-        variant: "destructive",
+      toast.error({
         title: "Erreur",
         description: "Veuillez saisir un numéro de carte",
       });
@@ -52,7 +51,7 @@ export const DashboardSearch = () => {
 
       if (data) {
         setFoundCard(data);
-        toast({
+        toast.success({
           title: "Carte trouvée !",
           description: "Nous avons trouvé votre carte. Consultez les détails ci-dessous.",
         });
@@ -62,7 +61,7 @@ export const DashboardSearch = () => {
           card_number: searchNumber.trim(),
         });
       } else {
-        toast({
+        toast.default({
           title: "Carte non trouvée",
           description: "Aucune carte avec ce numéro n'a été signalée pour le moment.",
         });
@@ -74,8 +73,7 @@ export const DashboardSearch = () => {
       }
     } catch (error) {
       console.error("Erreur lors de la recherche:", error);
-      toast({
-        variant: "destructive",
+      toast.error({
         title: "Erreur",
         description: "Une erreur est survenue lors de la recherche",
       });

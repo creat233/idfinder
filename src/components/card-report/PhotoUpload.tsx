@@ -1,10 +1,11 @@
+
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { toast } from "@/hooks/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/useToast";
 
 export interface PhotoUploadProps {
   form: UseFormReturn<any>;
@@ -19,10 +20,7 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
       if (file.size > 5 * 1024 * 1024) {
-        showError({
-          title: "Erreur",
-          description: "La taille du fichier ne doit pas dépasser 5 Mo",
-        });
+        showError("Erreur", "La taille du fichier ne doit pas dépasser 5 Mo");
         return;
       }
       handleFileUpload(file);
