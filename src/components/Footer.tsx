@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
@@ -105,7 +106,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-2 text-secondary" />
-                <span className="text-primary-foreground/80">+221781540779</span>
+                <span className="text-primary-foreground/80">+221710117579</span>
               </li>
             </ul>
           </div>
