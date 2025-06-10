@@ -1,13 +1,10 @@
+
 type Country = "SN" | "FR" | "US" | "CA";
 type Language = "fr" | "en";
 
-interface DocumentTypes {
-  [key: string]: string;
-}
-
 interface Translations {
   [key: string]: {
-    [key in Language]: string | DocumentTypes;
+    [key in Language]: string;
   };
 }
 
@@ -179,20 +176,6 @@ export const getTranslation = (country: Country, language: Language, key: string
   
   const value = translation[language] || translation.fr || key;
   return typeof value === 'string' ? value : key;
-};
-
-export const getDocumentTypeTranslation = (country: Country, language: Language, documentType: string): string => {
-  const documentTypes = translations.documentTypes;
-  if (!documentTypes) {
-    return documentType;
-  }
-  
-  const languageTypes = documentTypes[language] as DocumentTypes;
-  if (!languageTypes) {
-    return documentType;
-  }
-  
-  return languageTypes[documentType] || documentType;
 };
 
 export const getAvailableLanguages = (): Array<{code: Language, name: string, flag: string}> => [
