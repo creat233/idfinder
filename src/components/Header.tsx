@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, User, Settings, Globe, CreditCard } from "lucide-react";
+import { LogOut, User, Settings, Globe, CreditCard, Gift } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -90,6 +90,15 @@ export const Header = () => {
               )}
             </Link>
             <Link 
+              to="/codes-promo" 
+              className={`hover:text-secondary transition-colors flex items-center gap-1 ${
+                location.pathname === "/codes-promo" ? "text-secondary" : ""
+              }`}
+            >
+              <Gift className="h-4 w-4" />
+              {t("promoCodes")}
+            </Link>
+            <Link 
               to="/support" 
               className={`hover:text-secondary transition-colors ${
                 location.pathname === "/support" ? "text-secondary" : ""
@@ -140,6 +149,10 @@ export const Header = () => {
                       {unreadCount}
                     </span>
                   )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/codes-promo")} className="cursor-pointer">
+                  <Gift className="mr-2 h-4 w-4" />
+                  {t("promoCodes")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />

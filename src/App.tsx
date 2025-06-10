@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Auth from "./pages/Auth";
 import NumeroUrgence from "./pages/NumeroUrgence";
 import MyCards from "./pages/MyCards";
+import PromoCodes from "./pages/PromoCodes";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MyCards />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/codes-promo" 
+              element={
+                <ProtectedRoute>
+                  <PromoCodes />
                 </ProtectedRoute>
               } 
             />

@@ -111,6 +111,87 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          is_paid: boolean
+          total_earnings: number
+          usage_count: number
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          is_paid?: boolean
+          total_earnings?: number
+          usage_count?: number
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          is_paid?: boolean
+          total_earnings?: number
+          usage_count?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      promo_usage: {
+        Row: {
+          card_search_id: string | null
+          created_at: string
+          discount_amount: number
+          id: string
+          promo_code_id: string
+          used_by_email: string | null
+          used_by_phone: string | null
+        }
+        Insert: {
+          card_search_id?: string | null
+          created_at?: string
+          discount_amount?: number
+          id?: string
+          promo_code_id: string
+          used_by_email?: string | null
+          used_by_phone?: string | null
+        }
+        Update: {
+          card_search_id?: string | null
+          created_at?: string
+          discount_amount?: number
+          id?: string
+          promo_code_id?: string
+          used_by_email?: string | null
+          used_by_phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_usage_card_search_id_fkey"
+            columns: ["card_search_id"]
+            isOneToOne: false
+            referencedRelation: "card_searches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promo_usage_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reported_cards: {
         Row: {
           card_number: string
@@ -191,7 +272,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_promo_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
