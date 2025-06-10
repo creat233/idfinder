@@ -33,6 +33,57 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          card_id: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          reported_card_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          card_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          reported_card_id?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          card_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          reported_card_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "user_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_reported_card_id_fkey"
+            columns: ["reported_card_id"]
+            isOneToOne: false
+            referencedRelation: "reported_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           country: string | null
@@ -99,6 +150,39 @@ export type Database = {
           reporter_id?: string
           reporter_phone?: string | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      user_cards: {
+        Row: {
+          card_holder_name: string | null
+          card_number: string
+          created_at: string
+          document_type: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          card_holder_name?: string | null
+          card_number: string
+          created_at?: string
+          document_type?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          card_holder_name?: string | null
+          card_number?: string
+          created_at?: string
+          document_type?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

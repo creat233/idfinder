@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, User, Settings, Globe } from "lucide-react";
+import { LogOut, User, Settings, Globe, CreditCard } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useNotifications } from "@/hooks/useNotifications";
 import { getAvailableLanguages } from "@/utils/translations";
 
 export const Header = () => {
@@ -19,6 +20,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { t, currentLanguage, changeLanguage } = useTranslation();
+  const { unreadCount } = useNotifications();
   const availableLanguages = getAvailableLanguages();
 
   const handleLogout = async () => {
@@ -74,6 +76,20 @@ export const Header = () => {
               {t("signalCard")}
             </Link>
             <Link 
+              to="/mes-cartes" 
+              className={`hover:text-secondary transition-colors flex items-center gap-1 ${
+                location.pathname === "/mes-cartes" ? "text-secondary" : ""
+              }`}
+            >
+              <CreditCard className="h-4 w-4" />
+              {t("myCards") || "Mes cartes"}
+              {unreadCount > 0 && (
+                <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 ml-1">
+                  {unreadCount}
+                </span>
+              )}
+            </Link>
+            <Link 
               to="/support" 
               className={`hover:text-secondary transition-colors ${
                 location.pathname === "/support" ? "text-secondary" : ""
@@ -116,6 +132,15 @@ export const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-white z-50">
+                <DropdownMenuItem onClick={() => navigate("/mes-cartes")} className="cursor-pointer">
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  {t("myCards") || "Mes cartes"}
+                  {unreadCount > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                      {unreadCount}
+                    </span>
+                  )}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   {t("profile")}

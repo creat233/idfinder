@@ -9,6 +9,7 @@ import Support from "./pages/Support";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
 import NumeroUrgence from "./pages/NumeroUrgence";
+import MyCards from "./pages/MyCards";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SignalerCarte />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/mes-cartes" 
+              element={
+                <ProtectedRoute>
+                  <MyCards />
                 </ProtectedRoute>
               } 
             />

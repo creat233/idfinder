@@ -1,4 +1,3 @@
-
 type Country = "SN" | "FR" | "US" | "CA";
 type Language = "fr" | "en";
 
@@ -12,286 +11,162 @@ interface Translations {
   };
 }
 
-const translations: Translations = {
-  appName: {
-    fr: "Sama Pièce",
-    en: "Sama Pièce"
-  },
-  welcomeMessage: {
-    fr: "Retrouvez facilement vos pièces d'identité perdues grâce à notre communauté solidaire. Signalez, recherchez et récupérez vos documents en toute simplicité.",
-    en: "Easily find your lost identity documents thanks to our supportive community. Report, search and recover your documents with ease."
-  },
-  signalCard: {
-    fr: "Signaler une carte trouvée",
-    en: "Report a found card"
-  },
-  searchCard: {
-    fr: "Rechercher ma carte",
-    en: "Search my card"
-  },
-  profile: {
-    fr: "Profil",
-    en: "Profile"
-  },
-  settings: {
-    fr: "Paramètres",
-    en: "Settings"
-  },
-  language: {
-    fr: "Langue",
-    en: "Language"
-  },
-  french: {
-    fr: "Français",
-    en: "French"
-  },
-  english: {
-    fr: "Anglais",
-    en: "English"
-  },
-  demo: {
-    fr: "Démo",
-    en: "Demo"
-  },
-  downloadApp: {
-    fr: "Télécharger l'app",
-    en: "Download app"
-  },
-  viewDemo: {
-    fr: "Voir la démo",
-    en: "View demo"
-  },
-  howItWorks: {
-    fr: "Comment ça marche ?",
-    en: "How it works?"
-  },
-  getStarted: {
-    fr: "Commencer maintenant",
-    en: "Get started now"
-  },
-  cardNumber: {
-    fr: "Numéro de la carte",
-    en: "Card number"
-  },
-  enterCardNumber: {
-    fr: "Entrez le numéro de la carte",
-    en: "Enter the card number"
-  },
-  foundDate: {
-    fr: "Date de découverte",
-    en: "Found date"
-  },
-  description: {
-    fr: "Description",
-    en: "Description"
-  },
-  descriptionPlaceholder: {
-    fr: "Ajoutez des détails sur l'endroit où vous avez trouvé la carte",
-    en: "Add details about where you found the card"
-  },
-  freeServiceStudentCards: {
-    fr: "Service gratuit pour cartes étudiantes",
-    en: "Free service for student cards"
-  },
-  studentCardInfo: {
-    fr: "En signalant une carte étudiante, votre numéro de téléphone sera visible directement pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes étudiantes.",
-    en: "By reporting a student card, your phone number will be directly visible so the student can contact you immediately. This is a free service to facilitate the recovery of student cards."
-  },
-  sending: {
-    fr: "Envoi en cours...",
-    en: "Sending..."
-  },
-  cardReported: {
-    fr: "Carte signalée avec succès",
-    en: "Card reported successfully"
-  },
-  studentCardReported: {
-    fr: "Carte étudiante signalée avec succès",
-    en: "Student card reported successfully"
-  },
-  studentCardMessage: {
-    fr: "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter",
-    en: "Your number will be displayed directly so the student can contact you"
-  },
-  thankYouMessage: {
-    fr: "Merci d'avoir signalé cette carte",
-    en: "Thank you for reporting this card"
-  },
-  error: {
-    fr: "Erreur",
-    en: "Error"
-  },
-  submitError: {
-    fr: "Une erreur est survenue lors de la soumission du formulaire",
-    en: "An error occurred while submitting the form"
-  },
-  deliveryOption: {
-    fr: "Nous proposons un service de livraison à domicile pour vous faire parvenir votre document récupéré.",
-    en: "We offer a home delivery service to get your recovered document to you."
-  },
-  // Navigation
-  home: {
-    fr: "Accueil",
-    en: "Home"
-  },
-  support: {
-    fr: "Support",
-    en: "Support"
-  },
-  back: {
-    fr: "Retour",
-    en: "Back"
-  },
-  logout: {
-    fr: "Se déconnecter",
-    en: "Logout"
-  },
-  loggingOut: {
-    fr: "Déconnexion...",
-    en: "Logging out..."
-  },
-  // Auth
-  login: {
-    fr: "Se connecter",
-    en: "Login"
-  },
-  register: {
-    fr: "S'inscrire",
-    en: "Register"
-  },
-  createAccount: {
-    fr: "Créer un compte",
-    en: "Create account"
-  },
-  joinFinderID: {
-    fr: "Rejoignez FinderID",
-    en: "Join FinderID"
-  },
-  accessAccount: {
-    fr: "Accédez à votre compte FinderID",
-    en: "Access your FinderID account"
-  },
-  firstName: {
-    fr: "Prénom",
-    en: "First name"
-  },
-  lastName: {
-    fr: "Nom",
-    en: "Last name"
-  },
-  phone: {
-    fr: "Téléphone",
-    en: "Phone"
-  },
-  email: {
-    fr: "Email",
-    en: "Email"
-  },
-  password: {
-    fr: "Mot de passe",
-    en: "Password"
-  },
-  loading: {
-    fr: "Chargement...",
-    en: "Loading..."
-  },
-  alreadyHaveAccount: {
-    fr: "Déjà un compte ? Se connecter",
-    en: "Already have an account? Login"
-  },
-  noAccount: {
-    fr: "Pas de compte ? S'inscrire",
-    en: "No account? Register"
-  },
-  registrationSuccess: {
-    fr: "Inscription réussie",
-    en: "Registration successful"
-  },
-  checkEmailConfirm: {
-    fr: "Vérifiez votre email pour confirmer votre compte",
-    en: "Check your email to confirm your account"
-  },
-  loginSuccess: {
-    fr: "Connexion réussie",
-    en: "Login successful"
-  },
-  // Profile
-  myProfile: {
-    fr: "Mon Profil",
-    en: "My Profile"
-  },
-  editProfile: {
-    fr: "Modifier le profil",
-    en: "Edit profile"
-  },
-  save: {
-    fr: "Sauvegarder",
-    en: "Save"
-  },
-  cancel: {
-    fr: "Annuler",
-    en: "Cancel"
-  },
-  profileUpdated: {
-    fr: "Profil mis à jour avec succès",
-    en: "Profile updated successfully"
-  },
-  // Support
-  needHelp: {
-    fr: "Besoin d'aide ?",
-    en: "Need help?"
-  },
-  supportTeam: {
-    fr: "Notre équipe d'assistance est disponible pour répondre à toutes vos questions",
-    en: "Our support team is available to answer all your questions"
-  },
-  contactByEmail: {
-    fr: "Contacter par email",
-    en: "Contact by email"
-  },
-  call: {
-    fr: "Appeler",
-    en: "Call"
-  },
-  emergencyNumbers: {
-    fr: "Numéros d'Urgence",
-    en: "Emergency Numbers"
-  },
-  accessEmergencyNumbers: {
-    fr: "Accédez rapidement aux numéros d'urgence disponibles au Sénégal",
-    en: "Quickly access emergency numbers available in Senegal"
-  },
-  seeEmergencyNumbers: {
-    fr: "Voir les numéros d'urgence",
-    en: "See emergency numbers"
-  },
-  supportAndFaq: {
-    fr: "Assistance et FAQ",
-    en: "Support and FAQ"
-  },
-  helpWithQuestions: {
-    fr: "Besoin d'aide ? Nous sommes là pour vous assister avec toutes vos questions concernant FinderID.",
-    en: "Need help? We are here to assist you with all your questions about FinderID."
-  },
-  documentTypes: {
-    fr: {
-      id: "Carte d'identité nationale",
-      driver_license: "Permis de conduire", 
-      passport: "Passeport",
-      vehicle_registration: "Carte grise véhicule",
-      motorcycle_registration: "Carte grise moto",
-      residence_permit: "Titre de séjour",
-      student_card: "Carte étudiante"
-    },
-    en: {
-      id: "National ID Card",
-      driver_license: "Driver's License",
-      passport: "Passport", 
-      vehicle_registration: "Vehicle Registration",
-      motorcycle_registration: "Motorcycle Registration",
-      residence_permit: "Residence Permit",
-      student_card: "Student Card"
-    }
+export const translations = {
+  fr: {
+    // Application
+    appName: "FinderID",
+    home: "Accueil",
+    signalCard: "Signaler une carte",
+    support: "Support",
+    profile: "Profil",
+    back: "Retour",
+    login: "Connexion",
+    logout: "Déconnexion",
+    loggingOut: "Déconnexion...",
+    loading: "Chargement...",
+    
+    // Authentication
+    createAccount: "Créer un compte",
+    joinFinderID: "Rejoignez FinderID",
+    accessAccount: "Accédez à votre compte",
+    firstName: "Prénom",
+    lastName: "Nom",
+    phone: "Téléphone",
+    email: "E-mail",
+    password: "Mot de passe",
+    register: "S'inscrire",
+    alreadyHaveAccount: "Vous avez déjà un compte ? Connectez-vous",
+    noAccount: "Pas de compte ? Créez-en un",
+    registrationSuccess: "Inscription réussie",
+    checkEmailConfirm: "Vérifiez votre email pour confirmer votre compte",
+    loginSuccess: "Connexion réussie",
+    error: "Erreur",
+
+    // Profile
+    myProfile: "Mon Profil",
+    supportAndFaq: "Support et FAQ",
+    helpWithQuestions: "Nous sommes là pour vous aider avec toutes vos questions",
+
+    // Card Management
+    myCards: "Mes cartes",
+    addCard: "Ajouter une carte",
+    cardNumber: "Numéro de la carte",
+    enterCardNumber: "Entrez le numéro de la carte",
+    documentType: "Type de document",
+    idCard: "Carte d'identité",
+    passport: "Passeport",
+    driverLicense: "Permis de conduire",
+    studentCard: "Carte d'étudiant",
+    cardHolderName: "Nom du titulaire",
+    enterCardHolderName: "Entrez le nom du titulaire",
+    optional: "Optionnel",
+    cancel: "Annuler",
+    add: "Ajouter",
+    adding: "Ajout...",
+    active: "Actif",
+    inactive: "Inactif",
+    receiveNotifications: "Recevoir des notifications",
+    noCardsAdded: "Aucune carte ajoutée pour le moment",
+    addCardsToReceiveNotifications: "Ajoutez vos cartes pour recevoir des notifications si elles sont signalées",
+    howItWorks: "Comment ça marche ?",
+    cardsExplanation: "Ajoutez les numéros de vos cartes d'identité pour recevoir automatiquement une notification si quelqu'un les signale comme trouvées sur FinderID. Vous pourrez ainsi les récupérer rapidement.",
+
+    // Notifications
+    notifications: "Notifications",
+    noNotifications: "Aucune notification",
+    notificationsWillAppearHere: "Vos notifications apparaîtront ici",
+    markAllAsRead: "Tout marquer comme lu",
+
+    // Card Reporting
+    foundDate: "Date de découverte",
+    description: "Description",
+    descriptionPlaceholder: "Ajoutez des détails sur l'endroit où vous avez trouvé la carte",
+    studentCardReported: "Carte étudiante signalée avec succès",
+    studentCardMessage: "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter",
+    cardReported: "Carte signalée avec succès",
+    thankYouMessage: "Merci d'avoir signalé cette carte",
+    submitError: "Une erreur est survenue lors de la soumission du formulaire",
+    sending: "Envoi en cours...",
+    freeServiceStudentCards: "Service gratuit pour cartes étudiantes",
+    studentCardInfo: "En signalant une carte étudiante, votre numéro de téléphone sera visible directement pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes étudiantes."
+  },
+  en: {
+    // Application
+    appName: "FinderID",
+    home: "Home",
+    signalCard: "Report Card",
+    support: "Support",
+    profile: "Profile",
+    back: "Back",
+    login: "Login",
+    logout: "Logout",
+    loggingOut: "Logging out...",
+    loading: "Loading...",
+    
+    // Authentication
+    createAccount: "Create Account",
+    joinFinderID: "Join FinderID",
+    accessAccount: "Access your account",
+    firstName: "First Name",
+    lastName: "Last Name",
+    phone: "Phone",
+    email: "Email",
+    password: "Password",
+    register: "Register",
+    alreadyHaveAccount: "Already have an account? Sign in",
+    noAccount: "No account? Create one",
+    registrationSuccess: "Registration successful",
+    checkEmailConfirm: "Check your email to confirm your account",
+    loginSuccess: "Login successful",
+    error: "Error",
+
+    // Profile
+    myProfile: "My Profile",
+    supportAndFaq: "Support & FAQ",
+    helpWithQuestions: "We're here to help with all your questions",
+
+    // Card Management
+    myCards: "My Cards",
+    addCard: "Add Card",
+    cardNumber: "Card Number",
+    enterCardNumber: "Enter card number",
+    documentType: "Document Type",
+    idCard: "ID Card",
+    passport: "Passport",
+    driverLicense: "Driver's License",
+    studentCard: "Student Card",
+    cardHolderName: "Cardholder Name",
+    enterCardHolderName: "Enter cardholder name",
+    optional: "Optional",
+    cancel: "Cancel",
+    add: "Add",
+    adding: "Adding...",
+    active: "Active",
+    inactive: "Inactive",
+    receiveNotifications: "Receive notifications",
+    noCardsAdded: "No cards added yet",
+    addCardsToReceiveNotifications: "Add your cards to receive notifications if they are reported",
+    howItWorks: "How it works?",
+    cardsExplanation: "Add your ID card numbers to automatically receive a notification if someone reports them as found on FinderID. You can then quickly recover them.",
+
+    // Notifications
+    notifications: "Notifications",
+    noNotifications: "No notifications",
+    notificationsWillAppearHere: "Your notifications will appear here",
+    markAllAsRead: "Mark all as read",
+
+    // Card Reporting
+    foundDate: "Found Date",
+    description: "Description",
+    descriptionPlaceholder: "Add details about where you found the card",
+    studentCardReported: "Student card reported successfully",
+    studentCardMessage: "Your number will be displayed directly so the student can contact you",
+    cardReported: "Card reported successfully",
+    thankYouMessage: "Thank you for reporting this card",
+    submitError: "An error occurred while submitting the form",
+    sending: "Sending...",
+    freeServiceStudentCards: "Free service for student cards",
+    studentCardInfo: "By reporting a student card, your phone number will be visible directly so the student can contact you immediately. This is a free service to facilitate student card recovery."
   }
 };
 
