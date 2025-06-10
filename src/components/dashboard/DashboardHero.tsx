@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Share2, Download } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { CardSearchForm } from "@/components/card-search/CardSearchForm";
 
 export const DashboardHero = () => {
   const { toast } = useToast();
@@ -50,6 +51,11 @@ export const DashboardHero = () => {
         <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
           Une solution simple, sécurisée et efficace pour récupérer vos documents d'identité égarés
         </p>
+        
+        {/* Search Form */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <CardSearchForm />
+        </div>
         
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
