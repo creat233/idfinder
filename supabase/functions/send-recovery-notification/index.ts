@@ -108,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Envoyer l'email
     const emailResponse = await resend.emails.send({
       from: "FinderID <notifications@resend.dev>",
-      to: ["idfinder@gmail.com"],
+      to: ["idfinder06@gmail.com"],
       subject: `🔍 Demande de récupération - Carte ${cardData.card_number}`,
       html: emailContent,
     });
