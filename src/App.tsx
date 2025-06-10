@@ -60,7 +60,7 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/urgence" element={<NumeroUrgence />} />
+            <Route path="/numeros-urgence" element={<NumeroUrgence />} />
           </Routes>
         </div>
         <Toaster />
