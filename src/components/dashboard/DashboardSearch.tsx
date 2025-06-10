@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface FoundCard {
   id: string;
@@ -13,7 +13,6 @@ interface FoundCard {
   found_date: string;
   description: string;
   document_type: string;
-  photo_url: string;
   reporter_phone: string;
   created_at: string;
 }
@@ -23,10 +22,12 @@ export const DashboardSearch = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [foundCard, setFoundCard] = useState<FoundCard | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const { toast } = useToast();
 
   const handleSearch = async () => {
     if (!searchNumber.trim()) {
-      toast.error({
+      toast({
+        variant: "destructive",
         title: "Erreur",
         description: "Veuillez saisir un numéro de carte",
       });
@@ -51,7 +52,7 @@ export const DashboardSearch = () => {
 
       if (data) {
         setFoundCard(data);
-        toast.success({
+        toast({
           title: "Carte trouvée !",
           description: "Nous avons trouvé votre carte. Consultez les détails ci-dessous.",
         });
@@ -61,7 +62,7 @@ export const DashboardSearch = () => {
           card_number: searchNumber.trim(),
         });
       } else {
-        toast.default({
+        toast({
           title: "Carte non trouvée",
           description: "Aucune carte avec ce numéro n'a été signalée pour le moment.",
         });
@@ -73,7 +74,8 @@ export const DashboardSearch = () => {
       }
     } catch (error) {
       console.error("Erreur lors de la recherche:", error);
-      toast.error({
+      toast({
+        variant: "destructive",
         title: "Erreur",
         description: "Une erreur est survenue lors de la recherche",
       });
@@ -153,17 +155,6 @@ export const DashboardSearch = () => {
                   <div>
                     <span className="font-medium">Description :</span>{" "}
                     <span>{foundCard.description}</span>
-                  </div>
-                )}
-
-                {foundCard.photo_url && (
-                  <div>
-                    <span className="font-medium">Photo :</span>
-                    <img 
-                      src={foundCard.photo_url} 
-                      alt="Photo de la carte trouvée" 
-                      className="mt-2 max-w-xs rounded-lg"
-                    />
                   </div>
                 )}
               </div>
