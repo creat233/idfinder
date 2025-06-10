@@ -6,8 +6,7 @@ import { MapPin, Calendar, CreditCard, ArrowRight, Phone, User } from "lucide-re
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+import { OwnerInfoDialog } from "./OwnerInfoDialog";
 
 interface FoundCardResultProps {
   cardData: {
@@ -22,18 +21,9 @@ interface FoundCardResultProps {
 
 export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
   
   const handleRetrieveClick = () => {
     setIsDialogOpen(true);
-  };
-  
-  const handleConfirmRetrieval = () => {
-    setIsDialogOpen(false);
-    toast({
-      title: "Demande enregistrée",
-      description: "Votre demande de récupération a été enregistrée. Vous serez contacté prochainement pour organiser la récupération.",
-    });
   };
 
   // Formater le type de document pour l'affichage
@@ -153,48 +143,11 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
         </CardFooter>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-gray-900">Récupérer votre carte</DialogTitle>
-            <DialogDescription className="text-gray-600">
-              Confirmez votre demande de récupération. Nous organiserons le contact avec la personne qui a trouvé votre carte.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-700 mb-2">
-                <strong>Récapitulatif :</strong>
-              </p>
-              <p className="text-sm"><strong>Numéro :</strong> {cardData.card_number}</p>
-              <p className="text-sm"><strong>Type :</strong> {getDocumentTypeLabel(cardData.document_type)}</p>
-              <p className="text-sm"><strong>Lieu :</strong> {cardData.location}</p>
-            </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-800">
-                <strong>Prochaines étapes :</strong>
-              </p>
-              <ul className="text-sm text-blue-700 mt-2 space-y-1">
-                <li>• Vérification de votre identité requise</li>
-                <li>• Contact avec la personne qui a trouvé votre carte</li>
-                <li>• Organisation de la récupération ou livraison</li>
-                <li>• Paiement des frais : 7000 Fr + livraison si applicable</li>
-              </ul>
-            </div>
-          </div>
-          
-          <DialogFooter className="gap-3">
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Annuler
-            </Button>
-            <Button onClick={handleConfirmRetrieval} className="bg-green-500 hover:bg-green-600">
-              Confirmer la récupération
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <OwnerInfoDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        cardData={cardData}
+      />
     </>
   );
 };
