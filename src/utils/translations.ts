@@ -69,6 +69,62 @@ const translations: Translations = {
     fr: "Commencer maintenant",
     en: "Get started now"
   },
+  cardNumber: {
+    fr: "Numéro de la carte",
+    en: "Card number"
+  },
+  enterCardNumber: {
+    fr: "Entrez le numéro de la carte",
+    en: "Enter the card number"
+  },
+  foundDate: {
+    fr: "Date de découverte",
+    en: "Found date"
+  },
+  description: {
+    fr: "Description",
+    en: "Description"
+  },
+  descriptionPlaceholder: {
+    fr: "Ajoutez des détails sur l'endroit où vous avez trouvé la carte",
+    en: "Add details about where you found the card"
+  },
+  freeServiceStudentCards: {
+    fr: "Service gratuit pour cartes étudiantes",
+    en: "Free service for student cards"
+  },
+  studentCardInfo: {
+    fr: "En signalant une carte étudiante, votre numéro de téléphone sera visible directement pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes étudiantes.",
+    en: "By reporting a student card, your phone number will be directly visible so the student can contact you immediately. This is a free service to facilitate the recovery of student cards."
+  },
+  sending: {
+    fr: "Envoi en cours...",
+    en: "Sending..."
+  },
+  cardReported: {
+    fr: "Carte signalée avec succès",
+    en: "Card reported successfully"
+  },
+  studentCardReported: {
+    fr: "Carte étudiante signalée avec succès",
+    en: "Student card reported successfully"
+  },
+  studentCardMessage: {
+    fr: "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter",
+    en: "Your number will be displayed directly so the student can contact you"
+  },
+  thankYouMessage: {
+    fr: "Merci d'avoir signalé cette carte",
+    en: "Thank you for reporting this card"
+  },
+  error: {
+    fr: "Erreur",
+    en: "Error"
+  },
+  submitError: {
+    fr: "Une erreur est survenue lors de la soumission du formulaire",
+    en: "An error occurred while submitting the form"
+  },
   documentTypes: {
     fr: {
       id: "Carte d'identité nationale",
@@ -104,6 +160,20 @@ export const getTranslation = (country: Country, language: Language, key: string
   
   const value = translation[language] || translation.fr || key;
   return typeof value === 'string' ? value : key;
+};
+
+export const getDocumentTypeTranslation = (country: Country, language: Language, documentType: string): string => {
+  const documentTypes = translations.documentTypes;
+  if (!documentTypes) {
+    return documentType;
+  }
+  
+  const languageTypes = documentTypes[language] as DocumentTypes;
+  if (!languageTypes) {
+    return documentType;
+  }
+  
+  return languageTypes[documentType] || documentType;
 };
 
 export const getAvailableLanguages = (): Array<{code: Language, name: string, flag: string}> => [

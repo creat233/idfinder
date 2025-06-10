@@ -1,136 +1,142 @@
 
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, LogOut } from "lucide-react";
-import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { LogOut, User, Settings, Globe } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { useTranslation } from "@/hooks/useTranslation";
+import { getAvailableLanguages } from "@/utils/translations";
 
 export const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
-
-  // Handle scroll effect for fixed header
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrolled]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { t, currentLanguage, changeLanguage } = useTranslation();
+  const availableLanguages = getAvailableLanguages();
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       navigate("/login");
     } catch (error) {
       console.error("Error logging out:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la déconnexion",
-      });
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
+  const handleLanguageChange = (languageCode: string) => {
+    changeLanguage(languageCode);
+  };
+
+  const getCurrentLanguageFlag = () => {
+    const currentLang = availableLanguages.find(lang => lang.code === currentLanguage);
+    return currentLang?.flag || "🇫🇷";
+  };
+
   return (
-    <header className={`w-full bg-primary py-4 fixed top-0 left-0 right-0 z-50 transition-shadow ${scrolled ? 'shadow-md' : ''}`}>
-      <div className="container mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <img 
-            src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
-            alt="FinderID Logo" 
-            className="w-8 h-8"
-          />
-          <span className="text-primary-foreground text-2xl font-bold">
-            FinderID
-          </span>
-        </Link>
-        
-        {/* Mobile menu button */}
-        <Button 
-          variant="ghost" 
-          className="md:hidden text-primary-foreground"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <Menu className="h-6 w-6" />
-        </Button>
+    <header className="bg-primary text-primary-foreground shadow-md">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2">
+            <img 
+              src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+              alt="FinderID Logo" 
+              className="w-8 h-8"
+            />
+            <span className="font-bold text-xl">{t("appName")}</span>
+          </Link>
 
-        {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link to="/about" className="text-primary-foreground hover:text-secondary transition-colors">
-            À propos
-          </Link>
-          <Link to="/support" className="text-primary-foreground hover:text-secondary transition-colors">
-            Support
-          </Link>
-          <Link to="/profile" className="text-primary-foreground hover:text-secondary transition-colors">
-            Mon Profil
-          </Link>
-          <Link to="/signaler">
-            <Button variant="secondary">Signaler une carte</Button>
-          </Link>
-          <Button 
-            variant="ghost" 
-            className="text-primary-foreground hover:text-secondary"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Déconnexion
-          </Button>
-        </nav>
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link 
+              to="/" 
+              className={`hover:text-secondary transition-colors ${
+                location.pathname === "/" ? "text-secondary" : ""
+              }`}
+            >
+              Accueil
+            </Link>
+            <Link 
+              to="/signaler" 
+              className={`hover:text-secondary transition-colors ${
+                location.pathname === "/signaler" ? "text-secondary" : ""
+              }`}
+            >
+              {t("signalCard")}
+            </Link>
+            <Link 
+              to="/support" 
+              className={`hover:text-secondary transition-colors ${
+                location.pathname === "/support" ? "text-secondary" : ""
+              }`}
+            >
+              Support
+            </Link>
+          </nav>
 
-        {/* Mobile navigation */}
-        {isMenuOpen && (
-          <div className="absolute top-16 left-0 right-0 bg-primary p-4 md:hidden shadow-lg">
-            <nav className="flex flex-col gap-4">
-              <Link 
-                to="/about" 
-                className="text-primary-foreground hover:text-secondary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                À propos
-              </Link>
-              <Link 
-                to="/support" 
-                className="text-primary-foreground hover:text-secondary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Support
-              </Link>
-              <Link 
-                to="/profile" 
-                className="text-primary-foreground hover:text-secondary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Mon Profil
-              </Link>
-              <Link 
-                to="/signaler" 
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Button variant="secondary" className="w-full">
-                  Signaler une carte
+          <div className="flex items-center space-x-2">
+            {/* Language selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="text-primary-foreground hover:text-secondary">
+                  <Globe className="h-4 w-4 mr-1" />
+                  <span className="text-lg">{getCurrentLanguageFlag()}</span>
                 </Button>
-              </Link>
-              <Button 
-                variant="ghost" 
-                className="text-primary-foreground hover:text-secondary w-full justify-start"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Déconnexion
-              </Button>
-            </nav>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {availableLanguages.map((language) => (
+                  <DropdownMenuItem
+                    key={language.code}
+                    onClick={() => handleLanguageChange(language.code)}
+                    className={`cursor-pointer ${
+                      currentLanguage === language.code ? "bg-accent" : ""
+                    }`}
+                  >
+                    <span className="mr-2">{language.flag}</span>
+                    {language.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* User menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="text-primary-foreground hover:text-secondary">
+                  <User className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                  <User className="mr-2 h-4 w-4" />
+                  {t("profile")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/support")} className="cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Support
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={handleLogout} 
+                  className="cursor-pointer text-red-600"
+                  disabled={isLoggingOut}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );
