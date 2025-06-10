@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,7 @@ export const Auth = () => {
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -52,8 +54,8 @@ export const Auth = () => {
         if (error) throw error;
         
         showSuccess(
-          "Inscription réussie",
-          "Vérifiez votre email pour confirmer votre compte"
+          t("registrationSuccess"),
+          t("checkEmailConfirm")
         );
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -63,12 +65,12 @@ export const Auth = () => {
 
         if (error) throw error;
         
-        showSuccess("Connexion réussie");
+        showSuccess(t("loginSuccess"));
         navigate("/");
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      showError("Erreur", error.message || "Une erreur est survenue");
+      showError(t("error"), error.message || "Une erreur est survenue");
     } finally {
       setLoading(false);
     }
@@ -79,10 +81,10 @@ export const Auth = () => {
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900">
-            {isSignUp ? "Créer un compte" : "Se connecter"}
+            {isSignUp ? t("createAccount") : t("login")}
           </h2>
           <p className="mt-2 text-gray-600">
-            {isSignUp ? "Rejoignez FinderID" : "Accédez à votre compte FinderID"}
+            {isSignUp ? t("joinFinderID") : t("accessAccount")}
           </p>
         </div>
 
@@ -90,7 +92,7 @@ export const Auth = () => {
           {isSignUp && (
             <>
               <div>
-                <Label htmlFor="firstName">Prénom</Label>
+                <Label htmlFor="firstName">{t("firstName")}</Label>
                 <Input
                   id="firstName"
                   type="text"
@@ -101,7 +103,7 @@ export const Auth = () => {
               </div>
 
               <div>
-                <Label htmlFor="lastName">Nom</Label>
+                <Label htmlFor="lastName">{t("lastName")}</Label>
                 <Input
                   id="lastName"
                   type="text"
@@ -112,7 +114,7 @@ export const Auth = () => {
               </div>
 
               <div>
-                <Label htmlFor="phone">Téléphone</Label>
+                <Label htmlFor="phone">{t("phone")}</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -126,7 +128,7 @@ export const Auth = () => {
           )}
 
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -137,7 +139,7 @@ export const Auth = () => {
           </div>
 
           <div>
-            <Label htmlFor="password">Mot de passe</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -148,7 +150,7 @@ export const Auth = () => {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Chargement..." : isSignUp ? "S'inscrire" : "Se connecter"}
+            {loading ? t("loading") : isSignUp ? t("register") : t("login")}
           </Button>
         </form>
 
@@ -159,8 +161,8 @@ export const Auth = () => {
             onClick={() => setIsSignUp(!isSignUp)}
           >
             {isSignUp 
-              ? "Déjà un compte ? Se connecter" 
-              : "Pas de compte ? S'inscrire"
+              ? t("alreadyHaveAccount")
+              : t("noAccount")
             }
           </button>
         </div>

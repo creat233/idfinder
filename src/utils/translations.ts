@@ -125,6 +125,154 @@ const translations: Translations = {
     fr: "Une erreur est survenue lors de la soumission du formulaire",
     en: "An error occurred while submitting the form"
   },
+  deliveryOption: {
+    fr: "Nous proposons un service de livraison à domicile pour vous faire parvenir votre document récupéré.",
+    en: "We offer a home delivery service to get your recovered document to you."
+  },
+  // Navigation
+  home: {
+    fr: "Accueil",
+    en: "Home"
+  },
+  support: {
+    fr: "Support",
+    en: "Support"
+  },
+  back: {
+    fr: "Retour",
+    en: "Back"
+  },
+  logout: {
+    fr: "Se déconnecter",
+    en: "Logout"
+  },
+  loggingOut: {
+    fr: "Déconnexion...",
+    en: "Logging out..."
+  },
+  // Auth
+  login: {
+    fr: "Se connecter",
+    en: "Login"
+  },
+  register: {
+    fr: "S'inscrire",
+    en: "Register"
+  },
+  createAccount: {
+    fr: "Créer un compte",
+    en: "Create account"
+  },
+  joinFinderID: {
+    fr: "Rejoignez FinderID",
+    en: "Join FinderID"
+  },
+  accessAccount: {
+    fr: "Accédez à votre compte FinderID",
+    en: "Access your FinderID account"
+  },
+  firstName: {
+    fr: "Prénom",
+    en: "First name"
+  },
+  lastName: {
+    fr: "Nom",
+    en: "Last name"
+  },
+  phone: {
+    fr: "Téléphone",
+    en: "Phone"
+  },
+  email: {
+    fr: "Email",
+    en: "Email"
+  },
+  password: {
+    fr: "Mot de passe",
+    en: "Password"
+  },
+  loading: {
+    fr: "Chargement...",
+    en: "Loading..."
+  },
+  alreadyHaveAccount: {
+    fr: "Déjà un compte ? Se connecter",
+    en: "Already have an account? Login"
+  },
+  noAccount: {
+    fr: "Pas de compte ? S'inscrire",
+    en: "No account? Register"
+  },
+  registrationSuccess: {
+    fr: "Inscription réussie",
+    en: "Registration successful"
+  },
+  checkEmailConfirm: {
+    fr: "Vérifiez votre email pour confirmer votre compte",
+    en: "Check your email to confirm your account"
+  },
+  loginSuccess: {
+    fr: "Connexion réussie",
+    en: "Login successful"
+  },
+  // Profile
+  myProfile: {
+    fr: "Mon Profil",
+    en: "My Profile"
+  },
+  editProfile: {
+    fr: "Modifier le profil",
+    en: "Edit profile"
+  },
+  save: {
+    fr: "Sauvegarder",
+    en: "Save"
+  },
+  cancel: {
+    fr: "Annuler",
+    en: "Cancel"
+  },
+  profileUpdated: {
+    fr: "Profil mis à jour avec succès",
+    en: "Profile updated successfully"
+  },
+  // Support
+  needHelp: {
+    fr: "Besoin d'aide ?",
+    en: "Need help?"
+  },
+  supportTeam: {
+    fr: "Notre équipe d'assistance est disponible pour répondre à toutes vos questions",
+    en: "Our support team is available to answer all your questions"
+  },
+  contactByEmail: {
+    fr: "Contacter par email",
+    en: "Contact by email"
+  },
+  call: {
+    fr: "Appeler",
+    en: "Call"
+  },
+  emergencyNumbers: {
+    fr: "Numéros d'Urgence",
+    en: "Emergency Numbers"
+  },
+  accessEmergencyNumbers: {
+    fr: "Accédez rapidement aux numéros d'urgence disponibles au Sénégal",
+    en: "Quickly access emergency numbers available in Senegal"
+  },
+  seeEmergencyNumbers: {
+    fr: "Voir les numéros d'urgence",
+    en: "See emergency numbers"
+  },
+  supportAndFaq: {
+    fr: "Assistance et FAQ",
+    en: "Support and FAQ"
+  },
+  helpWithQuestions: {
+    fr: "Besoin d'aide ? Nous sommes là pour vous assister avec toutes vos questions concernant FinderID.",
+    en: "Need help? We are here to assist you with all your questions about FinderID."
+  },
   documentTypes: {
     fr: {
       id: "Carte d'identité nationale",
@@ -144,10 +292,6 @@ const translations: Translations = {
       residence_permit: "Residence Permit",
       student_card: "Student Card"
     }
-  },
-  deliveryOption: {
-    fr: "Nous proposons un service de livraison à domicile pour vous faire parvenir votre document récupéré.",
-    en: "We offer a home delivery service to get your recovered document to you."
   }
 };
 

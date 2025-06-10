@@ -3,9 +3,11 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const SupportHeader = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -21,7 +23,7 @@ export const SupportHeader = () => {
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour
+          {t("back")}
         </Button>
       </div>
 
@@ -31,9 +33,9 @@ export const SupportHeader = () => {
         variants={fadeInUp}
         className="text-center mb-12"
       >
-        <h1 className="text-4xl font-bold mb-4">Assistance et FAQ</h1>
+        <h1 className="text-4xl font-bold mb-4">{t("supportAndFaq")}</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Besoin d'aide ? Nous sommes là pour vous assister avec toutes vos questions concernant FinderID.
+          {t("helpWithQuestions")}
         </p>
       </motion.div>
     </>

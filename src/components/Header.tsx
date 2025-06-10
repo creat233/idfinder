@@ -63,7 +63,7 @@ export const Header = () => {
                 location.pathname === "/" ? "text-secondary" : ""
               }`}
             >
-              Accueil
+              {t("home")}
             </Link>
             <Link 
               to="/signaler" 
@@ -79,7 +79,7 @@ export const Header = () => {
                 location.pathname === "/support" ? "text-secondary" : ""
               }`}
             >
-              Support
+              {t("support")}
             </Link>
           </nav>
 
@@ -92,7 +92,7 @@ export const Header = () => {
                   <span className="text-lg">{getCurrentLanguageFlag()}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuContent align="end" className="w-40 bg-white z-50">
                 {availableLanguages.map((language) => (
                   <DropdownMenuItem
                     key={language.code}
@@ -115,14 +115,14 @@ export const Header = () => {
                   <User className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-white z-50">
                 <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   {t("profile")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/support")} className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
-                  Support
+                  {t("support")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
@@ -131,7 +131,7 @@ export const Header = () => {
                   disabled={isLoggingOut}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
+                  {isLoggingOut ? t("loggingOut") : t("logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

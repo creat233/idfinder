@@ -9,11 +9,13 @@ import { ProfileForm } from "@/components/profile/ProfileForm";
 import { SupportSection } from "@/components/profile/SupportSection";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { useProfile } from "@/hooks/useProfile";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
   const {
     loading: profileLoading,
     firstName,
@@ -57,7 +59,7 @@ const Profile = () => {
   };
 
   const handleContactSupport = () => {
-    window.location.href = "mailto:mcard1100@gmail.com";
+    window.location.href = "mailto:idfinder06@gmail.com";
   };
 
   if (loading || profileLoading) {
@@ -79,11 +81,11 @@ const Profile = () => {
           onClick={() => navigate(-1)}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Retour
+          {t("back")}
         </Button>
 
         <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold mb-6">Mon Profil</h1>
+          <h1 className="text-2xl font-bold mb-6">{t("myProfile")}</h1>
           
           <ProfileForm
             firstName={firstName}

@@ -8,7 +8,7 @@ import { ContactForm } from "@/components/support/ContactForm";
 import { Faq } from "@/components/support/Faq";
 
 const Support = () => {
-  const supportEmail = "mcard1100@gmail.com";
+  const supportEmail = "idfinder06@gmail.com";
 
   const handleContactSupport = () => {
     window.open(`mailto:${supportEmail}`, "_blank");
