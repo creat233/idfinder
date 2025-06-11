@@ -1,4 +1,5 @@
 
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { Resend } from "npm:resend@2.0.0";
@@ -69,15 +70,26 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Si un code promo est utilisé, récupérer ses informations et enregistrer l'utilisation
     let promoDetails = null;
+    let promoOwnerInfo = null;
     if (promoInfo) {
+      // Récupérer les informations du code promo et de son propriétaire
       const { data: promoData, error: promoError } = await supabaseClient
         .from("promo_codes")
-        .select("code, user_id")
+        .select(`
+          code, 
+          user_id,
+          profiles!promo_codes_user_id_fkey (
+            first_name,
+            last_name,
+            phone
+          )
+        `)
         .eq("id", promoInfo.promoCodeId)
         .single();
 
       if (!promoError && promoData) {
         promoDetails = promoData;
+        promoOwnerInfo = promoData.profiles;
         
         // Enregistrer l'utilisation du code promo
         await supabaseClient.from("promo_usage").insert({
@@ -105,7 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Préparer l'email avec les informations du code promo si applicable
     let promoSection = "";
-    if (promoDetails) {
+    if (promoDetails && promoOwnerInfo) {
       promoSection = `
       <h3>💰 Code promo utilisé</h3>
       <ul>
@@ -113,6 +125,13 @@ const handler = async (req: Request): Promise<Response> => {
         <li><strong>Réduction appliquée:</strong> ${promoInfo!.discount} FCFA</li>
         <li><strong>Prix original:</strong> 7000 FCFA</li>
         <li><strong>Prix final:</strong> ${promoInfo!.finalPrice} FCFA</li>
+      </ul>
+      
+      <h3>👤 Propriétaire du code promo</h3>
+      <ul>
+        <li><strong>Nom:</strong> ${promoOwnerInfo.first_name || 'Non renseigné'} ${promoOwnerInfo.last_name || ''}</li>
+        <li><strong>Téléphone:</strong> ${promoOwnerInfo.phone || 'Non renseigné'}</li>
+        <li><strong>Montant à payer au propriétaire:</strong> 1000 FCFA</li>
       </ul>
       `;
     }
@@ -147,6 +166,7 @@ const handler = async (req: Request): Promise<Response> => {
       <ul>
         <li><strong>Frais de récupération:</strong> ${promoInfo ? promoInfo.finalPrice : 7000} FCFA</li>
         ${promoInfo ? `<li><strong>Économies réalisées:</strong> ${promoInfo.discount} FCFA</li>` : ''}
+        ${promoOwnerInfo ? `<li><strong>Commission pour le propriétaire du code promo:</strong> 1000 FCFA</li>` : ''}
         <li><strong>Livraison:</strong> Si applicable (frais supplémentaires)</li>
       </ul>
 
@@ -193,3 +213,4 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
+
