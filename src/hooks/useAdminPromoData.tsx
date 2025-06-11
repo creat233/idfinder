@@ -53,15 +53,15 @@ export const useAdminPromoData = () => {
         console.error("Error fetching profiles:", profilesError);
       }
 
-      // Combiner les données avec une vérification de type appropriée
+      // Typer correctement profilesData
+      const typedProfiles: Profile[] = profilesData || [];
+
+      // Combiner les données
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
         
-        // Vérifier que profilesData existe et est un tableau avant de chercher
-        let profile: Profile | null = null;
-        if (profilesData && Array.isArray(profilesData) && profilesData.length > 0) {
-          profile = (profilesData as Profile[]).find(p => p?.id === code.user_id) || null;
-        }
+        // Chercher le profil avec le typage correct
+        const profile = typedProfiles.find(p => p.id === code.user_id) || null;
         
         return {
           ...code,
