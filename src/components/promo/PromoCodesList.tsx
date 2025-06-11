@@ -32,8 +32,8 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
     showSuccess(t("codeCopied"), "");
   };
 
-  const openWhatsApp = () => {
-    const message = encodeURIComponent("Bonjour, je souhaite activer mon code promo en payant 1000 FCFA");
+  const openWhatsApp = (promoCode: string) => {
+    const message = encodeURIComponent(`Bonjour, je souhaite activer mon code promo ${promoCode} en payant 1000 FCFA`);
     window.open(`https://wa.me/221710117579?text=${message}`, '_blank');
   };
 
@@ -98,7 +98,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                 <p className="text-sm text-yellow-800 mb-2">{t("paymentInstructions")}</p>
                 <Button
-                  onClick={openWhatsApp}
+                  onClick={() => openWhatsApp(promoCode.code)}
                   className="w-full"
                   size="sm"
                 >
