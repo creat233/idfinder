@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          permission_type: string
+          updated_at: string
+          user_email: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          permission_type: string
+          updated_at?: string
+          user_email: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          permission_type?: string
+          updated_at?: string
+          user_email?: string
+        }
+        Relationships: []
+      }
       card_searches: {
         Row: {
           card_number: string
@@ -272,6 +299,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_activate_promo_code: {
+        Args: { promo_code_text: string }
+        Returns: boolean
+      }
+      can_activate_promo_codes: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
       generate_promo_code: {
         Args: Record<PropertyKey, never>
         Returns: string

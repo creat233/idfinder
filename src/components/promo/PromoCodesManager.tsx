@@ -6,11 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Gift } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { usePromoCodes } from "@/hooks/usePromoCodes";
+import { useAdminPermissions } from "@/hooks/useAdminPermissions";
 import { PromoCodesList } from "./PromoCodesList";
+import { AdminPromoActivation } from "./AdminPromoActivation";
 
 export const PromoCodesManager = () => {
   const { t } = useTranslation();
   const { promoCodes, loading, generatePromoCode } = usePromoCodes();
+  const { hasActivationPermission, loading: permissionsLoading } = useAdminPermissions();
   const [generating, setGenerating] = useState(false);
 
   const handleGenerateCode = async () => {
@@ -19,7 +22,7 @@ export const PromoCodesManager = () => {
     setGenerating(false);
   };
 
-  if (loading) {
+  if (loading || permissionsLoading) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -33,6 +36,11 @@ export const PromoCodesManager = () => {
         <h1 className="text-2xl font-bold mb-2">{t("promoCodes")}</h1>
         <p className="text-muted-foreground">{t("promoCodeBenefits")}</p>
       </div>
+
+      {/* Section d'administration pour les utilisateurs autorisés */}
+      {hasActivationPermission && (
+        <AdminPromoActivation />
+      )}
 
       <Tabs defaultValue="my-codes" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
