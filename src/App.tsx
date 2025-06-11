@@ -11,7 +11,9 @@ import Auth from "./pages/Auth";
 import NumeroUrgence from "./pages/NumeroUrgence";
 import MyCards from "./pages/MyCards";
 import PromoCodes from "./pages/PromoCodes";
+import AdminPromoCodes from "./pages/AdminPromoCodes";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AdminRoute } from "./components/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,8 +27,16 @@ function App() {
             <Route 
               path="/" 
               element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <Dashboard />
+                </AdminRoute>
+              } 
+            />
+            <Route 
+              path="/admin/codes-promo" 
+              element={
+                <ProtectedRoute>
+                  <AdminPromoCodes />
                 </ProtectedRoute>
               } 
             />
