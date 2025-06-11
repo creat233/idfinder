@@ -4,6 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { PromoCodeData, PromoCodeStats } from "@/types/promo";
 
+interface Profile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+}
+
 export const useAdminPromoData = () => {
   const [promoCodes, setPromoCodes] = useState<PromoCodeData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,19 +44,20 @@ export const useAdminPromoData = () => {
         console.error("Error fetching users:", usersError);
       }
 
-      // Récupérer les profils
+      // Récupérer les profils avec typage approprié
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, first_name, last_name");
+        .select("id, first_name, last_name")
+        .returns<Profile[]>();
 
       if (profilesError) {
         console.error("Error fetching profiles:", profilesError);
       }
 
-      // Combiner les données
+      // Combiner les données avec une vérification de type appropriée
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
-        const profile = profilesData?.find(p => p.id === code.user_id);
+        const profile = profilesData?.find((p: Profile) => p.id === code.user_id);
         
         return {
           ...code,
