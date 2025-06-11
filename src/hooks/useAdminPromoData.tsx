@@ -47,8 +47,7 @@ export const useAdminPromoData = () => {
       // Récupérer les profils avec typage approprié
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, first_name, last_name")
-        .returns<Profile[]>();
+        .select("id, first_name, last_name");
 
       if (profilesError) {
         console.error("Error fetching profiles:", profilesError);
@@ -57,7 +56,7 @@ export const useAdminPromoData = () => {
       // Combiner les données avec une vérification de type appropriée
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
-        const profile = profilesData ? profilesData.find((p: Profile) => p.id === code.user_id) : null;
+        const profile = (profilesData as Profile[] | null)?.find(p => p.id === code.user_id) || null;
         
         return {
           ...code,
