@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+import { detectCountryFromPhone } from "@/utils/countryDetection";
 
 export const useProfile = () => {
   const { showSuccess, showError } = useToast();
@@ -9,6 +10,7 @@ export const useProfile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState("SN");
   const [isEditing, setIsEditing] = useState(false);
 
   const getProfile = async (session: any) => {
@@ -19,12 +21,13 @@ export const useProfile = () => {
       let profileData = {
         first_name: userData?.first_name || "",
         last_name: userData?.last_name || "",
-        phone: userData?.phone || ""
+        phone: userData?.phone || "",
+        country: userData?.country || "SN"
       };
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('first_name, last_name, phone')
+        .select('first_name, last_name, phone, country')
         .eq('id', session.user.id)
         .single();
 
@@ -32,13 +35,30 @@ export const useProfile = () => {
         profileData = {
           first_name: profile.first_name || profileData.first_name,
           last_name: profile.last_name || profileData.last_name,
-          phone: profile.phone || profileData.phone
+          phone: profile.phone || profileData.phone,
+          country: profile.country || profileData.country
         };
       }
 
       setFirstName(profileData.first_name);
       setLastName(profileData.last_name);
       setPhone(profileData.phone);
+      
+      // Détecter automatiquement le pays à partir du numéro de téléphone
+      if (profileData.phone) {
+        const detectedCountry = detectCountryFromPhone(profileData.phone);
+        setCountry(detectedCountry);
+        
+        // Mettre à jour le pays dans la base de données si différent
+        if (detectedCountry !== profileData.country) {
+          await supabase
+            .from('profiles')
+            .update({ country: detectedCountry })
+            .eq('id', session.user.id);
+        }
+      } else {
+        setCountry(profileData.country);
+      }
     } catch (error) {
       console.error('Error loading profile:', error);
       showError("Erreur", "Impossible de charger le profil");
@@ -51,16 +71,21 @@ export const useProfile = () => {
     try {
       setLoading(true);
 
+      // Détecter le pays à partir du nouveau numéro de téléphone
+      const detectedCountry = phone ? detectCountryFromPhone(phone) : country;
+
       const { error } = await supabase
         .from('profiles')
         .update({
           phone: phone,
+          country: detectedCountry
         })
         .eq('id', session.user.id);
 
       if (error) throw error;
 
-      showSuccess("Succès", "Numéro de téléphone mis à jour avec succès");
+      setCountry(detectedCountry);
+      showSuccess("Succès", "Profil mis à jour avec succès");
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -75,6 +100,7 @@ export const useProfile = () => {
     firstName,
     lastName,
     phone,
+    country,
     isEditing,
     setPhone,
     setIsEditing,

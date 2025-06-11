@@ -8,6 +8,7 @@ import { Header } from "@/components/Header";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { SupportSection } from "@/components/profile/SupportSection";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
+import { CountryInfo } from "@/components/profile/CountryInfo";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -21,6 +22,7 @@ const Profile = () => {
     firstName,
     lastName,
     phone,
+    country,
     isEditing,
     setPhone,
     setIsEditing,
@@ -86,6 +88,9 @@ const Profile = () => {
 
         <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
           <h1 className="text-2xl font-bold mb-6">{t("myProfile")}</h1>
+          
+          {/* Informations du pays */}
+          <CountryInfo countryCode={country} />
           
           <ProfileForm
             firstName={firstName}
