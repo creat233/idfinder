@@ -56,7 +56,12 @@ export const useAdminPromoData = () => {
       // Combiner les données avec une vérification de type appropriée
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
-        const profile = (profilesData as Profile[] | null)?.find(p => p.id === code.user_id) || null;
+        
+        // Utiliser une approche plus sûre pour le typage
+        let profile: Profile | null = null;
+        if (profilesData && Array.isArray(profilesData)) {
+          profile = profilesData.find((p: any) => p.id === code.user_id) || null;
+        }
         
         return {
           ...code,
