@@ -2,11 +2,11 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { PromoCodeInput } from "@/components/promo/PromoCodeInput";
+import { OwnerInfoForm } from "./OwnerInfoForm";
+import { RecoveryPriceSummary } from "./RecoveryPriceSummary";
+import { RecoveryNextSteps } from "./RecoveryNextSteps";
 
 interface OwnerInfoDialogProps {
   isOpen: boolean;
@@ -146,66 +146,23 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="ownerName">Nom complet *</Label>
-            <Input
-              id="ownerName"
-              type="text"
-              value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
-              placeholder="Votre nom et prénom"
-              required
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="ownerPhone">Numéro de téléphone *</Label>
-            <Input
-              id="ownerPhone"
-              type="tel"
-              value={ownerPhone}
-              onChange={(e) => setOwnerPhone(e.target.value)}
-              placeholder="Votre numéro de téléphone"
-              required
-            />
-          </div>
+          <OwnerInfoForm
+            ownerName={ownerName}
+            ownerPhone={ownerPhone}
+            onOwnerNameChange={setOwnerName}
+            onOwnerPhoneChange={setOwnerPhone}
+            onPromoApplied={handlePromoApplied}
+            onPromoRemoved={handlePromoRemoved}
+          />
 
-          <div className="space-y-2">
-            <Label>Code promo (optionnel)</Label>
-            <PromoCodeInput
-              onPromoApplied={handlePromoApplied}
-              onPromoRemoved={handlePromoRemoved}
-            />
-          </div>
-
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-700 mb-2">
-              <strong>Récapitulatif :</strong>
-            </p>
-            <p className="text-sm"><strong>Numéro :</strong> {cardData.card_number}</p>
-            <p className="text-sm"><strong>Lieu :</strong> {cardData.location}</p>
-            <div className="mt-2 pt-2 border-t border-gray-200">
-              <p className="text-sm"><strong>Frais de récupération :</strong> {baseFee} FCFA</p>
-              {discount > 0 && (
-                <p className="text-sm text-green-600"><strong>Réduction :</strong> -{discount} FCFA</p>
-              )}
-              <p className="text-lg font-semibold text-gray-800">
-                <strong>Total à payer :</strong> {finalPrice} FCFA {discount > 0 && '+ livraison si applicable'}
-              </p>
-            </div>
-          </div>
+          <RecoveryPriceSummary
+            cardData={cardData}
+            baseFee={baseFee}
+            discount={discount}
+            finalPrice={finalPrice}
+          />
           
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-800">
-              <strong>Prochaines étapes :</strong>
-            </p>
-            <ul className="text-sm text-blue-700 mt-2 space-y-1">
-              <li>• Vérification de votre identité</li>
-              <li>• Contact avec la personne qui a trouvé votre carte</li>
-              <li>• Organisation de la récupération ou livraison</li>
-              <li>• Paiement des frais : {finalPrice} FCFA + livraison si applicable</li>
-            </ul>
-          </div>
+          <RecoveryNextSteps finalPrice={finalPrice} />
           
           <DialogFooter className="gap-3">
             <Button 
