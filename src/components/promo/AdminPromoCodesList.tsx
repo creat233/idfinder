@@ -38,37 +38,48 @@ export const AdminPromoCodesList = () => {
 
   const fetchPromoCodesData = async () => {
     try {
-      // Récupérer tous les codes promo avec les informations utilisateur
+      // Récupérer tous les codes promo
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
-        .select(`
-          *,
-          profiles!promo_codes_user_id_fkey (
-            first_name,
-            last_name
-          )
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (codesError) throw codesError;
 
-      // Récupérer les emails des utilisateurs
-      const userIds = codesData?.map(code => code.user_id) || [];
+      if (!codesData) {
+        setPromoCodes([]);
+        setLoading(false);
+        return;
+      }
+
+      // Récupérer les informations des utilisateurs via l'API admin
       const { data: usersData, error: usersError } = await supabase.auth.admin.listUsers();
 
-      if (usersError) throw usersError;
+      if (usersError) {
+        console.error("Error fetching users:", usersError);
+        // Continue sans les données utilisateur
+      }
+
+      // Récupérer les profils
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name");
+
+      if (profilesError) {
+        console.error("Error fetching profiles:", profilesError);
+      }
 
       // Combiner les données
-      const enrichedCodes = codesData?.map(code => {
-        const user = usersData.users.find(u => u.id === code.user_id);
-        const profile = code.profiles;
+      const enrichedCodes = codesData.map(code => {
+        const user = usersData?.users?.find(u => u.id === code.user_id);
+        const profile = profilesData?.find(p => p.id === code.user_id);
         
         return {
           ...code,
           user_email: user?.email || 'Email non trouvé',
-          user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : 'Nom non renseigné'
+          user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné'
         };
-      }) || [];
+      });
 
       setPromoCodes(enrichedCodes);
 
