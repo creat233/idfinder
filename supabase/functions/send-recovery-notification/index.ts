@@ -17,6 +17,11 @@ interface RecoveryNotificationRequest {
     name: string;
     phone: string;
   };
+  promoInfo?: {
+    promoCodeId: string;
+    discount: number;
+    finalPrice: number;
+  };
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -35,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
 
-    const { cardId, ownerInfo }: RecoveryNotificationRequest = await req.json();
+    const { cardId, ownerInfo, promoInfo }: RecoveryNotificationRequest = await req.json();
 
     console.log("Processing recovery notification for card:", cardId);
 
@@ -62,6 +67,28 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Card not found");
     }
 
+    // Si un code promo est utilisé, récupérer ses informations et enregistrer l'utilisation
+    let promoDetails = null;
+    if (promoInfo) {
+      const { data: promoData, error: promoError } = await supabaseClient
+        .from("promo_codes")
+        .select("code, user_id")
+        .eq("id", promoInfo.promoCodeId)
+        .single();
+
+      if (!promoError && promoData) {
+        promoDetails = promoData;
+        
+        // Enregistrer l'utilisation du code promo
+        await supabaseClient.from("promo_usage").insert({
+          promo_code_id: promoInfo.promoCodeId,
+          used_by_email: null, // Pas d'email car c'est une récupération
+          used_by_phone: ownerInfo.phone,
+          discount_amount: promoInfo.discount,
+        });
+      }
+    }
+
     // Fonction pour obtenir le type de document en français
     const getDocumentTypeLabel = (type: string) => {
       const types: Record<string, string> = {
@@ -76,7 +103,20 @@ const handler = async (req: Request): Promise<Response> => {
       return types[type] || type;
     };
 
-    // Préparer l'email
+    // Préparer l'email avec les informations du code promo si applicable
+    let promoSection = "";
+    if (promoDetails) {
+      promoSection = `
+      <h3>💰 Code promo utilisé</h3>
+      <ul>
+        <li><strong>Code promo:</strong> ${promoDetails.code}</li>
+        <li><strong>Réduction appliquée:</strong> ${promoInfo!.discount} FCFA</li>
+        <li><strong>Prix original:</strong> 7000 FCFA</li>
+        <li><strong>Prix final:</strong> ${promoInfo!.finalPrice} FCFA</li>
+      </ul>
+      `;
+    }
+
     const emailContent = `
       <h2>🔍 Nouvelle demande de récupération - FinderID</h2>
       
@@ -101,6 +141,15 @@ const handler = async (req: Request): Promise<Response> => {
         <li><strong>Téléphone:</strong> ${cardData.profiles?.phone || cardData.reporter_phone || 'Non renseigné'}</li>
       </ul>
 
+      ${promoSection}
+
+      <h3>💳 Récapitulatif financier</h3>
+      <ul>
+        <li><strong>Frais de récupération:</strong> ${promoInfo ? promoInfo.finalPrice : 7000} FCFA</li>
+        ${promoInfo ? `<li><strong>Économies réalisées:</strong> ${promoInfo.discount} FCFA</li>` : ''}
+        <li><strong>Livraison:</strong> Si applicable (frais supplémentaires)</li>
+      </ul>
+
       <hr>
       <p><em>Email automatique généré par FinderID - ${new Date().toLocaleString("fr-FR")}</em></p>
     `;
@@ -109,7 +158,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "FinderID <notifications@resend.dev>",
       to: ["idfinder06@gmail.com"],
-      subject: `🔍 Demande de récupération - Carte ${cardData.card_number}`,
+      subject: `🔍 Demande de récupération - Carte ${cardData.card_number}${promoDetails ? ` (Code promo: ${promoDetails.code})` : ''}`,
       html: emailContent,
     });
 
