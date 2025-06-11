@@ -57,11 +57,9 @@ export const useAdminPromoData = () => {
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
         
-        // Utiliser une approche plus sûre pour le typage
-        let profile: Profile | null = null;
-        if (profilesData && Array.isArray(profilesData)) {
-          profile = profilesData.find((p: any) => p.id === code.user_id) || null;
-        }
+        // Typer explicitement profilesData et vérifier sa validité
+        const profiles = profilesData as Profile[] | null;
+        const profile = profiles?.find(p => p.id === code.user_id) || null;
         
         return {
           ...code,
