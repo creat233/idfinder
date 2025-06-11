@@ -72,8 +72,8 @@ const SignalerCarte = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
-      // Pour les cartes étudiantes, on définit un statut spécial
-      const status = data.documentType === "student_card" ? "public_contact" : "pending";
+      // Pour les cartes étudiantes et cartes de santé, on définit un statut spécial
+      const status = (data.documentType === "student_card" || data.documentType === "health_card") ? "public_contact" : "pending";
 
       const { error } = await supabase.from("reported_cards").insert({
         card_number: data.cardNumber,
@@ -94,6 +94,11 @@ const SignalerCarte = () => {
           t("studentCardReported") || "Carte étudiante signalée avec succès",
           t("studentCardMessage") || "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter"
         );
+      } else if (data.documentType === "health_card") {
+        showSuccess(
+          "Carte de santé signalée avec succès",
+          "Votre numéro sera affiché directement pour que le propriétaire puisse vous contacter"
+        );
       } else {
         showSuccess(
           t("cardReported") || "Carte signalée avec succès",
@@ -112,6 +117,8 @@ const SignalerCarte = () => {
       setIsSubmitting(false);
     }
   };
+
+  const isFreeService = watchedDocumentType === "student_card" || watchedDocumentType === "health_card";
 
   return (
     <div className="min-h-screen bg-background">
@@ -150,13 +157,19 @@ const SignalerCarte = () => {
 
             <PhotoUpload form={form} />
 
-            {watchedDocumentType === "student_card" && (
+            {isFreeService && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h3 className="font-semibold text-blue-800 mb-2">
-                  {t("freeServiceStudentCards") || "Service gratuit pour cartes étudiantes"}
+                  {watchedDocumentType === "student_card" 
+                    ? (t("freeServiceStudentCards") || "Service gratuit pour cartes étudiantes")
+                    : "Service gratuit pour cartes de santé"
+                  }
                 </h3>
                 <p className="text-sm text-blue-700">
-                  {t("studentCardInfo") || "En signalant une carte étudiante, votre numéro de téléphone sera visible directement pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes étudiantes."}
+                  {watchedDocumentType === "student_card" 
+                    ? (t("studentCardInfo") || "En signalant une carte étudiante, votre numéro de téléphone sera visible directement pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes étudiantes.")
+                    : "En signalant une carte de santé, votre numéro de téléphone sera visible directement pour que le propriétaire puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes de santé."
+                  }
                 </p>
               </div>
             )}

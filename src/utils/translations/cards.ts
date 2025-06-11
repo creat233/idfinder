@@ -38,6 +38,10 @@ export const cardsTranslations: Translations = {
     fr: "Carte d'étudiant",
     en: "Student Card"
   },
+  healthCard: {
+    fr: "Carte de santé",
+    en: "Health Card"
+  },
   cardHolderName: {
     fr: "Nom du titulaire",
     en: "Cardholder Name"

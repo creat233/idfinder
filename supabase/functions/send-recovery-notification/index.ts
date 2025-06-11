@@ -111,6 +111,7 @@ const handler = async (req: Request): Promise<Response> => {
         motorcycle_registration: "Carte grise moto",
         residence_permit: "Carte de séjour",
         student_card: "Carte étudiante",
+        health_card: "Carte de santé",
       };
       return types[type] || type;
     };
@@ -213,4 +214,3 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
-

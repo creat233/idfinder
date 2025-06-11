@@ -33,7 +33,10 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
     { value: "motorcycle_registration", label: "Carte grise moto" },
     { value: "residence_permit", label: "Carte de séjour" },
     { value: "student_card", label: "Carte étudiante (Gratuit - Contact direct)" },
+    { value: "health_card", label: "Carte de santé (Gratuit - Contact direct)" },
   ];
+
+  const isFreeService = field.value === "student_card" || field.value === "health_card";
 
   return (
     <div className="space-y-2">
@@ -55,7 +58,7 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
               key={docType.value} 
               value={docType.value} 
               className={
-                docType.value === "student_card" ? "text-green-600 font-medium" : ""
+                (docType.value === "student_card" || docType.value === "health_card") ? "text-green-600 font-medium" : ""
               }
             >
               {docType.label}
@@ -64,10 +67,12 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
         </SelectContent>
       </Select>
       
-      {field.value === "student_card" && (
+      {isFreeService && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
           <p className="text-sm text-green-700">
-            <strong>Carte étudiante - Service gratuit :</strong> Votre numéro de téléphone sera affiché directement pour permettre à l'étudiant de vous contacter immédiatement.
+            <strong>
+              {field.value === "student_card" ? "Carte étudiante" : "Carte de santé"} - Service gratuit :
+            </strong> Votre numéro de téléphone sera affiché directement pour permettre au propriétaire de vous contacter immédiatement.
           </p>
         </div>
       )}
