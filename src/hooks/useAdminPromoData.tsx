@@ -20,7 +20,7 @@ export const useAdminPromoData = () => {
       console.log("=== DÉBUT RÉCUPÉRATION CODES PROMO ===");
       setLoading(true);
       
-      // Récupérer TOUS les codes promo sans exception
+      // Récupérer TOUS les codes promo
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
         .select("*")
@@ -55,7 +55,7 @@ export const useAdminPromoData = () => {
         return;
       }
 
-      // Récupérer les profils utilisateurs
+      // Récupérer les profils des utilisateurs
       const userIds = [...new Set(codesData.map(code => code.user_id).filter(Boolean))];
       console.log("👥 IDs utilisateurs à récupérer:", userIds);
       
@@ -74,7 +74,7 @@ export const useAdminPromoData = () => {
         }
       }
 
-      // Récupérer les emails via l'API admin (optionnel)
+      // Récupérer les emails via l'API admin
       let usersData: any = null;
       try {
         const { data, error: usersError } = await supabase.auth.admin.listUsers();
@@ -144,6 +144,27 @@ export const useAdminPromoData = () => {
 
   useEffect(() => {
     fetchPromoCodesData();
+    
+    // S'abonner aux changements en temps réel pour les nouveaux codes
+    const channel = supabase
+      .channel('promo-codes-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'promo_codes'
+        },
+        (payload) => {
+          console.log('🆕 Nouveau code promo détecté:', payload);
+          fetchPromoCodesData(); // Actualiser la liste
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {

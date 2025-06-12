@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Clock, CheckCircle, Gift, Mail, User, Phone, RefreshCw, Database } from "lucide-react";
+import { Search, Clock, CheckCircle, Gift, Mail, User, RefreshCw, Database } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -171,10 +171,6 @@ export const AdminPendingCodes = () => {
                           {code.user_email}
                         </a>
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Phone className="h-3 w-3" />
-                        <span>WhatsApp disponible</span>
-                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -186,7 +182,7 @@ export const AdminPendingCodes = () => {
                         En attente
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        Actif: {code.is_active ? 'Oui' : 'Non'} | Payé: {code.is_paid ? 'Oui' : 'Non'}
+                        Généré automatiquement
                       </span>
                     </div>
                   </TableCell>
