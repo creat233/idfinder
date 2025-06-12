@@ -1,10 +1,9 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { ScanSearch, Plus, Search } from "lucide-react";
+import { ScanSearch, Plus, Search, Gift } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +36,16 @@ export const PublicHero = ({ user, isLoading }: PublicHeroProps) => {
     } else {
       // User is not logged in, show demo
       navigate("/demo");
+    }
+  };
+
+  const handlePromoCodesAction = () => {
+    if (user) {
+      // User is logged in, go to promo codes page
+      navigate("/promo-codes");
+    } else {
+      // User is not logged in, go to login page
+      navigate("/login");
     }
   };
 
@@ -193,6 +202,17 @@ export const PublicHero = ({ user, isLoading }: PublicHeroProps) => {
                     </>
                   )}
                 </Button>
+                {user && (
+                  <Button 
+                    variant="outline"
+                    size="lg"
+                    onClick={handlePromoCodesAction}
+                    className="border-2 border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg bg-transparent"
+                  >
+                    <Gift className="mr-2 h-5 w-5" />
+                    Codes promo
+                  </Button>
+                )}
               </div>
             )}
 
