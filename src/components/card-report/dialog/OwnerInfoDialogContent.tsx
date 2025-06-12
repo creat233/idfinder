@@ -32,24 +32,33 @@ export const OwnerInfoDialogContent = ({
   finalPrice,
 }: OwnerInfoDialogContentProps) => {
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <OwnerInfoForm
-        ownerName={ownerName}
-        ownerPhone={ownerPhone}
-        onOwnerNameChange={onOwnerNameChange}
-        onOwnerPhoneChange={onOwnerPhoneChange}
-        onPromoApplied={onPromoApplied}
-        onPromoRemoved={onPromoRemoved}
-      />
+    <div className="space-y-6">
+      {/* Formulaire des informations personnelles */}
+      <div className="space-y-4">
+        <OwnerInfoForm
+          ownerName={ownerName}
+          ownerPhone={ownerPhone}
+          onOwnerNameChange={onOwnerNameChange}
+          onOwnerPhoneChange={onOwnerPhoneChange}
+          onPromoApplied={onPromoApplied}
+          onPromoRemoved={onPromoRemoved}
+        />
+      </div>
 
-      <RecoveryPriceSummary
-        cardData={cardData}
-        baseFee={baseFee}
-        discount={discount}
-        finalPrice={finalPrice}
-      />
+      {/* Récapitulatif des prix */}
+      <div className="space-y-4">
+        <RecoveryPriceSummary
+          cardData={cardData}
+          baseFee={baseFee}
+          discount={discount}
+          finalPrice={finalPrice}
+        />
+      </div>
       
-      <RecoveryNextSteps finalPrice={finalPrice} />
+      {/* Prochaines étapes */}
+      <div className="space-y-4">
+        <RecoveryNextSteps finalPrice={finalPrice} />
+      </div>
     </div>
   );
 };

@@ -114,9 +114,10 @@ export const OwnerInfoForm = ({
   const countryInfo = getCountryInfo(userCountry, 'fr');
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4">
+      {/* Nom complet */}
       <div className="space-y-2">
-        <Label htmlFor="ownerName" className="text-sm sm:text-base font-medium">
+        <Label htmlFor="ownerName" className="text-sm font-medium text-gray-700">
           Nom complet *
         </Label>
         <Input
@@ -126,21 +127,20 @@ export const OwnerInfoForm = ({
           onChange={(e) => onOwnerNameChange(e.target.value)}
           placeholder="Votre nom et prénom"
           required
-          className="w-full text-sm sm:text-base p-3 sm:p-4"
+          className="w-full text-sm p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
         />
       </div>
       
+      {/* Numéro de téléphone */}
       <div className="space-y-2">
-        <Label htmlFor="ownerPhone" className="text-sm sm:text-base font-medium">
+        <Label htmlFor="ownerPhone" className="text-sm font-medium text-gray-700">
           Numéro de téléphone *
         </Label>
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-xs text-gray-600 px-1">
             <span className="flex items-center gap-1">
               <span className="text-base">{countryInfo.flag}</span>
-              <span className="hidden sm:inline">{countryInfo.name}</span>
-              <span className="sm:hidden">SN</span>
-              <span className="font-medium">({countryCode})</span>
+              <span className="font-medium">{countryInfo.name} ({countryCode})</span>
             </span>
           </div>
           <Input
@@ -150,16 +150,17 @@ export const OwnerInfoForm = ({
             onChange={(e) => handlePhoneChange(e.target.value)}
             placeholder={`${countryCode} 77 123 45 67`}
             required
-            className="w-full text-sm sm:text-base p-3 sm:p-4"
+            className="w-full text-sm p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 px-1">
           L'indicatif de votre pays ({countryCode}) est automatiquement ajouté
         </p>
       </div>
 
+      {/* Code promo */}
       <div className="space-y-2">
-        <Label className="text-sm sm:text-base font-medium">
+        <Label className="text-sm font-medium text-gray-700">
           Code promo (optionnel)
         </Label>
         <PromoCodeInput
