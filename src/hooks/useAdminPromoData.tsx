@@ -53,8 +53,10 @@ export const useAdminPromoData = () => {
         console.error("Error fetching profiles:", profilesError);
       }
 
-      // Typer correctement profilesData pour éviter l'erreur TypeScript
-      const profiles: Profile[] = (profilesData as Profile[]) || [];
+      // Typer correctement profilesData avec une vérification de type plus robuste
+      const profiles: Profile[] = Array.isArray(profilesData) ? profilesData.filter((p): p is Profile => 
+        p !== null && typeof p === 'object' && 'id' in p
+      ) : [];
 
       // Combiner les données
       const enrichedCodes = codesData.map(code => {
