@@ -30,17 +30,10 @@ export const useAdminAllRecoveries = () => {
     try {
       console.log("Récupération de toutes les demandes de récupération...");
       
-      // Récupérer toutes les cartes signalées avec statut "recovery_requested" et les infos du signaleur
+      // Récupérer toutes les cartes signalées avec statut "recovery_requested"
       const { data: reportedCards, error: cardsError } = await supabase
         .from("reported_cards")
-        .select(`
-          *,
-          profiles!reported_cards_reporter_id_fkey (
-            first_name,
-            last_name,
-            phone
-          )
-        `)
+        .select("*")
         .eq("status", "recovery_requested")
         .order("created_at", { ascending: false });
 
@@ -49,7 +42,7 @@ export const useAdminAllRecoveries = () => {
         throw cardsError;
       }
 
-      console.log("Cartes récupérées avec infos signaleur:", reportedCards);
+      console.log("Cartes récupérées:", reportedCards);
 
       if (!reportedCards || reportedCards.length === 0) {
         setRecoveries([]);
@@ -57,10 +50,21 @@ export const useAdminAllRecoveries = () => {
         return;
       }
 
-      // Pour chaque carte, récupérer les utilisations de codes promo si elles existent
+      // Pour chaque carte, récupérer les infos du profil du signaleur et les codes promo
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
+        // Récupérer le profil du signaleur
+        const { data: reporterProfile, error: profileError } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, phone")
+          .eq("id", card.reporter_id)
+          .single();
+
+        if (profileError) {
+          console.error("Erreur lors de la récupération du profil:", profileError);
+        }
+
         // Chercher s'il y a une utilisation de code promo pour cette carte
         const { data: promoUsage, error: promoError } = await supabase
           .from("promo_usage")
@@ -71,7 +75,7 @@ export const useAdminAllRecoveries = () => {
               user_id
             )
           `)
-          .eq("used_by_phone", card.reporter_phone)
+          .eq("used_by_phone", card.reporter_phone || reporterProfile?.phone || "")
           .order("created_at", { ascending: false })
           .limit(1);
 
@@ -85,8 +89,7 @@ export const useAdminAllRecoveries = () => {
         const ownerPhoneMatch = description.match(/Téléphone: ([^\n]+)/);
         const finalPriceMatch = description.match(/Prix final: (\d+) FCFA/);
 
-        // Informations du signaleur depuis le profil
-        const reporterProfile = card.profiles;
+        // Informations du signaleur depuis le profil ou les données de la carte
         const reporterName = reporterProfile 
           ? `${reporterProfile.first_name || ''} ${reporterProfile.last_name || ''}`.trim()
           : "Non renseigné";
