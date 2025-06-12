@@ -4,13 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { PromoCodeData, PromoCodeStats } from "@/types/promo";
 
-interface Profile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  phone: string | null;
-}
-
 export const useAdminPromoData = () => {
   const [promoCodes, setPromoCodes] = useState<PromoCodeData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,17 +19,10 @@ export const useAdminPromoData = () => {
     try {
       console.log("Récupération des codes promo...");
       
-      // Récupérer tous les codes promo avec les données utilisateur via une requête jointe optimisée
-      const { data: codesWithProfiles, error: codesError } = await supabase
+      // Récupérer tous les codes promo
+      const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
-        .select(`
-          *,
-          profiles:user_id (
-            first_name,
-            last_name,
-            phone
-          )
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (codesError) {
@@ -44,12 +30,23 @@ export const useAdminPromoData = () => {
         throw codesError;
       }
 
-      console.log("Codes récupérés:", codesWithProfiles);
+      console.log("Codes récupérés:", codesData);
 
-      if (!codesWithProfiles) {
+      if (!codesData) {
         setPromoCodes([]);
         setLoading(false);
         return;
+      }
+
+      // Récupérer tous les profils en une seule requête
+      const userIds = [...new Set(codesData.map(code => code.user_id))];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name, phone")
+        .in("id", userIds);
+
+      if (profilesError) {
+        console.error("Erreur lors de la récupération des profils:", profilesError);
       }
 
       // Récupérer les utilisateurs via l'API admin pour les emails (optionnel)
@@ -64,9 +61,9 @@ export const useAdminPromoData = () => {
       }
 
       // Enrichir les codes avec les données utilisateur
-      const enrichedCodes: PromoCodeData[] = codesWithProfiles.map(code => {
+      const enrichedCodes: PromoCodeData[] = codesData.map(code => {
         const user = usersData?.users?.find((u: any) => u.id === code.user_id);
-        const profile = code.profiles as any;
+        const profile = profilesData?.find(p => p.id === code.user_id);
         
         const enrichedCode: PromoCodeData = {
           id: code.id,
