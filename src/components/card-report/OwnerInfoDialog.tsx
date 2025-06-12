@@ -38,7 +38,7 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
         // Récupérer les informations du profil
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('first_name, last_name, phone')
+          .select('first_name, last_name, phone, country')
           .eq('id', user.id)
           .single();
 
@@ -48,9 +48,16 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
         }
 
         if (profile) {
-          const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
-          setOwnerName(fullName);
-          setOwnerPhone(profile.phone || '');
+          // Pré-remplir le nom seulement si les champs sont vides
+          if (!ownerName && (profile.first_name || profile.last_name)) {
+            const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+            setOwnerName(fullName);
+          }
+          
+          // Pré-remplir le téléphone seulement si le champ est vide
+          if (!ownerPhone && profile.phone) {
+            setOwnerPhone(profile.phone);
+          }
         }
       } catch (error) {
         console.error('Error loading user profile:', error);

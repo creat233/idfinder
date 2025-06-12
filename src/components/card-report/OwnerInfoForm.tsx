@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -61,45 +62,36 @@ export const OwnerInfoForm = ({
   const [userCountry, setUserCountry] = useState<string>('SN');
   const [countryCode, setCountryCode] = useState<string>('+221');
 
-  // Récupérer le pays et les informations de l'utilisateur depuis son profil
+  // Récupérer le pays et définir l'indicatif téléphonique
   useEffect(() => {
-    const getUserInfo = async () => {
+    const getUserCountry = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('country, first_name, last_name, phone')
+            .select('country')
             .eq('id', user.id)
             .single();
           
-          if (profile) {
-            // Pré-remplir le nom si vide
-            if (!ownerName && (profile.first_name || profile.last_name)) {
-              const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
-              onOwnerNameChange(fullName);
-            }
+          if (profile?.country) {
+            setUserCountry(profile.country);
+            const phoneCode = countryPhoneCodes[profile.country] || '+221';
+            setCountryCode(phoneCode);
             
-            // Gérer l'indicatif téléphonique
-            if (profile.country) {
-              setUserCountry(profile.country);
-              const phoneCode = countryPhoneCodes[profile.country] || '+221';
-              setCountryCode(phoneCode);
-              
-              // Si le numéro de téléphone est vide, pré-remplir avec l'indicatif
-              if (!ownerPhone) {
-                onOwnerPhoneChange(phoneCode + ' ');
-              }
+            // Si le numéro de téléphone est vide, pré-remplir avec l'indicatif
+            if (!ownerPhone) {
+              onOwnerPhoneChange(phoneCode + ' ');
             }
           }
         }
       } catch (error) {
-        console.error('Error fetching user info:', error);
+        console.error('Error fetching user country:', error);
       }
     };
 
-    getUserInfo();
-  }, [ownerName, ownerPhone, onOwnerNameChange, onOwnerPhoneChange]);
+    getUserCountry();
+  }, []);
 
   const handlePhoneChange = (value: string) => {
     // Si l'utilisateur efface tout, remettre l'indicatif du pays
