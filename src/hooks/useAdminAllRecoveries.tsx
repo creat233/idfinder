@@ -16,6 +16,7 @@ interface AllRecoveryData {
   reporter_id: string;
   final_price: number;
   promo_code?: string;
+  promo_code_owner_id?: string;
   discount_amount?: number;
   created_at: string;
   status: string;
@@ -55,32 +56,17 @@ export const useAdminAllRecoveries = () => {
 
       for (const card of reportedCards) {
         // Récupérer le profil du signaleur
-        const { data: reporterProfile, error: profileError } = await supabase
-          .from("profiles")
-          .select("first_name, last_name, phone")
-          .eq("id", card.reporter_id)
-          .single();
+        let reporterProfile = null;
+        if (card.reporter_id) {
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("first_name, last_name, phone")
+            .eq("id", card.reporter_id)
+            .single();
 
-        if (profileError) {
-          console.error("Erreur lors de la récupération du profil:", profileError);
-        }
-
-        // Chercher s'il y a une utilisation de code promo pour cette carte
-        const { data: promoUsage, error: promoError } = await supabase
-          .from("promo_usage")
-          .select(`
-            *,
-            promo_codes (
-              code,
-              user_id
-            )
-          `)
-          .eq("used_by_phone", card.reporter_phone || reporterProfile?.phone || "")
-          .order("created_at", { ascending: false })
-          .limit(1);
-
-        if (promoError) {
-          console.error("Erreur lors de la vérification du code promo:", promoError);
+          if (!profileError && profile) {
+            reporterProfile = profile;
+          }
         }
 
         // Extraire les informations du propriétaire depuis la description
@@ -88,6 +74,38 @@ export const useAdminAllRecoveries = () => {
         const ownerNameMatch = description.match(/Nom du propriétaire: ([^\n]+)/);
         const ownerPhoneMatch = description.match(/Téléphone: ([^\n]+)/);
         const finalPriceMatch = description.match(/Prix final: (\d+) FCFA/);
+        const promoUsedMatch = description.match(/Code promo utilisé: Oui \(réduction de (\d+) FCFA\)/);
+
+        // Chercher s'il y a une utilisation de code promo pour cette récupération
+        let promoCode = null;
+        let promoCodeOwnerId = null;
+        let discountAmount = null;
+
+        if (promoUsedMatch) {
+          discountAmount = parseInt(promoUsedMatch[1]);
+          
+          // Chercher l'utilisation du code promo correspondante
+          const ownerPhone = ownerPhoneMatch ? ownerPhoneMatch[1] : "";
+          const { data: promoUsage, error: promoError } = await supabase
+            .from("promo_usage")
+            .select(`
+              *,
+              promo_codes (
+                code,
+                user_id
+              )
+            `)
+            .eq("used_by_phone", ownerPhone)
+            .eq("discount_amount", discountAmount)
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          if (!promoError && promoUsage && promoUsage.length > 0) {
+            const usage = promoUsage[0];
+            promoCode = usage.promo_codes?.code;
+            promoCodeOwnerId = usage.promo_codes?.user_id;
+          }
+        }
 
         // Informations du signaleur depuis le profil ou les données de la carte
         const reporterName = reporterProfile 
@@ -108,15 +126,11 @@ export const useAdminAllRecoveries = () => {
           reporter_id: card.reporter_id,
           final_price: finalPriceMatch ? parseInt(finalPriceMatch[1]) : 7000,
           created_at: card.created_at,
-          status: card.status
+          status: card.status,
+          promo_code: promoCode,
+          promo_code_owner_id: promoCodeOwnerId,
+          discount_amount: discountAmount
         };
-
-        // Ajouter les informations du code promo si disponible
-        if (promoUsage && promoUsage.length > 0) {
-          const usage = promoUsage[0];
-          recovery.promo_code = usage.promo_codes?.code;
-          recovery.discount_amount = usage.discount_amount;
-        }
 
         enrichedRecoveries.push(recovery);
       }

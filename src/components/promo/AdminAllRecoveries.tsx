@@ -8,9 +8,10 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
 import { useAdminAllRecoveries } from "@/hooks/useAdminAllRecoveries";
+import { AdminPromoPaymentButton } from "./AdminPromoPaymentButton";
 
 export const AdminAllRecoveries = () => {
-  const { recoveries, loading } = useAdminAllRecoveries();
+  const { recoveries, loading, refetch } = useAdminAllRecoveries();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredRecoveries = recoveries.filter(recovery =>
@@ -62,6 +63,7 @@ export const AdminAllRecoveries = () => {
               <TableHead>Code Promo</TableHead>
               <TableHead>Prix Final</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -146,6 +148,15 @@ export const AdminAllRecoveries = () => {
                     <Calendar className="h-3 w-3" />
                     {format(new Date(recovery.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
                   </div>
+                </TableCell>
+                <TableCell>
+                  {recovery.promo_code && recovery.discount_amount && (
+                    <AdminPromoPaymentButton
+                      promoUsageId={recovery.id}
+                      promoCodeOwnerId={recovery.reporter_id}
+                      amount={1000}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             ))}

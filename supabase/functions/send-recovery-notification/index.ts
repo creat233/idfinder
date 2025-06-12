@@ -62,6 +62,21 @@ Date de demande: ${new Date().toLocaleString('fr-FR')}`;
           ownerInfo.phone,
           promoInfo.discount
         );
+
+        // Notifier le propriétaire du code promo que son code a été utilisé
+        if (promoDetails.user_id) {
+          await supabaseClient
+            .from("notifications")
+            .insert({
+              user_id: promoDetails.user_id,
+              type: "promo_code_used",
+              title: "🎉 Code promo utilisé !",
+              message: `Votre code promo ${promoDetails.code} vient d'être utilisé ! Attendez la confirmation de récupération pour recevoir votre revenu de 1000 FCFA.`,
+              is_read: false
+            });
+          
+          console.log("Notification envoyée au propriétaire du code promo:", promoDetails.user_id);
+        }
       }
     }
 
