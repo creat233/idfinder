@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Recovery, Phone, Mail, Gift } from "lucide-react";
+import { Search, RotateCcw, Phone, Mail, Gift } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -32,7 +32,7 @@ export const AdminRecoveriesList = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Recovery className="h-5 w-5" />
+          <RotateCcw className="h-5 w-5" />
           Récupérations Confirmées avec Codes Promo
         </CardTitle>
         <div className="flex items-center gap-2">

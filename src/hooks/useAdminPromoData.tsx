@@ -4,12 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { PromoCodeData, PromoCodeStats } from "@/types/promo";
 
-interface Profile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-}
-
 export const useAdminPromoData = () => {
   const [promoCodes, setPromoCodes] = useState<PromoCodeData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,21 +47,10 @@ export const useAdminPromoData = () => {
         console.error("Error fetching profiles:", profilesError);
       }
 
-      // Typer correctement profilesData et filtrer les valeurs null/undefined
-      const profiles: Profile[] = profilesData ? profilesData.filter((profile: any): profile is Profile => {
-        return profile !== null && 
-               profile !== undefined && 
-               typeof profile === 'object' && 
-               'id' in profile && 
-               typeof profile.id === 'string';
-      }) : [];
-
       // Combiner les données
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
-        
-        // Chercher le profil avec le typage correct
-        const profile = profiles.find(p => p.id === code.user_id) || null;
+        const profile = profilesData?.find(p => p.id === code.user_id);
         
         return {
           ...code,
