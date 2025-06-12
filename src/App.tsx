@@ -2,16 +2,18 @@
 import { Toaster } from "@/components/ui/toaster";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SignalerCarte from "./pages/SignalerCarte";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support";
 import About from "./pages/About";
-import Auth from "./pages/Auth";
+import Login from "./pages/Login";
 import NumeroUrgence from "./pages/NumeroUrgence";
 import MyCards from "./pages/MyCards";
 import PromoCodes from "./pages/PromoCodes";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
+import Demo from "./pages/Demo";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminRoute } from "./components/AdminRoute";
 
@@ -23,9 +25,11 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
-            <Route path="/login" element={<Auth />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/demo" element={<Demo />} />
             <Route 
-              path="/" 
+              path="/dashboard" 
               element={
                 <AdminRoute>
                   <Dashboard />
