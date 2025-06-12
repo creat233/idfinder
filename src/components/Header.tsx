@@ -1,189 +1,221 @@
 
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Menu, X, User, Settings, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, User, Settings, Globe, CreditCard } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { useTranslation } from "@/hooks/useTranslation";
-import { useNotifications } from "@/hooks/useNotifications";
-import { getAvailableLanguages } from "@/utils/translations";
+import { useNavigate, Link } from "react-router-dom";
+import { useToast } from "@/hooks/useToast";
 
 export const Header = () => {
-  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const { t, currentLanguage, changeLanguage } = useTranslation();
-  const { unreadCount } = useNotifications();
-  const availableLanguages = getAvailableLanguages();
+  const { showSuccess } = useToast();
 
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      
+      // Vérifier si l'utilisateur est admin
+      if (user?.email === "mouhamed110000@gmail.com") {
+        setIsAdmin(true);
+      }
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        if (session?.user?.email === "mouhamed110000@gmail.com") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      navigate("/login");
+      await supabase.auth.signOut();
+      setUser(null);
+      setIsAdmin(false);
+      showSuccess("Déconnexion réussie", "Vous avez été déconnecté avec succès");
+      navigate("/");
     } catch (error) {
-      console.error("Error logging out:", error);
-    } finally {
-      setIsLoggingOut(false);
+      console.error("Error signing out:", error);
     }
   };
 
-  const handleLanguageChange = (languageCode: string) => {
-    changeLanguage(languageCode);
-  };
-
-  const getCurrentLanguageFlag = () => {
-    const currentLang = availableLanguages.find(lang => lang.code === currentLanguage);
-    return currentLang?.flag || "🇫🇷";
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-md">
-      <div className="container mx-auto px-4 py-3">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
+              src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
               alt="FinderID Logo" 
-              className="w-8 h-8"
+              className="h-8 w-8"
             />
-            <span className="font-bold text-xl">{t("appName")}</span>
+            <span className="text-xl font-bold text-primary">FinderID</span>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link 
-              to="/" 
-              className={`hover:text-secondary transition-colors ${
-                location.pathname === "/" ? "text-secondary" : ""
-              }`}
-            >
-              {t("home")}
-            </Link>
-            <Link 
-              to="/signaler" 
-              className={`hover:text-secondary transition-colors ${
-                location.pathname === "/signaler" ? "text-secondary" : ""
-              }`}
-            >
-              {t("signalCard")}
-            </Link>
-            <Link 
-              to="/mes-cartes" 
-              className={`hover:text-secondary transition-colors flex items-center gap-1 ${
-                location.pathname === "/mes-cartes" ? "text-secondary" : ""
-              }`}
-            >
-              <CreditCard className="h-4 w-4" />
-              {t("myCards") || "Mes cartes"}
-              {unreadCount > 0 && (
-                <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 ml-1">
-                  {unreadCount}
-                </span>
-              )}
-            </Link>
-            <Link 
-              to="/promo-codes" 
-              className={`hover:text-secondary transition-colors flex items-center gap-1 ${
-                location.pathname === "/promo-codes" ? "text-secondary" : ""
-              }`}
-            >
-              <img 
-                src="/lovable-uploads/f1d45f74-5be6-4c6b-96f5-4fdcea36ec90.png" 
-                alt="Codes Promo" 
-                className="w-4 h-4"
-              />
-              {t("promoCodes")}
-            </Link>
-            <Link 
-              to="/support" 
-              className={`hover:text-secondary transition-colors ${
-                location.pathname === "/support" ? "text-secondary" : ""
-              }`}
-            >
-              {t("support")}
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-2">
-            {/* Language selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-primary-foreground hover:text-secondary">
-                  <Globe className="h-4 w-4 mr-1" />
-                  <span className="text-lg">{getCurrentLanguageFlag()}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40 bg-white z-50">
-                {availableLanguages.map((language) => (
-                  <DropdownMenuItem
-                    key={language.code}
-                    onClick={() => handleLanguageChange(language.code)}
-                    className={`cursor-pointer ${
-                      currentLanguage === language.code ? "bg-accent" : ""
-                    }`}
-                  >
-                    <span className="mr-2">{language.flag}</span>
-                    {language.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* User menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-primary-foreground hover:text-secondary">
-                  <User className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-white z-50">
-                <DropdownMenuItem onClick={() => navigate("/mes-cartes")} className="cursor-pointer">
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  {t("myCards") || "Mes cartes"}
-                  {unreadCount > 0 && (
-                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
-                      {unreadCount}
-                    </span>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/promo-codes")} className="cursor-pointer">
-                  <img 
-                    src="/lovable-uploads/f1d45f74-5be6-4c6b-96f5-4fdcea36ec90.png" 
-                    alt="Codes Promo" 
-                    className="mr-2 w-4 h-4"
-                  />
-                  {t("promoCodes")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
-                  <User className="mr-2 h-4 w-4" />
-                  {t("profile")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/support")} className="cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
-                  {t("support")}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={handleLogout} 
-                  className="cursor-pointer text-red-600"
-                  disabled={isLoggingOut}
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {user ? (
+              <>
+                {isAdmin ? (
+                  // Navigation pour l'admin
+                  <>
+                    <Link to="/admin/codes-promo" className="text-gray-700 hover:text-orange-600">
+                      Administration
+                    </Link>
+                  </>
+                ) : (
+                  // Navigation pour les utilisateurs normaux
+                  <>
+                    <Link to="/signaler" className="text-gray-700 hover:text-primary">
+                      Signaler une carte
+                    </Link>
+                    <Link to="/mes-cartes" className="text-gray-700 hover:text-primary">
+                      Mes cartes
+                    </Link>
+                    <Link to="/codes-promo" className="text-gray-700 hover:text-primary">
+                      Codes promo
+                    </Link>
+                  </>
+                )}
+                <Link to="/profile" className="text-gray-700 hover:text-primary">
+                  <User className="h-5 w-5" />
+                </Link>
+                <Button
+                  variant="ghost"
+                  onClick={handleSignOut}
+                  className="text-gray-700 hover:text-primary"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  {isLoggingOut ? t("loggingOut") : t("logout")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/urgence" className="text-gray-700 hover:text-primary">
+                  Numéros d'urgence
+                </Link>
+                <Link to="/support" className="text-gray-700 hover:text-primary">
+                  Support
+                </Link>
+                <Link to="/auth">
+                  <Button>Se connecter</Button>
+                </Link>
+              </>
+            )}
           </div>
+
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden"
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
-      </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+            <div className="flex flex-col space-y-4 pt-4">
+              {user ? (
+                <>
+                  {isAdmin ? (
+                    // Navigation mobile pour l'admin
+                    <>
+                      <Link 
+                        to="/admin/codes-promo" 
+                        className="text-gray-700 hover:text-orange-600"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Administration
+                      </Link>
+                    </>
+                  ) : (
+                    // Navigation mobile pour les utilisateurs normaux
+                    <>
+                      <Link 
+                        to="/signaler" 
+                        className="text-gray-700 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Signaler une carte
+                      </Link>
+                      <Link 
+                        to="/mes-cartes" 
+                        className="text-gray-700 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Mes cartes
+                      </Link>
+                      <Link 
+                        to="/codes-promo" 
+                        className="text-gray-700 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Codes promo
+                      </Link>
+                    </>
+                  )}
+                  <Link 
+                    to="/profile" 
+                    className="text-gray-700 hover:text-primary"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Profil
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-gray-700 hover:text-primary justify-start p-0"
+                  >
+                    Déconnexion
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    to="/urgence" 
+                    className="text-gray-700 hover:text-primary"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Numéros d'urgence
+                  </Link>
+                  <Link 
+                    to="/support" 
+                    className="text-gray-700 hover:text-primary"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Support
+                  </Link>
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <Button>Se connecter</Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
     </header>
   );
 };

@@ -1,87 +1,59 @@
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { PublicHeader } from "@/components/PublicHeader";
 import { PublicHero } from "@/components/public/PublicHero";
 import { PublicFeatures } from "@/components/public/PublicFeatures";
 import { PublicPricing } from "@/components/public/PublicPricing";
 import { PublicCTA } from "@/components/public/PublicCTA";
 import { Footer } from "@/components/Footer";
-import { useRef, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
-import { User } from "@supabase/supabase-js";
 
 const Index = () => {
-  const mounted = useRef(true);
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check current user session
-    const checkUser = async () => {
+    const checkUserAndRedirect = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setIsLoading(false);
+      
+      if (user) {
+        // Si c'est l'admin, rediriger vers l'interface d'administration
+        if (user.email === "mouhamed110000@gmail.com") {
+          navigate("/admin/codes-promo");
+        } else {
+          // Pour les utilisateurs normaux, rester sur la page d'accueil
+          // ou rediriger vers le dashboard si souhaité
+          // navigate("/dashboard");
+        }
+      }
     };
 
-    checkUser();
+    checkUserAndRedirect();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          if (session.user.email === "mouhamed110000@gmail.com") {
+            navigate("/admin/codes-promo");
+          }
+        }
+      }
+    );
 
-    return () => {
-      mounted.current = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  if (!mounted.current) return null;
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div 
-        className="min-h-screen bg-white flex flex-col"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      >
-        <PublicHeader />
-        <main className="flex-grow">
-          <PublicHero user={user} isLoading={isLoading} />
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <PublicFeatures />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-          >
-            <PublicPricing />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.5 }}
-          >
-            <PublicCTA user={user} isLoading={isLoading} />
-          </motion.div>
-        </main>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9, duration: 0.5 }}
-        >
-          <Footer />
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+    <div className="min-h-screen bg-background">
+      <PublicHeader />
+      <main>
+        <PublicHero />
+        <PublicFeatures />
+        <PublicPricing />
+        <PublicCTA />
+      </main>
+      <Footer />
+    </div>
   );
 };
 
