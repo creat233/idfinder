@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Clock, CheckCircle, Gift, Mail, User, Phone } from "lucide-react";
+import { Search, Clock, CheckCircle, Gift, Mail, User, Phone, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -16,16 +16,27 @@ export const AdminPendingCodes = () => {
   const { promoCodes, loading, refetch } = useAdminPromoData();
   const [searchTerm, setSearchTerm] = useState("");
   const [activating, setActivating] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const { showSuccess, showError } = useToast();
 
   // Filtrer les codes non activés et non payés (en attente de validation)
   const pendingCodes = promoCodes.filter(code => !code.is_active && !code.is_paid);
+  
+  console.log("Total codes loaded:", promoCodes.length);
+  console.log("Pending codes filtered:", pendingCodes.length);
+  console.log("All codes:", promoCodes.map(c => ({ code: c.code, active: c.is_active, paid: c.is_paid })));
 
   const filteredCodes = pendingCodes.filter(code =>
     code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
     code.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     code.user_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const handleActivateCode = async (codeText: string) => {
     setActivating(codeText);
@@ -76,6 +87,15 @@ export const AdminPendingCodes = () => {
           <Badge variant="outline" className="bg-orange-50 text-orange-700">
             {pendingCodes.length} en attente
           </Badge>
+          <Button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            size="sm"
+            variant="outline"
+            className="ml-auto"
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          </Button>
         </CardTitle>
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4" />
@@ -85,6 +105,11 @@ export const AdminPendingCodes = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-sm"
           />
+        </div>
+        
+        {/* Information de débogage */}
+        <div className="text-sm text-muted-foreground">
+          Total codes chargés: {promoCodes.length} | Codes en attente: {pendingCodes.length}
         </div>
       </CardHeader>
       <CardContent>
@@ -96,6 +121,7 @@ export const AdminPendingCodes = () => {
                 <TableHead>Utilisateur</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Date de Création</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -129,12 +155,22 @@ export const AdminPendingCodes = () => {
                       </div>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Phone className="h-3 w-3" />
-                        <span>Voir WhatsApp</span>
+                        <span>WhatsApp disponible</span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     {format(new Date(code.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col gap-1">
+                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
+                        En attente
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        Actif: {code.is_active ? 'Oui' : 'Non'} | Payé: {code.is_paid ? 'Oui' : 'Non'}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
@@ -154,8 +190,20 @@ export const AdminPendingCodes = () => {
             </TableBody>
           </Table>
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            {searchTerm ? "Aucun code en attente ne correspond à votre recherche" : "Aucun code promo en attente de validation"}
+          <div className="text-center py-8">
+            <div className="text-muted-foreground mb-4">
+              {searchTerm ? "Aucun code en attente ne correspond à votre recherche" : "Aucun code promo en attente de validation"}
+            </div>
+            {pendingCodes.length === 0 && promoCodes.length > 0 && (
+              <div className="text-sm text-blue-600">
+                Tous les codes ont été traités. Total de codes dans le système: {promoCodes.length}
+              </div>
+            )}
+            {promoCodes.length === 0 && (
+              <div className="text-sm text-gray-500">
+                Aucun code promo n'a été trouvé dans la base de données.
+              </div>
+            )}
           </div>
         )}
       </CardContent>
