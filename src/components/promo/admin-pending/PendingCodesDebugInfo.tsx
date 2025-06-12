@@ -1,6 +1,9 @@
 
-import { Database } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { PromoCodeData } from "@/types/promo";
+import { ChevronDown, ChevronUp, Info } from "lucide-react";
+import { useState } from "react";
 
 interface PendingCodesDebugInfoProps {
   promoCodes: PromoCodeData[];
@@ -8,55 +11,61 @@ interface PendingCodesDebugInfoProps {
 }
 
 export const PendingCodesDebugInfo = ({ promoCodes, pendingCodes }: PendingCodesDebugInfoProps) => {
+  const [showDebug, setShowDebug] = useState(false);
+
+  const activeNotPaid = promoCodes.filter(c => c.is_active && !c.is_paid);
+  const notActiveButPaid = promoCodes.filter(c => !c.is_active && c.is_paid);
+  const activeAndPaid = promoCodes.filter(c => c.is_active && c.is_paid);
+
   return (
-    <div className="text-sm text-muted-foreground space-y-2">
-      <div className="flex items-center gap-2">
-        <Database className="h-4 w-4" />
-        <span>
-          Codes dans la base: {promoCodes.length} | 
-          En attente: {pendingCodes.length} | 
-          Actifs: {promoCodes.filter(c => c.is_active).length} | 
-          Payés: {promoCodes.filter(c => c.is_paid).length}
-        </span>
-      </div>
-      
-      {/* Afficher les détails de débogage */}
-      {promoCodes.length > 0 && (
-        <div className="text-xs bg-gray-50 p-2 rounded space-y-1">
-          <strong>🔍 Tous les codes détectés:</strong>
-          {promoCodes.map(code => (
-            <div key={code.id} className="border-l-2 border-blue-200 pl-2">
-              <div className="font-mono font-bold text-blue-600">{code.code}</div>
-              <div className="text-xs">
-                👤 {code.user_name} - 
-                {code.is_active ? ' ✅ Actif' : ' ⏳ Inactif'} -
-                {code.is_paid ? ' 💰 Payé' : ' ⏳ Non payé'}
-              </div>
-              <div className="text-xs text-gray-500">
-                📅 {new Date(code.created_at).toLocaleString('fr-FR')} - 
-                ID: {code.user_id.slice(0, 8)}...
-              </div>
+    <div className="space-y-2">
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          <div className="flex items-center justify-between">
+            <span>
+              Total: <strong>{promoCodes.length}</strong> codes | 
+              En attente: <strong>{pendingCodes.length}</strong> | 
+              Actifs: <strong>{activeAndPaid.length}</strong>
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowDebug(!showDebug)}
+              className="ml-2"
+            >
+              {showDebug ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              Debug
+            </Button>
+          </div>
+        </AlertDescription>
+      </Alert>
+
+      {showDebug && (
+        <Alert>
+          <AlertDescription>
+            <div className="space-y-2 text-xs">
+              <div><strong>Détails des codes:</strong></div>
+              <div>• En attente (non actif + non payé): {pendingCodes.length}</div>
+              <div>• Actifs mais non payés: {activeNotPaid.length}</div>
+              <div>• Non actifs mais payés: {notActiveButPaid.length}</div>
+              <div>• Actifs et payés: {activeAndPaid.length}</div>
+              
+              {promoCodes.length > 0 && (
+                <div className="mt-2">
+                  <strong>Échantillon des codes:</strong>
+                  <div className="max-h-32 overflow-y-auto">
+                    {promoCodes.slice(0, 5).map(c => (
+                      <div key={c.id} className="text-xs">
+                        {c.code}: active={String(c.is_active)}, paid={String(c.is_paid)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-      )}
-      
-      {pendingCodes.length > 0 && (
-        <div className="text-orange-600 text-xs bg-orange-50 p-2 rounded">
-          ⏳ {pendingCodes.length} code(s) en attente de validation
-        </div>
-      )}
-
-      {promoCodes.length > 0 && pendingCodes.length === 0 && (
-        <div className="text-blue-600 text-xs bg-blue-50 p-2 rounded">
-          ✅ Tous les codes ont été traités ou activés
-        </div>
-      )}
-
-      {promoCodes.length === 0 && (
-        <div className="text-red-600 text-xs bg-red-50 p-2 rounded">
-          ❌ Aucun code promo trouvé. Vérifiez la console pour plus de détails.
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );

@@ -21,10 +21,19 @@ export const AdminPendingCodes = () => {
   const { showSuccess, showError } = useToast();
 
   // Utiliser useMemo pour optimiser le filtrage
-  const pendingCodes = useMemo(() => 
-    promoCodes.filter(code => !code.is_active && !code.is_paid),
-    [promoCodes]
-  );
+  const pendingCodes = useMemo(() => {
+    console.log("🔍 FILTRAGE DES CODES EN ATTENTE:");
+    console.log("- Total codes:", promoCodes.length);
+    
+    const pending = promoCodes.filter(code => {
+      const isPending = !code.is_active && !code.is_paid;
+      console.log(`- Code ${code.code}: active=${code.is_active}, paid=${code.is_paid}, pending=${isPending}`);
+      return isPending;
+    });
+    
+    console.log("- Codes en attente:", pending.length);
+    return pending;
+  }, [promoCodes]);
   
   const filteredCodes = useMemo(() => 
     pendingCodes.filter(code =>
@@ -34,15 +43,6 @@ export const AdminPendingCodes = () => {
     ),
     [pendingCodes, searchTerm]
   );
-
-  console.log("🔍 FILTRAGE ADMIN PENDING:", {
-    totalCodes: promoCodes.length,
-    pendingCodes: pendingCodes.length,
-    activeNotPaid: promoCodes.filter(c => c.is_active && !c.is_paid).length,
-    notActiveButPaid: promoCodes.filter(c => !c.is_active && c.is_paid).length,
-    filteredCodes: filteredCodes.length,
-    details: promoCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}`)
-  });
 
   const handleRefresh = async () => {
     setRefreshing(true);
