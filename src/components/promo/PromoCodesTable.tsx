@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Eye, Phone } from "lucide-react";
+import { Search, Eye, Phone, MessageCircle } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { PromoCodeData } from "@/types/promo";
@@ -22,6 +22,32 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
     code.user_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     code.user_phone?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleWhatsAppClick = (phone: string, userName: string, promoCode: string, isActive: boolean) => {
+    if (phone === "Non renseigné" || !phone) {
+      return;
+    }
+    
+    // Nettoyer le numéro de téléphone (enlever espaces, tirets, etc.)
+    const cleanPhone = phone.replace(/[\s-]/g, '');
+    
+    // Message différent selon le statut du code
+    let message = '';
+    if (isActive) {
+      message = `🎉 Bonjour ${userName}!\n\nVotre code promo ${promoCode} est ACTIF !\n\n💰 Vous gagnez 1000 FCFA à chaque fois que quelqu'un utilise votre code promo pendant 2 mois.\n\n🎁 Les utilisateurs ont une réduction de 1000 FCFA (6000 FCFA au lieu de 7000 FCFA) grâce à votre code.\n\nContinuez à partager votre code !\n\n- Équipe FinderID`;
+    } else {
+      message = `📋 Bonjour ${userName}!\n\nVotre code promo ${promoCode} est en cours de traitement.\n\n⏰ Notre équipe examine votre demande. Une fois validé, vous pourrez gagner 1000 FCFA à chaque utilisation pendant 2 mois.\n\nNous vous tiendrons informé !\n\n- Équipe FinderID`;
+    }
+    
+    // Encoder le message pour l'URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Créer le lien WhatsApp
+    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+    
+    // Ouvrir WhatsApp
+    window.open(whatsappUrl, '_blank');
+  };
 
   return (
     <Card>
@@ -64,9 +90,20 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
                 <TableCell>
                   <div className="flex items-center gap-1 text-sm">
                     <Phone className="h-3 w-3" />
-                    <span className={code.user_phone === "Non renseigné" ? "text-muted-foreground italic" : ""}>
-                      {code.user_phone}
-                    </span>
+                    {code.user_phone === "Non renseigné" || !code.user_phone ? (
+                      <span className="text-muted-foreground italic">
+                        {code.user_phone || "Non renseigné"}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleWhatsAppClick(code.user_phone!, code.user_name!, code.code, code.is_active)}
+                        className="flex items-center gap-1 text-green-600 hover:text-green-800 hover:underline cursor-pointer transition-colors"
+                        title="Envoyer un message WhatsApp"
+                      >
+                        <MessageCircle className="h-3 w-3" />
+                        <span>{code.user_phone}</span>
+                      </button>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell>

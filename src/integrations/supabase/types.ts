@@ -317,6 +317,7 @@ export type Database = {
           usage_count: number
           user_email: string
           user_name: string
+          user_phone: string
         }[]
       }
       can_activate_promo_codes: {

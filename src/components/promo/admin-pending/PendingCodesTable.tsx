@@ -2,7 +2,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Gift, Mail, User, Phone } from "lucide-react";
+import { CheckCircle, Gift, Mail, User, Phone, MessageCircle } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { PromoCodeData } from "@/types/promo";
@@ -14,6 +14,27 @@ interface PendingCodesTableProps {
 }
 
 export const PendingCodesTable = ({ codes, activating, onActivateCode }: PendingCodesTableProps) => {
+  const handleWhatsAppClick = (phone: string, userName: string, promoCode: string) => {
+    if (phone === "Non renseigné" || !phone) {
+      return;
+    }
+    
+    // Nettoyer le numéro de téléphone (enlever espaces, tirets, etc.)
+    const cleanPhone = phone.replace(/[\s-]/g, '');
+    
+    // Message personnalisé pour informer de l'activation du code
+    const message = `🎉 Félicitations ${userName}!\n\nVotre code promo ${promoCode} a été ACTIVÉ avec succès !\n\n💰 Vous pouvez maintenant gagner 1000 FCFA à chaque fois que quelqu'un utilise votre code promo pendant 2 mois.\n\n🎁 Les utilisateurs auront une réduction de 1000 FCFA (6000 FCFA au lieu de 7000 FCFA) grâce à votre code.\n\nPartagez votre code dès maintenant et commencez à gagner !\n\n- Équipe FinderID`;
+    
+    // Encoder le message pour l'URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Créer le lien WhatsApp
+    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+    
+    // Ouvrir WhatsApp
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -60,9 +81,20 @@ export const PendingCodesTable = ({ codes, activating, onActivateCode }: Pending
             <TableCell>
               <div className="flex items-center gap-1 text-sm">
                 <Phone className="h-3 w-3" />
-                <span className={code.user_phone === "Non renseigné" ? "text-muted-foreground italic" : ""}>
-                  {code.user_phone}
-                </span>
+                {code.user_phone === "Non renseigné" || !code.user_phone ? (
+                  <span className="text-muted-foreground italic">
+                    {code.user_phone || "Non renseigné"}
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => handleWhatsAppClick(code.user_phone!, code.user_name!, code.code)}
+                    className="flex items-center gap-1 text-green-600 hover:text-green-800 hover:underline cursor-pointer transition-colors"
+                    title="Envoyer un message WhatsApp"
+                  >
+                    <MessageCircle className="h-3 w-3" />
+                    <span>{code.user_phone}</span>
+                  </button>
+                )}
               </div>
             </TableCell>
             <TableCell>
