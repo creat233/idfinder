@@ -11,6 +11,9 @@ interface AllRecoveryData {
   location: string;
   owner_name: string;
   owner_phone: string;
+  reporter_name: string;
+  reporter_phone: string;
+  reporter_id: string;
   final_price: number;
   promo_code?: string;
   discount_amount?: number;
@@ -27,10 +30,17 @@ export const useAdminAllRecoveries = () => {
     try {
       console.log("Récupération de toutes les demandes de récupération...");
       
-      // Récupérer toutes les cartes signalées avec statut "recovery_requested"
+      // Récupérer toutes les cartes signalées avec statut "recovery_requested" et les infos du signaleur
       const { data: reportedCards, error: cardsError } = await supabase
         .from("reported_cards")
-        .select("*")
+        .select(`
+          *,
+          profiles!reported_cards_reporter_id_fkey (
+            first_name,
+            last_name,
+            phone
+          )
+        `)
         .eq("status", "recovery_requested")
         .order("created_at", { ascending: false });
 
@@ -39,7 +49,7 @@ export const useAdminAllRecoveries = () => {
         throw cardsError;
       }
 
-      console.log("Cartes récupérées:", reportedCards);
+      console.log("Cartes récupérées avec infos signaleur:", reportedCards);
 
       if (!reportedCards || reportedCards.length === 0) {
         setRecoveries([]);
@@ -75,6 +85,13 @@ export const useAdminAllRecoveries = () => {
         const ownerPhoneMatch = description.match(/Téléphone: ([^\n]+)/);
         const finalPriceMatch = description.match(/Prix final: (\d+) FCFA/);
 
+        // Informations du signaleur depuis le profil
+        const reporterProfile = card.profiles;
+        const reporterName = reporterProfile 
+          ? `${reporterProfile.first_name || ''} ${reporterProfile.last_name || ''}`.trim()
+          : "Non renseigné";
+        const reporterPhone = reporterProfile?.phone || card.reporter_phone || "Non renseigné";
+
         const recovery: AllRecoveryData = {
           id: card.id,
           card_id: card.id,
@@ -83,6 +100,9 @@ export const useAdminAllRecoveries = () => {
           location: card.location,
           owner_name: ownerNameMatch ? ownerNameMatch[1] : "Non renseigné",
           owner_phone: ownerPhoneMatch ? ownerPhoneMatch[1] : card.reporter_phone || "Non renseigné",
+          reporter_name: reporterName,
+          reporter_phone: reporterPhone,
+          reporter_id: card.reporter_id,
           final_price: finalPriceMatch ? parseInt(finalPriceMatch[1]) : 7000,
           created_at: card.created_at,
           status: card.status

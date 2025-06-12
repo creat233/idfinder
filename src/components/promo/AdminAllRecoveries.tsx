@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Package, Phone, Mail, Gift, MapPin, Calendar, DollarSign } from "lucide-react";
+import { Search, Package, Phone, User, Gift, MapPin, Calendar, DollarSign, UserCheck } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -17,6 +17,8 @@ export const AdminAllRecoveries = () => {
     recovery.card_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.owner_phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recovery.reporter_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    recovery.reporter_phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.promo_code?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -42,7 +44,7 @@ export const AdminAllRecoveries = () => {
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4" />
           <Input
-            placeholder="Rechercher par carte, nom, téléphone ou lieu..."
+            placeholder="Rechercher par carte, propriétaire, signaleur, lieu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-sm"
@@ -55,11 +57,11 @@ export const AdminAllRecoveries = () => {
             <TableRow>
               <TableHead>Carte</TableHead>
               <TableHead>Propriétaire</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Lieu de Récupération</TableHead>
+              <TableHead>Signaleur</TableHead>
+              <TableHead>Lieu</TableHead>
               <TableHead>Code Promo</TableHead>
               <TableHead>Prix Final</TableHead>
-              <TableHead>Date de Demande</TableHead>
+              <TableHead>Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -77,12 +79,11 @@ export const AdminAllRecoveries = () => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="space-y-1">
-                    <div className="font-medium">{recovery.owner_name}</div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-green-600" />
+                      <span className="font-medium">{recovery.owner_name}</span>
+                    </div>
                     <div className="flex items-center gap-1 text-sm">
                       <Phone className="h-3 w-3" />
                       <a 
@@ -90,6 +91,23 @@ export const AdminAllRecoveries = () => {
                         className="text-blue-600 hover:underline"
                       >
                         {recovery.owner_phone}
+                      </a>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <UserCheck className="h-4 w-4 text-purple-600" />
+                      <span className="font-medium">{recovery.reporter_name}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm">
+                      <Phone className="h-3 w-3" />
+                      <a 
+                        href={`tel:${recovery.reporter_phone}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {recovery.reporter_phone}
                       </a>
                     </div>
                   </div>
