@@ -17,6 +17,7 @@ interface AllRecoveryData {
   final_price: number;
   promo_code?: string;
   promo_code_owner_id?: string;
+  promo_usage_id?: string;
   discount_amount?: number;
   created_at: string;
   status: string;
@@ -79,31 +80,36 @@ export const useAdminAllRecoveries = () => {
         // Chercher s'il y a une utilisation de code promo pour cette récupération
         let promoCode = null;
         let promoCodeOwnerId = null;
+        let promoUsageId = null;
         let discountAmount = null;
 
-        if (promoUsedMatch) {
+        if (promoUsedMatch && ownerPhoneMatch) {
           discountAmount = parseInt(promoUsedMatch[1]);
+          const ownerPhone = ownerPhoneMatch[1];
           
           // Chercher l'utilisation du code promo correspondante
-          const ownerPhone = ownerPhoneMatch ? ownerPhoneMatch[1] : "";
           const { data: promoUsage, error: promoError } = await supabase
             .from("promo_usage")
             .select(`
-              *,
+              id,
+              discount_amount,
               promo_codes (
                 code,
                 user_id
               )
             `)
             .eq("used_by_phone", ownerPhone)
-            .eq("discount_amount", discountAmount)
             .order("created_at", { ascending: false })
             .limit(1);
 
           if (!promoError && promoUsage && promoUsage.length > 0) {
             const usage = promoUsage[0];
-            promoCode = usage.promo_codes?.code;
-            promoCodeOwnerId = usage.promo_codes?.user_id;
+            if (usage.promo_codes) {
+              promoCode = usage.promo_codes.code;
+              promoCodeOwnerId = usage.promo_codes.user_id;
+              promoUsageId = usage.id;
+              discountAmount = usage.discount_amount;
+            }
           }
         }
 
@@ -129,6 +135,7 @@ export const useAdminAllRecoveries = () => {
           status: card.status,
           promo_code: promoCode,
           promo_code_owner_id: promoCodeOwnerId,
+          promo_usage_id: promoUsageId,
           discount_amount: discountAmount
         };
 

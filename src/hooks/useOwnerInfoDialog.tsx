@@ -108,7 +108,7 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
         finalPrice: finalPrice
       });
 
-      const { error } = await supabase.functions.invoke('send-recovery-notification', {
+      const { data, error } = await supabase.functions.invoke('send-recovery-notification', {
         body: {
           cardId: cardData.id,
           ownerInfo: {
@@ -127,6 +127,8 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
         console.error('Error calling edge function:', error);
         throw error;
       }
+
+      console.log('Recovery notification response:', data);
 
       toast({
         title: "Demande envoyée avec succès",

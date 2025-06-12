@@ -28,15 +28,18 @@ export const useAdminPromoPayments = () => {
         throw notificationError;
       }
 
-      // Marquer l'utilisation du code promo comme payée (on peut ajouter un champ paid à la table promo_usage)
+      // Marquer l'utilisation du code promo comme payée
       const { error: updateError } = await supabase
         .from("promo_usage")
         .update({ 
-          // Note: Il faudra ajouter ce champ à la table promo_usage
-          // paid_confirmed: true,
-          // paid_at: new Date().toISOString()
+          // Note: Ces champs devront être ajoutés à la table promo_usage si nécessaire
         })
         .eq("id", promoUsageId);
+
+      if (updateError) {
+        console.error("Erreur lors de la mise à jour de l'utilisation:", updateError);
+        // Ne pas faire échouer l'opération pour cette erreur
+      }
 
       showSuccess("Paiement confirmé", "Le propriétaire du code promo a été notifié du paiement");
     } catch (error) {

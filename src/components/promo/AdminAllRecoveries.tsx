@@ -53,117 +53,117 @@ export const AdminAllRecoveries = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Carte</TableHead>
-              <TableHead>Propriétaire</TableHead>
-              <TableHead>Signaleur</TableHead>
-              <TableHead>Lieu</TableHead>
-              <TableHead>Code Promo</TableHead>
-              <TableHead>Prix Final</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredRecoveries.map((recovery) => (
-              <TableRow key={recovery.id}>
-                <TableCell>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Package className="h-4 w-4 text-blue-600" />
-                      <span className="font-mono font-semibold">{recovery.card_number}</span>
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {recovery.document_type.toUpperCase()}
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-green-600" />
-                      <span className="font-medium">{recovery.owner_name}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Phone className="h-3 w-3" />
-                      <a 
-                        href={`tel:${recovery.owner_phone}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {recovery.owner_phone}
-                      </a>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <UserCheck className="h-4 w-4 text-purple-600" />
-                      <span className="font-medium">{recovery.reporter_name}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Phone className="h-3 w-3" />
-                      <a 
-                        href={`tel:${recovery.reporter_phone}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        {recovery.reporter_phone}
-                      </a>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1 text-sm">
-                    <MapPin className="h-3 w-3" />
-                    <span>{recovery.location}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {recovery.promo_code ? (
+        {filteredRecoveries.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Carte</TableHead>
+                <TableHead>Propriétaire</TableHead>
+                <TableHead>Signaleur</TableHead>
+                <TableHead>Lieu</TableHead>
+                <TableHead>Code Promo</TableHead>
+                <TableHead>Prix Final</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredRecoveries.map((recovery) => (
+                <TableRow key={recovery.id}>
+                  <TableCell>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <Gift className="h-4 w-4 text-green-600" />
-                        <span className="font-mono font-semibold text-green-700">{recovery.promo_code}</span>
+                        <Package className="h-4 w-4 text-blue-600" />
+                        <span className="font-mono font-semibold">{recovery.card_number}</span>
                       </div>
-                      {recovery.discount_amount && (
-                        <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
-                          -{recovery.discount_amount} FCFA
-                        </Badge>
-                      )}
+                      <div className="text-sm text-muted-foreground">
+                        {recovery.document_type.toUpperCase()}
+                      </div>
                     </div>
-                  ) : (
-                    <span className="text-muted-foreground italic text-sm">Aucun code promo</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <DollarSign className="h-3 w-3" />
-                    <span className="font-semibold">{recovery.final_price} FCFA</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1 text-sm">
-                    <Calendar className="h-3 w-3" />
-                    {format(new Date(recovery.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {recovery.promo_code && recovery.discount_amount && (
-                    <AdminPromoPaymentButton
-                      promoUsageId={recovery.id}
-                      promoCodeOwnerId={recovery.reporter_id}
-                      amount={1000}
-                    />
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        
-        {filteredRecoveries.length === 0 && (
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-green-600" />
+                        <span className="font-medium">{recovery.owner_name}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm">
+                        <Phone className="h-3 w-3" />
+                        <a 
+                          href={`tel:${recovery.owner_phone}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {recovery.owner_phone}
+                        </a>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="h-4 w-4 text-purple-600" />
+                        <span className="font-medium">{recovery.reporter_name}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm">
+                        <Phone className="h-3 w-3" />
+                        <a 
+                          href={`tel:${recovery.reporter_phone}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          {recovery.reporter_phone}
+                        </a>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1 text-sm">
+                      <MapPin className="h-3 w-3" />
+                      <span>{recovery.location}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {recovery.promo_code ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Gift className="h-4 w-4 text-green-600" />
+                          <span className="font-mono font-semibold text-green-700">{recovery.promo_code}</span>
+                        </div>
+                        {recovery.discount_amount && (
+                          <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
+                            -{recovery.discount_amount} FCFA
+                          </Badge>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground italic text-sm">Aucun code promo</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <DollarSign className="h-3 w-3" />
+                      <span className="font-semibold">{recovery.final_price} FCFA</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1 text-sm">
+                      <Calendar className="h-3 w-3" />
+                      {format(new Date(recovery.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {recovery.promo_code && recovery.promo_code_owner_id && recovery.promo_usage_id && (
+                      <AdminPromoPaymentButton
+                        promoUsageId={recovery.promo_usage_id}
+                        promoCodeOwnerId={recovery.promo_code_owner_id}
+                        amount={1000}
+                      />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
           <div className="text-center py-8 text-muted-foreground">
             {searchTerm ? "Aucune demande de récupération ne correspond à votre recherche" : "Aucune demande de récupération trouvée"}
           </div>

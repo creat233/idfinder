@@ -95,8 +95,14 @@ Date de demande: ${new Date().toLocaleString('fr-FR')}`;
     // Envoyer l'email
     const emailResponse = await sendRecoveryEmail(subject, emailContent);
 
+    console.log("Recovery notification processed successfully");
+
     return new Response(
-      JSON.stringify({ success: true, emailId: emailResponse.id }),
+      JSON.stringify({ 
+        success: true, 
+        emailId: emailResponse.id,
+        message: "Demande de récupération envoyée avec succès"
+      }),
       {
         status: 200,
         headers: {
@@ -108,7 +114,10 @@ Date de demande: ${new Date().toLocaleString('fr-FR')}`;
   } catch (error: any) {
     console.error("Error in send-recovery-notification function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: "Une erreur est survenue lors de l'envoi de la demande de récupération"
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
