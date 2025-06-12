@@ -58,7 +58,7 @@ export const useAdminPromoData = () => {
       // Combiner les données
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
-        const profile = profilesData?.find(p => p.id === code.user_id);
+        const profile = profilesData?.find((p: Profile) => p.id === code.user_id);
         
         return {
           ...code,
