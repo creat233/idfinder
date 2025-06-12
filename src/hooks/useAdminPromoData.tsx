@@ -60,18 +60,10 @@ export const useAdminPromoData = () => {
         }
       }
       
-      // Récupérer TOUS les codes promo avec les profils des utilisateurs
+      // Récupérer TOUS les codes promo
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
-        .select(`
-          *,
-          profiles!inner(
-            id,
-            first_name,
-            last_name,
-            phone
-          )
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (codesError) {
@@ -103,38 +95,41 @@ export const useAdminPromoData = () => {
         return;
       }
 
-      // Récupérer les emails des utilisateurs de manière sécurisée
+      // Récupérer les profils des utilisateurs séparément
       const userIds = [...new Set(codesData.map(code => code.user_id).filter(Boolean))];
       console.log("👥 IDs utilisateurs à traiter:", userIds);
       
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, phone')
+        .in('id', userIds);
+
+      if (profilesError) {
+        console.error("❌ Erreur récupération profils:", profilesError);
+      }
+
+      console.log("👤 Profils récupérés:", profilesData?.length || 0);
+
+      // Créer un map des profils par user_id
+      const profilesMap = new Map();
+      profilesData?.forEach(profile => {
+        profilesMap.set(profile.id, profile);
+      });
+
+      // Récupérer les emails des utilisateurs de manière sécurisée
       const userEmails: { [key: string]: string } = {};
       
-      // Récupérer les emails via une requête sécurisée
+      // Pour l'instant, utiliser un placeholder d'email
+      // Dans un vrai système, vous pourriez stocker l'email dans la table profiles
       for (const userId of userIds) {
-        try {
-          // Utiliser une approche alternative pour récupérer l'email
-          const { data: userData, error: userError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('id', userId)
-            .single();
-
-          if (!userError && userData) {
-            // Pour l'instant, utiliser un placeholder d'email
-            // Dans un vrai système, vous pourriez stocker l'email dans la table profiles
-            userEmails[userId] = `user-${userId.slice(0, 8)}@finderid.com`;
-          }
-        } catch (error) {
-          console.log(`⚠️ Impossible de récupérer l'email pour l'utilisateur ${userId}`);
-          userEmails[userId] = 'Email non disponible';
-        }
+        userEmails[userId] = `user-${userId.slice(0, 8)}@finderid.com`;
       }
 
       console.log("📧 Emails traités:", Object.keys(userEmails).length);
 
       // Enrichir tous les codes avec les données utilisateur
       const enrichedCodes: PromoCodeData[] = codesData.map(code => {
-        const profile = code.profiles;
+        const profile = profilesMap.get(code.user_id);
         
         const enrichedCode: PromoCodeData = {
           id: code.id,
