@@ -23,6 +23,9 @@ export const useAdminPromoData = () => {
       
       const enrichedCodes = await AdminPromoService.getAllPromoCodes();
       
+      console.log("📈 CODES RÉCUPÉRÉS:", enrichedCodes.length);
+      console.log("📈 DÉTAILS DES CODES:", enrichedCodes);
+      
       setPromoCodes(enrichedCodes);
       
       const calculatedStats = calculatePromoStats(enrichedCodes);
@@ -34,6 +37,14 @@ export const useAdminPromoData = () => {
     } catch (error: any) {
       console.error("💥 ERREUR GLOBALE (ADMIN):", error);
       showError("Erreur", `Impossible de récupérer les données des codes promo: ${error.message}`);
+      // En cas d'erreur, on affiche quand même un tableau vide plutôt que de rester en loading
+      setPromoCodes([]);
+      setStats({
+        totalCodes: 0,
+        activeCodes: 0,
+        totalUsage: 0,
+        totalEarnings: 0
+      });
     } finally {
       setLoading(false);
     }

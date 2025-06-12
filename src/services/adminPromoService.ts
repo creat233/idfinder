@@ -47,6 +47,11 @@ export class AdminPromoService {
       throw codesError;
     }
 
+    if (!codesData || codesData.length === 0) {
+      console.log("⚠️ Aucun code promo trouvé via RPC");
+      return [];
+    }
+
     console.log("📊 Données brutes reçues de la RPC:", codesData);
     console.log("📊 Type des données:", typeof codesData);
     console.log("📊 Est un tableau?:", Array.isArray(codesData));
@@ -71,6 +76,11 @@ export class AdminPromoService {
       throw codesError;
     }
 
+    if (!codesData || codesData.length === 0) {
+      console.log("⚠️ Aucun code promo trouvé en fallback");
+      return [];
+    }
+
     // Récupérer les profils séparément
     const { data: profilesData } = await supabase
       .from("profiles")
@@ -90,9 +100,10 @@ export class AdminPromoService {
   }
 
   private static transformRPCData(codesData: AdminPromoDataResponse[]): PromoCodeData[] {
+    console.log("🔄 Transformation des données RPC...");
     return codesData.map(code => {
       console.log("🔄 Traitement code:", code);
-      return {
+      const transformed = {
         id: code.id,
         code: code.code,
         is_active: Boolean(code.is_active),
@@ -106,13 +117,16 @@ export class AdminPromoService {
         user_name: code.user_name || `Utilisateur ${code.user_id.slice(0, 8)}`,
         user_phone: code.user_phone || "Non renseigné"
       };
+      console.log("✅ Code transformé:", transformed);
+      return transformed;
     });
   }
 
   private static transformFallbackData(codesData: any[], profilesMap: Map<string, any>): PromoCodeData[] {
+    console.log("🔄 Transformation des données fallback...");
     return codesData.map(code => {
       const profile = profilesMap.get(code.user_id);
-      return {
+      const transformed = {
         id: code.id,
         code: code.code,
         is_active: Boolean(code.is_active),
@@ -126,6 +140,8 @@ export class AdminPromoService {
         user_name: profile ? `${profile.first_name} ${profile.last_name || ''}`.trim() : `Utilisateur ${code.user_id.slice(0, 8)}`,
         user_phone: profile?.phone || "Non renseigné"
       };
+      console.log("✅ Code fallback transformé:", transformed);
+      return transformed;
     });
   }
 
@@ -133,10 +149,14 @@ export class AdminPromoService {
     await this.checkUserPermissions();
 
     try {
-      return await this.fetchPromoCodesViaRPC();
+      const rpcResult = await this.fetchPromoCodesViaRPC();
+      console.log("✅ Résultat RPC final:", rpcResult.length, "codes trouvés");
+      return rpcResult;
     } catch (rpcError) {
       console.warn("⚠️ Échec RPC, tentative de fallback:", rpcError);
-      return await this.fetchPromoCodesFallback();
+      const fallbackResult = await this.fetchPromoCodesFallback();
+      console.log("✅ Résultat Fallback final:", fallbackResult.length, "codes trouvés");
+      return fallbackResult;
     }
   }
 }
