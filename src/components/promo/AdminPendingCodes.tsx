@@ -1,16 +1,14 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Clock, CheckCircle, Gift, Mail, User, RefreshCw, Database } from "lucide-react";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useState } from "react";
 import { useAdminPromoData } from "@/hooks/useAdminPromoData";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+import { PendingCodesHeader } from "./admin-pending/PendingCodesHeader";
+import { PendingCodesSearch } from "./admin-pending/PendingCodesSearch";
+import { PendingCodesDebugInfo } from "./admin-pending/PendingCodesDebugInfo";
+import { PendingCodesTable } from "./admin-pending/PendingCodesTable";
+import { PendingCodesEmptyState } from "./admin-pending/PendingCodesEmptyState";
 
 export const AdminPendingCodes = () => {
   const { promoCodes, loading, refetch } = useAdminPromoData();
@@ -86,143 +84,34 @@ export const AdminPendingCodes = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-orange-600" />
-          Codes Promo en Attente de Validation
-          <Badge variant="outline" className="bg-orange-50 text-orange-700">
-            {pendingCodes.length} en attente
-          </Badge>
-          <Button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            size="sm"
-            variant="outline"
-            className="ml-auto"
-          >
-            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          </Button>
-        </CardTitle>
-        <div className="flex items-center gap-2">
-          <Search className="h-4 w-4" />
-          <Input
-            placeholder="Rechercher par code, email ou nom..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
-          />
-        </div>
-        
-        {/* Informations de débogage détaillées */}
-        <div className="text-sm text-muted-foreground space-y-1">
-          <div className="flex items-center gap-2">
-            <Database className="h-4 w-4" />
-            <span>
-              Codes dans la base: {promoCodes.length} | 
-              En attente: {pendingCodes.length} | 
-              Actifs: {promoCodes.filter(c => c.is_active).length} | 
-              Payés: {promoCodes.filter(c => c.is_paid).length}
-            </span>
-          </div>
-          {promoCodes.length > 0 && pendingCodes.length === 0 && (
-            <div className="text-blue-600 text-xs">
-              Tous les codes ont été traités ou activés
-            </div>
-          )}
-        </div>
+        <PendingCodesHeader 
+          pendingCount={pendingCodes.length}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+        />
+        <PendingCodesSearch 
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
+        <PendingCodesDebugInfo 
+          promoCodes={promoCodes}
+          pendingCodes={pendingCodes}
+        />
       </CardHeader>
       <CardContent>
         {filteredCodes.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Code Promo</TableHead>
-                <TableHead>Utilisateur</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Date de Création</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredCodes.map((code) => (
-                <TableRow key={code.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Gift className="h-4 w-4 text-orange-600" />
-                      <span className="font-mono font-semibold text-lg">{code.code}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        <span className="font-medium">{code.user_name}</span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Mail className="h-3 w-3" />
-                        <a 
-                          href={`mailto:${code.user_email}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {code.user_email}
-                        </a>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(code.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                        En attente
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        Généré automatiquement
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => handleActivateCode(code.code)}
-                        disabled={activating === code.code}
-                        size="sm"
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        {activating === code.code ? "Activation..." : "Valider"}
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <PendingCodesTable 
+            codes={filteredCodes}
+            activating={activating}
+            onActivateCode={handleActivateCode}
+          />
         ) : (
-          <div className="text-center py-8">
-            <div className="text-muted-foreground mb-4">
-              {searchTerm ? "Aucun code en attente ne correspond à votre recherche" : "Aucun code promo en attente de validation"}
-            </div>
-            {pendingCodes.length === 0 && promoCodes.length > 0 && (
-              <div className="text-sm text-blue-600">
-                ✅ Tous les codes ont été traités. Total de codes dans le système: {promoCodes.length}
-              </div>
-            )}
-            {promoCodes.length === 0 && (
-              <div className="text-sm text-gray-500 space-y-2">
-                <div>❌ Aucun code promo trouvé dans la base de données.</div>
-                <Button onClick={handleRefresh} variant="outline" size="sm">
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Actualiser
-                </Button>
-              </div>
-            )}
-          </div>
+          <PendingCodesEmptyState 
+            searchTerm={searchTerm}
+            pendingCodes={pendingCodes}
+            promoCodes={promoCodes}
+            onRefresh={handleRefresh}
+          />
         )}
       </CardContent>
     </Card>
