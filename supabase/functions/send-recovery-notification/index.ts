@@ -26,6 +26,26 @@ const handler = async (req: Request): Promise<Response> => {
     // Récupérer les informations de la carte et du signaleur
     const cardData = await fetchCardData(supabaseClient, cardId);
 
+    // Mettre à jour la description de la carte avec les informations du propriétaire
+    const finalPrice = promoInfo ? promoInfo.finalPrice : 7000;
+    const updatedDescription = `${cardData.description || ''}
+
+--- INFORMATIONS DE RÉCUPÉRATION ---
+Nom du propriétaire: ${ownerInfo.name}
+Téléphone: ${ownerInfo.phone}
+Prix final: ${finalPrice} FCFA
+${promoInfo ? `Code promo utilisé: Oui (réduction de ${promoInfo.discount} FCFA)` : 'Code promo utilisé: Non'}
+Date de demande: ${new Date().toLocaleString('fr-FR')}`;
+
+    // Mettre à jour la carte avec ces informations
+    await supabaseClient
+      .from("reported_cards")
+      .update({ 
+        description: updatedDescription,
+        status: "recovery_requested" 
+      })
+      .eq("id", cardId);
+
     // Si un code promo est utilisé, récupérer ses informations et enregistrer l'utilisation
     let promoDetails = null;
     let promoOwnerInfo = null;
@@ -59,9 +79,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Envoyer l'email
     const emailResponse = await sendRecoveryEmail(subject, emailContent);
-
-    // Mettre à jour le statut de la carte
-    await updateCardStatus(supabaseClient, cardId);
 
     return new Response(
       JSON.stringify({ success: true, emailId: emailResponse.id }),

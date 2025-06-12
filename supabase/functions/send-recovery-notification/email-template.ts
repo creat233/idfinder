@@ -60,13 +60,13 @@ export const generateEmailContent = ({
       ${cardData.description ? `<li><strong>Description:</strong> ${cardData.description}</li>` : ''}
     </ul>
 
-    <h3>👤 Informations du propriétaire (demandeur)</h3>
+    <h3>👤 Informations du propriétaire de la carte (demandeur)</h3>
     <ul>
-      <li><strong>Nom:</strong> ${ownerInfo.name}</li>
+      <li><strong>Nom complet:</strong> ${ownerInfo.name}</li>
       <li><strong>Téléphone:</strong> ${ownerInfo.phone}</li>
     </ul>
 
-    <h3>🔍 Informations du découvreur</h3>
+    <h3>🔍 Informations de la personne qui a signalé la carte</h3>
     <ul>
       <li><strong>Nom:</strong> ${cardData.profiles?.first_name || 'Non renseigné'} ${cardData.profiles?.last_name || ''}</li>
       <li><strong>Téléphone:</strong> ${cardData.profiles?.phone || cardData.reporter_phone || 'Non renseigné'}</li>

@@ -15,16 +15,10 @@ export const createSupabaseClient = (req: Request) => {
 };
 
 export const fetchCardData = async (supabaseClient: any, cardId: string): Promise<CardData> => {
+  // Récupérer d'abord les données de la carte
   const { data: cardData, error: cardError } = await supabaseClient
     .from("reported_cards")
-    .select(`
-      *,
-      profiles!reported_cards_reporter_id_fkey (
-        first_name,
-        last_name,
-        phone
-      )
-    `)
+    .select("*")
     .eq("id", cardId)
     .single();
 
@@ -37,7 +31,25 @@ export const fetchCardData = async (supabaseClient: any, cardId: string): Promis
     throw new Error("Card not found");
   }
 
-  return cardData;
+  // Récupérer les informations du profil du signaleur séparément
+  let reporterProfile = null;
+  if (cardData.reporter_id) {
+    const { data: profile, error: profileError } = await supabaseClient
+      .from("profiles")
+      .select("first_name, last_name, phone")
+      .eq("id", cardData.reporter_id)
+      .single();
+
+    if (!profileError && profile) {
+      reporterProfile = profile;
+    }
+  }
+
+  // Ajouter les informations du profil aux données de la carte
+  return {
+    ...cardData,
+    profiles: reporterProfile
+  };
 };
 
 export const fetchPromoData = async (supabaseClient: any, promoCodeId: string): Promise<PromoData | null> => {
