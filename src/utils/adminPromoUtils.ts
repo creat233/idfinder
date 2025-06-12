@@ -1,4 +1,5 @@
 
+import { supabase } from "@/integrations/supabase/client";
 import { PromoCodeData } from "@/types/promo";
 import { AdminPromoStats } from "@/types/adminPromo";
 
@@ -17,8 +18,6 @@ export const calculatePromoStats = (promoCodes: PromoCodeData[]): AdminPromoStat
 };
 
 export const setupRealtimeSubscription = (onUpdate: () => void) => {
-  const { supabase } = require("@/integrations/supabase/client");
-  
   const channel = supabase
     .channel('admin-promo-codes-changes')
     .on(
