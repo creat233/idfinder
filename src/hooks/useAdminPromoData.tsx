@@ -53,15 +53,15 @@ export const useAdminPromoData = () => {
         console.error("Error fetching profiles:", profilesError);
       }
 
-      // Typer correctement profilesData
-      const typedProfiles: Profile[] = profilesData || [];
+      // Typer correctement profilesData pour éviter l'erreur TypeScript
+      const profiles: Profile[] = (profilesData as Profile[]) || [];
 
       // Combiner les données
       const enrichedCodes = codesData.map(code => {
         const user = usersData?.users?.find(u => u.id === code.user_id);
         
         // Chercher le profil avec le typage correct
-        const profile = typedProfiles.find(p => p.id === code.user_id) || null;
+        const profile = profiles.find(p => p.id === code.user_id) || null;
         
         return {
           ...code,
