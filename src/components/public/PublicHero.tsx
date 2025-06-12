@@ -2,9 +2,36 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { User } from "@supabase/supabase-js";
+import { CardSearch, Plus, Search } from "lucide-react";
 
-export const PublicHero = () => {
+interface PublicHeroProps {
+  user?: User | null;
+  isLoading?: boolean;
+}
+
+export const PublicHero = ({ user, isLoading }: PublicHeroProps) => {
   const navigate = useNavigate();
+
+  const handlePrimaryAction = () => {
+    if (user) {
+      // User is logged in, go to signaler page
+      navigate("/signaler");
+    } else {
+      // User is not logged in, go to login page
+      navigate("/login");
+    }
+  };
+
+  const handleSecondaryAction = () => {
+    if (user) {
+      // User is logged in, go to mes-cartes page
+      navigate("/mes-cartes");
+    } else {
+      // User is not logged in, show demo
+      navigate("/demo");
+    }
+  };
 
   return (
     <section className="pt-24 pb-16 bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] text-white overflow-hidden">
@@ -23,23 +50,55 @@ export const PublicHero = () => {
               Signalez, trouvez et récupérez vos pièces d'identité rapidement et en toute sécurité.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg"
-                onClick={() => navigate("/login")}
-                className="bg-white text-[#9b87f5] hover:bg-gray-100 font-semibold px-8 py-4 text-lg"
+            {!isLoading && (
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg"
+                  onClick={handlePrimaryAction}
+                  className="bg-white text-[#9b87f5] hover:bg-gray-100 font-semibold px-8 py-4 text-lg"
+                >
+                  {user ? (
+                    <>
+                      <Plus className="mr-2 h-5 w-5" />
+                      Signaler une carte
+                    </>
+                  ) : (
+                    "Commencer maintenant"
+                  )}
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  onClick={handleSecondaryAction}
+                  className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg"
+                >
+                  {user ? (
+                    <>
+                      <CardSearch className="mr-2 h-5 w-5" />
+                      Mes cartes
+                    </>
+                  ) : (
+                    <>
+                      <Search className="mr-2 h-5 w-5" />
+                      Voir la démo
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {user && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
               >
-                Commencer maintenant
-              </Button>
-              <Button 
-                variant="outline"
-                size="lg"
-                onClick={() => navigate("/demo")}
-                className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg"
-              >
-                Voir la démo
-              </Button>
-            </div>
+                <p className="text-purple-100 text-sm">
+                  👋 Bienvenue ! Vous pouvez maintenant signaler des cartes trouvées ou gérer vos cartes perdues.
+                </p>
+              </motion.div>
+            )}
           </motion.div>
 
           <motion.div

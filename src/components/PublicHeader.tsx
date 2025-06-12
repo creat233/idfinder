@@ -1,15 +1,52 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import { useToast } from "@/hooks/use-toast";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check current user session
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleGetStarted = () => {
-    navigate("/login");
+    if (user) {
+      navigate("/signaler");
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Déconnexion réussie",
+      description: "Vous avez été déconnecté avec succès",
+    });
+    navigate("/");
   };
 
   const toggleMenu = () => {
@@ -21,7 +58,7 @@ export const PublicHeader = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
             <div className="w-8 h-8 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">F</span>
             </div>
@@ -42,23 +79,54 @@ export const PublicHeader = () => {
             <a href="/numeros-urgence" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
               Numéros d'urgence
             </a>
+            {user && (
+              <button 
+                onClick={() => navigate("/mes-cartes")}
+                className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+              >
+                Mes cartes
+              </button>
+            )}
           </nav>
 
           {/* Boutons Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              onClick={handleGetStarted}
-              className="text-gray-600 hover:text-[#7E69AB]"
-            >
-              Se connecter
-            </Button>
-            <Button 
-              onClick={handleGetStarted}
-              className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:opacity-90"
-            >
-              Commencer
-            </Button>
+            {user ? (
+              <>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate("/profile")}
+                  className="text-gray-600 hover:text-[#7E69AB]"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Mon profil
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  onClick={handleSignOut}
+                  className="text-gray-600 hover:text-red-600"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Déconnexion
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate("/login")}
+                  className="text-gray-600 hover:text-[#7E69AB]"
+                >
+                  Se connecter
+                </Button>
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:opacity-90"
+                >
+                  Commencer
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Menu Mobile */}
@@ -86,20 +154,51 @@ export const PublicHeader = () => {
               <a href="/numeros-urgence" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
                 Numéros d'urgence
               </a>
+              {user && (
+                <button 
+                  onClick={() => navigate("/mes-cartes")}
+                  className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
+                >
+                  Mes cartes
+                </button>
+              )}
               <div className="px-4 pt-4 space-y-2">
-                <Button 
-                  variant="outline" 
-                  onClick={handleGetStarted}
-                  className="w-full"
-                >
-                  Se connecter
-                </Button>
-                <Button 
-                  onClick={handleGetStarted}
-                  className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white"
-                >
-                  Commencer
-                </Button>
+                {user ? (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => navigate("/profile")}
+                      className="w-full"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Mon profil
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={handleSignOut}
+                      className="w-full text-red-600 border-red-600"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Déconnexion
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => navigate("/login")}
+                      className="w-full"
+                    >
+                      Se connecter
+                    </Button>
+                    <Button 
+                      onClick={handleGetStarted}
+                      className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white"
+                    >
+                      Commencer
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>

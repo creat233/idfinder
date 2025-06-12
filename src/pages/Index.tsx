@@ -5,15 +5,35 @@ import { PublicFeatures } from "@/components/public/PublicFeatures";
 import { PublicPricing } from "@/components/public/PublicPricing";
 import { PublicCTA } from "@/components/public/PublicCTA";
 import { Footer } from "@/components/Footer";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 const Index = () => {
   const mounted = useRef(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check current user session
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setIsLoading(false);
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
     return () => {
       mounted.current = false;
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -30,7 +50,7 @@ const Index = () => {
       >
         <PublicHeader />
         <main className="flex-grow">
-          <PublicHero />
+          <PublicHero user={user} isLoading={isLoading} />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -50,7 +70,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
           >
-            <PublicCTA />
+            <PublicCTA user={user} isLoading={isLoading} />
           </motion.div>
         </main>
         <motion.div

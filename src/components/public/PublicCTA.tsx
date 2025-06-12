@@ -1,11 +1,17 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Download, Smartphone } from "lucide-react";
+import { Download, Smartphone, Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { User } from "@supabase/supabase-js";
 
-export const PublicCTA = () => {
+interface PublicCTAProps {
+  user?: User | null;
+  isLoading?: boolean;
+}
+
+export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -23,6 +29,14 @@ export const PublicCTA = () => {
     });
   };
 
+  const handleMainAction = () => {
+    if (user) {
+      navigate("/signaler");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <section className="py-20 bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] text-white">
       <div className="container mx-auto px-4 text-center">
@@ -33,32 +47,45 @@ export const PublicCTA = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Prêt à ne plus perdre vos documents ?
+            {user ? "Continuez à aider la communauté" : "Prêt à ne plus perdre vos documents ?"}
           </h2>
           <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-            Rejoignez notre communauté solidaire dès aujourd'hui et participez à un Sénégal 
-            où personne ne perd définitivement ses documents.
+            {user 
+              ? "Signalez des cartes trouvées et aidez d'autres personnes à récupérer leurs documents."
+              : "Rejoignez notre communauté solidaire dès aujourd'hui et participez à un Sénégal où personne ne perd définitivement ses documents."
+            }
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg"
-              onClick={() => navigate("/login")}
-              className="bg-white text-[#9b87f5] hover:bg-gray-100 font-semibold px-8 py-4 rounded-full shadow-lg"
-            >
-              <Smartphone className="mr-3 h-6 w-6" />
-              Commencer sur le web
-            </Button>
-            <Button 
-              onClick={handleDownloadAPK}
-              variant="outline"
-              size="lg"
-              className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 rounded-full"
-            >
-              <Download className="mr-3 h-6 w-6" />
-              Télécharger l'app Android
-            </Button>
-          </div>
+          {!isLoading && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                size="lg"
+                onClick={handleMainAction}
+                className="bg-white text-[#9b87f5] hover:bg-gray-100 font-semibold px-8 py-4 rounded-full shadow-lg"
+              >
+                {user ? (
+                  <>
+                    <Plus className="mr-3 h-6 w-6" />
+                    Signaler une carte trouvée
+                  </>
+                ) : (
+                  <>
+                    <Smartphone className="mr-3 h-6 w-6" />
+                    Commencer sur le web
+                  </>
+                )}
+              </Button>
+              <Button 
+                onClick={handleDownloadAPK}
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 rounded-full"
+              >
+                <Download className="mr-3 h-6 w-6" />
+                Télécharger l'app Android
+              </Button>
+            </div>
+          )}
 
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="text-center">
