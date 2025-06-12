@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { CardSearch, Plus, Search } from "lucide-react";
+import { ScanSearch, Plus, Search } from "lucide-react";
 
 interface PublicHeroProps {
   user?: User | null;
@@ -74,7 +74,7 @@ export const PublicHero = ({ user, isLoading }: PublicHeroProps) => {
                 >
                   {user ? (
                     <>
-                      <CardSearch className="mr-2 h-5 w-5" />
+                      <ScanSearch className="mr-2 h-5 w-5" />
                       Mes cartes
                     </>
                   ) : (
