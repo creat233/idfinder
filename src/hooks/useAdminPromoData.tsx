@@ -29,6 +29,27 @@ export const useAdminPromoData = () => {
 
       console.log("👤 Utilisateur connecté:", user.email);
 
+      // Vérifier d'abord les permissions admin
+      console.log("🔐 Vérification des permissions admin...");
+      const { data: hasPermission, error: permError } = await supabase
+        .rpc('can_activate_promo_codes', { user_email: user.email });
+
+      console.log("🔐 Résultat permissions:", { hasPermission, permError });
+
+      if (permError) {
+        console.error("❌ Erreur vérification permissions:", permError);
+        throw new Error(`Erreur permissions: ${permError.message}`);
+      }
+
+      if (!hasPermission) {
+        console.warn("⚠️ Utilisateur sans permissions admin");
+        showError("Accès refusé", "Vous n'avez pas les permissions d'administrateur");
+        setLoading(false);
+        return;
+      }
+
+      console.log("✅ Permissions admin confirmées");
+
       // Tentative avec la fonction RPC corrigée
       let enrichedCodes: PromoCodeData[] = [];
       
@@ -37,29 +58,38 @@ export const useAdminPromoData = () => {
         const { data: codesData, error: codesError } = await supabase
           .rpc('admin_get_all_promo_codes');
 
+        console.log("📊 Réponse RPC complète:", { codesData, codesError });
+
         if (codesError) {
           console.error("❌ Erreur fonction RPC:", codesError);
           throw codesError;
         }
 
         console.log("📊 Données brutes reçues de la RPC:", codesData);
+        console.log("📊 Type des données:", typeof codesData);
+        console.log("📊 Est un tableau?:", Array.isArray(codesData));
+        console.log("📊 Longueur:", codesData?.length);
 
         // Transformer les données de la fonction RPC
-        enrichedCodes = (codesData || []).map(code => ({
-          id: code.id,
-          code: code.code,
-          is_active: Boolean(code.is_active),
-          is_paid: Boolean(code.is_paid),
-          created_at: code.created_at,
-          expires_at: code.expires_at,
-          total_earnings: Number(code.total_earnings) || 0,
-          usage_count: Number(code.usage_count) || 0,
-          user_id: code.user_id,
-          user_email: code.user_email || `user-${code.user_id.slice(0, 8)}@finderid.com`,
-          user_name: code.user_name || `Utilisateur ${code.user_id.slice(0, 8)}`
-        }));
+        enrichedCodes = (codesData || []).map(code => {
+          console.log("🔄 Traitement code:", code);
+          return {
+            id: code.id,
+            code: code.code,
+            is_active: Boolean(code.is_active),
+            is_paid: Boolean(code.is_paid),
+            created_at: code.created_at,
+            expires_at: code.expires_at,
+            total_earnings: Number(code.total_earnings) || 0,
+            usage_count: Number(code.usage_count) || 0,
+            user_id: code.user_id,
+            user_email: code.user_email || `user-${code.user_id.slice(0, 8)}@finderid.com`,
+            user_name: code.user_name || `Utilisateur ${code.user_id.slice(0, 8)}`
+          };
+        });
 
         console.log("✅ Codes récupérés via RPC:", enrichedCodes.length);
+        console.log("📋 Codes traités:", enrichedCodes);
 
       } catch (rpcError) {
         console.warn("⚠️ Échec RPC, tentative de fallback:", rpcError);
@@ -72,12 +102,13 @@ export const useAdminPromoData = () => {
             .select("*")
             .order("created_at", { ascending: false });
 
+          console.log("📊 Codes bruts récupérés (fallback):", codesData?.length);
+          console.log("📊 Données fallback:", codesData);
+
           if (codesError) {
             console.error("❌ Erreur récupération codes (fallback):", codesError);
             throw codesError;
           }
-
-          console.log("📊 Codes bruts récupérés:", codesData?.length);
 
           // Récupérer les profils séparément
           const { data: profilesData } = await supabase
@@ -139,7 +170,7 @@ export const useAdminPromoData = () => {
 
     } catch (error) {
       console.error("💥 ERREUR GLOBALE (ADMIN):", error);
-      showError("Erreur", "Impossible de récupérer les données des codes promo");
+      showError("Erreur", `Impossible de récupérer les données des codes promo: ${error.message}`);
     } finally {
       setLoading(false);
     }
