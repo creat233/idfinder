@@ -32,8 +32,14 @@ export const useAdminPromoData = () => {
 
       console.log("Codes récupérés:", codesData);
 
-      if (!codesData) {
+      if (!codesData || codesData.length === 0) {
         setPromoCodes([]);
+        setStats({
+          totalCodes: 0,
+          activeCodes: 0,
+          totalUsage: 0,
+          totalEarnings: 0
+        });
         setLoading(false);
         return;
       }
@@ -72,8 +78,8 @@ export const useAdminPromoData = () => {
           is_paid: code.is_paid,
           created_at: code.created_at,
           expires_at: code.expires_at,
-          total_earnings: code.total_earnings,
-          usage_count: code.usage_count,
+          total_earnings: code.total_earnings || 0,
+          usage_count: code.usage_count || 0,
           user_id: code.user_id,
           user_email: user?.email || 'Email non disponible',
           user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné'
@@ -88,8 +94,8 @@ export const useAdminPromoData = () => {
       // Calculer les statistiques
       const totalCodes = enrichedCodes.length;
       const activeCodes = enrichedCodes.filter(code => code.is_active).length;
-      const totalUsage = enrichedCodes.reduce((sum, code) => sum + code.usage_count, 0);
-      const totalEarnings = enrichedCodes.reduce((sum, code) => sum + code.total_earnings, 0);
+      const totalUsage = enrichedCodes.reduce((sum, code) => sum + (code.usage_count || 0), 0);
+      const totalEarnings = enrichedCodes.reduce((sum, code) => sum + (code.total_earnings || 0), 0);
 
       setStats({
         totalCodes,

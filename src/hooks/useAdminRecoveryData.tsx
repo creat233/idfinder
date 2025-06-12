@@ -23,13 +23,20 @@ export const useAdminRecoveryData = () => {
 
   const fetchRecoveryData = async () => {
     try {
+      console.log("Récupération des données de récupération...");
+      
       // Récupérer les utilisations de codes promo
       const { data: usageData, error: usageError } = await supabase
         .from("promo_usage")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (usageError) throw usageError;
+      if (usageError) {
+        console.error("Erreur lors de la récupération des utilisations:", usageError);
+        throw usageError;
+      }
+
+      console.log("Utilisations récupérées:", usageData);
 
       if (!usageData || usageData.length === 0) {
         setRecoveries([]);
@@ -44,7 +51,10 @@ export const useAdminRecoveryData = () => {
         .select("id, code, user_id")
         .in("id", promoCodeIds);
 
-      if (promoCodesError) throw promoCodesError;
+      if (promoCodesError) {
+        console.error("Erreur lors de la récupération des codes promo:", promoCodesError);
+        throw promoCodesError;
+      }
 
       // Récupérer les profils des propriétaires de codes
       const userIds = [...new Set(promoCodesData?.map(code => code.user_id) || [])];
@@ -79,7 +89,7 @@ export const useAdminRecoveryData = () => {
           promo_code_id: usage.promo_code_id,
           used_by_email: usage.used_by_email,
           used_by_phone: usage.used_by_phone,
-          discount_amount: usage.discount_amount,
+          discount_amount: usage.discount_amount || 1000,
           created_at: usage.created_at,
           promo_code: promoCode?.code || 'Code non trouvé',
           promo_owner_email: user?.email || 'Email non disponible',
@@ -88,6 +98,7 @@ export const useAdminRecoveryData = () => {
         };
       });
 
+      console.log("Données de récupération enrichies:", enrichedRecoveries);
       setRecoveries(enrichedRecoveries);
     } catch (error) {
       console.error("Error fetching recovery data:", error);
