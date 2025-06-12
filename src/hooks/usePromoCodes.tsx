@@ -72,6 +72,8 @@ export const usePromoCodes = () => {
 
   const validatePromoCode = async (code: string) => {
     try {
+      console.log("Validating promo code:", code);
+      
       const { data, error } = await supabase
         .from("promo_codes")
         .select("*")
@@ -80,10 +82,16 @@ export const usePromoCodes = () => {
         .gte("expires_at", new Date().toISOString())
         .single();
 
-      if (error || !data) {
-        return null;
+      if (error) {
+        console.error("Error validating promo code:", error);
+        if (error.code === "PGRST116") {
+          console.log("No promo code found with code:", code);
+          return null;
+        }
+        throw error;
       }
 
+      console.log("Valid promo code found:", data);
       return data;
     } catch (error) {
       console.error("Error validating promo code:", error);
@@ -93,6 +101,8 @@ export const usePromoCodes = () => {
 
   const recordPromoUsage = async (promoCodeId: string, userEmail?: string, userPhone?: string) => {
     try {
+      console.log("Recording promo usage:", { promoCodeId, userEmail, userPhone });
+      
       const { error } = await supabase.from("promo_usage").insert({
         promo_code_id: promoCodeId,
         used_by_email: userEmail,
@@ -100,7 +110,12 @@ export const usePromoCodes = () => {
         discount_amount: 1000,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error recording promo usage:", error);
+        throw error;
+      }
+      
+      console.log("Promo usage recorded successfully");
     } catch (error) {
       console.error("Error recording promo usage:", error);
     }

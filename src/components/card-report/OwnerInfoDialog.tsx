@@ -28,6 +28,14 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
   const [appliedPromoId, setAppliedPromoId] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Reset form when dialog opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setDiscount(0);
+      setAppliedPromoId(null);
+    }
+  }, [isOpen]);
+
   // Charger automatiquement les informations du profil utilisateur
   useEffect(() => {
     const loadUserProfile = async () => {
@@ -70,16 +78,28 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
   }, [isOpen]);
 
   const handlePromoApplied = (discountAmount: number, promoCodeId: string) => {
+    console.log("Promo applied in dialog:", { discountAmount, promoCodeId });
     setDiscount(discountAmount);
     setAppliedPromoId(promoCodeId);
+    
+    toast({
+      title: "Code promo appliqué",
+      description: `Réduction de ${discountAmount} FCFA appliquée avec succès`,
+    });
   };
 
   const handlePromoRemoved = () => {
+    console.log("Promo removed in dialog");
     setDiscount(0);
     setAppliedPromoId(null);
+    
+    toast({
+      title: "Code promo retiré",
+      description: "La réduction a été annulée",
+    });
   };
 
-  const finalPrice = baseFee - discount;
+  const finalPrice = Math.max(0, baseFee - discount);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,6 +116,16 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
     setIsSubmitting(true);
 
     try {
+      console.log("Submitting recovery request with:", {
+        cardId: cardData.id,
+        ownerInfo: { name: ownerName.trim(), phone: ownerPhone.trim() },
+        promoInfo: appliedPromoId ? {
+          promoCodeId: appliedPromoId,
+          discount: discount,
+          finalPrice: finalPrice
+        } : null
+      });
+
       // Appeler la fonction Edge pour envoyer l'email de notification
       const { error } = await supabase.functions.invoke('send-recovery-notification', {
         body: {

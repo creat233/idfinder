@@ -39,12 +39,18 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
           discount,
           id: validPromo.id,
         });
+        
+        // Call the callback to notify parent component
         onPromoApplied?.(discount, validPromo.id);
-        showSuccess(t("discountApplied"), `Réduction de ${discount} FCFA appliquée`);
+        
+        showSuccess(t("discountApplied"), `Réduction de ${discount} FCFA appliquée avec succès`);
+        console.log("Promo code applied successfully:", validPromo.code, "Discount:", discount);
       } else {
-        showError(t("invalidPromoCode"), "");
+        showError(t("invalidPromoCode"), "Vérifiez que le code est correct et actif");
+        console.log("Invalid promo code:", promoCode);
       }
     } catch (error) {
+      console.error("Error validating promo code:", error);
       showError("Erreur", "Impossible de valider le code promo");
     } finally {
       setIsValidating(false);
@@ -52,6 +58,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
   };
 
   const handleRemovePromo = () => {
+    console.log("Removing promo code:", appliedPromo?.code);
     setAppliedPromo(null);
     setPromoCode("");
     onPromoRemoved?.();
@@ -65,7 +72,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
             <Check className="h-3 w-3 mr-1" />
             {appliedPromo.code}
           </Badge>
-          <span className="text-sm text-green-800">
+          <span className="text-sm text-green-800 font-semibold">
             -{appliedPromo.discount} FCFA
           </span>
         </div>
@@ -89,13 +96,19 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
           className="flex-1"
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleApplyPromo();
+            }
+          }}
         />
         <Button
           onClick={handleApplyPromo}
           disabled={!promoCode.trim() || isValidating}
           variant="outline"
         >
-          {isValidating ? t("loading") : t("applyDiscount")}
+          {isValidating ? "Validation..." : t("applyDiscount")}
         </Button>
       </div>
     </div>
