@@ -32,11 +32,11 @@ export const useAdminAllRecoveries = () => {
     try {
       console.log("Récupération de toutes les demandes de récupération...");
       
-      // Récupérer toutes les cartes signalées avec statut "recovery_requested"
+      // Récupérer toutes les cartes signalées qui contiennent des informations de récupération
       const { data: reportedCards, error: cardsError } = await supabase
         .from("reported_cards")
         .select("*")
-        .eq("status", "recovery_requested")
+        .or("status.eq.recovery_requested,description.ilike.%INFORMATIONS DE RÉCUPÉRATION%")
         .order("created_at", { ascending: false });
 
       if (cardsError) {
@@ -56,6 +56,13 @@ export const useAdminAllRecoveries = () => {
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
+        // Vérifier si la carte contient des informations de récupération
+        const description = card.description || "";
+        const hasRecoveryInfo = description.includes("INFORMATIONS DE RÉCUPÉRATION") || 
+                               description.includes("Nom du propriétaire:");
+
+        if (!hasRecoveryInfo) continue;
+
         // Récupérer le profil du signaleur
         let reporterProfile = null;
         if (card.reporter_id) {
@@ -71,7 +78,6 @@ export const useAdminAllRecoveries = () => {
         }
 
         // Extraire les informations du propriétaire depuis la description
-        const description = card.description || "";
         const ownerNameMatch = description.match(/Nom du propriétaire: ([^\n]+)/);
         const ownerPhoneMatch = description.match(/Téléphone: ([^\n]+)/);
         const finalPriceMatch = description.match(/Prix final: (\d+) FCFA/);
@@ -132,7 +138,7 @@ export const useAdminAllRecoveries = () => {
           reporter_id: card.reporter_id,
           final_price: finalPriceMatch ? parseInt(finalPriceMatch[1]) : 7000,
           created_at: card.created_at,
-          status: card.status,
+          status: card.status || "pending",
           promo_code: promoCode,
           promo_code_owner_id: promoCodeOwnerId,
           promo_usage_id: promoUsageId,
