@@ -89,9 +89,9 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Veuillez remplir tous les champs",
+        description: "Veuillez remplir tous les champs obligatoires",
       });
-      return;
+      return false;
     }
 
     setIsSubmitting(true);
@@ -104,7 +104,8 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
           promoCodeId: appliedPromoId,
           discount: discount,
           finalPrice: finalPrice
-        } : null
+        } : null,
+        finalPrice: finalPrice
       });
 
       const { error } = await supabase.functions.invoke('send-recovery-notification', {
@@ -128,8 +129,8 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
       }
 
       toast({
-        title: "Demande envoyée",
-        description: "Votre demande de récupération a été envoyée. Vous serez contacté prochainement.",
+        title: "Demande envoyée avec succès",
+        description: `Votre demande de récupération a été envoyée à l'administration. Prix à payer: ${finalPrice} FCFA + livraison si applicable.`,
       });
 
       return true;
@@ -138,7 +139,7 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'envoi de votre demande",
+        description: "Une erreur est survenue. Veuillez réessayer ou contacter le support.",
       });
       return false;
     } finally {

@@ -53,11 +53,16 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
         setPromoCode("");
       } else {
         console.log("Invalid or inactive promo code:", promoCode);
-        showError(t("invalidPromoCode"), "Vérifiez que le code est correct, actif et payé");
+        // Ne pas afficher d'erreur bloquante, juste informer l'utilisateur
+        showError(t("invalidPromoCode"), "Code invalide - vous pouvez continuer sans code promo");
+        // Vider le champ pour éviter la confusion
+        setPromoCode("");
       }
     } catch (error) {
       console.error("Error validating promo code:", error);
-      showError("Erreur", "Impossible de valider le code promo");
+      showError("Information", "Code non trouvé - vous pouvez continuer sans code promo");
+      // Vider le champ en cas d'erreur
+      setPromoCode("");
     } finally {
       setIsValidating(false);
     }
@@ -117,6 +122,9 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
           {isValidating ? "Validation..." : t("applyDiscount")}
         </Button>
       </div>
+      <p className="text-xs text-gray-500">
+        Le code promo est optionnel. Vous pouvez continuer sans code pour payer le prix complet.
+      </p>
     </div>
   );
 };
