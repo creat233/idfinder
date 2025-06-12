@@ -19,7 +19,7 @@ SECURITY DEFINER
 AS $$
 BEGIN
   -- Vérifier les permissions admin
-  IF NOT public.can_activate_promo_codes((SELECT email FROM auth.users WHERE auth.users.id = auth.uid())) THEN
+  IF NOT public.can_activate_promo_codes((SELECT au.email FROM auth.users au WHERE au.id = auth.uid())) THEN
     RAISE EXCEPTION 'Permission denied: Admin access required';
   END IF;
   
@@ -35,7 +35,7 @@ BEGIN
     pc.total_earnings,
     pc.usage_count,
     COALESCE(p.first_name || '@finderid.com', 'user@finderid.com') as user_email,
-    COALESCE(p.first_name || ' ' || p.last_name, 'Utilisateur') as user_name
+    COALESCE(p.first_name || ' ' || COALESCE(p.last_name, ''), 'Utilisateur') as user_name
   FROM public.promo_codes pc
   LEFT JOIN public.profiles p ON p.id = pc.user_id
   ORDER BY pc.created_at DESC;

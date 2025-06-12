@@ -9,12 +9,15 @@ import { PendingCodesSearch } from "./admin-pending/PendingCodesSearch";
 import { PendingCodesDebugInfo } from "./admin-pending/PendingCodesDebugInfo";
 import { PendingCodesTable } from "./admin-pending/PendingCodesTable";
 import { PendingCodesEmptyState } from "./admin-pending/PendingCodesEmptyState";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 export const AdminPendingCodes = () => {
   const { promoCodes, loading, refetch } = useAdminPromoData();
   const [searchTerm, setSearchTerm] = useState("");
   const [activating, setActivating] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
   const { showSuccess, showError } = useToast();
 
   // Utiliser useMemo pour optimiser le filtrage
@@ -37,18 +40,29 @@ export const AdminPendingCodes = () => {
     pendingCodes: pendingCodes.length,
     activeNotPaid: promoCodes.filter(c => c.is_active && !c.is_paid).length,
     notActiveButPaid: promoCodes.filter(c => !c.is_active && c.is_paid).length,
+    filteredCodes: filteredCodes.length,
     details: promoCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}`)
   });
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    setLastError(null);
     console.log("🔄 Actualisation manuelle des codes...");
-    await refetch();
-    setRefreshing(false);
+    try {
+      await refetch();
+      showSuccess("Actualisation", "Les données ont été mises à jour");
+    } catch (error) {
+      console.error("Erreur lors de l'actualisation:", error);
+      setLastError("Erreur lors de l'actualisation des données");
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const handleActivateCode = async (codeText: string) => {
     setActivating(codeText);
+    setLastError(null);
+    
     try {
       console.log("⚡ Activation du code:", codeText);
       
@@ -60,20 +74,30 @@ export const AdminPendingCodes = () => {
         console.error("❌ Erreur activation:", error);
         if (error.message.includes("Permission denied")) {
           showError("Accès refusé", "Vous n'avez pas l'autorisation d'activer les codes promo");
+          setLastError("Permissions insuffisantes");
         } else if (error.message.includes("not found")) {
           showError("Code introuvable", "Ce code promo n'existe pas dans le système");
+          setLastError("Code promo introuvable");
         } else {
           showError("Erreur", `Impossible d'activer le code promo: ${error.message}`);
+          setLastError(`Erreur d'activation: ${error.message}`);
         }
         return;
       }
 
       console.log("✅ Code activé avec succès:", data);
       showSuccess("Code activé", `Le code promo ${codeText} a été activé avec succès`);
-      refetch();
+      
+      // Attendre un peu puis actualiser
+      setTimeout(() => {
+        refetch();
+      }, 1000);
+      
     } catch (error: any) {
       console.error("💥 Erreur activation:", error);
-      showError("Erreur", "Une erreur inattendue s'est produite");
+      const errorMsg = "Une erreur inattendue s'est produite";
+      showError("Erreur", errorMsg);
+      setLastError(errorMsg);
     } finally {
       setActivating(null);
     }
@@ -81,9 +105,12 @@ export const AdminPendingCodes = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <Card>
+        <CardContent className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <span className="ml-2">Chargement des codes promo...</span>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -99,6 +126,14 @@ export const AdminPendingCodes = () => {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
+        
+        {lastError && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>{lastError}</AlertDescription>
+          </Alert>
+        )}
+
         <PendingCodesDebugInfo 
           promoCodes={promoCodes}
           pendingCodes={pendingCodes}
