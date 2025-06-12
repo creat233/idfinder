@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Eye, Phone, MessageCircle } from "lucide-react";
+import { Search, Eye, Phone, MessageCircle, PhoneCall } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { PromoCodeData } from "@/types/promo";
@@ -47,6 +47,18 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
     
     // Ouvrir WhatsApp
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleDirectCall = (phone: string) => {
+    if (phone === "Non renseigné" || !phone) {
+      return;
+    }
+    
+    // Nettoyer le numéro de téléphone
+    const cleanPhone = phone.replace(/[\s-]/g, '');
+    
+    // Créer le lien tel: pour appeler directement
+    window.location.href = `tel:${cleanPhone}`;
   };
 
   return (
@@ -95,14 +107,23 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
                         {code.user_phone || "Non renseigné"}
                       </span>
                     ) : (
-                      <button
-                        onClick={() => handleWhatsAppClick(code.user_phone!, code.user_name!, code.code, code.is_active)}
-                        className="flex items-center gap-1 text-green-600 hover:text-green-800 hover:underline cursor-pointer transition-colors"
-                        title="Envoyer un message WhatsApp"
-                      >
-                        <MessageCircle className="h-3 w-3" />
-                        <span>{code.user_phone}</span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleWhatsAppClick(code.user_phone!, code.user_name!, code.code, code.is_active)}
+                          className="flex items-center gap-1 text-green-600 hover:text-green-800 hover:underline cursor-pointer transition-colors"
+                          title="Envoyer un message WhatsApp"
+                        >
+                          <MessageCircle className="h-3 w-3" />
+                          <span>{code.user_phone}</span>
+                        </button>
+                        <button
+                          onClick={() => handleDirectCall(code.user_phone!)}
+                          className="flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition-colors ml-2"
+                          title="Appeler directement"
+                        >
+                          <PhoneCall className="h-3 w-3" />
+                        </button>
+                      </div>
                     )}
                   </div>
                 </TableCell>
