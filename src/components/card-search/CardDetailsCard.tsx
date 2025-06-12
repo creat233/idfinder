@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Clock, CreditCard, FileText } from "lucide-react";
+import { MapPin, Calendar, Clock, CreditCard, FileText, CheckCircle } from "lucide-react";
 
 interface ReportedCard {
   id: string;
