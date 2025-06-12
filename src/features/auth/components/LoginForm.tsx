@@ -67,7 +67,7 @@ const LoginForm = ({ onSubmit, loading }: LoginFormProps) => {
         
         <Button 
           type="submit" 
-          className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
+          className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:from-[#8b77e5] hover:to-[#6E59A5] active:from-[#7b67d5] active:to-[#5E4995] focus:from-[#8b77e5] focus:to-[#6E59A5] transition-all duration-200 transform active:scale-95"
           disabled={loading}
         >
           {loading ? 'Connexion en cours...' : 'Se connecter'}

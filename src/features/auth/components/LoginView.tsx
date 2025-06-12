@@ -76,7 +76,7 @@ const LoginView = () => {
               onClick={handleDownloadAPK}
               variant="outline"
               size="sm"
-              className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold transition-all duration-300 hover:scale-105"
+              className="border-white/50 bg-white/10 text-white hover:bg-white hover:text-[#9b87f5] active:bg-white/90 active:text-[#9b87f5] focus:bg-white focus:text-[#9b87f5] font-semibold transition-all duration-300 hover:scale-105 active:scale-95"
             >
               <Download className="mr-2 h-4 w-4" />
               Télécharger Android
@@ -97,7 +97,7 @@ const LoginView = () => {
                   <button 
                     type="button"
                     onClick={() => setView("reset_password")}
-                    className="text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200 font-medium"
+                    className="text-[#7E69AB] hover:text-[#6E59A5] active:text-[#5E4995] focus:text-[#6E59A5] transition-colors duration-200 font-medium underline-offset-2 hover:underline"
                   >
                     Mot de passe oublié ?
                   </button>
@@ -105,7 +105,7 @@ const LoginView = () => {
                 <button 
                   type="button"
                   onClick={() => setView("sign_up")}
-                  className="text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200 text-sm font-medium block w-full py-2 px-4 rounded-lg border border-[#7E69AB]/20 hover:bg-[#7E69AB]/5"
+                  className="text-[#7E69AB] hover:text-[#6E59A5] active:text-[#5E4995] focus:text-[#6E59A5] transition-all duration-200 text-sm font-medium block w-full py-2 px-4 rounded-lg border border-[#7E69AB]/20 hover:bg-[#7E69AB]/10 active:bg-[#7E69AB]/20 focus:bg-[#7E69AB]/10"
                 >
                   Créer un nouveau compte
                 </button>
@@ -124,7 +124,7 @@ const LoginView = () => {
                 <button 
                   type="button"
                   onClick={() => setView("sign_in")}
-                  className="text-[#7E69AB] hover:text-[#6E59A5] transition-colors duration-200 text-sm font-medium block w-full py-2 px-4 rounded-lg border border-[#7E69AB]/20 hover:bg-[#7E69AB]/5"
+                  className="text-[#7E69AB] hover:text-[#6E59A5] active:text-[#5E4995] focus:text-[#6E59A5] transition-all duration-200 text-sm font-medium block w-full py-2 px-4 rounded-lg border border-[#7E69AB]/20 hover:bg-[#7E69AB]/10 active:bg-[#7E69AB]/20 focus:bg-[#7E69AB]/10"
                 >
                   Déjà un compte ? Se connecter
                 </button>
