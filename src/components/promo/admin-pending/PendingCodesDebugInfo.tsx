@@ -24,11 +24,14 @@ export const PendingCodesDebugInfo = ({ promoCodes, pendingCodes }: PendingCodes
       {promoCodes.length > 0 && (
         <div className="text-xs bg-gray-50 p-2 rounded">
           <strong>Derniers codes:</strong>
-          {promoCodes.slice(0, 3).map(code => (
+          {promoCodes.slice(0, 5).map(code => (
             <div key={code.id} className="mt-1">
-              {code.code} - {code.user_email} - 
+              {code.code} - {code.user_name} - 
               {code.is_active ? ' ✅ Actif' : ' ⏳ Inactif'} -
-              {code.is_paid ? ' 💰 Payé' : ' ⏳ Non payé'}
+              {code.is_paid ? ' 💰 Payé' : ' ⏳ Non payé'} -
+              <span className="text-xs text-gray-500">
+                {new Date(code.created_at).toLocaleString('fr-FR')}
+              </span>
             </div>
           ))}
         </div>
@@ -36,7 +39,13 @@ export const PendingCodesDebugInfo = ({ promoCodes, pendingCodes }: PendingCodes
       
       {promoCodes.length > 0 && pendingCodes.length === 0 && (
         <div className="text-blue-600 text-xs">
-          Tous les codes ont été traités ou activés
+          ✅ Tous les codes ont été traités ou activés
+        </div>
+      )}
+
+      {promoCodes.length === 0 && (
+        <div className="text-red-600 text-xs">
+          ❌ Aucun code promo trouvé. Assurez-vous qu'au moins un code a été généré.
         </div>
       )}
     </div>

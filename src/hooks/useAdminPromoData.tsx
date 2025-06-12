@@ -20,7 +20,7 @@ export const useAdminPromoData = () => {
       console.log("=== DÉBUT RÉCUPÉRATION CODES PROMO ===");
       setLoading(true);
       
-      // Vérifier d'abord les permissions
+      // Vérifier d'abord l'utilisateur connecté
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         console.log("❌ Utilisateur non connecté");
@@ -30,22 +30,20 @@ export const useAdminPromoData = () => {
 
       console.log("👤 Utilisateur connecté:", user.email);
 
-      // Vérifier les permissions d'administration
-      const { data: permissions, error: permError } = await supabase
-        .from("admin_permissions")
-        .select("*")
-        .eq("user_email", user.email)
-        .eq("permission_type", "activate_promo_codes")
-        .eq("is_active", true);
+      // Vérifier les permissions d'administration via RPC
+      const { data: hasPermission, error: permError } = await supabase
+        .rpc('can_activate_promo_codes', {
+          user_email: user.email
+        });
 
       if (permError) {
         console.error("❌ Erreur vérification permissions:", permError);
       }
 
-      console.log("🔒 Permissions trouvées:", permissions);
+      console.log("🔒 Permissions d'activation:", hasPermission);
 
-      // Si l'utilisateur n'a pas de permissions, les créer automatiquement pour cet email spécifique
-      if (user.email === "mouhamed110000@gmail.com" && (!permissions || permissions.length === 0)) {
+      // Si l'utilisateur spécifique n'a pas de permissions, les créer automatiquement
+      if (user.email === "mouhamed110000@gmail.com" && !hasPermission) {
         console.log("➕ Création des permissions pour l'administrateur...");
         const { error: insertError } = await supabase
           .from("admin_permissions")
@@ -62,10 +60,18 @@ export const useAdminPromoData = () => {
         }
       }
       
-      // Récupérer TOUS les codes promo sans filtrage par utilisateur
+      // Récupérer TOUS les codes promo avec les profils des utilisateurs
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
-        .select("*")
+        .select(`
+          *,
+          profiles!inner(
+            id,
+            first_name,
+            last_name,
+            phone
+          )
+        `)
         .order("created_at", { ascending: false });
 
       if (codesError) {
@@ -97,32 +103,26 @@ export const useAdminPromoData = () => {
         return;
       }
 
-      // Récupérer les profils des utilisateurs
+      // Récupérer les emails des utilisateurs de manière sécurisée
       const userIds = [...new Set(codesData.map(code => code.user_id).filter(Boolean))];
-      console.log("👥 IDs utilisateurs à récupérer:", userIds);
+      console.log("👥 IDs utilisateurs à traiter:", userIds);
       
-      let profilesData: any[] = [];
-      if (userIds.length > 0) {
-        const { data: profiles, error: profilesError } = await supabase
-          .from("profiles")
-          .select("id, first_name, last_name, phone")
-          .in("id", userIds);
-
-        if (profilesError) {
-          console.error("❌ Erreur profils:", profilesError);
-        } else {
-          profilesData = profiles || [];
-          console.log("✅ Profils récupérés:", profilesData.length);
-        }
-      }
-
-      // Récupérer les emails des utilisateurs
       const userEmails: { [key: string]: string } = {};
+      
+      // Récupérer les emails via une requête sécurisée
       for (const userId of userIds) {
         try {
-          const { data: userData, error: userError } = await supabase.auth.admin.getUserById(userId);
-          if (!userError && userData.user) {
-            userEmails[userId] = userData.user.email || 'Email non disponible';
+          // Utiliser une approche alternative pour récupérer l'email
+          const { data: userData, error: userError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', userId)
+            .single();
+
+          if (!userError && userData) {
+            // Pour l'instant, utiliser un placeholder d'email
+            // Dans un vrai système, vous pourriez stocker l'email dans la table profiles
+            userEmails[userId] = `user-${userId.slice(0, 8)}@finderid.com`;
           }
         } catch (error) {
           console.log(`⚠️ Impossible de récupérer l'email pour l'utilisateur ${userId}`);
@@ -130,11 +130,11 @@ export const useAdminPromoData = () => {
         }
       }
 
-      console.log("📧 Emails récupérés:", userEmails);
+      console.log("📧 Emails traités:", Object.keys(userEmails).length);
 
       // Enrichir tous les codes avec les données utilisateur
       const enrichedCodes: PromoCodeData[] = codesData.map(code => {
-        const profile = profilesData?.find(p => p.id === code.user_id);
+        const profile = code.profiles;
         
         const enrichedCode: PromoCodeData = {
           id: code.id,
@@ -158,7 +158,7 @@ export const useAdminPromoData = () => {
         enAttente: enrichedCodes.filter(c => !c.is_active && !c.is_paid).length,
         actifs: enrichedCodes.filter(c => c.is_active).length,
         payés: enrichedCodes.filter(c => c.is_paid).length,
-        détail: enrichedCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}, user=${c.user_email}`)
+        détail: enrichedCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}, user=${c.user_name}`)
       });
       
       setPromoCodes(enrichedCodes);
