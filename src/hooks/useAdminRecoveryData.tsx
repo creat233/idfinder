@@ -65,7 +65,7 @@ export const useAdminRecoveryData = () => {
       // Combiner toutes les données
       const enrichedRecoveries = usageData.map(usage => {
         const promoCode = promoCodesData?.find(code => code.id === usage.promo_code_id);
-        const profile = profilesData?.find(p => p.id === promoCode?.user_id);
+        const profile = profilesData?.find((p: any) => p && p.id === promoCode?.user_id);
         const user = usersData?.users?.find(u => u.id === promoCode?.user_id);
 
         return {
