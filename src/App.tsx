@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,9 +11,9 @@ import Dashboard from "@/pages/Dashboard";
 import SignalerCarte from "@/pages/SignalerCarte";
 import MyCards from "@/pages/MyCards";
 import Profile from "@/pages/Profile";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import AdminRoute from "@/components/AdminRoute";
-import AdminPromoCodes from "@/pages/admin/AdminPromoCodes";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AdminRoute } from "@/components/AdminRoute";
+import AdminPromoCodes from "@/pages/AdminPromoCodes";
 import PromoCodes from "@/pages/PromoCodes";
 import RechercheResultat from "@/pages/RechercheResultat";
 
