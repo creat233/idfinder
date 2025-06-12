@@ -64,6 +64,14 @@ function App() {
             }
           />
           <Route
+            path="/codes-promo"
+            element={
+              <ProtectedRoute>
+                <PromoCodes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/promo-codes"
             element={
               <ProtectedRoute>

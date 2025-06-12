@@ -90,9 +90,9 @@ export const Header = () => {
               )}
             </Link>
             <Link 
-              to="/codes-promo" 
+              to="/promo-codes" 
               className={`hover:text-secondary transition-colors flex items-center gap-1 ${
-                location.pathname === "/codes-promo" ? "text-secondary" : ""
+                location.pathname === "/promo-codes" ? "text-secondary" : ""
               }`}
             >
               <Gift className="h-4 w-4" />
@@ -150,7 +150,7 @@ export const Header = () => {
                     </span>
                   )}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/codes-promo")} className="cursor-pointer">
+                <DropdownMenuItem onClick={() => navigate("/promo-codes")} className="cursor-pointer">
                   <Gift className="mr-2 h-4 w-4" />
                   {t("promoCodes")}
                 </DropdownMenuItem>
@@ -178,4 +178,3 @@ export const Header = () => {
       </div>
     </header>
   );
-};
