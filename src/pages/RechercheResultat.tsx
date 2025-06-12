@@ -186,10 +186,10 @@ const RechercheResultat = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center text-xs sm:text-sm">
                   <a 
-                    href="tel:+221123456789" 
+                    href="tel:+221710117579" 
                     className="text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    📞 +221 12 345 67 89
+                    📞 +221710117579
                   </a>
                   <a 
                     href="mailto:support@finderid.com" 
