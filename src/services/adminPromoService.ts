@@ -74,7 +74,7 @@ export class AdminPromoService {
     // Récupérer les profils séparément
     const { data: profilesData } = await supabase
       .from("profiles")
-      .select("id, first_name, last_name");
+      .select("id, first_name, last_name, phone");
 
     console.log("📊 Profils récupérés:", profilesData?.length);
 
@@ -103,7 +103,8 @@ export class AdminPromoService {
         usage_count: Number(code.usage_count) || 0,
         user_id: code.user_id,
         user_email: code.user_email || `user-${code.user_id.slice(0, 8)}@finderid.com`,
-        user_name: code.user_name || `Utilisateur ${code.user_id.slice(0, 8)}`
+        user_name: code.user_name || `Utilisateur ${code.user_id.slice(0, 8)}`,
+        user_phone: code.user_phone || "Non renseigné"
       };
     });
   }
@@ -122,7 +123,8 @@ export class AdminPromoService {
         usage_count: Number(code.usage_count) || 0,
         user_id: code.user_id,
         user_email: profile ? `${profile.first_name}@finderid.com` : `user-${code.user_id.slice(0, 8)}@finderid.com`,
-        user_name: profile ? `${profile.first_name} ${profile.last_name || ''}`.trim() : `Utilisateur ${code.user_id.slice(0, 8)}`
+        user_name: profile ? `${profile.first_name} ${profile.last_name || ''}`.trim() : `Utilisateur ${code.user_id.slice(0, 8)}`,
+        user_phone: profile?.phone || "Non renseigné"
       };
     });
   }

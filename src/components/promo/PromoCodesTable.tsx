@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Eye } from "lucide-react";
+import { Search, Eye, Phone } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { PromoCodeData } from "@/types/promo";
@@ -19,7 +19,8 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
   const filteredCodes = promoCodes.filter(code =>
     code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
     code.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    code.user_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    code.user_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    code.user_phone?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -32,7 +33,7 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4" />
           <Input
-            placeholder="Rechercher par code, email ou nom..."
+            placeholder="Rechercher par code, email, nom ou téléphone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-sm"
@@ -46,6 +47,7 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
               <TableHead>Code</TableHead>
               <TableHead>Utilisateur</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Téléphone</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead>Utilisations</TableHead>
               <TableHead>Gains</TableHead>
@@ -59,6 +61,14 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
                 <TableCell className="font-mono font-semibold">{code.code}</TableCell>
                 <TableCell>{code.user_name}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{code.user_email}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1 text-sm">
+                    <Phone className="h-3 w-3" />
+                    <span className={code.user_phone === "Non renseigné" ? "text-muted-foreground italic" : ""}>
+                      {code.user_phone}
+                    </span>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-1">
                     <Badge variant={code.is_active ? "default" : "secondary"}>

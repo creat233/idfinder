@@ -11,6 +11,7 @@ export interface PromoCodeData {
   user_id: string;
   user_email?: string;
   user_name?: string;
+  user_phone?: string;
 }
 
 export interface PromoCodeStats {

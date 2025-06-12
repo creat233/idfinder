@@ -2,7 +2,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Gift, Mail, User } from "lucide-react";
+import { CheckCircle, Gift, Mail, User, Phone } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { PromoCodeData } from "@/types/promo";
@@ -21,6 +21,7 @@ export const PendingCodesTable = ({ codes, activating, onActivateCode }: Pending
           <TableHead>Code Promo</TableHead>
           <TableHead>Utilisateur</TableHead>
           <TableHead>Contact</TableHead>
+          <TableHead>Téléphone</TableHead>
           <TableHead>Date de Création</TableHead>
           <TableHead>Statut</TableHead>
           <TableHead>Actions</TableHead>
@@ -54,6 +55,14 @@ export const PendingCodesTable = ({ codes, activating, onActivateCode }: Pending
                     {code.user_email}
                   </a>
                 </div>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex items-center gap-1 text-sm">
+                <Phone className="h-3 w-3" />
+                <span className={code.user_phone === "Non renseigné" ? "text-muted-foreground italic" : ""}>
+                  {code.user_phone}
+                </span>
               </div>
             </TableCell>
             <TableCell>
