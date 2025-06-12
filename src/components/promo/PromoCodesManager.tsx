@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Gift } from "lucide-react";
+import { Plus, Gift, Clock } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { usePromoCodes } from "@/hooks/usePromoCodes";
 import { useAdminPermissions } from "@/hooks/useAdminPermissions";
@@ -67,8 +67,13 @@ export const PromoCodesManager = () => {
                   {t("promoCodeBenefits")}
                 </p>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock className="h-4 w-4 text-blue-600" />
+                    <strong className="text-blue-800">Processus de validation :</strong>
+                  </div>
                   <p className="text-sm text-blue-800">
-                    {t("paymentInstructions")}
+                    Après avoir généré votre code, il sera envoyé à l'administration pour validation. 
+                    Une fois validé par l'équipe, votre code sera automatiquement activé et vous pourrez commencer à l'utiliser.
                   </p>
                 </div>
                 <Button

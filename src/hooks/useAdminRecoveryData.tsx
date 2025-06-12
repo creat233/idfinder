@@ -16,6 +16,13 @@ interface RecoveryData {
   promo_owner_phone: string | null;
 }
 
+interface Profile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+}
+
 export const useAdminRecoveryData = () => {
   const [recoveries, setRecoveries] = useState<RecoveryData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,8 +57,9 @@ export const useAdminRecoveryData = () => {
       const userIds = promoCodesData?.map(code => code.user_id) || [];
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
-        .select("*")
-        .in("id", userIds);
+        .select("id, first_name, last_name, phone")
+        .in("id", userIds)
+        .returns<Profile[]>();
 
       if (profilesError) throw profilesError;
 
@@ -65,7 +73,7 @@ export const useAdminRecoveryData = () => {
       // Combiner toutes les données
       const enrichedRecoveries = usageData.map(usage => {
         const promoCode = promoCodesData?.find(code => code.id === usage.promo_code_id);
-        const profile = profilesData?.find(p => p?.id === promoCode?.user_id);
+        const profile = profilesData?.find(p => p.id === promoCode?.user_id);
         const user = usersData?.users?.find(u => u.id === promoCode?.user_id);
 
         return {

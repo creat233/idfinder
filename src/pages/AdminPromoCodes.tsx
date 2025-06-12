@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
 import { AdminRecoveriesList } from "@/components/promo/AdminRecoveriesList";
+import { AdminPendingCodes } from "@/components/promo/AdminPendingCodes";
 
 const AdminPromoCodes = () => {
   return (
@@ -15,6 +16,7 @@ const AdminPromoCodes = () => {
             <p className="text-muted-foreground">Interface d'administration des codes promo et récupérations</p>
           </div>
           
+          <AdminPendingCodes />
           <AdminPromoActivation />
           <AdminRecoveriesList />
           <AdminPromoCodesList />
