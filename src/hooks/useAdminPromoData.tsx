@@ -20,7 +20,49 @@ export const useAdminPromoData = () => {
       console.log("=== DÉBUT RÉCUPÉRATION CODES PROMO ===");
       setLoading(true);
       
-      // Récupérer TOUS les codes promo
+      // Vérifier d'abord les permissions
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log("❌ Utilisateur non connecté");
+        setLoading(false);
+        return;
+      }
+
+      console.log("👤 Utilisateur connecté:", user.email);
+
+      // Vérifier les permissions d'administration
+      const { data: permissions, error: permError } = await supabase
+        .from("admin_permissions")
+        .select("*")
+        .eq("user_email", user.email)
+        .eq("permission_type", "activate_promo_codes")
+        .eq("is_active", true);
+
+      if (permError) {
+        console.error("❌ Erreur vérification permissions:", permError);
+      }
+
+      console.log("🔒 Permissions trouvées:", permissions);
+
+      // Si l'utilisateur n'a pas de permissions, les créer automatiquement pour cet email spécifique
+      if (user.email === "mouhamed110000@gmail.com" && (!permissions || permissions.length === 0)) {
+        console.log("➕ Création des permissions pour l'administrateur...");
+        const { error: insertError } = await supabase
+          .from("admin_permissions")
+          .insert({
+            user_email: user.email,
+            permission_type: "activate_promo_codes",
+            is_active: true
+          });
+
+        if (insertError) {
+          console.error("❌ Erreur création permissions:", insertError);
+        } else {
+          console.log("✅ Permissions créées avec succès");
+        }
+      }
+      
+      // Récupérer TOUS les codes promo sans filtrage par utilisateur
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
         .select("*")
@@ -74,21 +116,24 @@ export const useAdminPromoData = () => {
         }
       }
 
-      // Récupérer les emails via l'API admin
-      let usersData: any = null;
-      try {
-        const { data, error: usersError } = await supabase.auth.admin.listUsers();
-        if (!usersError && data) {
-          usersData = data;
-          console.log("✅ Admin users récupérés:", usersData.users?.length || 0);
+      // Récupérer les emails des utilisateurs
+      const userEmails: { [key: string]: string } = {};
+      for (const userId of userIds) {
+        try {
+          const { data: userData, error: userError } = await supabase.auth.admin.getUserById(userId);
+          if (!userError && userData.user) {
+            userEmails[userId] = userData.user.email || 'Email non disponible';
+          }
+        } catch (error) {
+          console.log(`⚠️ Impossible de récupérer l'email pour l'utilisateur ${userId}`);
+          userEmails[userId] = 'Email non disponible';
         }
-      } catch (error) {
-        console.log("⚠️ Admin API non disponible");
       }
+
+      console.log("📧 Emails récupérés:", userEmails);
 
       // Enrichir tous les codes avec les données utilisateur
       const enrichedCodes: PromoCodeData[] = codesData.map(code => {
-        const user = usersData?.users?.find((u: any) => u.id === code.user_id);
         const profile = profilesData?.find(p => p.id === code.user_id);
         
         const enrichedCode: PromoCodeData = {
@@ -101,7 +146,7 @@ export const useAdminPromoData = () => {
           total_earnings: Number(code.total_earnings) || 0,
           usage_count: Number(code.usage_count) || 0,
           user_id: code.user_id,
-          user_email: user?.email || 'Email non disponible',
+          user_email: userEmails[code.user_id] || 'Email non disponible',
           user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné'
         };
 
@@ -113,7 +158,7 @@ export const useAdminPromoData = () => {
         enAttente: enrichedCodes.filter(c => !c.is_active && !c.is_paid).length,
         actifs: enrichedCodes.filter(c => c.is_active).length,
         payés: enrichedCodes.filter(c => c.is_paid).length,
-        détail: enrichedCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}`)
+        détail: enrichedCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}, user=${c.user_email}`)
       });
       
       setPromoCodes(enrichedCodes);
@@ -151,12 +196,12 @@ export const useAdminPromoData = () => {
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*', // Écouter tous les événements (INSERT, UPDATE, DELETE)
           schema: 'public',
           table: 'promo_codes'
         },
         (payload) => {
-          console.log('🆕 Nouveau code promo détecté:', payload);
+          console.log('🔄 Changement détecté dans promo_codes:', payload);
           fetchPromoCodesData(); // Actualiser la liste
         }
       )
