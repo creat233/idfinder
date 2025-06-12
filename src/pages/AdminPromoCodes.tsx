@@ -4,11 +4,13 @@ import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
 import { AdminRecoveriesList } from "@/components/promo/AdminRecoveriesList";
 import { AdminPendingCodes } from "@/components/promo/AdminPendingCodes";
+import { ConnectionStatus } from "@/components/ConnectionStatus";
 
 const AdminPromoCodes = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ConnectionStatus />
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">
           <div className="text-center">

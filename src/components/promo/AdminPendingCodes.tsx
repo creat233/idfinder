@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAdminPromoData } from "@/hooks/useAdminPromoData";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -17,9 +17,21 @@ export const AdminPendingCodes = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { showSuccess, showError } = useToast();
 
-  // Filtrer les codes en attente de validation (non actifs ET non payés)
-  const pendingCodes = promoCodes.filter(code => !code.is_active && !code.is_paid);
+  // Utiliser useMemo pour optimiser le filtrage
+  const pendingCodes = useMemo(() => 
+    promoCodes.filter(code => !code.is_active && !code.is_paid),
+    [promoCodes]
+  );
   
+  const filteredCodes = useMemo(() => 
+    pendingCodes.filter(code =>
+      code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      code.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      code.user_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    ),
+    [pendingCodes, searchTerm]
+  );
+
   console.log("🔍 FILTRAGE ADMIN PENDING:", {
     totalCodes: promoCodes.length,
     pendingCodes: pendingCodes.length,
@@ -27,12 +39,6 @@ export const AdminPendingCodes = () => {
     notActiveButPaid: promoCodes.filter(c => !c.is_active && c.is_paid).length,
     details: promoCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}`)
   });
-
-  const filteredCodes = pendingCodes.filter(code =>
-    code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    code.user_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    code.user_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -64,7 +70,7 @@ export const AdminPendingCodes = () => {
 
       console.log("✅ Code activé avec succès:", data);
       showSuccess("Code activé", `Le code promo ${codeText} a été activé avec succès`);
-      refetch(); // Actualiser la liste
+      refetch();
     } catch (error: any) {
       console.error("💥 Erreur activation:", error);
       showError("Erreur", "Une erreur inattendue s'est produite");
