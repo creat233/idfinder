@@ -93,5 +93,29 @@ export const promoTranslations: Translations = {
   invalidPromoCode: {
     fr: "Code promo invalide ou expiré",
     en: "Invalid or expired promo code"
+  },
+  shareOnWhatsApp: {
+    fr: "Partager sur WhatsApp",
+    en: "Share on WhatsApp"
+  },
+  shareOnFacebook: {
+    fr: "Partager sur Facebook",
+    en: "Share on Facebook"
+  },
+  shareOnTwitter: {
+    fr: "Partager sur Twitter",
+    en: "Share on Twitter"
+  },
+  shareViaSMS: {
+    fr: "Partager par SMS",
+    en: "Share via SMS"
+  },
+  shareViaEmail: {
+    fr: "Partager par Email",
+    en: "Share via Email"
+  },
+  maximizeEarnings: {
+    fr: "Conseils pour maximiser vos revenus",
+    en: "Tips to maximize your earnings"
   }
 };
