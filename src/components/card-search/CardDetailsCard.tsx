@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Clock } from "lucide-react";
+import { MapPin, Calendar, Clock, CreditCard, FileText } from "lucide-react";
 
 interface ReportedCard {
   id: string;
@@ -25,7 +25,12 @@ export const CardDetailsCard = ({ card }: CardDetailsCardProps) => {
       case 'id': return 'Carte d\'identité';
       case 'passport': return 'Passeport';
       case 'license': return 'Permis de conduire';
-      default: return 'Document';
+      case 'driver_license': return 'Permis de conduire';
+      case 'student_card': return 'Carte étudiante';
+      case 'vehicle_registration': return 'Carte grise véhicule';
+      case 'motorcycle_registration': return 'Carte grise moto';
+      case 'residence_permit': return 'Titre de séjour';
+      default: return 'Document d\'identité';
     }
   };
 
@@ -38,55 +43,70 @@ export const CardDetailsCard = ({ card }: CardDetailsCardProps) => {
   };
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>Détails du document</span>
-          <Badge variant="secondary" className="bg-green-100 text-green-800">
+    <Card className="shadow-sm border-2 border-green-100">
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <span className="text-lg sm:text-xl">Détails du document</span>
+          <Badge variant="secondary" className="bg-green-100 text-green-800 self-start sm:self-center">
+            <CheckCircle className="w-3 h-3 mr-1" />
             Trouvée
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Type de document</h3>
-            <p className="text-gray-600">{getDocumentTypeLabel(card.document_type)}</p>
+      
+      <CardContent className="space-y-4 sm:space-y-6">
+        {/* Main info grid - responsive */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+            <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Type de document</h3>
+              <p className="text-gray-600 text-sm break-words">{getDocumentTypeLabel(card.document_type)}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Numéro</h3>
-            <p className="text-gray-600 font-mono">{card.card_number}</p>
-          </div>
-        </div>
-
-        <div className="flex items-start space-x-2">
-          <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Lieu de découverte</h3>
-            <p className="text-gray-600">{card.location}</p>
-          </div>
-        </div>
-
-        <div className="flex items-start space-x-2">
-          <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Date de découverte</h3>
-            <p className="text-gray-600">{formatDate(card.found_date)}</p>
+          
+          <div className="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
+            <CreditCard className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Numéro</h3>
+              <p className="text-gray-600 font-mono text-sm break-all">{card.card_number}</p>
+            </div>
           </div>
         </div>
 
-        <div className="flex items-start space-x-2">
-          <Clock className="h-5 w-5 text-gray-400 mt-0.5" />
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Signalée le</h3>
-            <p className="text-gray-600">{formatDate(card.created_at)}</p>
+        {/* Location - full width */}
+        <div className="flex items-start space-x-3 p-3 sm:p-4 bg-red-50 rounded-lg">
+          <MapPin className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Lieu de découverte</h3>
+            <p className="text-gray-600 text-sm break-words">{card.location}</p>
           </div>
         </div>
 
+        {/* Dates grid - responsive */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
+            <Calendar className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Date de découverte</h3>
+              <p className="text-gray-600 text-sm">{formatDate(card.found_date)}</p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg">
+            <Clock className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Signalée le</h3>
+              <p className="text-gray-600 text-sm">{formatDate(card.created_at)}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Description if available */}
         {card.description && (
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Description</h3>
-            <p className="text-gray-600">{card.description}</p>
+          <div className="p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Description</h3>
+            <p className="text-gray-600 text-sm leading-relaxed break-words">{card.description}</p>
           </div>
         )}
       </CardContent>

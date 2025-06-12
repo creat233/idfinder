@@ -92,19 +92,117 @@ const RechercheResultat = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <PublicHeader />
-      <div className="pt-20 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <CardFoundHero />
-            <CardDetailsCard card={card} />
-            <SecurityInfoCard />
-            <RecoveryInstructions />
-            <RecoveryActionButton onRecoveryClick={handleRecoveryClick} />
+      
+      {/* Main content with improved responsive design */}
+      <main className="flex-1 pt-16 sm:pt-20 pb-8 sm:pb-16">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6">
+          {/* Responsive container with better breakpoints */}
+          <div className="max-w-4xl mx-auto">
+            
+            {/* Hero section with responsive spacing */}
+            <div className="mb-6 sm:mb-8">
+              <CardFoundHero />
+            </div>
+
+            {/* Main content grid - responsive layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+              
+              {/* Left column - Card details (spans full width on mobile, 2 columns on large screens) */}
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                <CardDetailsCard card={card} />
+                <SecurityInfoCard />
+                
+                {/* Recovery instructions - hidden on mobile to save space, shown on tablet+ */}
+                <div className="hidden sm:block">
+                  <RecoveryInstructions />
+                </div>
+              </div>
+
+              {/* Right column - Action button (sticky on large screens) */}
+              <div className="lg:col-span-1">
+                <div className="lg:sticky lg:top-24 space-y-4">
+                  
+                  {/* Action button with responsive sizing */}
+                  <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+                    <RecoveryActionButton onRecoveryClick={handleRecoveryClick} />
+                  </div>
+
+                  {/* Quick info card - only visible on desktop */}
+                  <div className="hidden lg:block bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-800 mb-2 text-sm">
+                      📋 Informations rapides
+                    </h3>
+                    <div className="space-y-2 text-xs text-blue-700">
+                      <div className="flex justify-between">
+                        <span>Frais de base:</span>
+                        <span className="font-semibold">7000 FCFA</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Réduction possible:</span>
+                        <span className="font-semibold text-green-600">Avec code promo</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Livraison:</span>
+                        <span className="font-semibold">Disponible</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recovery instructions - shown on mobile at bottom */}
+            <div className="sm:hidden mt-6">
+              <RecoveryInstructions />
+            </div>
+
+            {/* Mobile-specific quick actions */}
+            <div className="sm:hidden mt-6 bg-white rounded-lg shadow-sm border p-4">
+              <h3 className="font-semibold text-gray-800 mb-3 text-sm">
+                💡 Informations importantes
+              </h3>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="text-center p-2 bg-blue-50 rounded">
+                  <div className="font-semibold text-blue-800">7000 FCFA</div>
+                  <div className="text-blue-600">Frais de récupération</div>
+                </div>
+                <div className="text-center p-2 bg-green-50 rounded">
+                  <div className="font-semibold text-green-800">Réduction</div>
+                  <div className="text-green-600">Avec code promo</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact support section - responsive */}
+            <div className="mt-8 sm:mt-12 text-center">
+              <div className="bg-gray-100 rounded-lg p-4 sm:p-6">
+                <h3 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+                  Besoin d'aide ?
+                </h3>
+                <p className="text-gray-600 text-xs sm:text-sm mb-3">
+                  Notre équipe est disponible pour vous accompagner dans la récupération de votre document.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center text-xs sm:text-sm">
+                  <a 
+                    href="tel:+221123456789" 
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    📞 +221 12 345 67 89
+                  </a>
+                  <a 
+                    href="mailto:support@finderid.com" 
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    ✉️ support@finderid.com
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
 
       <Footer />
 
