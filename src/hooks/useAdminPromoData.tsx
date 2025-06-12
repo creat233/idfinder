@@ -54,7 +54,7 @@ export const useAdminPromoData = () => {
       }
 
       // Typer correctement profilesData et filtrer les valeurs null/undefined
-      const profiles: Profile[] = profilesData ? profilesData.filter((profile): profile is Profile => {
+      const profiles: Profile[] = profilesData ? profilesData.filter((profile: any): profile is Profile => {
         return profile !== null && 
                profile !== undefined && 
                typeof profile === 'object' && 

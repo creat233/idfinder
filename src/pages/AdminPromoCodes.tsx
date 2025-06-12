@@ -2,6 +2,7 @@
 import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
+import { AdminRecoveriesList } from "@/components/promo/AdminRecoveriesList";
 
 const AdminPromoCodes = () => {
   return (
@@ -11,10 +12,11 @@ const AdminPromoCodes = () => {
         <div className="space-y-6">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-2 text-orange-800">Administration FinderID</h1>
-            <p className="text-muted-foreground">Interface d'administration des codes promo</p>
+            <p className="text-muted-foreground">Interface d'administration des codes promo et récupérations</p>
           </div>
           
           <AdminPromoActivation />
+          <AdminRecoveriesList />
           <AdminPromoCodesList />
         </div>
       </main>
