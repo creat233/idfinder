@@ -124,10 +124,10 @@ export const PendingCodesTable = ({ codes, activating, onActivateCode }: Pending
             <TableCell>
               <div className="flex flex-col gap-1">
                 <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                  En attente
+                  En attente de validation
                 </Badge>
                 <span className="text-xs text-muted-foreground">
-                  Généré automatiquement
+                  Paiement de 1000 FCFA reçu
                 </span>
               </div>
             </TableCell>
@@ -138,9 +138,10 @@ export const PendingCodesTable = ({ codes, activating, onActivateCode }: Pending
                   disabled={activating === code.code}
                   size="sm"
                   className="bg-green-600 hover:bg-green-700"
+                  title="Confirmer que le paiement de 1000 FCFA a été reçu et activer le code"
                 >
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  {activating === code.code ? "Activation..." : "Valider"}
+                  {activating === code.code ? "Activation..." : "Valider Paiement"}
                 </Button>
               </div>
             </TableCell>

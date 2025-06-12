@@ -64,7 +64,7 @@ export const AdminPendingCodes = () => {
     setLastError(null);
     
     try {
-      console.log("⚡ Activation du code:", codeText);
+      console.log("⚡ Validation du paiement et activation du code:", codeText);
       
       const { data, error } = await supabase.rpc('admin_activate_promo_code', {
         promo_code_text: codeText
@@ -86,7 +86,7 @@ export const AdminPendingCodes = () => {
       }
 
       console.log("✅ Code activé avec succès:", data);
-      showSuccess("Code activé", `Le code promo ${codeText} a été activé avec succès`);
+      showSuccess("Paiement validé et code activé", `Le code promo ${codeText} est maintenant actif et utilisable. Le propriétaire a confirmé son paiement de 1000 FCFA.`);
       
       // Attendre un peu puis actualiser
       setTimeout(() => {
