@@ -215,16 +215,13 @@ const RechercheResultat = () => {
                   </div>
                 )}
 
-                {card.photo_url && (
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Photo du document</h3>
-                    <img 
-                      src={card.photo_url} 
-                      alt="Photo du document trouvé"
-                      className="max-w-full h-auto rounded-lg border border-gray-200"
-                    />
-                  </div>
-                )}
+                {/* Message de sécurité à la place de la photo */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-800 mb-2">🔒 Sécurité des données</h3>
+                  <p className="text-sm text-blue-700">
+                    Pour votre sécurité et la protection de vos données personnelles, la photo du document n'est pas affichée publiquement. Elle sera présentée lors de la vérification d'identité pendant le processus de récupération.
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
