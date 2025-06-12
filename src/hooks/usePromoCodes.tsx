@@ -74,21 +74,24 @@ export const usePromoCodes = () => {
     try {
       console.log("Validating promo code:", code);
       
+      // Utiliser maybeSingle() au lieu de single() pour éviter l'erreur PGRST116
       const { data, error } = await supabase
         .from("promo_codes")
         .select("*")
         .eq("code", code)
         .eq("is_active", true)
+        .eq("is_paid", true)
         .gte("expires_at", new Date().toISOString())
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Error validating promo code:", error);
-        if (error.code === "PGRST116") {
-          console.log("No promo code found with code:", code);
-          return null;
-        }
-        throw error;
+        return null;
+      }
+
+      if (!data) {
+        console.log("No valid promo code found with code:", code);
+        return null;
       }
 
       console.log("Valid promo code found:", data);

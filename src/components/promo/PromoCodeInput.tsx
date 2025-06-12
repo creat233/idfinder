@@ -30,24 +30,30 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
 
     setIsValidating(true);
     try {
+      console.log("Attempting to validate promo code:", promoCode.trim().toUpperCase());
       const validPromo = await validatePromoCode(promoCode.trim().toUpperCase());
       
       if (validPromo) {
         const discount = 1000;
+        console.log("Valid promo code found, applying discount:", discount);
+        
         setAppliedPromo({
           code: validPromo.code,
           discount,
           id: validPromo.id,
         });
         
-        // Call the callback to notify parent component
+        // Appeler le callback pour notifier le composant parent
         onPromoApplied?.(discount, validPromo.id);
         
         showSuccess(t("discountApplied"), `Réduction de ${discount} FCFA appliquée avec succès`);
         console.log("Promo code applied successfully:", validPromo.code, "Discount:", discount);
+        
+        // Vider le champ de saisie après application
+        setPromoCode("");
       } else {
-        showError(t("invalidPromoCode"), "Vérifiez que le code est correct et actif");
-        console.log("Invalid promo code:", promoCode);
+        console.log("Invalid or inactive promo code:", promoCode);
+        showError(t("invalidPromoCode"), "Vérifiez que le code est correct, actif et payé");
       }
     } catch (error) {
       console.error("Error validating promo code:", error);
