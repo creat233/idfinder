@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Header } from "@/components/Header";
+import { PublicHeader } from "@/components/PublicHeader";
 import { Footer } from "@/components/Footer";
 import { useEmergencyNumbers } from "@/hooks/useEmergencyNumbers";
 import { EmergencyHeader } from "@/components/emergency/EmergencyHeader";
@@ -32,7 +32,7 @@ const NumeroUrgence = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <PublicHeader />
       
       <main className="flex-grow bg-white">
         <div className="container mx-auto py-12 px-4">

@@ -35,7 +35,7 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
   const handlePromoCodesAction = () => {
     if (user) {
       // User is logged in, go to promo codes page
-      navigate("/promo-codes");
+      navigate("/codes-promo");
     } else {
       // User is not logged in, go to login page
       navigate("/login");

@@ -69,18 +69,30 @@ export const PublicHeader = () => {
 
           {/* Navigation Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#fonctionnalites" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
+            <a href="/#fonctionnalites" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
               Fonctionnalités
             </a>
-            <a href="#tarifs" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
+            <a href="/#tarifs" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
               Tarifs
             </a>
-            <a href="/demo" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
+            <button 
+              onClick={() => navigate("/demo")}
+              className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+            >
               Démo
-            </a>
-            <a href="/numeros-urgence" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
+            </button>
+            <button 
+              onClick={() => navigate("/urgence")}
+              className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+            >
               Numéros d'urgence
-            </a>
+            </button>
+            <button 
+              onClick={() => navigate("/about")}
+              className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+            >
+              À propos
+            </button>
             {user && (
               <button 
                 onClick={() => navigate("/mes-cartes")}
@@ -144,21 +156,33 @@ export const PublicHeader = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <nav className="py-4 space-y-4">
-              <a href="#fonctionnalites" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
+              <a href="/#fonctionnalites" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
                 Fonctionnalités
               </a>
-              <a href="#tarifs" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
+              <a href="/#tarifs" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
                 Tarifs
               </a>
-              <a href="/demo" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
+              <button 
+                onClick={() => { navigate("/demo"); setIsMenuOpen(false); }}
+                className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
+              >
                 Démo
-              </a>
-              <a href="/numeros-urgence" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
+              </button>
+              <button 
+                onClick={() => { navigate("/urgence"); setIsMenuOpen(false); }}
+                className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
+              >
                 Numéros d'urgence
-              </a>
+              </button>
+              <button 
+                onClick={() => { navigate("/about"); setIsMenuOpen(false); }}
+                className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
+              >
+                À propos
+              </button>
               {user && (
                 <button 
-                  onClick={() => navigate("/mes-cartes")}
+                  onClick={() => { navigate("/mes-cartes"); setIsMenuOpen(false); }}
                   className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
                 >
                   Mes cartes
@@ -169,7 +193,7 @@ export const PublicHeader = () => {
                   <>
                     <Button 
                       variant="outline" 
-                      onClick={() => navigate("/profile")}
+                      onClick={() => { navigate("/profile"); setIsMenuOpen(false); }}
                       className="w-full"
                     >
                       <User className="mr-2 h-4 w-4" />
@@ -177,7 +201,10 @@ export const PublicHeader = () => {
                     </Button>
                     <Button 
                       variant="outline" 
-                      onClick={handleSignOut}
+                      onClick={() => {
+                        handleSignOut();
+                        setIsMenuOpen(false);
+                      }}
                       className="w-full text-red-600 border-red-600"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
@@ -188,13 +215,13 @@ export const PublicHeader = () => {
                   <>
                     <Button 
                       variant="outline" 
-                      onClick={() => navigate("/login")}
+                      onClick={() => { navigate("/login"); setIsMenuOpen(false); }}
                       className="w-full"
                     >
                       Se connecter
                     </Button>
                     <Button 
-                      onClick={handleGetStarted}
+                      onClick={() => { handleGetStarted(); setIsMenuOpen(false); }}
                       className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white"
                     >
                       Commencer

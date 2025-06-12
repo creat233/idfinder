@@ -37,6 +37,7 @@ function App() {
             <Route path="/auth" element={<Auth />} />
             <Route path="/login" element={<Login />} />
             <Route path="/urgence" element={<NumeroUrgence />} />
+            <Route path="/numeros-urgence" element={<NumeroUrgence />} />
             <Route path="/support" element={<Support />} />
             <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
             

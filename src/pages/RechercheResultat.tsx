@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { PublicHeader } from "@/components/PublicHeader";
 import { Footer } from "@/components/Footer";
@@ -27,19 +27,18 @@ interface ReportedCard {
 }
 
 const RechercheResultat = () => {
-  const [searchParams] = useSearchParams();
+  const { cardNumber } = useParams();
   const navigate = useNavigate();
   const [card, setCard] = useState<ReportedCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [showOwnerDialog, setShowOwnerDialog] = useState(false);
   const { toast } = useToast();
-  const cardId = searchParams.get("id");
 
   useEffect(() => {
-    if (!cardId) {
+    if (!cardNumber) {
       toast({
         title: "Erreur",
-        description: "ID de carte manquant",
+        description: "Numéro de carte manquant",
         variant: "destructive",
       });
       navigate("/");
@@ -47,29 +46,23 @@ const RechercheResultat = () => {
     }
 
     fetchCardDetails();
-  }, [cardId]);
+  }, [cardNumber]);
 
   const fetchCardDetails = async () => {
     try {
       const { data, error } = await supabase
         .from('reported_cards')
         .select('*')
-        .eq('id', cardId)
+        .eq('card_number', cardNumber)
         .eq('status', 'pending')
         .single();
 
       if (error) {
         console.error('Error fetching card:', error);
-        toast({
-          title: "Carte non trouvée",
-          description: "Cette carte n'existe pas ou n'est plus disponible",
-          variant: "destructive",
-        });
-        navigate("/");
-        return;
+        setCard(null);
+      } else {
+        setCard(data);
       }
-
-      setCard(data);
     } catch (error) {
       console.error('Error:', error);
       toast({
