@@ -303,6 +303,22 @@ export type Database = {
         Args: { promo_code_text: string }
         Returns: boolean
       }
+      admin_get_all_promo_codes: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          code: string
+          is_active: boolean
+          is_paid: boolean
+          created_at: string
+          expires_at: string
+          total_earnings: number
+          usage_count: number
+          user_email: string
+          user_name: string
+        }[]
+      }
       can_activate_promo_codes: {
         Args: { user_email: string }
         Returns: boolean

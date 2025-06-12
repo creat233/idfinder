@@ -29,50 +29,32 @@ export const useAdminPromoData = () => {
 
       console.log("👤 Utilisateur connecté:", user.email);
 
-      // Récupérer directement les codes promo
+      // Utiliser la fonction RPC sécurisée pour récupérer les codes
       const { data: codesData, error: codesError } = await supabase
-        .from("promo_codes")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .rpc('admin_get_all_promo_codes');
 
       if (codesError) {
         console.error("❌ Erreur récupération codes:", codesError);
         throw codesError;
       }
 
-      // Récupérer les profils pour enrichir les données
-      const { data: profilesData } = await supabase
-        .from("profiles")
-        .select("id, first_name, last_name");
-
-      // Créer un map des profils pour accès rapide
-      const profilesMap = new Map();
-      if (profilesData) {
-        profilesData.forEach(profile => {
-          profilesMap.set(profile.id, profile);
-        });
-      }
-
-      // Enrichir les codes avec les informations utilisateur
-      const enrichedCodes: PromoCodeData[] = (codesData || []).map(code => {
-        const profile = profilesMap.get(code.user_id);
-        return {
-          id: code.id,
-          code: code.code,
-          is_active: Boolean(code.is_active),
-          is_paid: Boolean(code.is_paid),
-          created_at: code.created_at,
-          expires_at: code.expires_at,
-          total_earnings: Number(code.total_earnings) || 0,
-          usage_count: Number(code.usage_count) || 0,
-          user_id: code.user_id,
-          user_email: profile ? `${profile.first_name}@finderid.com` : `user-${code.user_id.slice(0, 8)}@finderid.com`,
-          user_name: profile ? `${profile.first_name} ${profile.last_name || ''}`.trim() : `Utilisateur ${code.user_id.slice(0, 8)}`
-        };
-      });
+      // Transformer les données de la fonction RPC
+      const enrichedCodes: PromoCodeData[] = (codesData || []).map(code => ({
+        id: code.id,
+        code: code.code,
+        is_active: Boolean(code.is_active),
+        is_paid: Boolean(code.is_paid),
+        created_at: code.created_at,
+        expires_at: code.expires_at,
+        total_earnings: Number(code.total_earnings) || 0,
+        usage_count: Number(code.usage_count) || 0,
+        user_id: code.user_id,
+        user_email: code.user_email || `user-${code.user_id.slice(0, 8)}@finderid.com`,
+        user_name: code.user_name || `Utilisateur ${code.user_id.slice(0, 8)}`
+      }));
 
       setPromoCodes(enrichedCodes);
-      console.log("✅ Codes récupérés:", enrichedCodes.length);
+      console.log("✅ Codes récupérés via RPC:", enrichedCodes.length);
 
       // Calculer les statistiques
       const totalCodes = enrichedCodes.length;
