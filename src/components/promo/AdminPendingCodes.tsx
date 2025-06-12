@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Clock, CheckCircle, XCircle, Gift, Mail, User } from "lucide-react";
+import { Search, Clock, CheckCircle, Gift, Mail, User } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -30,6 +30,8 @@ export const AdminPendingCodes = () => {
   const handleActivateCode = async (codeText: string) => {
     setActivating(codeText);
     try {
+      console.log("Tentative d'activation du code:", codeText);
+      
       const { data, error } = await supabase.rpc('admin_activate_promo_code', {
         promo_code_text: codeText
       });
@@ -41,11 +43,12 @@ export const AdminPendingCodes = () => {
         } else if (error.message.includes("not found")) {
           showError("Code introuvable", "Ce code promo n'existe pas dans le système");
         } else {
-          showError("Erreur", "Impossible d'activer le code promo");
+          showError("Erreur", `Impossible d'activer le code promo: ${error.message}`);
         }
         return;
       }
 
+      console.log("Code activé avec succès:", data);
       showSuccess("Code activé", `Le code promo ${codeText} a été activé avec succès`);
       refetch(); // Actualiser la liste
     } catch (error: any) {

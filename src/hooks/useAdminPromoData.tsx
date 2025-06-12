@@ -26,10 +26,17 @@ export const useAdminPromoData = () => {
     try {
       console.log("Récupération des codes promo...");
       
-      // Récupérer tous les codes promo
-      const { data: codesData, error: codesError } = await supabase
+      // Récupérer tous les codes promo avec les données utilisateur via une requête jointe optimisée
+      const { data: codesWithProfiles, error: codesError } = await supabase
         .from("promo_codes")
-        .select("*")
+        .select(`
+          *,
+          profiles:user_id (
+            first_name,
+            last_name,
+            phone
+          )
+        `)
         .order("created_at", { ascending: false });
 
       if (codesError) {
@@ -37,50 +44,44 @@ export const useAdminPromoData = () => {
         throw codesError;
       }
 
-      console.log("Codes récupérés:", codesData);
+      console.log("Codes récupérés:", codesWithProfiles);
 
-      if (!codesData) {
+      if (!codesWithProfiles) {
         setPromoCodes([]);
         setLoading(false);
         return;
       }
 
-      // Récupérer les profils
-      const { data: profilesData, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id, first_name, last_name, phone");
-
-      if (profilesError) {
-        console.error("Error fetching profiles:", profilesError);
-      }
-
-      console.log("Profils récupérés:", profilesData);
-
-      // Récupérer les utilisateurs via l'API admin pour les emails
+      // Récupérer les utilisateurs via l'API admin pour les emails (optionnel)
       let usersData: any = null;
       try {
         const { data, error: usersError } = await supabase.auth.admin.listUsers();
-        if (usersError) {
-          console.error("Error fetching users:", usersError);
-        } else {
+        if (!usersError) {
           usersData = data;
         }
       } catch (error) {
-        console.error("Admin API not available:", error);
+        console.log("Admin API not available, continuing without emails");
       }
 
-      // Combiner les données
-      const enrichedCodes = codesData.map(code => {
+      // Enrichir les codes avec les données utilisateur
+      const enrichedCodes: PromoCodeData[] = codesWithProfiles.map(code => {
         const user = usersData?.users?.find((u: any) => u.id === code.user_id);
-        const profile = profilesData?.find((p: Profile) => p.id === code.user_id);
+        const profile = code.profiles as any;
         
-        const enrichedCode = {
-          ...code,
+        const enrichedCode: PromoCodeData = {
+          id: code.id,
+          code: code.code,
+          is_active: code.is_active,
+          is_paid: code.is_paid,
+          created_at: code.created_at,
+          expires_at: code.expires_at,
+          total_earnings: code.total_earnings,
+          usage_count: code.usage_count,
+          user_id: code.user_id,
           user_email: user?.email || 'Email non disponible',
           user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné'
         };
 
-        console.log("Code enrichi:", enrichedCode);
         return enrichedCode;
       });
 

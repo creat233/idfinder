@@ -16,13 +16,6 @@ interface RecoveryData {
   promo_owner_phone: string | null;
 }
 
-interface Profile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  phone: string | null;
-}
-
 export const useAdminRecoveryData = () => {
   const [recoveries, setRecoveries] = useState<RecoveryData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,10 +23,21 @@ export const useAdminRecoveryData = () => {
 
   const fetchRecoveryData = async () => {
     try {
-      // Récupérer les utilisations de codes promo
+      // Récupérer les utilisations de codes promo avec les données jointes
       const { data: usageData, error: usageError } = await supabase
         .from("promo_usage")
-        .select("*")
+        .select(`
+          *,
+          promo_codes:promo_code_id (
+            code,
+            user_id,
+            profiles:user_id (
+              first_name,
+              last_name,
+              phone
+            )
+          )
+        `)
         .order("created_at", { ascending: false });
 
       if (usageError) throw usageError;
@@ -44,41 +48,21 @@ export const useAdminRecoveryData = () => {
         return;
       }
 
-      // Récupérer les codes promo associés
-      const promoCodeIds = usageData.map(usage => usage.promo_code_id);
-      const { data: promoCodesData, error: promoError } = await supabase
-        .from("promo_codes")
-        .select("*")
-        .in("id", promoCodeIds);
-
-      if (promoError) throw promoError;
-
-      // Récupérer les profils des propriétaires de codes promo
-      const userIds = promoCodesData?.map(code => code.user_id) || [];
-      const { data: profilesData, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id, first_name, last_name, phone")
-        .in("id", userIds);
-
-      if (profilesError) throw profilesError;
-
       // Récupérer les utilisateurs via l'API admin (pour les emails)
       let usersData: any = null;
       try {
         const { data, error: usersError } = await supabase.auth.admin.listUsers();
-        if (usersError) {
-          console.error("Error fetching users:", usersError);
-        } else {
+        if (!usersError) {
           usersData = data;
         }
       } catch (error) {
-        console.error("Admin API not available:", error);
+        console.log("Admin API not available, continuing without emails");
       }
 
-      // Combiner toutes les données
-      const enrichedRecoveries = usageData.map(usage => {
-        const promoCode = promoCodesData?.find(code => code.id === usage.promo_code_id);
-        const profile = profilesData?.find((p: Profile) => p.id === promoCode?.user_id);
+      // Enrichir les données de récupération
+      const enrichedRecoveries: RecoveryData[] = usageData.map(usage => {
+        const promoCode = usage.promo_codes as any;
+        const profile = promoCode?.profiles;
         const user = usersData?.users?.find((u: any) => u.id === promoCode?.user_id);
 
         return {
