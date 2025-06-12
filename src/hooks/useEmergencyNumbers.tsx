@@ -1,6 +1,5 @@
 
 import { useState, useMemo } from "react";
-import { emergencyLocations } from "@/components/map/data/emergencyLocationsData";
 
 export type EmergencyNumberType = {
   service: string;
@@ -51,6 +50,24 @@ const emergencyNumbers: EmergencyNumberType[] = [
     number: "33 867 46 77",
     category: "medical",
     description: "Clinique médicale privée avec services d'urgence"
+  },
+  {
+    service: "Commissariat Central Dakar",
+    number: "33 823 25 29",
+    category: "police",
+    description: "Commissariat central de Dakar"
+  },
+  {
+    service: "Hôpital Principal de Dakar",
+    number: "33 839 50 50",
+    category: "medical",
+    description: "Hôpital principal de Dakar - Urgences"
+  },
+  {
+    service: "Croix-Rouge Sénégalaise",
+    number: "33 823 39 92",
+    category: "other",
+    description: "Organisation humanitaire d'urgence"
   }
 ];
 
@@ -60,18 +77,25 @@ export const useEmergencyNumbers = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
 
   const filteredNumbers = useMemo(() => {
-    return emergencyNumbers.filter((item) => {
-      // Filter by search term
-      const matchesSearch = 
-        item.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.number.includes(searchTerm) ||
-        (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    let filtered = emergencyNumbers;
 
-      // Filter by category if an active category is selected
-      const matchesCategory = activeCategory ? item.category === activeCategory : true;
+    // Filter by search term
+    if (searchTerm.trim()) {
+      filtered = filtered.filter((item) => {
+        const matchesSearch = 
+          item.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.number.includes(searchTerm) ||
+          (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
+        return matchesSearch;
+      });
+    }
 
-      return matchesSearch && matchesCategory;
-    });
+    // Filter by category if an active category is selected
+    if (activeCategory) {
+      filtered = filtered.filter(item => item.category === activeCategory);
+    }
+
+    return filtered;
   }, [searchTerm, activeCategory]);
 
   return {
@@ -82,5 +106,6 @@ export const useEmergencyNumbers = () => {
     showMap,
     setShowMap,
     filteredNumbers,
+    emergencyNumbers, // Export all numbers for debugging
   };
 };

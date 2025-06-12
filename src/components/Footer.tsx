@@ -15,7 +15,7 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img 
-                src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+                src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
                 alt="FinderID Logo" 
                 className="w-10 h-10"
               />

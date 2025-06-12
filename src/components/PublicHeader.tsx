@@ -59,9 +59,11 @@ export const PublicHeader = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-8 h-8 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">F</span>
-            </div>
+            <img 
+              src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
+              alt="FinderID Logo" 
+              className="w-8 h-8"
+            />
             <span className="text-xl font-bold text-gray-900">FinderID</span>
           </div>
 

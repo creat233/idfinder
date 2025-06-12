@@ -6,7 +6,7 @@ export const CardFoundHero = () => {
     <div className="text-center mb-8">
       <div className="flex justify-center mb-6">
         <img 
-          src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+          src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
           alt="FinderID Logo" 
           className="w-16 h-16"
         />

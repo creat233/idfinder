@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, User, Settings, Globe, CreditCard, Gift } from "lucide-react";
+import { LogOut, User, Settings, Globe, CreditCard } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,7 +51,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+              src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
               alt="FinderID Logo" 
               className="w-8 h-8"
             />
@@ -95,7 +95,11 @@ export const Header = () => {
                 location.pathname === "/promo-codes" ? "text-secondary" : ""
               }`}
             >
-              <Gift className="h-4 w-4" />
+              <img 
+                src="/lovable-uploads/f1d45f74-5be6-4c6b-96f5-4fdcea36ec90.png" 
+                alt="Codes Promo" 
+                className="w-4 h-4"
+              />
               {t("promoCodes")}
             </Link>
             <Link 
@@ -151,7 +155,11 @@ export const Header = () => {
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/promo-codes")} className="cursor-pointer">
-                  <Gift className="mr-2 h-4 w-4" />
+                  <img 
+                    src="/lovable-uploads/f1d45f74-5be6-4c6b-96f5-4fdcea36ec90.png" 
+                    alt="Codes Promo" 
+                    className="mr-2 w-4 h-4"
+                  />
                   {t("promoCodes")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
