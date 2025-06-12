@@ -1,11 +1,13 @@
 
 import { motion } from "framer-motion";
+import { User } from "@supabase/supabase-js";
 
 interface HeroContentProps {
   children: React.ReactNode;
+  user?: User | null;
 }
 
-export const HeroContent = ({ children }: HeroContentProps) => {
+export const HeroContent = ({ children, user }: HeroContentProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -17,7 +19,11 @@ export const HeroContent = ({ children }: HeroContentProps) => {
       </h1>
       <p className="text-xl text-purple-100 mb-8 leading-relaxed">
         FinderID révolutionne la récupération de documents perdus au Sénégal. 
-        Signalez, trouvez et récupérez vos pièces d'identité rapidement et en toute sécurité.
+        {user ? (
+          " Recherchez vos cartes perdues ou signalez des cartes trouvées."
+        ) : (
+          " Signalez, trouvez et récupérez vos pièces d'identité rapidement et en toute sécurité."
+        )}
       </p>
       {children}
     </motion.div>

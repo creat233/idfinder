@@ -20,11 +20,9 @@ const Index = () => {
         // Si c'est l'admin, rediriger vers l'interface d'administration
         if (user.email === "mouhamed110000@gmail.com") {
           navigate("/admin/codes-promo");
-        } else {
-          // Pour les utilisateurs normaux, rester sur la page d'accueil
-          // ou rediriger vers le dashboard si souhaité
-          // navigate("/dashboard");
         }
+        // Pour les utilisateurs normaux, rester sur la page d'accueil
+        // avec accès à la barre de recherche
       }
     };
 

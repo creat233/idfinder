@@ -9,6 +9,7 @@ import { AdminRoute } from "@/components/AdminRoute";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import Login from "./pages/Login";
 import SignalerCarte from "./pages/SignalerCarte";
 import RechercheResultat from "./pages/RechercheResultat";
 import Profile from "./pages/Profile";
@@ -34,6 +35,7 @@ function App() {
             <Route path="/demo" element={<Demo />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/urgence" element={<NumeroUrgence />} />
             <Route path="/support" element={<Support />} />
             <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />

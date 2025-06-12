@@ -3,16 +3,26 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
-export const SearchSection = () => {
+interface SearchSectionProps {
+  user?: User | null;
+}
+
+export const SearchSection = ({ user }: SearchSectionProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+
+  // Ne pas afficher la section de recherche si l'utilisateur n'est pas connecté
+  if (!user) {
+    return null;
+  }
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -45,7 +55,7 @@ export const SearchSection = () => {
           description: "Votre document a été trouvé. Redirection en cours...",
         });
         // Rediriger vers une page de détails ou afficher les résultats
-        navigate(`/recherche-resultat?id=${data.id}`);
+        navigate(`/recherche/${data.card_number}`);
       } else {
         toast({
           title: "Carte non trouvée",
