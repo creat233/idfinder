@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -45,6 +44,17 @@ export const usePromoCodes = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
+      // Récupérer le profil de l'utilisateur pour les informations personnelles
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, phone")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError) {
+        console.error("Erreur lors de la récupération du profil:", profileError);
+      }
+
       // Générer le code via la fonction RPC
       const { data: generatedCode, error: codeError } = await supabase
         .rpc('generate_promo_code');
@@ -58,8 +68,40 @@ export const usePromoCodes = () => {
       });
 
       if (error) throw error;
+
+      // Envoyer les notifications WhatsApp
+      try {
+        const userName = profile 
+          ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Utilisateur'
+          : 'Utilisateur';
+        
+        const phone = profile?.phone || user.phone || '';
+
+        if (phone) {
+          const { error: whatsappError } = await supabase.functions.invoke('send-whatsapp-notification', {
+            body: {
+              phone: phone,
+              message: 'Nouveau code promo généré',
+              promoCode: generatedCode,
+              userName: userName
+            }
+          });
+
+          if (whatsappError) {
+            console.error("Erreur WhatsApp:", whatsappError);
+            // Ne pas faire échouer la génération du code pour une erreur WhatsApp
+            showSuccess("Code généré", `Votre code promo ${generatedCode} a été généré avec succès. Notification WhatsApp en cours...`);
+          } else {
+            showSuccess("Code généré", `Votre code promo ${generatedCode} a été généré avec succès et vous recevrez une notification WhatsApp sous peu.`);
+          }
+        } else {
+          showSuccess("Code généré", `Votre code promo ${generatedCode} a été généré avec succès. Ajoutez votre numéro de téléphone dans votre profil pour recevoir les notifications WhatsApp.`);
+        }
+      } catch (whatsappError) {
+        console.error("Erreur lors de l'envoi WhatsApp:", whatsappError);
+        showSuccess("Code généré", `Votre code promo ${generatedCode} a été généré avec succès.`);
+      }
       
-      showSuccess("Code généré", "Votre code promo a été généré avec succès");
       fetchPromoCodes();
       return generatedCode;
     } catch (error: any) {

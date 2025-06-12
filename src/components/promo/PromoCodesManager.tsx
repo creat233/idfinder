@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Gift, Clock } from "lucide-react";
+import { Plus, Gift, Clock, MessageCircle } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { usePromoCodes } from "@/hooks/usePromoCodes";
 import { useAdminPermissions } from "@/hooks/useAdminPermissions";
@@ -66,16 +66,34 @@ export const PromoCodesManager = () => {
                 <p className="text-muted-foreground">
                   {t("promoCodeBenefits")}
                 </p>
+                
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Clock className="h-4 w-4 text-blue-600" />
                     <strong className="text-blue-800">Processus de validation :</strong>
                   </div>
-                  <p className="text-sm text-blue-800">
+                  <p className="text-sm text-blue-800 mb-3">
                     Après avoir généré votre code, il sera envoyé à l'administration pour validation. 
                     Une fois validé par l'équipe, votre code sera automatiquement activé et vous pourrez commencer à l'utiliser.
                   </p>
+                  <div className="flex items-center gap-2">
+                    <MessageCircle className="h-4 w-4 text-green-600" />
+                    <span className="text-sm text-green-800 font-medium">
+                      📱 Notification WhatsApp automatique envoyée après génération
+                    </span>
+                  </div>
                 </div>
+
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-green-800 mb-2">🎯 Avantages de votre code promo :</h4>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Réduction de 1000 FCFA par utilisation</li>
+                    <li>• Gains automatiques à chaque utilisation</li>
+                    <li>• Suivi en temps réel de vos revenus</li>
+                    <li>• Notifications WhatsApp pour chaque activation</li>
+                  </ul>
+                </div>
+
                 <Button
                   onClick={handleGenerateCode}
                   disabled={generating}
