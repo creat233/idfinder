@@ -17,23 +17,33 @@ export const useAdminPromoData = () => {
 
   const fetchPromoCodesData = async () => {
     try {
-      console.log("Récupération des codes promo...");
+      console.log("=== DÉBUT RÉCUPÉRATION CODES PROMO ===");
+      setLoading(true);
       
-      // Récupérer tous les codes promo sans filtre pour déboguer
+      // Récupérer TOUS les codes promo sans exception
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
         .select("*")
         .order("created_at", { ascending: false });
 
       if (codesError) {
-        console.error("Erreur lors de la récupération des codes:", codesError);
+        console.error("❌ Erreur récupération codes:", codesError);
         throw codesError;
       }
 
-      console.log("Tous les codes récupérés:", codesData);
+      console.log("📊 CODES RÉCUPÉRÉS:", {
+        total: codesData?.length || 0,
+        codes: codesData?.map(c => ({
+          code: c.code,
+          active: c.is_active,
+          paid: c.is_paid,
+          user_id: c.user_id,
+          created: c.created_at
+        })) || []
+      });
 
       if (!codesData || codesData.length === 0) {
-        console.log("Aucun code promo trouvé dans la base de données");
+        console.log("⚠️ Aucun code promo trouvé dans la base");
         setPromoCodes([]);
         setStats({
           totalCodes: 0,
@@ -45,9 +55,9 @@ export const useAdminPromoData = () => {
         return;
       }
 
-      // Récupérer tous les profils en une seule requête
+      // Récupérer les profils utilisateurs
       const userIds = [...new Set(codesData.map(code => code.user_id).filter(Boolean))];
-      console.log("IDs utilisateurs à récupérer:", userIds);
+      console.log("👥 IDs utilisateurs à récupérer:", userIds);
       
       let profilesData: any[] = [];
       if (userIds.length > 0) {
@@ -57,27 +67,26 @@ export const useAdminPromoData = () => {
           .in("id", userIds);
 
         if (profilesError) {
-          console.error("Erreur lors de la récupération des profils:", profilesError);
+          console.error("❌ Erreur profils:", profilesError);
         } else {
           profilesData = profiles || [];
+          console.log("✅ Profils récupérés:", profilesData.length);
         }
       }
 
-      console.log("Profils récupérés:", profilesData);
-
-      // Récupérer les utilisateurs via l'API admin pour les emails (optionnel)
+      // Récupérer les emails via l'API admin (optionnel)
       let usersData: any = null;
       try {
         const { data, error: usersError } = await supabase.auth.admin.listUsers();
         if (!usersError && data) {
           usersData = data;
-          console.log("Utilisateurs admin récupérés:", usersData.users?.length || 0);
+          console.log("✅ Admin users récupérés:", usersData.users?.length || 0);
         }
       } catch (error) {
-        console.log("Admin API not available, continuing without emails");
+        console.log("⚠️ Admin API non disponible");
       }
 
-      // Enrichir les codes avec les données utilisateur
+      // Enrichir tous les codes avec les données utilisateur
       const enrichedCodes: PromoCodeData[] = codesData.map(code => {
         const user = usersData?.users?.find((u: any) => u.id === code.user_id);
         const profile = profilesData?.find(p => p.id === code.user_id);
@@ -96,15 +105,16 @@ export const useAdminPromoData = () => {
           user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné'
         };
 
-        console.log(`Code ${code.code}: is_active=${enrichedCode.is_active}, is_paid=${enrichedCode.is_paid}`);
         return enrichedCode;
       });
 
-      console.log("Tous les codes enrichis:", enrichedCodes);
-      
-      // Filtrer les codes en attente pour déboguer
-      const pendingCodes = enrichedCodes.filter(code => !code.is_active && !code.is_paid);
-      console.log("Codes en attente trouvés:", pendingCodes);
+      console.log("🔍 CODES ENRICHIS - ANALYSE:", {
+        total: enrichedCodes.length,
+        enAttente: enrichedCodes.filter(c => !c.is_active && !c.is_paid).length,
+        actifs: enrichedCodes.filter(c => c.is_active).length,
+        payés: enrichedCodes.filter(c => c.is_paid).length,
+        détail: enrichedCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}`)
+      });
       
       setPromoCodes(enrichedCodes);
 
@@ -121,11 +131,11 @@ export const useAdminPromoData = () => {
         totalEarnings
       });
 
-      console.log("Statistiques calculées:", { totalCodes, activeCodes, totalUsage, totalEarnings });
-      console.log(`Codes en attente: ${pendingCodes.length}`);
+      console.log("📈 STATISTIQUES:", { totalCodes, activeCodes, totalUsage, totalEarnings });
+      console.log("=== FIN RÉCUPÉRATION CODES PROMO ===");
 
     } catch (error) {
-      console.error("Error fetching promo codes data:", error);
+      console.error("💥 ERREUR GLOBALE:", error);
       showError("Erreur", "Impossible de récupérer les données des codes promo");
     } finally {
       setLoading(false);

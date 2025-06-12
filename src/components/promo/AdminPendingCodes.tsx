@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Clock, CheckCircle, Gift, Mail, User, Phone, RefreshCw } from "lucide-react";
+import { Search, Clock, CheckCircle, Gift, Mail, User, Phone, RefreshCw, Database } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -19,12 +19,16 @@ export const AdminPendingCodes = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { showSuccess, showError } = useToast();
 
-  // Filtrer les codes non activés et non payés (en attente de validation)
+  // Filtrer les codes en attente de validation (non actifs ET non payés)
   const pendingCodes = promoCodes.filter(code => !code.is_active && !code.is_paid);
   
-  console.log("Total codes loaded:", promoCodes.length);
-  console.log("Pending codes filtered:", pendingCodes.length);
-  console.log("All codes:", promoCodes.map(c => ({ code: c.code, active: c.is_active, paid: c.is_paid })));
+  console.log("🔍 FILTRAGE ADMIN PENDING:", {
+    totalCodes: promoCodes.length,
+    pendingCodes: pendingCodes.length,
+    activeNotPaid: promoCodes.filter(c => c.is_active && !c.is_paid).length,
+    notActiveButPaid: promoCodes.filter(c => !c.is_active && c.is_paid).length,
+    details: promoCodes.map(c => `${c.code}: active=${c.is_active}, paid=${c.is_paid}`)
+  });
 
   const filteredCodes = pendingCodes.filter(code =>
     code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,6 +38,7 @@ export const AdminPendingCodes = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    console.log("🔄 Actualisation manuelle des codes...");
     await refetch();
     setRefreshing(false);
   };
@@ -41,14 +46,14 @@ export const AdminPendingCodes = () => {
   const handleActivateCode = async (codeText: string) => {
     setActivating(codeText);
     try {
-      console.log("Tentative d'activation du code:", codeText);
+      console.log("⚡ Activation du code:", codeText);
       
       const { data, error } = await supabase.rpc('admin_activate_promo_code', {
         promo_code_text: codeText
       });
 
       if (error) {
-        console.error("Error activating promo code:", error);
+        console.error("❌ Erreur activation:", error);
         if (error.message.includes("Permission denied")) {
           showError("Accès refusé", "Vous n'avez pas l'autorisation d'activer les codes promo");
         } else if (error.message.includes("not found")) {
@@ -59,11 +64,11 @@ export const AdminPendingCodes = () => {
         return;
       }
 
-      console.log("Code activé avec succès:", data);
+      console.log("✅ Code activé avec succès:", data);
       showSuccess("Code activé", `Le code promo ${codeText} a été activé avec succès`);
       refetch(); // Actualiser la liste
     } catch (error: any) {
-      console.error("Error activating promo code:", error);
+      console.error("💥 Erreur activation:", error);
       showError("Erreur", "Une erreur inattendue s'est produite");
     } finally {
       setActivating(null);
@@ -107,9 +112,22 @@ export const AdminPendingCodes = () => {
           />
         </div>
         
-        {/* Information de débogage */}
-        <div className="text-sm text-muted-foreground">
-          Total codes chargés: {promoCodes.length} | Codes en attente: {pendingCodes.length}
+        {/* Informations de débogage détaillées */}
+        <div className="text-sm text-muted-foreground space-y-1">
+          <div className="flex items-center gap-2">
+            <Database className="h-4 w-4" />
+            <span>
+              Codes dans la base: {promoCodes.length} | 
+              En attente: {pendingCodes.length} | 
+              Actifs: {promoCodes.filter(c => c.is_active).length} | 
+              Payés: {promoCodes.filter(c => c.is_paid).length}
+            </span>
+          </div>
+          {promoCodes.length > 0 && pendingCodes.length === 0 && (
+            <div className="text-blue-600 text-xs">
+              Tous les codes ont été traités ou activés
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent>
@@ -196,12 +214,16 @@ export const AdminPendingCodes = () => {
             </div>
             {pendingCodes.length === 0 && promoCodes.length > 0 && (
               <div className="text-sm text-blue-600">
-                Tous les codes ont été traités. Total de codes dans le système: {promoCodes.length}
+                ✅ Tous les codes ont été traités. Total de codes dans le système: {promoCodes.length}
               </div>
             )}
             {promoCodes.length === 0 && (
-              <div className="text-sm text-gray-500">
-                Aucun code promo n'a été trouvé dans la base de données.
+              <div className="text-sm text-gray-500 space-y-2">
+                <div>❌ Aucun code promo trouvé dans la base de données.</div>
+                <Button onClick={handleRefresh} variant="outline" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Actualiser
+                </Button>
               </div>
             )}
           </div>
