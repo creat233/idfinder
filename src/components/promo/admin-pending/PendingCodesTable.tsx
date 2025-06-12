@@ -23,7 +23,7 @@ export const PendingCodesTable = ({ codes, activating, onActivateCode }: Pending
     const cleanPhone = phone.replace(/[\s-]/g, '');
     
     // Message personnalisé pour informer de l'activation du code
-    const message = `🎉 Félicitations ${userName}!\n\nVotre code promo ${promoCode} a été ACTIVÉ avec succès !\n\n💰 Vous pouvez maintenant gagner 1000 FCFA à chaque fois que quelqu'un utilise votre code promo pendant 2 mois.\n\n🎁 Les utilisateurs auront une réduction de 1000 FCFA (6000 FCFA au lieu de 7000 FCFA) grâce à votre code.\n\nPartagez votre code dès maintenant et commencez à gagner !\n\n- Équipe FinderID`;
+    const message = `🎉 Félicitations ${userName}!\n\nVotre code promo ${promoCode} a été ACTIVÉ avec succès !\n\n💰 Vous pouvez maintenant gagner 1000 FCFA à chaque fois que quelqu'un utilise votre code promo pendant 2 mois.\n\n🎁 Les utilisateurs auront une réduction de 1000 FCFA (6000 FCFA au lieu de 7000 FCFA) grâce à votre code.\n\n📱 PARTAGEZ VOTRE CODE MAINTENANT :\n• Sur Facebook, Instagram, TikTok\n• Dans vos groupes WhatsApp\n• Avec vos amis et famille\n• Sur vos réseaux sociaux\n\nPlus vous partagez, plus vous gagnez !\n\n- Équipe FinderID`;
     
     // Encoder le message pour l'URL
     const encodedMessage = encodeURIComponent(message);

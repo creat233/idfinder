@@ -34,9 +34,9 @@ export const PromoCodesTable = ({ promoCodes }: PromoCodesTableProps) => {
     // Message différent selon le statut du code
     let message = '';
     if (isActive) {
-      message = `🎉 Bonjour ${userName}!\n\nVotre code promo ${promoCode} est ACTIF !\n\n💰 Vous gagnez 1000 FCFA à chaque fois que quelqu'un utilise votre code promo pendant 2 mois.\n\n🎁 Les utilisateurs ont une réduction de 1000 FCFA (6000 FCFA au lieu de 7000 FCFA) grâce à votre code.\n\nContinuez à partager votre code !\n\n- Équipe FinderID`;
+      message = `🎉 Bonjour ${userName}!\n\nVotre code promo ${promoCode} est ACTIF !\n\n💰 Vous gagnez 1000 FCFA à chaque fois que quelqu'un utilise votre code promo pendant 2 mois.\n\n🎁 Les utilisateurs ont une réduction de 1000 FCFA (6000 FCFA au lieu de 7000 FCFA) grâce à votre code.\n\n📱 PARTAGEZ VOTRE CODE MAINTENANT :\n• Postez sur Facebook, Instagram, TikTok\n• Envoyez dans vos groupes WhatsApp\n• Partagez avec vos amis et votre famille\n• Publiez sur tous vos réseaux sociaux\n\n🚀 Plus vous partagez, plus vous gagnez !\n\nContinuez à partager votre code !\n\n- Équipe FinderID`;
     } else {
-      message = `📋 Bonjour ${userName}!\n\nVotre code promo ${promoCode} est en cours de traitement.\n\n⏰ Notre équipe examine votre demande. Une fois validé, vous pourrez gagner 1000 FCFA à chaque utilisation pendant 2 mois.\n\nNous vous tiendrons informé !\n\n- Équipe FinderID`;
+      message = `📋 Bonjour ${userName}!\n\nVotre code promo ${promoCode} est en cours de traitement.\n\n⏰ Notre équipe examine votre demande. Une fois validé, vous pourrez gagner 1000 FCFA à chaque utilisation pendant 2 mois.\n\n📱 Dès l'activation, vous pourrez partager votre code :\n• Sur Facebook, Instagram, TikTok\n• Dans vos groupes WhatsApp\n• Avec vos proches et amis\n• Sur tous vos réseaux sociaux\n\nNous vous tiendrons informé !\n\n- Équipe FinderID`;
     }
     
     // Encoder le message pour l'URL
