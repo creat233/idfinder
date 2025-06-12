@@ -32,30 +32,77 @@ export const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const validateForm = () => {
+    if (isSignUp) {
+      if (!firstName.trim() || firstName.length < 2) {
+        showError("Erreur", "Le prénom doit contenir au moins 2 caractères");
+        return false;
+      }
+      if (!lastName.trim() || lastName.length < 2) {
+        showError("Erreur", "Le nom doit contenir au moins 2 caractères");
+        return false;
+      }
+      if (!phone.trim() || phone.length < 8) {
+        showError("Erreur", "Le numéro de téléphone est obligatoire et doit contenir au moins 8 chiffres");
+        return false;
+      }
+      const phoneRegex = /^[\+]?[\d\s\-\(\)]{8,}$/;
+      if (!phoneRegex.test(phone)) {
+        showError("Erreur", "Format de téléphone invalide (ex: +221 77 123 45 67)");
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        console.log("🔄 Inscription avec validation stricte...");
+        
+        const { data: authData, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              first_name: firstName,
-              last_name: lastName,
-              phone: phone,
+              first_name: firstName.trim(),
+              last_name: lastName.trim(),
+              phone: phone.trim(),
             },
             emailRedirectTo: `${window.location.origin}/`
           }
         });
 
         if (error) throw error;
+
+        // Sauvegarder explicitement dans la table profiles
+        if (authData?.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: authData.user.id,
+              first_name: firstName.trim(),
+              last_name: lastName.trim(),
+              phone: phone.trim(),
+              country: 'SN'
+            });
+
+          if (profileError) {
+            console.error("Erreur de sauvegarde du profil:", profileError);
+          }
+        }
         
         showSuccess(
-          t("registrationSuccess"),
-          t("checkEmailConfirm")
+          "Inscription réussie",
+          "Compte créé avec toutes vos informations. Vérifiez votre email pour confirmer."
         );
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -70,7 +117,7 @@ export const Auth = () => {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      showError(t("error"), error.message || "Une erreur est survenue");
+      showError("Erreur", error.message || "Une erreur est survenue");
     } finally {
       setLoading(false);
     }
@@ -92,29 +139,31 @@ export const Auth = () => {
           {isSignUp && (
             <>
               <div>
-                <Label htmlFor="firstName">{t("firstName")}</Label>
+                <Label htmlFor="firstName">{t("firstName")} *</Label>
                 <Input
                   id="firstName"
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Minimum 2 caractères"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="lastName">{t("lastName")}</Label>
+                <Label htmlFor="lastName">{t("lastName")} *</Label>
                 <Input
                   id="lastName"
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Minimum 2 caractères"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="phone">{t("phone")}</Label>
+                <Label htmlFor="phone">{t("phone")} *</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -123,12 +172,15 @@ export const Auth = () => {
                   placeholder="ex: +221 77 123 45 67"
                   required
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Obligatoire pour recevoir les notifications WhatsApp
+                </p>
               </div>
             </>
           )}
 
           <div>
-            <Label htmlFor="email">{t("email")}</Label>
+            <Label htmlFor="email">{t("email")} *</Label>
             <Input
               id="email"
               type="email"
@@ -139,7 +191,7 @@ export const Auth = () => {
           </div>
 
           <div>
-            <Label htmlFor="password">{t("password")}</Label>
+            <Label htmlFor="password">{t("password")} *</Label>
             <Input
               id="password"
               type="password"
@@ -148,6 +200,13 @@ export const Auth = () => {
               required
             />
           </div>
+
+          {isSignUp && (
+            <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg">
+              <strong>Important :</strong> Tous les champs marqués d'un (*) sont obligatoires. 
+              Votre numéro de téléphone sera utilisé pour vous contacter via WhatsApp.
+            </div>
+          )}
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? t("loading") : isSignUp ? t("register") : t("login")}

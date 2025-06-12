@@ -14,13 +14,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CountrySelect } from "@/components/auth/CountrySelect";
 
-// Schema for registration form
+// Schema for registration form with stricter validation
 const registerSchema = z.object({
   email: z.string().email("Email invalide"),
   password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-  firstName: z.string().min(1, "Le prénom est requis"),
-  lastName: z.string().min(1, "Le nom est requis"),
-  phone: z.string().min(1, "Le numéro de téléphone est requis"),
+  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  phone: z.string()
+    .min(8, "Le numéro de téléphone doit contenir au moins 8 chiffres")
+    .regex(/^[\+]?[\d\s\-\(\)]{8,}$/, "Format de téléphone invalide (ex: +221 77 123 45 67)"),
   country: z.string().min(1, "Le pays est requis"),
 });
 
@@ -52,7 +54,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prénom</FormLabel>
+                <FormLabel>Prénom *</FormLabel>
                 <FormControl>
                   <Input placeholder="Votre prénom" {...field} />
                 </FormControl>
@@ -65,7 +67,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nom</FormLabel>
+                <FormLabel>Nom *</FormLabel>
                 <FormControl>
                   <Input placeholder="Votre nom" {...field} />
                 </FormControl>
@@ -80,7 +82,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Pays de résidence</FormLabel>
+              <FormLabel>Pays de résidence *</FormLabel>
               <FormControl>
                 <CountrySelect control={form.control} name="country" />
               </FormControl>
@@ -94,11 +96,17 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Téléphone</FormLabel>
+              <FormLabel>Téléphone *</FormLabel>
               <FormControl>
-                <Input placeholder="Votre numéro de téléphone" {...field} />
+                <Input 
+                  placeholder="ex: +221 77 123 45 67" 
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
+              <p className="text-xs text-muted-foreground">
+                Le numéro de téléphone est obligatoire pour recevoir les notifications WhatsApp
+              </p>
             </FormItem>
           )}
         />
@@ -108,7 +116,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Email *</FormLabel>
               <FormControl>
                 <Input type="email" placeholder="Votre adresse email" {...field} />
               </FormControl>
@@ -122,7 +130,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
+              <FormLabel>Mot de passe *</FormLabel>
               <FormControl>
                 <Input type="password" placeholder="Choisissez un mot de passe" {...field} />
               </FormControl>
@@ -130,6 +138,12 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
             </FormItem>
           )}
         />
+
+        <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg">
+          <strong>Important :</strong> Tous les champs marqués d'un (*) sont obligatoires. 
+          Votre numéro de téléphone sera utilisé pour vous contacter via WhatsApp 
+          concernant vos codes promo et les cartes trouvées.
+        </div>
         
         <Button 
           type="submit" 

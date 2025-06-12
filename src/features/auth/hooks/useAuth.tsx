@@ -22,52 +22,83 @@ export const useAuth = () => {
     setError(null);
     
     try {
+      // Valider que tous les champs obligatoires sont remplis
+      if (!values.firstName.trim() || !values.lastName.trim() || !values.phone.trim()) {
+        setError("Tous les champs obligatoires doivent être remplis");
+        return false;
+      }
+
+      // Valider le format du téléphone
+      const phoneRegex = /^[\+]?[\d\s\-\(\)]{8,}$/;
+      if (!phoneRegex.test(values.phone)) {
+        setError("Le format du numéro de téléphone est invalide");
+        return false;
+      }
+
+      console.log("🔄 Inscription avec les données:", {
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phone,
+        country: values.country
+      });
+
       // Register the user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
         options: {
           data: {
-            first_name: values.firstName,
-            last_name: values.lastName,
-            phone: values.phone,
+            first_name: values.firstName.trim(),
+            last_name: values.lastName.trim(),
+            phone: values.phone.trim(),
             country: values.country,
           },
         },
       });
 
       if (authError) {
+        console.error("❌ Erreur d'authentification:", authError);
         setError(authError.message);
         return false;
       }
 
       // Insert or update profile data explicitly to ensure it's saved
       if (authData?.user) {
+        console.log("💾 Sauvegarde du profil utilisateur...");
+        
         const { error: profileError } = await supabase
           .from('profiles')
           .upsert({
             id: authData.user.id,
-            first_name: values.firstName,
-            last_name: values.lastName,
-            phone: values.phone,
+            first_name: values.firstName.trim(),
+            last_name: values.lastName.trim(),
+            phone: values.phone.trim(),
             country: values.country
           });
 
         if (profileError) {
-          console.error("Profile update error:", profileError);
-          // Don't fail registration if profile update fails
+          console.error("❌ Erreur de sauvegarde du profil:", profileError);
+          // Don't fail registration if profile update fails, but show warning
+          toast({
+            variant: "destructive",
+            title: "Attention",
+            description: "Compte créé mais les informations de profil n'ont pas pu être sauvegardées. Veuillez mettre à jour votre profil.",
+          });
+        } else {
+          console.log("✅ Profil sauvegardé avec succès");
         }
       }
 
       toast({
         title: "Compte créé avec succès",
-        description: "Vous pouvez maintenant vous connecter",
+        description: "Vous pouvez maintenant vous connecter avec vos informations complètes",
       });
       
       return true;
     } catch (err) {
-      console.error("Registration error:", err);
-      setError("Une erreur s'est produite lors de l'inscription");
+      console.error("💥 Erreur d'inscription:", err);
+      setError("Une erreur s'est produite lors de l'inscription. Veuillez réessayer.");
       return false;
     } finally {
       setLoading(false);
