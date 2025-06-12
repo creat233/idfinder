@@ -16,20 +16,46 @@ export const RecoveryPriceSummary = ({
   finalPrice,
 }: RecoveryPriceSummaryProps) => {
   return (
-    <div className="bg-gray-50 p-4 rounded-lg">
-      <p className="text-sm text-gray-700 mb-2">
-        <strong>Récapitulatif :</strong>
+    <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border">
+      <p className="text-sm sm:text-base text-gray-700 mb-3 font-semibold">
+        Récapitulatif :
       </p>
-      <p className="text-sm"><strong>Numéro :</strong> {cardData.card_number}</p>
-      <p className="text-sm"><strong>Lieu :</strong> {cardData.location}</p>
-      <div className="mt-2 pt-2 border-t border-gray-200">
-        <p className="text-sm"><strong>Frais de récupération :</strong> {baseFee} FCFA</p>
+      
+      <div className="space-y-2 text-xs sm:text-sm">
+        <div className="flex justify-between items-start">
+          <span className="font-medium">Numéro :</span>
+          <span className="text-right font-mono break-all ml-2">{cardData.card_number}</span>
+        </div>
+        
+        <div className="flex justify-between items-start">
+          <span className="font-medium">Lieu :</span>
+          <span className="text-right ml-2 break-words">{cardData.location}</span>
+        </div>
+      </div>
+      
+      <div className="mt-3 pt-3 border-t border-gray-200 space-y-2">
+        <div className="flex justify-between items-center text-sm sm:text-base">
+          <span className="font-medium">Frais de récupération :</span>
+          <span>{baseFee} FCFA</span>
+        </div>
+        
         {discount > 0 && (
-          <p className="text-sm text-green-600"><strong>Réduction :</strong> -{discount} FCFA</p>
+          <div className="flex justify-between items-center text-sm text-green-600">
+            <span className="font-medium">Réduction :</span>
+            <span>-{discount} FCFA</span>
+          </div>
         )}
-        <p className="text-lg font-semibold text-gray-800">
-          <strong>Total à payer :</strong> {finalPrice} FCFA {discount > 0 && '+ livraison si applicable'}
-        </p>
+        
+        <div className="flex justify-between items-center text-base sm:text-lg font-bold text-gray-800 pt-2 border-t border-gray-300">
+          <span>Total à payer :</span>
+          <span>{finalPrice} FCFA</span>
+        </div>
+        
+        {discount > 0 && (
+          <p className="text-xs text-gray-500 text-center mt-2">
+            + livraison si applicable
+          </p>
+        )}
       </div>
     </div>
   );

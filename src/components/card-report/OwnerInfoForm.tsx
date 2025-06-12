@@ -114,9 +114,11 @@ export const OwnerInfoForm = ({
   const countryInfo = getCountryInfo(userCountry, 'fr');
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="ownerName">Nom complet *</Label>
+        <Label htmlFor="ownerName" className="text-sm sm:text-base font-medium">
+          Nom complet *
+        </Label>
         <Input
           id="ownerName"
           type="text"
@@ -124,16 +126,20 @@ export const OwnerInfoForm = ({
           onChange={(e) => onOwnerNameChange(e.target.value)}
           placeholder="Votre nom et prénom"
           required
+          className="w-full text-sm sm:text-base p-3 sm:p-4"
         />
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="ownerPhone">Numéro de téléphone *</Label>
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm text-gray-600 flex items-center gap-1">
-              <span>{countryInfo.flag}</span>
-              <span>{countryInfo.name}</span>
+        <Label htmlFor="ownerPhone" className="text-sm sm:text-base font-medium">
+          Numéro de téléphone *
+        </Label>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+            <span className="flex items-center gap-1">
+              <span className="text-base">{countryInfo.flag}</span>
+              <span className="hidden sm:inline">{countryInfo.name}</span>
+              <span className="sm:hidden">SN</span>
               <span className="font-medium">({countryCode})</span>
             </span>
           </div>
@@ -144,6 +150,7 @@ export const OwnerInfoForm = ({
             onChange={(e) => handlePhoneChange(e.target.value)}
             placeholder={`${countryCode} 77 123 45 67`}
             required
+            className="w-full text-sm sm:text-base p-3 sm:p-4"
           />
         </div>
         <p className="text-xs text-gray-500">
@@ -152,7 +159,9 @@ export const OwnerInfoForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label>Code promo (optionnel)</Label>
+        <Label className="text-sm sm:text-base font-medium">
+          Code promo (optionnel)
+        </Label>
         <PromoCodeInput
           onPromoApplied={onPromoApplied}
           onPromoRemoved={onPromoRemoved}

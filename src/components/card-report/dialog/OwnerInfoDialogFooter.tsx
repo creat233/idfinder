@@ -9,18 +9,19 @@ interface OwnerInfoDialogFooterProps {
 
 export const OwnerInfoDialogFooter = ({ onClose, isSubmitting }: OwnerInfoDialogFooterProps) => {
   return (
-    <DialogFooter className="gap-3">
+    <DialogFooter className="gap-2 sm:gap-3 flex-col sm:flex-row">
       <Button 
         type="button" 
         variant="outline" 
         onClick={onClose}
         disabled={isSubmitting}
+        className="w-full sm:w-auto order-2 sm:order-1"
       >
         Annuler
       </Button>
       <Button 
         type="submit" 
-        className="bg-green-500 hover:bg-green-600"
+        className="w-full sm:w-auto bg-green-500 hover:bg-green-600 order-1 sm:order-2"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Envoi en cours..." : "Confirmer la récupération"}

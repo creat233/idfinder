@@ -42,10 +42,10 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="w-[95vw] max-w-md sm:max-w-lg mx-auto my-4 sm:my-8 max-h-[95vh] overflow-y-auto">
         <OwnerInfoDialogHeader />
         
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} className="space-y-4">
           <OwnerInfoDialogContent
             ownerName={ownerName}
             ownerPhone={ownerPhone}
