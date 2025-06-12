@@ -58,23 +58,28 @@ export const useAdminRecoveryData = () => {
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
         .select("id, first_name, last_name, phone")
-        .in("id", userIds)
-        .returns<Profile[]>();
+        .in("id", userIds);
 
       if (profilesError) throw profilesError;
 
       // Récupérer les utilisateurs via l'API admin (pour les emails)
-      const { data: usersData, error: usersError } = await supabase.auth.admin.listUsers();
-      
-      if (usersError) {
-        console.error("Error fetching users:", usersError);
+      let usersData: any = null;
+      try {
+        const { data, error: usersError } = await supabase.auth.admin.listUsers();
+        if (usersError) {
+          console.error("Error fetching users:", usersError);
+        } else {
+          usersData = data;
+        }
+      } catch (error) {
+        console.error("Admin API not available:", error);
       }
 
       // Combiner toutes les données
       const enrichedRecoveries = usageData.map(usage => {
         const promoCode = promoCodesData?.find(code => code.id === usage.promo_code_id);
         const profile = profilesData?.find((p: Profile) => p.id === promoCode?.user_id);
-        const user = usersData?.users?.find(u => u.id === promoCode?.user_id);
+        const user = usersData?.users?.find((u: any) => u.id === promoCode?.user_id);
 
         return {
           id: usage.id,
@@ -84,7 +89,7 @@ export const useAdminRecoveryData = () => {
           discount_amount: usage.discount_amount,
           created_at: usage.created_at,
           promo_code: promoCode?.code || 'Code non trouvé',
-          promo_owner_email: user?.email || 'Email non trouvé',
+          promo_owner_email: user?.email || 'Email non disponible',
           promo_owner_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné',
           promo_owner_phone: profile?.phone || null
         };

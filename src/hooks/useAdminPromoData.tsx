@@ -24,13 +24,20 @@ export const useAdminPromoData = () => {
 
   const fetchPromoCodesData = async () => {
     try {
+      console.log("Récupération des codes promo...");
+      
       // Récupérer tous les codes promo
       const { data: codesData, error: codesError } = await supabase
         .from("promo_codes")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (codesError) throw codesError;
+      if (codesError) {
+        console.error("Erreur lors de la récupération des codes:", codesError);
+        throw codesError;
+      }
+
+      console.log("Codes récupérés:", codesData);
 
       if (!codesData) {
         setPromoCodes([]);
@@ -38,35 +45,46 @@ export const useAdminPromoData = () => {
         return;
       }
 
-      // Récupérer les informations des utilisateurs via l'API admin
-      const { data: usersData, error: usersError } = await supabase.auth.admin.listUsers();
-
-      if (usersError) {
-        console.error("Error fetching users:", usersError);
-      }
-
       // Récupérer les profils
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, first_name, last_name, phone")
-        .returns<Profile[]>();
+        .select("id, first_name, last_name, phone");
 
       if (profilesError) {
         console.error("Error fetching profiles:", profilesError);
       }
 
+      console.log("Profils récupérés:", profilesData);
+
+      // Récupérer les utilisateurs via l'API admin pour les emails
+      let usersData: any = null;
+      try {
+        const { data, error: usersError } = await supabase.auth.admin.listUsers();
+        if (usersError) {
+          console.error("Error fetching users:", usersError);
+        } else {
+          usersData = data;
+        }
+      } catch (error) {
+        console.error("Admin API not available:", error);
+      }
+
       // Combiner les données
       const enrichedCodes = codesData.map(code => {
-        const user = usersData?.users?.find(u => u.id === code.user_id);
+        const user = usersData?.users?.find((u: any) => u.id === code.user_id);
         const profile = profilesData?.find((p: Profile) => p.id === code.user_id);
         
-        return {
+        const enrichedCode = {
           ...code,
-          user_email: user?.email || 'Email non trouvé',
+          user_email: user?.email || 'Email non disponible',
           user_name: profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nom non renseigné' : 'Nom non renseigné'
         };
+
+        console.log("Code enrichi:", enrichedCode);
+        return enrichedCode;
       });
 
+      console.log("Tous les codes enrichis:", enrichedCodes);
       setPromoCodes(enrichedCodes);
 
       // Calculer les statistiques
@@ -81,6 +99,8 @@ export const useAdminPromoData = () => {
         totalUsage,
         totalEarnings
       });
+
+      console.log("Statistiques calculées:", { totalCodes, activeCodes, totalUsage, totalEarnings });
 
     } catch (error) {
       console.error("Error fetching promo codes data:", error);
