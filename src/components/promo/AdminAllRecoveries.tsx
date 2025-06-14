@@ -2,15 +2,41 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAdminAllRecoveries } from "@/hooks/useAdminAllRecoveries";
 import { AdminRecoveriesHeader } from "./admin-recoveries/AdminRecoveriesHeader";
 import { AdminRecoveriesTable } from "./admin-recoveries/AdminRecoveriesTable";
 import { AdminRecoveriesEmptyState } from "./admin-recoveries/AdminRecoveriesEmptyState";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdminAllRecoveries = () => {
   const { recoveries, loading, refetch, forceRefresh } = useAdminAllRecoveries();
   const [searchTerm, setSearchTerm] = useState("");
+
+  // --- REALTIME : Sync on INSERT / UPDATE on reported_cards
+  useEffect(() => {
+    const channel = supabase
+      .channel("recovery_realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // INSERT and UPDATE
+          schema: "public",
+          table: "reported_cards"
+        },
+        (payload) => {
+          // On toute modification, forcer le refresh
+          // (on pourrait affiner sur status === "recovery_requested" ou "recovered")
+          forceRefresh();
+        }
+      )
+      .subscribe();
+
+    // Nettoyage
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [forceRefresh]);
 
   const filteredRecoveries = recoveries.filter(recovery =>
     recovery.card_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
