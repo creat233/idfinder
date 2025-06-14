@@ -17,10 +17,19 @@ export const useNotifications = () => {
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // On mémorise l'utilisateur courant pour les souscriptions realtime
+  const [userId, setUserId] = useState<string | null>(null);
+
   const fetchNotifications = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setUserId(null);
+        setNotifications([]);
+        setUnreadCount(0);
+        return;
+      }
+      setUserId(user.id);
 
       const { data, error } = await supabase
         .from("notifications")
@@ -75,6 +84,33 @@ export const useNotifications = () => {
     fetchNotifications();
   }, []);
 
+  // --- Ajout du mode realtime pour notifications de l'utilisateur connecté
+  useEffect(() => {
+    if (!userId) return;
+
+    // On écoute INSERT et UPDATE sur notifications pour ce user
+    const channel = supabase
+      .channel("user-notifications-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${userId}`
+        },
+        (payload) => {
+          // Dès qu'une notif du user est ajoutée/modifiée, on recharge
+          fetchNotifications();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
+
   return {
     notifications,
     loading,
@@ -84,3 +120,4 @@ export const useNotifications = () => {
     refetch: fetchNotifications,
   };
 };
+
