@@ -72,6 +72,7 @@ ${promoInfo ? `Code promo utilisé: Oui (réduction de ${promoInfo.discount} FCF
 Date de demande: ${new Date().toLocaleString('fr-FR')}
 Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
 
+    // Mettre à jour la description ET le statut de la carte immédiatement
     const { error: updateError } = await supabaseClient
       .from("reported_cards")
       .update({ 
@@ -85,7 +86,7 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       throw updateError;
     }
 
-    console.log("✅ Description de la carte mise à jour");
+    console.log("✅ Description et statut de la carte mis à jour vers 'recovery_requested'");
 
     let promoDetails = null;
     let promoOwnerInfo = null;
@@ -151,6 +152,7 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
     }
 
     console.log("🎉 Traitement de la demande de récupération terminé avec succès");
+    console.log("📋 La demande apparaîtra maintenant dans l'interface d'administration");
 
     return new Response(
       JSON.stringify({ 
@@ -159,7 +161,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
         message: "Demande de récupération envoyée avec succès",
         cardNumber: cardData.card_number,
         finalPrice: finalPrice,
-        promoUsed: !!promoInfo
+        promoUsed: !!promoInfo,
+        status: "recovery_requested"
       }),
       {
         status: 200,
