@@ -33,11 +33,12 @@ export const useAdminAllRecoveries = () => {
     try {
       console.log("Récupération des demandes de récupération...");
       
-      // Récupérer seulement les cartes avec des informations de récupération dans la description
+      // Récupérer toutes les cartes signalées qui contiennent des informations de récupération
+      // Chercher les cartes avec "Nom du propriétaire:" OU "Prix à payer:" OU qui ont le statut 'recovery_requested'
       const { data: reportedCards, error: cardsError } = await supabase
         .from("reported_cards")
         .select("*")
-        .ilike("description", "%Nom du propriétaire:%")
+        .or("description.ilike.%Nom du propriétaire:%,description.ilike.%Prix à payer:%,status.eq.recovery_requested")
         .order("created_at", { ascending: false });
 
       if (cardsError) {
@@ -45,7 +46,8 @@ export const useAdminAllRecoveries = () => {
         throw cardsError;
       }
 
-      console.log("Cartes avec demandes de récupération:", reportedCards?.length || 0);
+      console.log("Cartes trouvées:", reportedCards?.length || 0);
+      console.log("Détails des cartes:", reportedCards);
 
       if (!reportedCards || reportedCards.length === 0) {
         setRecoveries([]);
@@ -57,6 +59,8 @@ export const useAdminAllRecoveries = () => {
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
+        console.log("Traitement de la carte:", card.card_number, "Description:", card.description);
+        
         // Récupérer le profil du signaleur
         let reporterProfile = null;
         if (card.reporter_id) {
@@ -74,10 +78,17 @@ export const useAdminAllRecoveries = () => {
         // Extraire les informations de récupération depuis la description
         const description = card.description || "";
         
-        // Vérifier que c'est bien une demande de récupération
-        if (!description.includes("Nom du propriétaire:")) {
-          continue; // Passer cette carte car ce n'est pas une vraie demande de récupération
+        // Vérifier si c'est une demande de récupération
+        const isRecoveryRequest = description.includes("Nom du propriétaire:") || 
+                                description.includes("Prix à payer:") || 
+                                card.status === 'recovery_requested';
+
+        if (!isRecoveryRequest) {
+          console.log("Carte ignorée (pas une demande de récupération):", card.card_number);
+          continue;
         }
+
+        console.log("Carte identifiée comme demande de récupération:", card.card_number);
 
         let ownerName = "Propriétaire non renseigné";
         let ownerPhone = "Non renseigné";
@@ -89,19 +100,19 @@ export const useAdminAllRecoveries = () => {
         let discountAmount = null;
 
         // Extraire les informations du propriétaire depuis la description
-        const ownerNameMatch = description.match(/Nom du propriétaire: ([^\n]+)/);
-        const ownerPhoneMatch = description.match(/Téléphone: ([^\n]+)/);
-        const finalPriceMatch = description.match(/Prix final: (\d+) FCFA/);
-        const promoUsedMatch = description.match(/Code promo utilisé: Oui \(réduction de (\d+) FCFA\)/);
+        const ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n]+)/);
+        const ownerPhoneMatch = description.match(/Téléphone:\s*([^\n]+)/);
+        const finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/);
+        const promoUsedMatch = description.match(/Code promo utilisé:\s*Oui.*réduction de (\d+)\s*FCFA/);
 
-        if (ownerNameMatch) ownerName = ownerNameMatch[1];
-        if (ownerPhoneMatch) ownerPhone = ownerPhoneMatch[1];
+        if (ownerNameMatch) ownerName = ownerNameMatch[1].trim();
+        if (ownerPhoneMatch) ownerPhone = ownerPhoneMatch[1].trim();
         if (finalPriceMatch) finalPrice = parseInt(finalPriceMatch[1]);
 
         // Chercher s'il y a une utilisation de code promo pour cette récupération
         if (promoUsedMatch && ownerPhoneMatch) {
           discountAmount = parseInt(promoUsedMatch[1]);
-          const phoneToSearch = ownerPhoneMatch[1];
+          const phoneToSearch = ownerPhoneMatch[1].trim();
           
           // Chercher l'utilisation du code promo correspondante
           const { data: promoUsage, error: promoError } = await supabase
@@ -170,9 +181,10 @@ export const useAdminAllRecoveries = () => {
         };
 
         enrichedRecoveries.push(recovery);
+        console.log("Demande de récupération ajoutée:", recovery);
       }
 
-      console.log("Vraies demandes de récupération créées:", enrichedRecoveries.length);
+      console.log("Total des demandes de récupération créées:", enrichedRecoveries.length);
       setRecoveries(enrichedRecoveries);
     } catch (error) {
       console.error("Error fetching recovery data:", error);
@@ -184,6 +196,27 @@ export const useAdminAllRecoveries = () => {
 
   useEffect(() => {
     fetchAllRecoveries();
+
+    // Écouter les changements en temps réel sur la table reported_cards
+    const channel = supabase
+      .channel('admin-recoveries-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'reported_cards'
+        },
+        (payload) => {
+          console.log("Changement détecté dans reported_cards:", payload);
+          fetchAllRecoveries(); // Recharger les données
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {
