@@ -238,6 +238,7 @@ export type Database = {
           id: string
           location: string
           photo_url: string | null
+          promo_code_id: string | null
           reporter_id: string
           reporter_phone: string | null
           status: string | null
@@ -251,6 +252,7 @@ export type Database = {
           id?: string
           location: string
           photo_url?: string | null
+          promo_code_id?: string | null
           reporter_id: string
           reporter_phone?: string | null
           status?: string | null
@@ -264,11 +266,20 @@ export type Database = {
           id?: string
           location?: string
           photo_url?: string | null
+          promo_code_id?: string | null
           reporter_id?: string
           reporter_phone?: string | null
           status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "reported_cards_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_cards: {
         Row: {

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,7 +36,7 @@ export const AdminRecoveriesPromoEditCell = ({
       .from("promo_codes")
       .select("id, code, is_active, is_paid, expires_at")
       .eq("code", inputValue.trim().toUpperCase())
-      .maybeSingle(); // Attention à .maybeSingle()
+      .maybeSingle();
 
     if (error) {
       showError("Erreur Supabase", "Erreur de requête (promo_codes).");
@@ -55,8 +54,6 @@ export const AdminRecoveriesPromoEditCell = ({
       return;
     }
 
-    // Vérifier qu'il n'est pas déjà associé à une récupération (edge case)
-    // optionnel, sinon l'update va écraser
     // Associer ce code promo à la carte signalée
     try {
       const { data: updateData, error: updateError } = await supabase
@@ -66,7 +63,6 @@ export const AdminRecoveriesPromoEditCell = ({
         .select();
 
       if (updateError) {
-        // logs techniques
         console.error("Erreur lors de l'association du code promo:", updateError);
         showError("Erreur lors de l'association", updateError.message || "Impossible d'associer le code promo.");
         setLoading(false);
@@ -168,4 +164,3 @@ export const AdminRecoveriesPromoEditCell = ({
     </TableCell>
   );
 };
-
