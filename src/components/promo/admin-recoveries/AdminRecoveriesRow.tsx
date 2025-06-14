@@ -6,8 +6,7 @@ import { AdminRecoveryPaymentButton } from "../AdminRecoveryPaymentButton";
 import { AdminRecoveriesCardCell } from "./AdminRecoveriesCardCell";
 import { AdminRecoveriesOwnerCell } from "./AdminRecoveriesOwnerCell";
 import { AdminRecoveriesReporterCell } from "./AdminRecoveriesReporterCell";
--import { AdminRecoveriesPromoCell } from "./AdminRecoveriesPromoCell";
-+import { AdminRecoveriesPromoEditCell } from "./AdminRecoveriesPromoEditCell";
+import { AdminRecoveriesPromoEditCell } from "./AdminRecoveriesPromoEditCell";
 import { AdminRecoveriesStatusCell } from "./AdminRecoveriesStatusCell";
 import { AdminRecoveriesDateCell } from "./AdminRecoveriesDateCell";
 
@@ -19,12 +18,12 @@ interface AdminRecoveriesRowProps {
   onPaymentConfirmed?: () => void;
 }
 
-export const AdminRecoveriesRow = ({ 
-  recovery, 
-  onCallOwner, 
-  onCallReporter, 
+export const AdminRecoveriesRow = ({
+  recovery,
+  onCallOwner,
+  onCallReporter,
   onCallPromoOwner,
-  onPaymentConfirmed 
+  onPaymentConfirmed,
 }: AdminRecoveriesRowProps) => {
   // Gérer l'update du code promo et déclencher refresh parent si besoin
   const handlePromoUpdated = () => {
@@ -33,17 +32,17 @@ export const AdminRecoveriesRow = ({
 
   return (
     <TableRow key={recovery.id}>
-      <AdminRecoveriesCardCell 
+      <AdminRecoveriesCardCell
         cardNumber={recovery.card_number}
         documentType={recovery.document_type}
       />
-      <AdminRecoveriesOwnerCell 
+      <AdminRecoveriesOwnerCell
         ownerName={recovery.owner_name}
         ownerPhone={recovery.owner_phone}
         finalPrice={recovery.final_price}
         onCallOwner={onCallOwner}
       />
-      <AdminRecoveriesReporterCell 
+      <AdminRecoveriesReporterCell
         reporterName={recovery.reporter_name}
         reporterPhone={recovery.reporter_phone}
         onCallReporter={onCallReporter}
@@ -54,18 +53,12 @@ export const AdminRecoveriesRow = ({
           <span>{recovery.location}</span>
         </div>
       </TableCell>
--      <AdminRecoveriesPromoCell 
--        promoCode={recovery.promo_code}
--        discountAmount={recovery.discount_amount}
--        promoCodeOwnerPhone={recovery.promo_code_owner_phone}
--        onCallPromoOwner={onCallPromoOwner}
--      />
-+      <AdminRecoveriesPromoEditCell
-+        recoveryId={recovery.id}
-+        promoCode={recovery.promo_code}
-+        promoCodeId={recovery.promo_code_id}
-+        onPromoUpdated={handlePromoUpdated}
-+      />
+      <AdminRecoveriesPromoEditCell
+        recoveryId={recovery.id}
+        promoCode={recovery.promo_code}
+        promoCodeId={recovery.promo_code_id}
+        onPromoUpdated={handlePromoUpdated}
+      />
       <TableCell>
         <div className="flex items-center gap-1">
           <DollarSign className="h-3 w-3" />
@@ -96,4 +89,3 @@ export const AdminRecoveriesRow = ({
     </TableRow>
   );
 };
-
