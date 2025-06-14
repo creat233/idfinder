@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Share2, TrendingUp, Users } from "lucide-react";
@@ -7,11 +6,11 @@ import { PromoCodesList } from "./PromoCodesList";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export const PromoCodesManager = () => {
-  const { promoCodes, loading, generatePromoCode } = usePromoCodes();
+  const { promoCodes, loading, createPromoCode } = usePromoCodes();
   const { t } = useTranslation();
 
   const handleGenerateCode = async () => {
-    await generatePromoCode();
+    await createPromoCode();
   };
 
   const activeCodes = promoCodes.filter(code => code.is_active);
