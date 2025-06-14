@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,15 +26,38 @@ interface AddCardDialogProps {
     document_type: string;
     card_holder_name?: string;
   }) => Promise<void>;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
+  prefillCardNumber?: string;
 }
 
-export const AddCardDialog = ({ onAddCard }: AddCardDialogProps) => {
-  const [open, setOpen] = useState(false);
+// Ce composant fonctionne :
+// - en mode contrôlé (open/setOpen/prefillCardNumber fournis)
+// - ou en mode non contrôlé (modale ouverte par défaut interne)
+export const AddCardDialog = ({
+  onAddCard,
+  open: dialogOpenFromProps,
+  setOpen: setDialogOpenFromProps,
+  prefillCardNumber,
+}: AddCardDialogProps) => {
+  // Mode contrôlé vs non contrôlé
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = dialogOpenFromProps !== undefined ? dialogOpenFromProps : internalOpen;
+  const setOpen =
+    setDialogOpenFromProps !== undefined ? setDialogOpenFromProps : setInternalOpen;
+
   const [cardNumber, setCardNumber] = useState("");
   const [documentType, setDocumentType] = useState("id");
   const [cardHolderName, setCardHolderName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { t } = useTranslation();
+
+  // Lorsque la modale s'ouvre ET prefillCardNumber change, pré-remplir le cardNumber
+  useEffect(() => {
+    if (open && prefillCardNumber) {
+      setCardNumber(prefillCardNumber);
+    }
+  }, [open, prefillCardNumber]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +70,6 @@ export const AddCardDialog = ({ onAddCard }: AddCardDialogProps) => {
         document_type: documentType,
         card_holder_name: cardHolderName.trim() || undefined,
       });
-      
       // Reset form
       setCardNumber("");
       setCardHolderName("");
@@ -62,12 +84,15 @@ export const AddCardDialog = ({ onAddCard }: AddCardDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          {t("addCard") || "Ajouter une carte"}
-        </Button>
-      </DialogTrigger>
+      {/* Afficher le bouton d’ajout seulement en mode non contrôlé (dialog ouvert interne) */}
+      {dialogOpenFromProps === undefined && (
+        <DialogTrigger asChild>
+          <Button className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            {t("addCard") || "Ajouter une carte"}
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("addCard") || "Ajouter une carte"}</DialogTitle>
@@ -87,7 +112,6 @@ export const AddCardDialog = ({ onAddCard }: AddCardDialogProps) => {
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <Label htmlFor="cardNumber">{t("cardNumber") || "Numéro de la carte"}</Label>
             <Input
@@ -98,7 +122,6 @@ export const AddCardDialog = ({ onAddCard }: AddCardDialogProps) => {
               required
             />
           </div>
-
           <div>
             <Label htmlFor="cardHolderName">{t("cardHolderName") || "Nom du titulaire"} ({t("optional") || "Optionnel"})</Label>
             <Input
@@ -108,7 +131,6 @@ export const AddCardDialog = ({ onAddCard }: AddCardDialogProps) => {
               placeholder={t("enterCardHolderName") || "Entrez le nom du titulaire"}
             />
           </div>
-
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               {t("cancel") || "Annuler"}
