@@ -1,4 +1,3 @@
-
 import { TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Gift, Phone, PhoneCall } from "lucide-react";
@@ -61,3 +60,5 @@ export const AdminRecoveriesPromoCell = ({
     </TableCell>
   );
 };
+
+// Fichier conservé seulement pour compat, n'est plus utilisé dans le tableau admin principal !

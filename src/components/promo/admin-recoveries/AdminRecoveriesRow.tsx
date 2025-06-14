@@ -6,7 +6,8 @@ import { AdminRecoveryPaymentButton } from "../AdminRecoveryPaymentButton";
 import { AdminRecoveriesCardCell } from "./AdminRecoveriesCardCell";
 import { AdminRecoveriesOwnerCell } from "./AdminRecoveriesOwnerCell";
 import { AdminRecoveriesReporterCell } from "./AdminRecoveriesReporterCell";
-import { AdminRecoveriesPromoCell } from "./AdminRecoveriesPromoCell";
+-import { AdminRecoveriesPromoCell } from "./AdminRecoveriesPromoCell";
++import { AdminRecoveriesPromoEditCell } from "./AdminRecoveriesPromoEditCell";
 import { AdminRecoveriesStatusCell } from "./AdminRecoveriesStatusCell";
 import { AdminRecoveriesDateCell } from "./AdminRecoveriesDateCell";
 
@@ -25,6 +26,11 @@ export const AdminRecoveriesRow = ({
   onCallPromoOwner,
   onPaymentConfirmed 
 }: AdminRecoveriesRowProps) => {
+  // Gérer l'update du code promo et déclencher refresh parent si besoin
+  const handlePromoUpdated = () => {
+    if (onPaymentConfirmed) onPaymentConfirmed();
+  };
+
   return (
     <TableRow key={recovery.id}>
       <AdminRecoveriesCardCell 
@@ -48,12 +54,18 @@ export const AdminRecoveriesRow = ({
           <span>{recovery.location}</span>
         </div>
       </TableCell>
-      <AdminRecoveriesPromoCell 
-        promoCode={recovery.promo_code}
-        discountAmount={recovery.discount_amount}
-        promoCodeOwnerPhone={recovery.promo_code_owner_phone}
-        onCallPromoOwner={onCallPromoOwner}
-      />
+-      <AdminRecoveriesPromoCell 
+-        promoCode={recovery.promo_code}
+-        discountAmount={recovery.discount_amount}
+-        promoCodeOwnerPhone={recovery.promo_code_owner_phone}
+-        onCallPromoOwner={onCallPromoOwner}
+-      />
++      <AdminRecoveriesPromoEditCell
++        recoveryId={recovery.id}
++        promoCode={recovery.promo_code}
++        promoCodeId={recovery.promo_code_id}
++        onPromoUpdated={handlePromoUpdated}
++      />
       <TableCell>
         <div className="flex items-center gap-1">
           <DollarSign className="h-3 w-3" />
@@ -84,3 +96,4 @@ export const AdminRecoveriesRow = ({
     </TableRow>
   );
 };
+

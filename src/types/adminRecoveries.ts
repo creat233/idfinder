@@ -1,4 +1,3 @@
-
 export interface AllRecoveryData {
   id: string;
   card_id: string;
@@ -12,6 +11,7 @@ export interface AllRecoveryData {
   reporter_id: string;
   final_price: number;
   promo_code?: string;
+  promo_code_id?: string; // <- on ajoute promo_code_id pour edit/associer le code promo côté admin
   promo_code_owner_id?: string;
   promo_code_owner_phone?: string;
   promo_usage_id?: string;
