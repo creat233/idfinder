@@ -31,36 +31,61 @@ export const useAdminAllRecoveries = () => {
 
   const fetchAllRecoveries = async () => {
     try {
-      console.log("Récupération des demandes de récupération...");
+      console.log("🔍 Récupération des demandes de récupération...");
       
-      // Récupérer toutes les cartes signalées qui contiennent des informations de récupération
-      // Chercher les cartes avec "Nom du propriétaire:" OU "Prix à payer:" OU qui ont le statut 'recovery_requested'
+      // Récupérer toutes les cartes signalées
       const { data: reportedCards, error: cardsError } = await supabase
         .from("reported_cards")
         .select("*")
-        .or("description.ilike.%Nom du propriétaire:%,description.ilike.%Prix à payer:%,status.eq.recovery_requested")
         .order("created_at", { ascending: false });
 
       if (cardsError) {
-        console.error("Erreur lors de la récupération des cartes:", cardsError);
+        console.error("❌ Erreur lors de la récupération des cartes:", cardsError);
         throw cardsError;
       }
 
-      console.log("Cartes trouvées:", reportedCards?.length || 0);
-      console.log("Détails des cartes:", reportedCards);
+      console.log("📋 Cartes trouvées:", reportedCards?.length || 0);
 
       if (!reportedCards || reportedCards.length === 0) {
+        console.log("📭 Aucune carte trouvée");
         setRecoveries([]);
         setLoading(false);
         return;
       }
 
-      // Pour chaque carte, créer une entrée de récupération
+      // Filtrer et traiter uniquement les cartes avec des demandes de récupération
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
-        console.log("Traitement de la carte:", card.card_number, "Description:", card.description);
+        console.log("🔍 Analyse de la carte:", card.card_number);
+        console.log("📝 Description:", card.description);
+        console.log("📊 Statut:", card.status);
         
+        const description = card.description || "";
+        
+        // Vérifier si c'est une vraie demande de récupération
+        const hasOwnerInfo = description.includes("Nom du propriétaire:") && 
+                           description.includes("Téléphone:");
+        const hasRecoveryRequest = description.includes("Prix final:") || 
+                                 description.includes("Prix à payer:");
+        const isRecoveryStatus = card.status === 'recovery_requested';
+
+        // Une demande de récupération doit avoir les infos du propriétaire ET être une vraie demande
+        const isValidRecoveryRequest = hasOwnerInfo && (hasRecoveryRequest || isRecoveryStatus);
+
+        console.log("✅ Critères de validation:");
+        console.log("   - A les infos propriétaire:", hasOwnerInfo);
+        console.log("   - A une demande de récupération:", hasRecoveryRequest);
+        console.log("   - Statut récupération:", isRecoveryStatus);
+        console.log("   - Est une demande valide:", isValidRecoveryRequest);
+
+        if (!isValidRecoveryRequest) {
+          console.log("❌ Carte ignorée - pas une demande de récupération valide");
+          continue;
+        }
+
+        console.log("✅ Demande de récupération valide détectée");
+
         // Récupérer le profil du signaleur
         let reporterProfile = null;
         if (card.reporter_id) {
@@ -75,21 +100,7 @@ export const useAdminAllRecoveries = () => {
           }
         }
 
-        // Extraire les informations de récupération depuis la description
-        const description = card.description || "";
-        
-        // Vérifier si c'est une demande de récupération
-        const isRecoveryRequest = description.includes("Nom du propriétaire:") || 
-                                description.includes("Prix à payer:") || 
-                                card.status === 'recovery_requested';
-
-        if (!isRecoveryRequest) {
-          console.log("Carte ignorée (pas une demande de récupération):", card.card_number);
-          continue;
-        }
-
-        console.log("Carte identifiée comme demande de récupération:", card.card_number);
-
+        // Extraire les informations depuis la description
         let ownerName = "Propriétaire non renseigné";
         let ownerPhone = "Non renseigné";
         let finalPrice = 7000; // Prix par défaut
@@ -99,20 +110,31 @@ export const useAdminAllRecoveries = () => {
         let promoUsageId = null;
         let discountAmount = null;
 
-        // Extraire les informations du propriétaire depuis la description
-        const ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n]+)/);
-        const ownerPhoneMatch = description.match(/Téléphone:\s*([^\n]+)/);
-        const finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/);
-        const promoUsedMatch = description.match(/Code promo utilisé:\s*Oui.*réduction de (\d+)\s*FCFA/);
+        // Patterns pour extraire les infos
+        const ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n\r]+)/i);
+        const ownerPhoneMatch = description.match(/Téléphone:\s*([^\n\r]+)/i);
+        const finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/i);
+        const promoUsedMatch = description.match(/Code promo utilisé:\s*Oui.*?réduction de (\d+)\s*FCFA/is);
 
-        if (ownerNameMatch) ownerName = ownerNameMatch[1].trim();
-        if (ownerPhoneMatch) ownerPhone = ownerPhoneMatch[1].trim();
-        if (finalPriceMatch) finalPrice = parseInt(finalPriceMatch[1]);
+        if (ownerNameMatch) {
+          ownerName = ownerNameMatch[1].trim();
+          console.log("👤 Nom propriétaire:", ownerName);
+        }
+        
+        if (ownerPhoneMatch) {
+          ownerPhone = ownerPhoneMatch[1].trim();
+          console.log("📞 Téléphone propriétaire:", ownerPhone);
+        }
+        
+        if (finalPriceMatch) {
+          finalPrice = parseInt(finalPriceMatch[1]);
+          console.log("💰 Prix final:", finalPrice);
+        }
 
-        // Chercher s'il y a une utilisation de code promo pour cette récupération
-        if (promoUsedMatch && ownerPhoneMatch) {
+        // Chercher les informations de code promo si utilisé
+        if (promoUsedMatch && ownerPhone !== "Non renseigné") {
+          console.log("🎁 Code promo détecté, recherche des détails...");
           discountAmount = parseInt(promoUsedMatch[1]);
-          const phoneToSearch = ownerPhoneMatch[1].trim();
           
           // Chercher l'utilisation du code promo correspondante
           const { data: promoUsage, error: promoError } = await supabase
@@ -125,7 +147,7 @@ export const useAdminAllRecoveries = () => {
                 user_id
               )
             `)
-            .eq("used_by_phone", phoneToSearch)
+            .eq("used_by_phone", ownerPhone)
             .order("created_at", { ascending: false })
             .limit(1);
 
@@ -137,6 +159,8 @@ export const useAdminAllRecoveries = () => {
               promoUsageId = usage.id;
               discountAmount = usage.discount_amount;
 
+              console.log("🎫 Code promo trouvé:", promoCode);
+
               // Récupérer le téléphone du propriétaire du code promo
               if (promoCodeOwnerId) {
                 const { data: promoOwnerProfile, error: promoOwnerError } = await supabase
@@ -147,17 +171,20 @@ export const useAdminAllRecoveries = () => {
 
                 if (!promoOwnerError && promoOwnerProfile) {
                   promoCodeOwnerPhone = promoOwnerProfile.phone || "Non renseigné";
+                  console.log("📱 Téléphone propriétaire code promo:", promoCodeOwnerPhone);
                 }
               }
             }
           }
         }
 
-        // Informations du signaleur depuis le profil ou les données de la carte
+        // Informations du signaleur
         const reporterName = reporterProfile 
           ? `${reporterProfile.first_name || ''} ${reporterProfile.last_name || ''}`.trim()
           : "Signaleur non renseigné";
         const reporterPhone = reporterProfile?.phone || card.reporter_phone || "Non renseigné";
+
+        console.log("👨‍💼 Signaleur:", reporterName, "-", reporterPhone);
 
         const recovery: AllRecoveryData = {
           id: card.id,
@@ -181,13 +208,19 @@ export const useAdminAllRecoveries = () => {
         };
 
         enrichedRecoveries.push(recovery);
-        console.log("Demande de récupération ajoutée:", recovery);
+        console.log("✅ Demande de récupération ajoutée:", {
+          carte: recovery.card_number,
+          propriétaire: recovery.owner_name,
+          signaleur: recovery.reporter_name,
+          prix: recovery.final_price,
+          promo: recovery.promo_code
+        });
       }
 
-      console.log("Total des demandes de récupération créées:", enrichedRecoveries.length);
+      console.log(`🎉 Total des demandes de récupération: ${enrichedRecoveries.length}`);
       setRecoveries(enrichedRecoveries);
     } catch (error) {
-      console.error("Error fetching recovery data:", error);
+      console.error("❌ Erreur lors de la récupération des données:", error);
       showError("Erreur", "Impossible de récupérer les données de récupération");
     } finally {
       setLoading(false);
@@ -197,7 +230,7 @@ export const useAdminAllRecoveries = () => {
   useEffect(() => {
     fetchAllRecoveries();
 
-    // Écouter les changements en temps réel sur la table reported_cards
+    // Écouter les changements en temps réel
     const channel = supabase
       .channel('admin-recoveries-changes')
       .on(
@@ -208,8 +241,8 @@ export const useAdminAllRecoveries = () => {
           table: 'reported_cards'
         },
         (payload) => {
-          console.log("Changement détecté dans reported_cards:", payload);
-          fetchAllRecoveries(); // Recharger les données
+          console.log("🔄 Changement détecté dans reported_cards:", payload);
+          fetchAllRecoveries();
         }
       )
       .subscribe();
