@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -6,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
+import { PublicHeaderDesktopNav } from "./PublicHeaderDesktopNav";
+import { PublicHeaderMobileNav } from "./PublicHeaderMobileNav";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,90 +68,12 @@ export const PublicHeader = () => {
             <span className="text-xl font-bold text-gray-900">FinderID</span>
           </div>
 
-          {/* Navigation Desktop */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="/#fonctionnalites" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
-              Fonctionnalités
-            </a>
-            <a href="/#tarifs" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
-              Tarifs
-            </a>
-            <button 
-              onClick={() => navigate("/demo")}
-              className="text-gray-600 hover:text-[#7E69AB] transition-colors"
-            >
-              Démo
-            </button>
-            <button 
-              onClick={() => navigate("/urgence")}
-              className="text-gray-600 hover:text-[#7E69AB] transition-colors"
-            >
-              Numéros d'urgence
-            </button>
-            <button 
-              onClick={() => navigate("/about")}
-              className="text-gray-600 hover:text-[#7E69AB] transition-colors"
-            >
-              À propos
-            </button>
-            {user && (
-              <button 
-                onClick={() => navigate("/mes-cartes")}
-                className="text-gray-600 hover:text-[#7E69AB] transition-colors"
-              >
-                Mes cartes
-              </button>
-            )}
-            {/* Ajout : bouton notifications pour utilisateurs connectés */}
-            {user && (
-              <button
-                onClick={() => navigate("/notifications")}
-                className="text-gray-600 hover:text-[#7E69AB] transition-colors"
-              >
-                Notifications
-              </button>
-            )}
-          </nav>
-
-          {/* Boutons Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
-            {user ? (
-              <>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate("/profile")}
-                  className="text-gray-600 hover:text-[#7E69AB]"
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Mon profil
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  onClick={handleSignOut}
-                  className="text-gray-600 hover:text-red-600"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Déconnexion
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate("/login")}
-                  className="text-gray-600 hover:text-[#7E69AB]"
-                >
-                  Se connecter
-                </Button>
-                <Button 
-                  onClick={handleGetStarted}
-                  className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:opacity-90"
-                >
-                  Commencer
-                </Button>
-              </>
-            )}
-          </div>
+          {/* Navigation Desktop et Boutons */}
+          <PublicHeaderDesktopNav 
+            user={user}
+            onSignOut={handleSignOut}
+            onGetStarted={handleGetStarted}
+          />
 
           {/* Menu Mobile */}
           <button
@@ -162,94 +85,13 @@ export const PublicHeader = () => {
         </div>
 
         {/* Menu Mobile Ouvert */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200">
-            <nav className="py-4 space-y-4">
-              <a href="/#fonctionnalites" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
-                Fonctionnalités
-              </a>
-              <a href="/#tarifs" className="block px-4 text-gray-600 hover:text-[#7E69AB]">
-                Tarifs
-              </a>
-              <button 
-                onClick={() => { navigate("/demo"); setIsMenuOpen(false); }}
-                className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-              >
-                Démo
-              </button>
-              <button 
-                onClick={() => { navigate("/urgence"); setIsMenuOpen(false); }}
-                className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-              >
-                Numéros d'urgence
-              </button>
-              <button 
-                onClick={() => { navigate("/about"); setIsMenuOpen(false); }}
-                className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-              >
-                À propos
-              </button>
-              {user && (
-                <button 
-                  onClick={() => { navigate("/mes-cartes"); setIsMenuOpen(false); }}
-                  className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-                >
-                  Mes cartes
-                </button>
-              )}
-              {/* Ajout : Notifications mobile */}
-              {user && (
-                <button
-                  onClick={() => { navigate("/notifications"); setIsMenuOpen(false); }}
-                  className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-                >
-                  Notifications
-                </button>
-              )}
-              <div className="px-4 pt-4 space-y-2">
-                {user ? (
-                  <>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => { navigate("/profile"); setIsMenuOpen(false); }}
-                      className="w-full"
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      Mon profil
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        handleSignOut();
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full text-red-600 border-red-600"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Déconnexion
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => { navigate("/login"); setIsMenuOpen(false); }}
-                      className="w-full"
-                    >
-                      Se connecter
-                    </Button>
-                    <Button 
-                      onClick={() => { handleGetStarted(); setIsMenuOpen(false); }}
-                      className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white"
-                    >
-                      Commencer
-                    </Button>
-                  </>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
+        <PublicHeaderMobileNav
+          user={user}
+          isMenuOpen={isMenuOpen}
+          onSignOut={handleSignOut}
+          onGetStarted={handleGetStarted}
+          onClose={() => setIsMenuOpen(false)}
+        />
       </div>
     </header>
   );
