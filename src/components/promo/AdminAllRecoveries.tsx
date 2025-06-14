@@ -1,5 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { useAdminAllRecoveries } from "@/hooks/useAdminAllRecoveries";
 import { AdminRecoveriesHeader } from "./admin-recoveries/AdminRecoveriesHeader";
@@ -7,7 +9,7 @@ import { AdminRecoveriesTable } from "./admin-recoveries/AdminRecoveriesTable";
 import { AdminRecoveriesEmptyState } from "./admin-recoveries/AdminRecoveriesEmptyState";
 
 export const AdminAllRecoveries = () => {
-  const { recoveries, loading, refetch } = useAdminAllRecoveries();
+  const { recoveries, loading, refetch, forceRefresh } = useAdminAllRecoveries();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredRecoveries = recoveries.filter(recovery =>
@@ -53,6 +55,21 @@ export const AdminAllRecoveries = () => {
         onSearchChange={setSearchTerm}
       />
       <CardContent>
+        <div className="flex justify-between items-center mb-4">
+          <div className="text-sm text-muted-foreground">
+            {filteredRecoveries.length} demande{filteredRecoveries.length > 1 ? 's' : ''} trouvée{filteredRecoveries.length > 1 ? 's' : ''}
+          </div>
+          <Button
+            onClick={forceRefresh}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Actualiser
+          </Button>
+        </div>
+        
         {filteredRecoveries.length > 0 ? (
           <AdminRecoveriesTable
             recoveries={filteredRecoveries}

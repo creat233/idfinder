@@ -30,6 +30,8 @@ export const useAdminAllRecoveries = () => {
 
       for (const card of reportedCards) {
         console.log(`🔍 Traitement de la carte ${card.card_number}...`);
+        console.log(`📊 Statut: ${card.status}, Description: ${card.description?.substring(0, 100)}...`);
+        
         const recovery = await processReportedCard(card);
         if (recovery) {
           enrichedRecoveries.push(recovery);
@@ -52,7 +54,7 @@ export const useAdminAllRecoveries = () => {
   useEffect(() => {
     fetchAllRecoveries();
 
-    // Écouter les changements en temps réel
+    // Écouter les changements en temps réel avec plus de détails
     const channel = supabase
       .channel('admin-recoveries-changes')
       .on(
@@ -64,19 +66,36 @@ export const useAdminAllRecoveries = () => {
         },
         (payload) => {
           console.log("🔄 Changement détecté dans reported_cards:", payload);
-          fetchAllRecoveries();
+          console.log("🔄 Type d'événement:", payload.eventType);
+          console.log("🔄 Nouvelles données:", payload.new);
+          
+          // Forcer une actualisation immédiate
+          setTimeout(() => {
+            console.log("🔄 Actualisation forcée des données...");
+            fetchAllRecoveries();
+          }, 500);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("📡 Statut de la souscription temps réel:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
   }, []);
 
+  // Ajouter une fonction pour forcer l'actualisation
+  const forceRefresh = () => {
+    console.log("🔄 Actualisation forcée demandée...");
+    setLoading(true);
+    fetchAllRecoveries();
+  };
+
   return {
     recoveries,
     loading,
     refetch: fetchAllRecoveries,
+    forceRefresh,
   };
 };
