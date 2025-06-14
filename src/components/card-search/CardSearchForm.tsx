@@ -1,12 +1,14 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, AlertCircle, Bell, Clock } from "lucide-react";
+import { Search, AlertCircle, Bell, Clock, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { FoundCardResult } from "@/components/card-report/FoundCardResult";
+import { useNavigate } from "react-router-dom";
 
 export const CardSearchForm = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +16,7 @@ export const CardSearchForm = () => {
   const [foundCard, setFoundCard] = useState<any>(null);
   const [showNotFoundMessage, setShowNotFoundMessage] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -172,6 +175,25 @@ export const CardSearchForm = () => {
                 <li>• Partagez l'information avec vos proches - ils pourraient l'avoir trouvée !</li>
                 <li>• Contactez les lieux que vous avez récemment visités</li>
               </ul>
+            </div>
+
+            {/* Ajout d'un appel à l'action pour sauvegarder la carte sur "Mes cartes" */}
+            <div className="bg-violet-50 p-4 rounded-lg border border-violet-200 flex flex-col items-center gap-2 mt-4">
+              <div className="text-violet-700 font-medium flex items-center gap-2">
+                <LogIn className="h-4 w-4" />
+                Recevez une notification automatique si cette carte est retrouvée !
+              </div>
+              <p className="text-violet-600 text-sm mb-2 text-center">
+                Ajoutez ce numéro à <span className="font-semibold">“Mes cartes”</span> pour recevoir une alerte dès qu’il sera signalé sur FinderID.
+              </p>
+              <Button
+                variant="default"
+                className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6"
+                onClick={() => navigate(`/mes-cartes?ajouter=${encodeURIComponent(searchQuery.trim())}`)}
+              >
+                + Ajouter ce numéro à Mes cartes
+              </Button>
+              <p className="text-xs text-violet-500 mt-1">Vous retrouverez toutes vos cartes sous “Mes cartes”.</p>
             </div>
 
             <div className="text-center">
