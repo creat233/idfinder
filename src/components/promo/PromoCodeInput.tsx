@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -56,7 +57,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
         setPromoCode("");
       } else {
         console.log("❌ Échec de validation du code promo:", codeToValidate);
-        showError("Code invalide", "Ce code promo n'existe pas ou a expiré. Vérifiez l'orthographe et réessayez.");
+        showError("Code invalide", "Ce code promo n'existe pas, n'est pas actif ou a expiré. Vérifiez l'orthographe et réessayez.");
         setPromoCode("");
       }
     } catch (error) {

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -44,11 +45,12 @@ export const usePromoCodes = () => {
     try {
       console.log("🔍 Validation du code promo:", code);
       
-      // Rechercher le code dans la base de données sans condition stricte sur is_active
+      // Rechercher le code dans la base de données avec is_active = true
       const { data, error } = await supabase
         .from("promo_codes")
         .select("*")
         .eq("code", code.toUpperCase().trim())
+        .eq("is_active", true)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
@@ -57,11 +59,11 @@ export const usePromoCodes = () => {
       }
 
       if (!data) {
-        console.log("❌ Code promo non trouvé:", code);
+        console.log("❌ Code promo non trouvé ou inactif:", code);
         return null;
       }
 
-      console.log("✅ Code promo trouvé dans la base:", {
+      console.log("✅ Code promo actif trouvé:", {
         code: data.code,
         is_active: data.is_active,
         is_paid: data.is_paid,
@@ -78,7 +80,6 @@ export const usePromoCodes = () => {
         return null;
       }
 
-      // Accepter le code même s'il n'est pas encore actif
       console.log("✅ Code promo validé avec succès:", {
         code: data.code,
         is_active: data.is_active,
