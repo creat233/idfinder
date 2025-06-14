@@ -13,6 +13,7 @@ export const useAdminAllRecoveries = () => {
 
   const fetchAllRecoveries = async () => {
     try {
+      console.log("🔄 Récupération de toutes les cartes signalées...");
       const reportedCards = await fetchReportedCards();
 
       if (reportedCards.length === 0) {
@@ -22,17 +23,23 @@ export const useAdminAllRecoveries = () => {
         return;
       }
 
-      // Filtrer et traiter uniquement les cartes avec des demandes de récupération
+      console.log(`📋 ${reportedCards.length} cartes trouvées, analyse en cours...`);
+
+      // Filtrer et traiter toutes les cartes avec des demandes de récupération
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
+        console.log(`🔍 Traitement de la carte ${card.card_number}...`);
         const recovery = await processReportedCard(card);
         if (recovery) {
           enrichedRecoveries.push(recovery);
+          console.log(`✅ Carte ${card.card_number} ajoutée aux récupérations`);
+        } else {
+          console.log(`❌ Carte ${card.card_number} ignorée (pas de demande de récupération)`);
         }
       }
 
-      console.log(`🎉 Total des demandes de récupération: ${enrichedRecoveries.length}`);
+      console.log(`🎉 Total des demandes de récupération trouvées: ${enrichedRecoveries.length}`);
       setRecoveries(enrichedRecoveries);
     } catch (error) {
       console.error("❌ Erreur lors de la récupération des données:", error);

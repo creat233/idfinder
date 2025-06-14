@@ -4,24 +4,40 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
   const isRecoveryStatus = status === 'recovery_requested';
   
   // Vérifier si la description contient les informations nécessaires
-  const hasOwnerInfo = description.includes("Nom du propriétaire:") && 
-                      description.includes("Téléphone:");
-  const hasRecoveryRequest = description.includes("Prix final:") || 
-                            description.includes("Prix à payer:") ||
-                            description.includes("DEMANDE DE RÉCUPÉRATION");
+  const hasOwnerInfo = description && (
+    description.includes("Nom du propriétaire:") || 
+    description.includes("INFORMATIONS DE RÉCUPÉRATION") ||
+    description.includes("DEMANDE DE RÉCUPÉRATION")
+  );
+  
+  const hasRecoveryRequest = description && (
+    description.includes("Prix final:") || 
+    description.includes("Prix à payer:") ||
+    description.includes("DEMANDE DE RÉCUPÉRATION") ||
+    description.includes("INFORMATIONS DE RÉCUPÉRATION")
+  );
 
   console.log("🔍 Validation demande récupération:", {
+    carte: description?.substring(0, 50) + "...",
     statut: status,
     isRecoveryStatus,
     hasOwnerInfo,
     hasRecoveryRequest,
-    isValid: hasOwnerInfo && (hasRecoveryRequest || isRecoveryStatus)
+    isValid: isRecoveryStatus || (hasOwnerInfo && hasRecoveryRequest)
   });
 
-  return hasOwnerInfo && (hasRecoveryRequest || isRecoveryStatus);
+  return isRecoveryStatus || (hasOwnerInfo && hasRecoveryRequest);
 };
 
 export const extractOwnerInfo = (description: string) => {
+  if (!description) {
+    return {
+      ownerName: "Propriétaire non renseigné",
+      ownerPhone: "Non renseigné",
+      finalPrice: 7000
+    };
+  }
+
   const ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n\r]+)/i);
   const ownerPhoneMatch = description.match(/Téléphone:\s*([^\n\r]+)/i);
   const finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/i);
@@ -44,12 +60,14 @@ export const extractOwnerInfo = (description: string) => {
 };
 
 export const hasPromoCodeUsed = (description: string): boolean => {
+  if (!description) return false;
   const hasPromoCode = description.match(/Code promo utilisé:\s*Oui.*?réduction de (\d+)\s*FCFA/is) !== null;
   console.log("🎁 Code promo utilisé:", hasPromoCode);
   return hasPromoCode;
 };
 
 export const extractPromoDiscount = (description: string): number | null => {
+  if (!description) return null;
   const promoUsedMatch = description.match(/Code promo utilisé:\s*Oui.*?réduction de (\d+)\s*FCFA/is);
   const discount = promoUsedMatch ? parseInt(promoUsedMatch[1]) : null;
   console.log("💰 Réduction code promo:", discount);
