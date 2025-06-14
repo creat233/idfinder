@@ -32,6 +32,7 @@ export const useAdminAllRecoveries = () => {
         console.log(`🔍 Traitement de la carte ${card.card_number}...`);
         console.log(`📊 Statut: ${card.status}, Description disponible: ${card.description ? 'Oui' : 'Non'}`);
         
+        // Traiter chaque carte signalée
         const recovery = await processReportedCard(card);
         if (recovery) {
           enrichedRecoveries.push(recovery);
@@ -58,7 +59,7 @@ export const useAdminAllRecoveries = () => {
   useEffect(() => {
     fetchAllRecoveries();
 
-    // Écouter les changements en temps réel avec plus de détails
+    // Écouter les changements en temps réel
     const channel = supabase
       .channel('admin-recoveries-changes')
       .on(
@@ -71,13 +72,12 @@ export const useAdminAllRecoveries = () => {
         (payload) => {
           console.log("🔄 Changement détecté dans reported_cards:", payload);
           console.log("🔄 Type d'événement:", payload.eventType);
-          console.log("🔄 Nouvelles données:", payload.new);
           
-          // Forcer une actualisation immédiate après un délai court
+          // Actualisation immédiate
           setTimeout(() => {
             console.log("🔄 Actualisation automatique des données...");
             fetchAllRecoveries();
-          }, 1000);
+          }, 500);
         }
       )
       .subscribe((status) => {
@@ -93,7 +93,7 @@ export const useAdminAllRecoveries = () => {
     };
   }, []);
 
-  // Ajouter une fonction pour forcer l'actualisation
+  // Fonction pour forcer l'actualisation
   const forceRefresh = async () => {
     console.log("🔄 Actualisation forcée demandée...");
     setLoading(true);

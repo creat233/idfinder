@@ -1,5 +1,9 @@
 
 export const isValidRecoveryRequest = (description: string, status: string): boolean => {
+  console.log("🔍 Validation d'une demande de récupération:");
+  console.log("📝 Description:", description?.substring(0, 100) + "...");
+  console.log("📊 Statut:", status);
+  
   // Vérifier d'abord si c'est une demande de récupération basée sur le statut
   const isRecoveryStatus = status === 'recovery_requested';
   
@@ -15,28 +19,25 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
     return false;
   }
   
-  const hasOwnerInfo = description && (
-    description.includes("Nom du propriétaire:") || 
-    description.includes("INFORMATIONS DE RÉCUPÉRATION") ||
-    description.includes("DEMANDE DE RÉCUPÉRATION")
+  // Chercher des mots-clés spécifiques dans la description
+  const recoveryKeywords = [
+    "INFORMATIONS DE RÉCUPÉRATION",
+    "DEMANDE DE RÉCUPÉRATION",
+    "Nom du propriétaire:",
+    "Prix final:",
+    "Prix à payer:",
+    "RÉCUPÉRATION CONFIRMÉE"
+  ];
+  
+  const hasRecoveryKeywords = recoveryKeywords.some(keyword => 
+    description.toUpperCase().includes(keyword.toUpperCase())
   );
   
-  const hasRecoveryRequest = description && (
-    description.includes("Prix final:") || 
-    description.includes("Prix à payer:") ||
-    description.includes("DEMANDE DE RÉCUPÉRATION") ||
-    description.includes("INFORMATIONS DE RÉCUPÉRATION") ||
-    description.includes("Téléphone:")
-  );
+  const isValid = hasRecoveryKeywords;
 
-  const isValid = hasOwnerInfo && hasRecoveryRequest;
-
-  console.log("🔍 Validation demande récupération:", {
-    carte: description?.substring(0, 50) + "...",
-    statut: status,
+  console.log("🔍 Résultat validation:", {
+    hasRecoveryKeywords,
     isRecoveryStatus,
-    hasOwnerInfo,
-    hasRecoveryRequest,
     isValid
   });
 

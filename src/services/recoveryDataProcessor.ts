@@ -1,17 +1,18 @@
 
-import { AllRecoveryData, ReportedCard, ReporterProfile } from "@/types/adminRecoveries";
+import { AllRecoveryData, ReportedCard } from "@/types/adminRecoveries";
 import { isValidRecoveryRequest, extractOwnerInfo, hasPromoCodeUsed, extractPromoDiscount } from "@/utils/recoveryValidation";
 import { fetchReporterProfile, fetchPromoUsage, fetchPromoOwnerPhone } from "./adminRecoveryService";
 
 export const processReportedCard = async (card: ReportedCard): Promise<AllRecoveryData | null> => {
-  console.log("🔍 Analyse de la carte:", card.card_number);
-  console.log("📝 Description:", card.description?.substring(0, 200) + "...");
-  console.log("📊 Statut:", card.status);
+  console.log("🔍 Analyse détaillée de la carte:", card.card_number);
+  console.log("📝 Description complète:", card.description);
+  console.log("📊 Statut actuel:", card.status);
   
   const description = card.description || "";
   
   // Vérifier si c'est une demande de récupération valide
-  if (!isValidRecoveryRequest(description, card.status)) {
+  const isValid = isValidRecoveryRequest(description, card.status);
+  if (!isValid) {
     console.log("❌ Carte ignorée - pas une demande de récupération valide");
     return null;
   }
@@ -79,13 +80,12 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       discount_amount: promoData?.discountAmount
     };
 
-    console.log("✅ Demande de récupération ajoutée:", {
+    console.log("✅ Demande de récupération créée:", {
       carte: recovery.card_number,
       propriétaire: recovery.owner_name,
       signaleur: recovery.reporter_name,
       prix: recovery.final_price,
       promo: recovery.promo_code,
-      telPromoOwner: recovery.promo_code_owner_phone,
       statut: recovery.status
     });
 
