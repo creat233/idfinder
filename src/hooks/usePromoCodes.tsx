@@ -44,12 +44,11 @@ export const usePromoCodes = () => {
     try {
       console.log("🔍 Validation du code promo:", code);
       
-      // Première tentative: chercher le code exact avec is_active = true
-      let { data, error } = await supabase
+      // Rechercher le code dans la base de données sans condition stricte sur is_active
+      const { data, error } = await supabase
         .from("promo_codes")
         .select("*")
         .eq("code", code.toUpperCase().trim())
-        .eq("is_active", true)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
@@ -57,41 +56,18 @@ export const usePromoCodes = () => {
         throw error;
       }
 
-      // Si pas trouvé avec is_active = true, chercher juste le code pour voir s'il existe
-      if (!data) {
-        console.log("🔍 Code non trouvé avec is_active=true, recherche du code...");
-        const { data: codeData, error: codeError } = await supabase
-          .from("promo_codes")
-          .select("*")
-          .eq("code", code.toUpperCase().trim())
-          .maybeSingle();
-
-        if (codeError && codeError.code !== 'PGRST116') {
-          console.error("❌ Erreur lors de la recherche du code:", codeError);
-          throw codeError;
-        }
-
-        if (codeData) {
-          console.log("📋 Code trouvé mais pas actif:", {
-            code: codeData.code,
-            is_active: codeData.is_active,
-            is_paid: codeData.is_paid,
-            user_id: codeData.user_id
-          });
-          
-          // Si le code existe mais n'est pas actif, on le retourne quand même
-          // pour permettre son utilisation (logique métier)
-          if (!codeData.is_active) {
-            console.log("⚠️ Code trouvé mais marqué comme inactif, acceptance forcée pour test");
-            data = codeData;
-          }
-        }
-      }
-
       if (!data) {
         console.log("❌ Code promo non trouvé:", code);
         return null;
       }
+
+      console.log("✅ Code promo trouvé dans la base:", {
+        code: data.code,
+        is_active: data.is_active,
+        is_paid: data.is_paid,
+        expires_at: data.expires_at,
+        user_id: data.user_id
+      });
 
       // Vérifier si le code a expiré
       const now = new Date();
@@ -102,7 +78,8 @@ export const usePromoCodes = () => {
         return null;
       }
 
-      console.log("✅ Code promo validé:", {
+      // Accepter le code même s'il n'est pas encore actif
+      console.log("✅ Code promo validé avec succès:", {
         code: data.code,
         is_active: data.is_active,
         expires_at: data.expires_at,
