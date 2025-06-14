@@ -1,22 +1,22 @@
 
 export const isValidRecoveryRequest = (description: string, status: string): boolean => {
   console.log("🔍 Validation d'une demande de récupération:");
-  console.log("📝 Description:", description?.substring(0, 200));
+  console.log("📝 Description:", description ? description.substring(0, 200) + "..." : "Aucune");
   console.log("📊 Statut:", status);
   
-  // Si le statut indique une demande de récupération, c'est valide
+  // Première vérification : si le statut est 'recovery_requested', c'est automatiquement valide
   if (status === 'recovery_requested') {
     console.log("✅ Demande valide - statut recovery_requested");
     return true;
   }
   
-  // Sinon, vérifier si la description contient les informations de récupération
+  // Si pas de description, on ne peut pas valider
   if (!description) {
     console.log("❌ Pas de description disponible");
     return false;
   }
   
-  // Chercher des mots-clés spécifiques dans la description
+  // Chercher les mots-clés spécifiques dans la description (insensible à la casse)
   const recoveryKeywords = [
     "INFORMATIONS DE RÉCUPÉRATION",
     "DEMANDE DE RÉCUPÉRATION",
@@ -24,16 +24,22 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
     "Prix final:",
     "Prix à payer:",
     "RÉCUPÉRATION CONFIRMÉE",
-    "DEMANDE DE RÉCUPÉRATION CONFIRMÉE"
+    "DEMANDE DE RÉCUPÉRATION CONFIRMÉE",
+    "Date de demande:",
+    "Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE"
   ];
   
+  const descriptionUpper = description.toUpperCase();
   const hasRecoveryKeywords = recoveryKeywords.some(keyword => 
-    description.toUpperCase().includes(keyword.toUpperCase())
+    descriptionUpper.includes(keyword.toUpperCase())
   );
   
-  console.log("🔍 Résultat validation:", {
-    hasRecoveryKeywords,
-    isValid: hasRecoveryKeywords
+  console.log("🔍 Mots-clés trouvés:", hasRecoveryKeywords);
+  console.log("🔍 Description contient:", {
+    hasInfoRecuperation: descriptionUpper.includes("INFORMATIONS DE RÉCUPÉRATION"),
+    hasNomProprietaire: descriptionUpper.includes("NOM DU PROPRIÉTAIRE"),
+    hasPrixFinal: descriptionUpper.includes("PRIX FINAL"),
+    hasDateDemande: descriptionUpper.includes("DATE DE DEMANDE")
   });
 
   return hasRecoveryKeywords;
@@ -48,8 +54,11 @@ export const extractOwnerInfo = (description: string) => {
     };
   }
 
+  // Extraction du nom du propriétaire
   const ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n\r]+)/i);
+  // Extraction du téléphone
   const ownerPhoneMatch = description.match(/Téléphone:\s*([^\n\r]+)/i);
+  // Extraction du prix final
   const finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/i);
 
   const ownerName = ownerNameMatch ? ownerNameMatch[1].trim() : "Propriétaire non renseigné";

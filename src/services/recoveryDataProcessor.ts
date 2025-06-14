@@ -5,7 +5,7 @@ import { fetchReporterProfile, fetchPromoUsage, fetchPromoOwnerPhone } from "./a
 
 export const processReportedCard = async (card: ReportedCard): Promise<AllRecoveryData | null> => {
   console.log("🔍 Analyse de la carte:", card.card_number);
-  console.log("📊 Statut:", card.status);
+  console.log("📊 Statut de la carte:", card.status);
   console.log("📝 Description présente:", !!card.description);
   
   const description = card.description || "";
@@ -14,6 +14,7 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
   const isValid = isValidRecoveryRequest(description, card.status);
   if (!isValid) {
     console.log("❌ Carte ignorée - pas une demande de récupération valide");
+    console.log("❌ Statut:", card.status, "- Description début:", description.substring(0, 100));
     return null;
   }
 
@@ -75,7 +76,7 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       discount_amount: promoData?.discountAmount
     };
 
-    console.log("✅ RÉCUPÉRATION CRÉÉE:", {
+    console.log("✅ RÉCUPÉRATION CRÉÉE AVEC SUCCÈS:", {
       carte: recovery.card_number,
       propriétaire: recovery.owner_name,
       téléphone: recovery.owner_phone,

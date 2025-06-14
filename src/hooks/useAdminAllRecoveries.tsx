@@ -14,7 +14,7 @@ export const useAdminAllRecoveries = () => {
     try {
       console.log("🔄 Récupération de TOUTES les cartes signalées...");
       
-      // Récupérer TOUTES les cartes signalées
+      // Récupérer TOUTES les cartes signalées, en priorité celles avec le statut recovery_requested
       const { data: reportedCards, error } = await supabase
         .from("reported_cards")
         .select("*")
@@ -33,26 +33,28 @@ export const useAdminAllRecoveries = () => {
       }
 
       console.log(`📋 ${reportedCards.length} cartes trouvées, analyse en cours...`);
-      console.log("🔍 Cartes récupérées:", reportedCards.map(card => ({
-        numero: card.card_number,
-        statut: card.status,
-        description: card.description ? "Oui" : "Non"
-      })));
+      
+      // Afficher les détails de chaque carte pour débugger
+      reportedCards.forEach(card => {
+        console.log(`🔍 Carte ${card.card_number}:`, {
+          statut: card.status,
+          aDescription: !!card.description,
+          descriptionDebut: card.description ? card.description.substring(0, 100) : "Aucune"
+        });
+      });
 
       // Traiter toutes les cartes pour identifier les demandes de récupération
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
         console.log(`🔍 Traitement de la carte ${card.card_number}...`);
-        console.log(`📊 Statut: ${card.status}`);
-        console.log(`📝 Description: ${card.description ? card.description.substring(0, 100) + "..." : "Aucune"}`);
         
         const recovery = await processReportedCard(card);
         if (recovery) {
           enrichedRecoveries.push(recovery);
-          console.log(`✅ Carte ${card.card_number} ajoutée aux récupérations`);
+          console.log(`✅ Carte ${card.card_number} ajoutée aux récupérations - Prix: ${recovery.final_price} FCFA`);
         } else {
-          console.log(`❌ Carte ${card.card_number} ignorée (pas de demande de récupération)`);
+          console.log(`❌ Carte ${card.card_number} ignorée`);
         }
       }
 
@@ -60,10 +62,12 @@ export const useAdminAllRecoveries = () => {
       
       // Afficher les détails des récupérations trouvées
       if (enrichedRecoveries.length > 0) {
-        console.log("📋 Détails des récupérations:");
+        console.log("📋 Récupérations validées:");
         enrichedRecoveries.forEach(recovery => {
-          console.log(`- Carte: ${recovery.card_number}, Propriétaire: ${recovery.owner_name}, Statut: ${recovery.status}`);
+          console.log(`- Carte: ${recovery.card_number}, Propriétaire: ${recovery.owner_name}, Prix: ${recovery.final_price} FCFA, Statut: ${recovery.status}`);
         });
+      } else {
+        console.log("⚠️ Aucune demande de récupération trouvée");
       }
       
       setRecoveries(enrichedRecoveries);
@@ -95,7 +99,14 @@ export const useAdminAllRecoveries = () => {
         (payload) => {
           console.log("🔄 Changement détecté dans reported_cards:", payload);
           console.log("🔄 Type d'événement:", payload.eventType);
-          console.log("🔄 Données:", payload.new || payload.old);
+          
+          if (payload.new) {
+            console.log("🔄 Nouvelles données:", {
+              cardNumber: payload.new.card_number,
+              status: payload.new.status,
+              hasDescription: !!payload.new.description
+            });
+          }
           
           // Actualisation immédiate après un court délai
           setTimeout(() => {
