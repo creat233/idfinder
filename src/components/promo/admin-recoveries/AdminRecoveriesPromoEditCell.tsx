@@ -37,8 +37,14 @@ export const AdminRecoveriesPromoEditCell = ({
       .from("promo_codes")
       .select("id, code, is_active, is_paid, expires_at")
       .eq("code", inputValue.trim().toUpperCase())
-      .single();
-    if (error || !promo) {
+      .maybeSingle(); // Attention à .maybeSingle()
+
+    if (error) {
+      showError("Erreur Supabase", "Erreur de requête (promo_codes).");
+      setLoading(false);
+      return;
+    }
+    if (!promo) {
       showError("Code promo introuvable.", "Vérifie l'exactitude du code.");
       setLoading(false);
       return;
@@ -48,22 +54,42 @@ export const AdminRecoveriesPromoEditCell = ({
       setLoading(false);
       return;
     }
-    // Associer ce code promo à la carte signalée
-    // (⚠️ Ne pas inclure promo_code_id dans des objets d'autres tables que prévu)
-    const { error: updateError } = await supabase
-      .from("reported_cards")
-      .update({ promo_code_id: promo.id } as any) // <--- typage forcé ici
-      .eq("id", recoveryId);
 
-    if (updateError) {
-      showError("Erreur lors de l'association du code promo.");
+    // Vérifier qu'il n'est pas déjà associé à une récupération (edge case)
+    // optionnel, sinon l'update va écraser
+    // Associer ce code promo à la carte signalée
+    try {
+      const { data: updateData, error: updateError } = await supabase
+        .from("reported_cards")
+        .update({ promo_code_id: promo.id })
+        .eq("id", recoveryId)
+        .select();
+
+      if (updateError) {
+        // logs techniques
+        console.error("Erreur lors de l'association du code promo:", updateError);
+        showError("Erreur lors de l'association", updateError.message || "Impossible d'associer le code promo.");
+        setLoading(false);
+        return;
+      }
+
+      if (!updateData || updateData.length === 0) {
+        showError("Erreur", "Aucune récupération mise à jour, ID inexistant.");
+        setLoading(false);
+        return;
+      }
+
+      showSuccess(
+        "Code promo associé ✔️",
+        `Code ${promo.code} associé à la récupération ${recoveryId} !`
+      );
+      setEditing(false);
       setLoading(false);
-      return;
+      onPromoUpdated();
+    } catch (e: any) {
+      showError("Erreur inattendue", e.message || "Unknown error");
+      setLoading(false);
     }
-    showSuccess("Code promo associé ✔️");
-    setEditing(false);
-    setLoading(false);
-    onPromoUpdated();
   };
 
   return (
