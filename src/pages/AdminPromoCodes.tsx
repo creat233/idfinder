@@ -1,9 +1,11 @@
+
 import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
 import { AdminRecoveriesList } from "@/components/promo/AdminRecoveriesList";
 import { AdminPendingCodes } from "@/components/promo/AdminPendingCodes";
 import { AdminAllRecoveries } from "@/components/promo/AdminAllRecoveries";
+import { AdminRecoveredCards } from "@/components/promo/AdminRecoveredCards";
 import { ConnectionStatus } from "@/components/ConnectionStatus";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Shield, Activity } from "lucide-react";
@@ -62,6 +64,7 @@ const AdminPromoCodes = () => {
           {/* Sections principales */}
           <AdminPendingCodes />
           <AdminAllRecoveries />
+          <AdminRecoveredCards />
           <AdminPromoActivation />
           <AdminRecoveriesList />
           <AdminPromoCodesList />
