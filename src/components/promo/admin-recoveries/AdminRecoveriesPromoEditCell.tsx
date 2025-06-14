@@ -49,6 +49,7 @@ export const AdminRecoveriesPromoEditCell = ({
       return;
     }
     // Associer ce code promo à la carte signalée
+    // (⚠️ Ne pas inclure promo_code_id dans des objets d'autres tables que prévu)
     const { error: updateError } = await supabase
       .from("reported_cards")
       .update({ promo_code_id: promo.id })
@@ -73,7 +74,7 @@ export const AdminRecoveriesPromoEditCell = ({
             <Gift className="h-4 w-4 text-green-600" />
             <span className="font-mono font-semibold text-green-700">{promoCode}</span>
             <Button
-              size="xs"
+              size="sm"
               variant="ghost"
               className="px-1 py-0.5"
               onClick={() => setEditing(true)}
@@ -84,7 +85,7 @@ export const AdminRecoveriesPromoEditCell = ({
           </div>
         ) : (
           !editing && (
-            <Button size="xs" onClick={() => setEditing(true)} variant="outline">
+            <Button size="sm" onClick={() => setEditing(true)} variant="outline">
               + Ajouter code promo
             </Button>
           )
@@ -109,7 +110,7 @@ export const AdminRecoveriesPromoEditCell = ({
             <div className="flex gap-2 mt-1">
               <Button
                 type="submit"
-                size="xs"
+                size="sm"
                 disabled={loading}
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
@@ -118,7 +119,7 @@ export const AdminRecoveriesPromoEditCell = ({
               </Button>
               <Button
                 type="button"
-                size="xs"
+                size="sm"
                 variant="ghost"
                 onClick={() => setEditing(false)}
                 disabled={loading}
@@ -141,3 +142,4 @@ export const AdminRecoveriesPromoEditCell = ({
     </TableCell>
   );
 };
+
