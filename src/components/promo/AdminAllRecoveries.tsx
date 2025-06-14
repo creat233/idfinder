@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
@@ -65,6 +64,7 @@ export const AdminAllRecoveries = () => {
     }
   };
 
+  // Nouvelle callback : forcer la mise à jour immédiate après confirmation paiement
   const handlePaymentConfirmed = () => {
     // Forcer la mise à jour immédiate des données
     console.log("🔄 Paiement confirmé, actualisation des données...");

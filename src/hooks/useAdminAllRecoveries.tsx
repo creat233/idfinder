@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { AllRecoveryData } from "@/types/adminRecoveries";
@@ -113,6 +112,10 @@ export const useAdminAllRecoveries = () => {
     }
   };
 
+  const forceRefresh = useCallback(() => {
+    fetchAllRecoveries();
+  }, []);
+
   useEffect(() => {
     fetchAllRecoveries();
 
@@ -160,18 +163,10 @@ export const useAdminAllRecoveries = () => {
     };
   }, []);
 
-  // Fonction pour forcer l'actualisation
-  const forceRefresh = async () => {
-    console.log("🔄 Actualisation forcée demandée...");
-    setLoading(true);
-    await fetchAllRecoveries();
-    showSuccess("Succès", "Données actualisées");
-  };
-
   return {
     recoveries,
     loading,
     refetch: fetchAllRecoveries,
-    forceRefresh,
+    forceRefresh, // <- exposé pour être utilisé après confirmation paiement
   };
 };
