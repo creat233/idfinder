@@ -77,7 +77,7 @@ const MyCards = () => {
           description:
             t("cardAddedDescription") ||
             "Le numéro a été ajouté à vos cartes surveillées.",
-          variant: "success",
+          variant: "default", // Fix: type must be "default" or "destructive"
         });
         // On peut recharger la liste pour afficher à l'utilisateur immédiatement
         refetchCards?.();
