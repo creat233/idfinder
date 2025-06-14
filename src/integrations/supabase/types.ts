@@ -176,28 +176,37 @@ export type Database = {
       }
       promo_usage: {
         Row: {
+          admin_confirmed_by: string | null
           card_search_id: string | null
           created_at: string
           discount_amount: number
           id: string
+          is_paid: boolean
+          paid_at: string | null
           promo_code_id: string
           used_by_email: string | null
           used_by_phone: string | null
         }
         Insert: {
+          admin_confirmed_by?: string | null
           card_search_id?: string | null
           created_at?: string
           discount_amount?: number
           id?: string
+          is_paid?: boolean
+          paid_at?: string | null
           promo_code_id: string
           used_by_email?: string | null
           used_by_phone?: string | null
         }
         Update: {
+          admin_confirmed_by?: string | null
           card_search_id?: string | null
           created_at?: string
           discount_amount?: number
           id?: string
+          is_paid?: boolean
+          paid_at?: string | null
           promo_code_id?: string
           used_by_email?: string | null
           used_by_phone?: string | null

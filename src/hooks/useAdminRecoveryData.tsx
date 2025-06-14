@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -23,13 +22,15 @@ export const useAdminRecoveryData = () => {
 
   const fetchRecoveryData = async () => {
     try {
-      console.log("Récupération des données de récupération...");
-      
-      // Récupérer les utilisations de codes promo
+      // Maintenant, NE récupérer que les utilisations payées par un admin !!!
+      console.log("Récupération des données de récupération confirmées (is_paid = true)...");
+
+      // Récupérer uniquement les utilisations payées
       const { data: usageData, error: usageError } = await supabase
         .from("promo_usage")
         .select("*")
-        .order("created_at", { ascending: false });
+        .eq("is_paid", true)
+        .order("paid_at", { ascending: false });
 
       if (usageError) {
         console.error("Erreur lors de la récupération des utilisations:", usageError);

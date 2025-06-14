@@ -1,11 +1,19 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+
+// Helper pour obtenir l'admin courant (par défaut récupère l'ID s'il est loggé)
+const getCurrentAdminId = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user ? user.id : null;
+};
 
 export const useAdminPromoPayments = () => {
   const [loading, setLoading] = useState(false);
   const { showSuccess, showError } = useToast();
 
+  // Paiement de récupération validé par l'admin
   const confirmRecoveryPayment = async (recoveryData: {
     cardId: string;
     ownerName: string;
@@ -13,7 +21,7 @@ export const useAdminPromoPayments = () => {
     reporterId: string;
     reporterName: string;
     finalPrice: number;
-    promoUsageId?: string;
+    promoUsageId?: string; // <- très important ici
     promoCodeOwnerId?: string;
     promoCode?: string;
   }) => {
@@ -21,16 +29,19 @@ export const useAdminPromoPayments = () => {
       setLoading(true);
       console.log("Confirmation du paiement de récupération:", recoveryData);
 
-      // 1. Mettre à jour le statut de la carte comme récupérée IMMÉDIATEMENT
+      // 1. Mettre à jour le statut de la carte comme récupérée
       const { error: cardUpdateError } = await supabase
         .from("reported_cards")
         .update({ 
           status: "recovered",
-          description: (await supabase
-            .from("reported_cards")
-            .select("description")
-            .eq("id", recoveryData.cardId)
-            .single()).data?.description + `\n\n--- PAIEMENT CONFIRMÉ ---\nDate de confirmation: ${new Date().toLocaleString('fr-FR')}\nStatut: PAYÉ ET RÉCUPÉRÉ`
+          description: (
+            (await supabase
+              .from("reported_cards")
+              .select("description")
+              .eq("id", recoveryData.cardId)
+              .single()
+            ).data?.description ?? ""
+          ) + `\n\n--- PAIEMENT CONFIRMÉ ---\nDate de confirmation: ${new Date().toLocaleString('fr-FR')}\nStatut: PAYÉ ET RÉCUPÉRÉ`
         })
         .eq("id", recoveryData.cardId);
 
@@ -39,13 +50,11 @@ export const useAdminPromoPayments = () => {
         throw cardUpdateError;
       }
 
-      console.log("✅ Statut de la carte mis à jour vers 'recovered'");
-
-      // 2. Notification au propriétaire de la carte
+      // 2. Notification au propriétaire (N.B. : reporterId = id signaleur)
       const { error: ownerNotificationError } = await supabase
         .from("notifications")
         .insert({
-          user_id: recoveryData.reporterId, // On utilise l'ID du signaleur car on n'a pas l'ID du propriétaire
+          user_id: recoveryData.reporterId,
           type: "recovery_payment_confirmed",
           title: "💰 Paiement confirmé - Récupération de carte",
           message: `Le paiement de ${recoveryData.finalPrice} FCFA pour la récupération de votre carte a été confirmé par l'administration. Vous pouvez maintenant récupérer votre carte.`,
@@ -56,7 +65,7 @@ export const useAdminPromoPayments = () => {
         console.error("Erreur notification propriétaire:", ownerNotificationError);
       }
 
-      // 3. Notification au signaleur (récompense de 2000 FCFA)
+      // 3. Notification au signaleur (récompense)
       const { error: reporterNotificationError } = await supabase
         .from("notifications")
         .insert({
@@ -71,32 +80,38 @@ export const useAdminPromoPayments = () => {
         console.error("Erreur notification signaleur:", reporterNotificationError);
       }
 
-      // 4. Si un code promo a été utilisé, notifier le propriétaire du code promo
+      // 4. Si un code promo a été utilisé, notifier le propriétaire SEULEMENT à la confirmation ET MAJ la promo_usage
       if (recoveryData.promoUsageId && recoveryData.promoCodeOwnerId && recoveryData.promoCode) {
-        const { error: promoOwnerNotificationError } = await supabase
-          .from("notifications")
-          .insert({
-            user_id: recoveryData.promoCodeOwnerId,
-            type: "promo_payment_received",
-            title: "💰 Paiement reçu - Code promo",
-            message: `Félicitations ! Vous avez reçu un paiement de 1000 FCFA pour l'utilisation de votre code promo ${recoveryData.promoCode}. Le propriétaire a récupéré sa carte avec succès.`,
-            is_read: false
-          });
+        // Get admin who validates
+        const adminId = await getCurrentAdminId();
 
-        if (promoOwnerNotificationError) {
-          console.error("Erreur notification propriétaire code promo:", promoOwnerNotificationError);
-        }
-
-        // Marquer l'utilisation du code promo comme payée
+        // Marquer l'utilisation comme payée
         const { error: updatePromoError } = await supabase
           .from("promo_usage")
           .update({ 
-            // Note: Ces champs devront être ajoutés à la table promo_usage si nécessaire
+            is_paid: true,
+            paid_at: new Date().toISOString(),
+            admin_confirmed_by: adminId ?? null
           })
           .eq("id", recoveryData.promoUsageId);
 
         if (updatePromoError) {
           console.error("Erreur mise à jour promo usage:", updatePromoError);
+        } else {
+          // Envoyer la notification de revenu SEULEMENT lors de la confirmation
+          const { error: promoOwnerNotificationError } = await supabase
+            .from("notifications")
+            .insert({
+              user_id: recoveryData.promoCodeOwnerId,
+              type: "promo_payment_received",
+              title: "💰 Paiement reçu - Code promo",
+              message: `Félicitations ! Vous avez reçu un paiement de 1000 FCFA pour l'utilisation de votre code promo ${recoveryData.promoCode}. Le propriétaire a récupéré sa carte avec succès.`,
+              is_read: false
+            });
+
+          if (promoOwnerNotificationError) {
+            console.error("Erreur notification propriétaire code promo:", promoOwnerNotificationError);
+          }
         }
       }
 
@@ -105,22 +120,40 @@ export const useAdminPromoPayments = () => {
         `Toutes les notifications ont été envoyées et les paiements confirmés (Propriétaire: ${recoveryData.finalPrice} FCFA, Signaleur: 2000 FCFA${recoveryData.promoCode ? `, Propriétaire code promo: 1000 FCFA` : ''})`
       );
 
-      return true; // Succès
+      return true;
     } catch (error) {
       console.error("Erreur lors de la confirmation du paiement:", error);
       showError("Erreur", "Impossible de confirmer le paiement");
-      return false; // Échec
+      return false;
     } finally {
       setLoading(false);
     }
   };
 
-  // Garder l'ancienne méthode pour compatibilité
+  // Methode legacy, inchangée
   const confirmPromoPayment = async (promoUsageId: string, promoCodeOwnerId: string, amount: number) => {
     try {
       setLoading(true);
       console.log("Confirmation du paiement pour:", { promoUsageId, promoCodeOwnerId, amount });
 
+      // SET PAID!
+      const adminId = await getCurrentAdminId();
+
+      const { error: updateError } = await supabase
+        .from("promo_usage")
+        .update({ 
+          is_paid: true,
+          paid_at: new Date().toISOString(),
+          admin_confirmed_by: adminId ?? null
+        })
+        .eq("id", promoUsageId);
+
+      if (updateError) {
+        console.error("Erreur lors de la mise à jour de l'utilisation:", updateError);
+        throw updateError;
+      }
+
+      // Ensuite, la notification
       const { error: notificationError } = await supabase
         .from("notifications")
         .insert({
@@ -134,17 +167,6 @@ export const useAdminPromoPayments = () => {
       if (notificationError) {
         console.error("Erreur lors de la création de la notification:", notificationError);
         throw notificationError;
-      }
-
-      const { error: updateError } = await supabase
-        .from("promo_usage")
-        .update({ 
-          // Note: Ces champs devront être ajoutés à la table promo_usage si nécessaire
-        })
-        .eq("id", promoUsageId);
-
-      if (updateError) {
-        console.error("Erreur lors de la mise à jour de l'utilisation:", updateError);
       }
 
       showSuccess("Paiement confirmé", "Le propriétaire du code promo a été notifié du paiement");
@@ -166,7 +188,7 @@ export const useAdminPromoPayments = () => {
           user_id: promoOwnerId,
           type: "promo_code_used",
           title: "🎉 Code promo utilisé !",
-          message: `Votre code promo ${promoCode} vient d'être utilisé ! Attendez la confirmation de récupération pour recevoir votre revenu de 1000 FCFA.`,
+          message: `Votre code promo ${promoCode} vient d'être utilisé ! Attendez la confirmation de récupération pour recevoir votre revenu de 1000 FCFA.`,
           is_read: false
         });
 
