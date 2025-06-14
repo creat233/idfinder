@@ -1,14 +1,10 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Package, Phone, User, Gift, MapPin, Calendar, DollarSign, UserCheck, PhoneCall } from "lucide-react";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { useAdminAllRecoveries } from "@/hooks/useAdminAllRecoveries";
-import { AdminRecoveryPaymentButton } from "./AdminRecoveryPaymentButton";
+import { AdminRecoveriesHeader } from "./admin-recoveries/AdminRecoveriesHeader";
+import { AdminRecoveriesTable } from "./admin-recoveries/AdminRecoveriesTable";
+import { AdminRecoveriesEmptyState } from "./admin-recoveries/AdminRecoveriesEmptyState";
 
 export const AdminAllRecoveries = () => {
   const { recoveries, loading, refetch } = useAdminAllRecoveries();
@@ -51,198 +47,21 @@ export const AdminAllRecoveries = () => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Package className="h-5 w-5" />
-          Demandes de Récupération de Cartes
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-            {recoveries.length} demande{recoveries.length > 1 ? 's' : ''}
-          </Badge>
-        </CardTitle>
-        <div className="flex items-center gap-2">
-          <Search className="h-4 w-4" />
-          <Input
-            placeholder="Rechercher par carte, propriétaire, signaleur, lieu..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
-          />
-        </div>
-      </CardHeader>
+      <AdminRecoveriesHeader
+        totalRecoveries={recoveries.length}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
       <CardContent>
         {filteredRecoveries.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Carte</TableHead>
-                <TableHead>Propriétaire</TableHead>
-                <TableHead>Signaleur</TableHead>
-                <TableHead>Lieu</TableHead>
-                <TableHead>Code Promo</TableHead>
-                <TableHead>Prix Final</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredRecoveries.map((recovery) => (
-                <TableRow key={recovery.id}>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Package className="h-4 w-4 text-blue-600" />
-                        <span className="font-mono font-semibold">{recovery.card_number}</span>
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {recovery.document_type.toUpperCase()}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-green-600" />
-                        <span className="font-medium">{recovery.owner_name}</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <Phone className="h-3 w-3" />
-                        {recovery.owner_phone !== "Non renseigné" ? (
-                          <button
-                            onClick={() => handleCallOwner(recovery.owner_phone)}
-                            className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1"
-                          >
-                            <PhoneCall className="h-3 w-3" />
-                            {recovery.owner_phone}
-                          </button>
-                        ) : (
-                          <span className="text-muted-foreground italic">
-                            {recovery.owner_phone}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-blue-600 font-medium">
-                        À payer: {recovery.final_price} FCFA
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <UserCheck className="h-4 w-4 text-purple-600" />
-                        <span className="font-medium">{recovery.reporter_name}</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <Phone className="h-3 w-3" />
-                        {recovery.reporter_phone !== "Non renseigné" ? (
-                          <button
-                            onClick={() => handleCallReporter(recovery.reporter_phone)}
-                            className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1"
-                          >
-                            <PhoneCall className="h-3 w-3" />
-                            {recovery.reporter_phone}
-                          </button>
-                        ) : (
-                          <span className="text-muted-foreground italic">
-                            {recovery.reporter_phone}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-green-600 font-medium">
-                        Récompense: 2000 FCFA
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 text-sm">
-                      <MapPin className="h-3 w-3" />
-                      <span>{recovery.location}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {recovery.promo_code ? (
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Gift className="h-4 w-4 text-green-600" />
-                          <span className="font-mono font-semibold text-green-700">{recovery.promo_code}</span>
-                        </div>
-                        {recovery.discount_amount && (
-                          <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
-                            -{recovery.discount_amount} FCFA
-                          </Badge>
-                        )}
-                        <div className="text-xs text-green-600 font-medium">
-                          Propriétaire gagne: 1000 FCFA
-                        </div>
-                        {recovery.promo_code_owner_phone && (
-                          <div className="flex items-center gap-1 text-xs">
-                            <Phone className="h-3 w-3" />
-                            {recovery.promo_code_owner_phone !== "Non renseigné" ? (
-                              <button
-                                onClick={() => handleCallPromoOwner(recovery.promo_code_owner_phone!)}
-                                className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1 font-semibold"
-                              >
-                                <PhoneCall className="h-2 w-2" />
-                                {recovery.promo_code_owner_phone}
-                              </button>
-                            ) : (
-                              <span className="text-muted-foreground italic">
-                                {recovery.promo_code_owner_phone}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground italic text-sm">Aucun code promo</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <DollarSign className="h-3 w-3" />
-                      <span className="font-semibold">{recovery.final_price} FCFA</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge 
-                      variant={recovery.status === "recovered" ? "default" : "outline"}
-                      className={recovery.status === "recovered" ? "bg-green-100 text-green-800" : "bg-yellow-50 text-yellow-700"}
-                    >
-                      {recovery.status === "recovered" ? "Récupérée" : "En attente"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Calendar className="h-3 w-3" />
-                      {format(new Date(recovery.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {recovery.status !== "recovered" && (
-                      <AdminRecoveryPaymentButton
-                        recovery={{
-                          id: recovery.id,
-                          card_number: recovery.card_number,
-                          owner_name: recovery.owner_name,
-                          owner_phone: recovery.owner_phone,
-                          reporter_id: recovery.reporter_id,
-                          reporter_name: recovery.reporter_name,
-                          final_price: recovery.final_price,
-                          promo_usage_id: recovery.promo_usage_id,
-                          promo_code_owner_id: recovery.promo_code_owner_id,
-                          promo_code: recovery.promo_code,
-                        }}
-                      />
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <AdminRecoveriesTable
+            recoveries={filteredRecoveries}
+            onCallOwner={handleCallOwner}
+            onCallReporter={handleCallReporter}
+            onCallPromoOwner={handleCallPromoOwner}
+          />
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            {searchTerm ? "Aucune demande de récupération ne correspond à votre recherche" : "Aucune demande de récupération trouvée"}
-          </div>
+          <AdminRecoveriesEmptyState searchTerm={searchTerm} />
         )}
       </CardContent>
     </Card>
