@@ -100,11 +100,13 @@ export const useAdminAllRecoveries = () => {
           console.log("🔄 Changement détecté dans reported_cards:", payload);
           console.log("🔄 Type d'événement:", payload.eventType);
           
-          if (payload.new) {
+          // Typer correctement payload.new comme un objet avec les propriétés de reported_cards
+          const newData = payload.new as any;
+          if (newData) {
             console.log("🔄 Nouvelles données:", {
-              cardNumber: payload.new.card_number,
-              status: payload.new.status,
-              hasDescription: !!payload.new.description
+              cardNumber: newData.card_number,
+              status: newData.status,
+              hasDescription: !!newData.description
             });
           }
           
