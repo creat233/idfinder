@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -95,7 +94,7 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
-              placeholder="Entrez le numéro de votre carte (ex: 123456789)"
+              placeholder="Entrez le numéro de carte : CNI, passeport, permis, carte grise, séjour, étudiante ou santé"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -121,7 +120,7 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
           </Button>
         </div>
         <p className="text-sm text-purple-200 mt-2">
-          Entrez le numéro de votre carte d'identité, permis ou passeport
+          Entrez le numéro de votre carte d'identité, passeport, permis, carte grise véhicule/moto, séjour, étudiante ou santé
         </p>
       </div>
     </motion.div>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,7 +82,7 @@ export const CardSearchForm = () => {
             Rechercher votre document
           </CardTitle>
           <p className="text-center text-gray-600">
-            Entrez le numéro de votre pièce d'identité pour vérifier si elle a été trouvée
+            Entrez le numéro de votre pièce d'identité (CNI, passeport, permis, carte grise véhicule/moto, carte séjour, étudiante ou santé)
           </p>
         </CardHeader>
         <CardContent>
@@ -91,7 +90,7 @@ export const CardSearchForm = () => {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
-                placeholder="Ex: 123456789"
+                placeholder="Ex : n° de CNI, passeport, permis, carte grise, séjour, étudiante ou santé"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
