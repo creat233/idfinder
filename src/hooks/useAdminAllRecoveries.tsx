@@ -9,7 +9,7 @@ import { processReportedCard } from "@/services/recoveryDataProcessor";
 export const useAdminAllRecoveries = () => {
   const [recoveries, setRecoveries] = useState<AllRecoveryData[]>([]);
   const [loading, setLoading] = useState(true);
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
 
   const fetchAllRecoveries = async () => {
     try {
@@ -30,7 +30,7 @@ export const useAdminAllRecoveries = () => {
 
       for (const card of reportedCards) {
         console.log(`🔍 Traitement de la carte ${card.card_number}...`);
-        console.log(`📊 Statut: ${card.status}, Description: ${card.description?.substring(0, 100)}...`);
+        console.log(`📊 Statut: ${card.status}, Description disponible: ${card.description ? 'Oui' : 'Non'}`);
         
         const recovery = await processReportedCard(card);
         if (recovery) {
@@ -43,6 +43,10 @@ export const useAdminAllRecoveries = () => {
 
       console.log(`🎉 Total des demandes de récupération trouvées: ${enrichedRecoveries.length}`);
       setRecoveries(enrichedRecoveries);
+      
+      if (enrichedRecoveries.length > 0) {
+        showSuccess("Succès", `${enrichedRecoveries.length} demande(s) de récupération trouvée(s)`);
+      }
     } catch (error) {
       console.error("❌ Erreur lors de la récupération des données:", error);
       showError("Erreur", "Impossible de récupérer les données de récupération");
@@ -69,27 +73,32 @@ export const useAdminAllRecoveries = () => {
           console.log("🔄 Type d'événement:", payload.eventType);
           console.log("🔄 Nouvelles données:", payload.new);
           
-          // Forcer une actualisation immédiate
+          // Forcer une actualisation immédiate après un délai court
           setTimeout(() => {
-            console.log("🔄 Actualisation forcée des données...");
+            console.log("🔄 Actualisation automatique des données...");
             fetchAllRecoveries();
-          }, 500);
+          }, 1000);
         }
       )
       .subscribe((status) => {
         console.log("📡 Statut de la souscription temps réel:", status);
+        if (status === 'SUBSCRIBED') {
+          console.log("✅ Souscription temps réel active pour les demandes de récupération");
+        }
       });
 
     return () => {
+      console.log("🔌 Déconnexion du canal temps réel");
       supabase.removeChannel(channel);
     };
   }, []);
 
   // Ajouter une fonction pour forcer l'actualisation
-  const forceRefresh = () => {
+  const forceRefresh = async () => {
     console.log("🔄 Actualisation forcée demandée...");
     setLoading(true);
-    fetchAllRecoveries();
+    await fetchAllRecoveries();
+    showSuccess("Succès", "Données actualisées");
   };
 
   return {

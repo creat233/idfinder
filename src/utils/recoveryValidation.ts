@@ -1,8 +1,20 @@
+
 export const isValidRecoveryRequest = (description: string, status: string): boolean => {
   // Vérifier d'abord si c'est une demande de récupération basée sur le statut
   const isRecoveryStatus = status === 'recovery_requested';
   
-  // Vérifier si la description contient les informations nécessaires
+  // Si le statut indique une demande de récupération, c'est valide
+  if (isRecoveryStatus) {
+    console.log("✅ Demande valide - statut recovery_requested");
+    return true;
+  }
+  
+  // Sinon, vérifier si la description contient les informations de récupération
+  if (!description) {
+    console.log("❌ Pas de description disponible");
+    return false;
+  }
+  
   const hasOwnerInfo = description && (
     description.includes("Nom du propriétaire:") || 
     description.includes("INFORMATIONS DE RÉCUPÉRATION") ||
@@ -13,11 +25,11 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
     description.includes("Prix final:") || 
     description.includes("Prix à payer:") ||
     description.includes("DEMANDE DE RÉCUPÉRATION") ||
-    description.includes("INFORMATIONS DE RÉCUPÉRATION")
+    description.includes("INFORMATIONS DE RÉCUPÉRATION") ||
+    description.includes("Téléphone:")
   );
 
-  // La condition principale est le statut, sinon on vérifie la description
-  const isValid = isRecoveryStatus || (hasOwnerInfo && hasRecoveryRequest);
+  const isValid = hasOwnerInfo && hasRecoveryRequest;
 
   console.log("🔍 Validation demande récupération:", {
     carte: description?.substring(0, 50) + "...",
