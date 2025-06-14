@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { DollarSign, CheckCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Check, Loader2, Phone } from "lucide-react";
 import { useAdminPromoPayments } from "@/hooks/useAdminPromoPayments";
 
 interface AdminRecoveryPaymentButtonProps {
@@ -16,13 +17,9 @@ interface AdminRecoveryPaymentButtonProps {
     promo_code_owner_id?: string;
     promo_code?: string;
   };
-  disabled?: boolean;
 }
 
-export const AdminRecoveryPaymentButton = ({
-  recovery,
-  disabled = false
-}: AdminRecoveryPaymentButtonProps) => {
+export const AdminRecoveryPaymentButton = ({ recovery }: AdminRecoveryPaymentButtonProps) => {
   const { confirmRecoveryPayment, loading } = useAdminPromoPayments();
 
   const handleConfirmPayment = async () => {
@@ -40,20 +37,45 @@ export const AdminRecoveryPaymentButton = ({
   };
 
   return (
-    <Button
-      onClick={handleConfirmPayment}
-      disabled={disabled || loading}
-      size="sm"
-      className="bg-green-600 hover:bg-green-700 text-white"
-    >
-      {loading ? (
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-      ) : (
-        <>
-          <CheckCircle className="h-4 w-4 mr-1" />
-          Confirmer Paiement
-        </>
-      )}
-    </Button>
+    <div className="space-y-2">
+      <Button
+        onClick={handleConfirmPayment}
+        disabled={loading}
+        size="sm"
+        className="bg-green-600 hover:bg-green-700 text-white"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+            Traitement...
+          </>
+        ) : (
+          <>
+            <Check className="h-3 w-3 mr-1" />
+            Confirmer Paiements
+          </>
+        )}
+      </Button>
+      
+      <div className="text-xs space-y-1">
+        <div className="flex items-center gap-1">
+          <Badge variant="outline" className="bg-blue-50 text-blue-700 text-xs">
+            Propriétaire: {recovery.final_price} FCFA
+          </Badge>
+        </div>
+        <div className="flex items-center gap-1">
+          <Badge variant="outline" className="bg-red-50 text-red-700 text-xs">
+            Signaleur: 2000 FCFA
+          </Badge>
+        </div>
+        {recovery.promo_code && (
+          <div className="flex items-center gap-1">
+            <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">
+              Code promo: 1000 FCFA
+            </Badge>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };

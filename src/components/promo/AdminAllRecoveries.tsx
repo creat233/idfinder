@@ -121,6 +121,9 @@ export const AdminAllRecoveries = () => {
                           </span>
                         )}
                       </div>
+                      <div className="text-xs text-blue-600 font-medium">
+                        À payer: {recovery.final_price} FCFA
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -177,7 +180,7 @@ export const AdminAllRecoveries = () => {
                             {recovery.promo_code_owner_phone !== "Non renseigné" ? (
                               <button
                                 onClick={() => handleCallPromoOwner(recovery.promo_code_owner_phone!)}
-                                className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1"
+                                className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1 font-semibold"
                               >
                                 <PhoneCall className="h-2 w-2" />
                                 {recovery.promo_code_owner_phone}

@@ -64,18 +64,10 @@ export const fetchCardData = async (supabaseClient: any, cardId: string): Promis
 export const fetchPromoData = async (supabaseClient: any, promoCodeId: string): Promise<PromoData | null> => {
   console.log("🎫 Récupération des données du code promo:", promoCodeId);
   
-  const { data: promoData, error: promoError } = await supabaseClient
+  // D'abord récupérer les informations du code promo
+  const { data: promoCode, error: promoError } = await supabaseClient
     .from("promo_codes")
-    .select(`
-      id,
-      code, 
-      user_id,
-      profiles!promo_codes_user_id_fkey (
-        first_name,
-        last_name,
-        phone
-      )
-    `)
+    .select("id, code, user_id")
     .eq("id", promoCodeId)
     .single();
 
@@ -84,14 +76,30 @@ export const fetchPromoData = async (supabaseClient: any, promoCodeId: string): 
     return null;
   }
 
-  if (!promoData) {
+  if (!promoCode) {
     console.log("⚠️ Code promo introuvable");
     return null;
   }
 
+  // Ensuite récupérer le profil du propriétaire du code promo
+  const { data: ownerProfile, error: ownerError } = await supabaseClient
+    .from("profiles")
+    .select("first_name, last_name, phone")
+    .eq("id", promoCode.user_id)
+    .single();
+
+  if (ownerError) {
+    console.error("❌ Erreur lors de la récupération du profil propriétaire:", ownerError);
+  }
+
+  const promoData = {
+    ...promoCode,
+    profiles: ownerProfile || null
+  };
+
   console.log("✅ Code promo trouvé:", promoData.code);
-  console.log("👤 Propriétaire du code promo:", promoData.profiles?.first_name, promoData.profiles?.last_name);
-  console.log("📞 Téléphone propriétaire:", promoData.profiles?.phone);
+  console.log("👤 Propriétaire du code promo:", ownerProfile?.first_name, ownerProfile?.last_name);
+  console.log("📞 Téléphone propriétaire:", ownerProfile?.phone);
 
   return promoData;
 };
