@@ -101,6 +101,15 @@ export const PublicHeader = () => {
                 Mes cartes
               </button>
             )}
+            {/* Ajout : bouton notifications pour utilisateurs connectés */}
+            {user && (
+              <button
+                onClick={() => navigate("/notifications")}
+                className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+              >
+                Notifications
+              </button>
+            )}
           </nav>
 
           {/* Boutons Desktop */}
@@ -186,6 +195,15 @@ export const PublicHeader = () => {
                   className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
                 >
                   Mes cartes
+                </button>
+              )}
+              {/* Ajout : Notifications mobile */}
+              {user && (
+                <button
+                  onClick={() => { navigate("/notifications"); setIsMenuOpen(false); }}
+                  className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
+                >
+                  Notifications
                 </button>
               )}
               <div className="px-4 pt-4 space-y-2">

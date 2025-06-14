@@ -97,9 +97,8 @@ export const Header = () => {
                 <Link to="/profile" className="text-gray-700 hover:text-primary">
                   <User className="h-5 w-5" />
                 </Link>
-                {/* Ajout d'un lien vers la page des notifications */}
+                {/* Remplacement du lien Notifications par Link */}
                 <Link to="/notifications" className="text-gray-700 hover:text-primary relative">
-                  {/* Petit badge cercle si non lues, facultatif ici */}
                   <span className="sr-only">Notifications</span>
                   <span className="flex">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -181,6 +180,14 @@ export const Header = () => {
                         onClick={() => setIsMenuOpen(false)}
                       >
                         Codes promo
+                      </Link>
+                      {/* Ajout du lien mobile vers notifications */}
+                      <Link 
+                        to="/notifications"
+                        className="text-gray-700 hover:text-primary"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Notifications
                       </Link>
                     </>
                   )}
