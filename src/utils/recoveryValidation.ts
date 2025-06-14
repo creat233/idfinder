@@ -1,14 +1,11 @@
 
 export const isValidRecoveryRequest = (description: string, status: string): boolean => {
   console.log("🔍 Validation d'une demande de récupération:");
-  console.log("📝 Description:", description?.substring(0, 100) + "...");
+  console.log("📝 Description:", description?.substring(0, 200));
   console.log("📊 Statut:", status);
   
-  // Vérifier d'abord si c'est une demande de récupération basée sur le statut
-  const isRecoveryStatus = status === 'recovery_requested';
-  
   // Si le statut indique une demande de récupération, c'est valide
-  if (isRecoveryStatus) {
+  if (status === 'recovery_requested') {
     console.log("✅ Demande valide - statut recovery_requested");
     return true;
   }
@@ -26,22 +23,20 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
     "Nom du propriétaire:",
     "Prix final:",
     "Prix à payer:",
-    "RÉCUPÉRATION CONFIRMÉE"
+    "RÉCUPÉRATION CONFIRMÉE",
+    "DEMANDE DE RÉCUPÉRATION CONFIRMÉE"
   ];
   
   const hasRecoveryKeywords = recoveryKeywords.some(keyword => 
     description.toUpperCase().includes(keyword.toUpperCase())
   );
   
-  const isValid = hasRecoveryKeywords;
-
   console.log("🔍 Résultat validation:", {
     hasRecoveryKeywords,
-    isRecoveryStatus,
-    isValid
+    isValid: hasRecoveryKeywords
   });
 
-  return isValid;
+  return hasRecoveryKeywords;
 };
 
 export const extractOwnerInfo = (description: string) => {

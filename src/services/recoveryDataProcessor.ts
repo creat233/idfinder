@@ -4,9 +4,9 @@ import { isValidRecoveryRequest, extractOwnerInfo, hasPromoCodeUsed, extractProm
 import { fetchReporterProfile, fetchPromoUsage, fetchPromoOwnerPhone } from "./adminRecoveryService";
 
 export const processReportedCard = async (card: ReportedCard): Promise<AllRecoveryData | null> => {
-  console.log("🔍 Analyse détaillée de la carte:", card.card_number);
-  console.log("📝 Description complète:", card.description);
-  console.log("📊 Statut actuel:", card.status);
+  console.log("🔍 Analyse de la carte:", card.card_number);
+  console.log("📊 Statut:", card.status);
+  console.log("📝 Description présente:", !!card.description);
   
   const description = card.description || "";
   
@@ -17,7 +17,7 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
     return null;
   }
 
-  console.log("✅ Demande de récupération valide détectée pour:", card.card_number);
+  console.log("✅ DEMANDE DE RÉCUPÉRATION VALIDE DÉTECTÉE pour:", card.card_number);
 
   try {
     // Récupérer le profil du signaleur
@@ -26,7 +26,7 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
     // Extraire les informations depuis la description
     const { ownerName, ownerPhone, finalPrice } = extractOwnerInfo(description);
 
-    // Traiter les informations de code promo
+    // Traiter les informations de code promo si présentes
     let promoData = null;
     if (hasPromoCodeUsed(description) && ownerPhone !== "Non renseigné") {
       console.log("🎁 Code promo détecté, recherche des détails...");
@@ -45,9 +45,6 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
         };
         
         console.log("🎫 Code promo trouvé:", promoData.promoCode);
-        console.log("📞 Téléphone propriétaire code promo:", promoData.promoCodeOwnerPhone);
-      } else {
-        console.log("⚠️ Détails du code promo non trouvés");
       }
     }
 
@@ -56,8 +53,6 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       ? `${reporterProfile.first_name || ''} ${reporterProfile.last_name || ''}`.trim()
       : "Signaleur non renseigné";
     const reporterPhone = reporterProfile?.phone || card.reporter_phone || "Non renseigné";
-
-    console.log("👨‍💼 Signaleur:", reporterName, "-", reporterPhone);
 
     const recovery: AllRecoveryData = {
       id: card.id,
@@ -80,12 +75,11 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       discount_amount: promoData?.discountAmount
     };
 
-    console.log("✅ Demande de récupération créée:", {
+    console.log("✅ RÉCUPÉRATION CRÉÉE:", {
       carte: recovery.card_number,
       propriétaire: recovery.owner_name,
-      signaleur: recovery.reporter_name,
+      téléphone: recovery.owner_phone,
       prix: recovery.final_price,
-      promo: recovery.promo_code,
       statut: recovery.status
     });
 

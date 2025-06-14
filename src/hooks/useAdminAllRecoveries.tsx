@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { AllRecoveryData } from "@/types/adminRecoveries";
-import { fetchReportedCards } from "@/services/adminRecoveryService";
 import { processReportedCard } from "@/services/recoveryDataProcessor";
 
 export const useAdminAllRecoveries = () => {
@@ -13,10 +12,20 @@ export const useAdminAllRecoveries = () => {
 
   const fetchAllRecoveries = async () => {
     try {
-      console.log("🔄 Récupération de toutes les cartes signalées...");
-      const reportedCards = await fetchReportedCards();
+      console.log("🔄 Récupération de TOUTES les cartes signalées...");
+      
+      // Récupérer TOUTES les cartes signalées
+      const { data: reportedCards, error } = await supabase
+        .from("reported_cards")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      if (reportedCards.length === 0) {
+      if (error) {
+        console.error("❌ Erreur lors de la récupération:", error);
+        throw error;
+      }
+
+      if (!reportedCards || reportedCards.length === 0) {
         console.log("📭 Aucune carte trouvée");
         setRecoveries([]);
         setLoading(false);
@@ -24,15 +33,20 @@ export const useAdminAllRecoveries = () => {
       }
 
       console.log(`📋 ${reportedCards.length} cartes trouvées, analyse en cours...`);
+      console.log("🔍 Cartes récupérées:", reportedCards.map(card => ({
+        numero: card.card_number,
+        statut: card.status,
+        description: card.description ? "Oui" : "Non"
+      })));
 
-      // Filtrer et traiter toutes les cartes avec des demandes de récupération
+      // Traiter toutes les cartes pour identifier les demandes de récupération
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
         console.log(`🔍 Traitement de la carte ${card.card_number}...`);
-        console.log(`📊 Statut: ${card.status}, Description disponible: ${card.description ? 'Oui' : 'Non'}`);
+        console.log(`📊 Statut: ${card.status}`);
+        console.log(`📝 Description: ${card.description ? card.description.substring(0, 100) + "..." : "Aucune"}`);
         
-        // Traiter chaque carte signalée
         const recovery = await processReportedCard(card);
         if (recovery) {
           enrichedRecoveries.push(recovery);
@@ -43,6 +57,15 @@ export const useAdminAllRecoveries = () => {
       }
 
       console.log(`🎉 Total des demandes de récupération trouvées: ${enrichedRecoveries.length}`);
+      
+      // Afficher les détails des récupérations trouvées
+      if (enrichedRecoveries.length > 0) {
+        console.log("📋 Détails des récupérations:");
+        enrichedRecoveries.forEach(recovery => {
+          console.log(`- Carte: ${recovery.card_number}, Propriétaire: ${recovery.owner_name}, Statut: ${recovery.status}`);
+        });
+      }
+      
       setRecoveries(enrichedRecoveries);
       
       if (enrichedRecoveries.length > 0) {
@@ -59,9 +82,9 @@ export const useAdminAllRecoveries = () => {
   useEffect(() => {
     fetchAllRecoveries();
 
-    // Écouter les changements en temps réel
+    // Écouter les changements en temps réel sur toutes les cartes
     const channel = supabase
-      .channel('admin-recoveries-changes')
+      .channel('admin-all-cards-changes')
       .on(
         'postgres_changes',
         {
@@ -72,18 +95,19 @@ export const useAdminAllRecoveries = () => {
         (payload) => {
           console.log("🔄 Changement détecté dans reported_cards:", payload);
           console.log("🔄 Type d'événement:", payload.eventType);
+          console.log("🔄 Données:", payload.new || payload.old);
           
-          // Actualisation immédiate
+          // Actualisation immédiate après un court délai
           setTimeout(() => {
             console.log("🔄 Actualisation automatique des données...");
             fetchAllRecoveries();
-          }, 500);
+          }, 1000);
         }
       )
       .subscribe((status) => {
         console.log("📡 Statut de la souscription temps réel:", status);
         if (status === 'SUBSCRIBED') {
-          console.log("✅ Souscription temps réel active pour les demandes de récupération");
+          console.log("✅ Souscription temps réel active pour toutes les cartes");
         }
       });
 
