@@ -17,13 +17,14 @@ interface AdminRecoveryPaymentButtonProps {
     promo_code_owner_id?: string;
     promo_code?: string;
   };
+  onPaymentConfirmed?: () => void;
 }
 
-export const AdminRecoveryPaymentButton = ({ recovery }: AdminRecoveryPaymentButtonProps) => {
+export const AdminRecoveryPaymentButton = ({ recovery, onPaymentConfirmed }: AdminRecoveryPaymentButtonProps) => {
   const { confirmRecoveryPayment, loading } = useAdminPromoPayments();
 
   const handleConfirmPayment = async () => {
-    await confirmRecoveryPayment({
+    const success = await confirmRecoveryPayment({
       cardId: recovery.id,
       ownerName: recovery.owner_name,
       ownerPhone: recovery.owner_phone,
@@ -34,6 +35,11 @@ export const AdminRecoveryPaymentButton = ({ recovery }: AdminRecoveryPaymentBut
       promoCodeOwnerId: recovery.promo_code_owner_id,
       promoCode: recovery.promo_code,
     });
+
+    // Si le paiement est confirmé avec succès, déclencher la mise à jour
+    if (success && onPaymentConfirmed) {
+      onPaymentConfirmed();
+    }
   };
 
   return (

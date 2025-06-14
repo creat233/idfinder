@@ -9,13 +9,15 @@ interface AdminRecoveriesTableProps {
   onCallOwner: (phone: string) => void;
   onCallReporter: (phone: string) => void;
   onCallPromoOwner: (phone: string) => void;
+  onPaymentConfirmed?: () => void;
 }
 
 export const AdminRecoveriesTable = ({ 
   recoveries, 
   onCallOwner, 
   onCallReporter, 
-  onCallPromoOwner 
+  onCallPromoOwner,
+  onPaymentConfirmed 
 }: AdminRecoveriesTableProps) => {
   return (
     <Table>
@@ -28,6 +30,7 @@ export const AdminRecoveriesTable = ({
             onCallOwner={onCallOwner}
             onCallReporter={onCallReporter}
             onCallPromoOwner={onCallPromoOwner}
+            onPaymentConfirmed={onPaymentConfirmed}
           />
         ))}
       </TableBody>

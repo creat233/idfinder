@@ -15,13 +15,15 @@ interface AdminRecoveriesRowProps {
   onCallOwner: (phone: string) => void;
   onCallReporter: (phone: string) => void;
   onCallPromoOwner: (phone: string) => void;
+  onPaymentConfirmed?: () => void;
 }
 
 export const AdminRecoveriesRow = ({ 
   recovery, 
   onCallOwner, 
   onCallReporter, 
-  onCallPromoOwner 
+  onCallPromoOwner,
+  onPaymentConfirmed 
 }: AdminRecoveriesRowProps) => {
   return (
     <TableRow key={recovery.id}>
@@ -75,6 +77,7 @@ export const AdminRecoveriesRow = ({
               promo_code_owner_id: recovery.promo_code_owner_id,
               promo_code: recovery.promo_code,
             }}
+            onPaymentConfirmed={onPaymentConfirmed}
           />
         )}
       </TableCell>

@@ -39,6 +39,12 @@ export const AdminAllRecoveries = () => {
     }
   };
 
+  const handlePaymentConfirmed = () => {
+    // Forcer la mise à jour immédiate des données
+    console.log("🔄 Paiement confirmé, actualisation des données...");
+    forceRefresh();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -76,6 +82,7 @@ export const AdminAllRecoveries = () => {
             onCallOwner={handleCallOwner}
             onCallReporter={handleCallReporter}
             onCallPromoOwner={handleCallPromoOwner}
+            onPaymentConfirmed={handlePaymentConfirmed}
           />
         ) : (
           <AdminRecoveriesEmptyState searchTerm={searchTerm} />

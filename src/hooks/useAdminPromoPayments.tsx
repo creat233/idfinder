@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -22,7 +21,27 @@ export const useAdminPromoPayments = () => {
       setLoading(true);
       console.log("Confirmation du paiement de récupération:", recoveryData);
 
-      // 1. Notification au propriétaire de la carte
+      // 1. Mettre à jour le statut de la carte comme récupérée IMMÉDIATEMENT
+      const { error: cardUpdateError } = await supabase
+        .from("reported_cards")
+        .update({ 
+          status: "recovered",
+          description: (await supabase
+            .from("reported_cards")
+            .select("description")
+            .eq("id", recoveryData.cardId)
+            .single()).data?.description + `\n\n--- PAIEMENT CONFIRMÉ ---\nDate de confirmation: ${new Date().toLocaleString('fr-FR')}\nStatut: PAYÉ ET RÉCUPÉRÉ`
+        })
+        .eq("id", recoveryData.cardId);
+
+      if (cardUpdateError) {
+        console.error("Erreur mise à jour carte:", cardUpdateError);
+        throw cardUpdateError;
+      }
+
+      console.log("✅ Statut de la carte mis à jour vers 'recovered'");
+
+      // 2. Notification au propriétaire de la carte
       const { error: ownerNotificationError } = await supabase
         .from("notifications")
         .insert({
@@ -37,7 +56,7 @@ export const useAdminPromoPayments = () => {
         console.error("Erreur notification propriétaire:", ownerNotificationError);
       }
 
-      // 2. Notification au signaleur (récompense de 2000 FCFA)
+      // 3. Notification au signaleur (récompense de 2000 FCFA)
       const { error: reporterNotificationError } = await supabase
         .from("notifications")
         .insert({
@@ -52,7 +71,7 @@ export const useAdminPromoPayments = () => {
         console.error("Erreur notification signaleur:", reporterNotificationError);
       }
 
-      // 3. Si un code promo a été utilisé, notifier le propriétaire du code promo
+      // 4. Si un code promo a été utilisé, notifier le propriétaire du code promo
       if (recoveryData.promoUsageId && recoveryData.promoCodeOwnerId && recoveryData.promoCode) {
         const { error: promoOwnerNotificationError } = await supabase
           .from("notifications")
@@ -81,30 +100,16 @@ export const useAdminPromoPayments = () => {
         }
       }
 
-      // 4. Mettre à jour le statut de la carte comme récupérée
-      const { error: cardUpdateError } = await supabase
-        .from("reported_cards")
-        .update({ 
-          status: "recovered",
-          description: (await supabase
-            .from("reported_cards")
-            .select("description")
-            .eq("id", recoveryData.cardId)
-            .single()).data?.description + `\n\n--- PAIEMENT CONFIRMÉ ---\nDate de confirmation: ${new Date().toLocaleString('fr-FR')}\nStatut: PAYÉ ET RÉCUPÉRÉ`
-        })
-        .eq("id", recoveryData.cardId);
-
-      if (cardUpdateError) {
-        console.error("Erreur mise à jour carte:", cardUpdateError);
-      }
-
       showSuccess(
         "Paiement confirmé", 
         `Toutes les notifications ont été envoyées et les paiements confirmés (Propriétaire: ${recoveryData.finalPrice} FCFA, Signaleur: 2000 FCFA${recoveryData.promoCode ? `, Propriétaire code promo: 1000 FCFA` : ''})`
       );
+
+      return true; // Succès
     } catch (error) {
       console.error("Erreur lors de la confirmation du paiement:", error);
       showError("Erreur", "Impossible de confirmer le paiement");
+      return false; // Échec
     } finally {
       setLoading(false);
     }
