@@ -10,6 +10,7 @@ import { UserCardsList } from "@/components/cards/UserCardsList";
 import { NotificationsList } from "@/components/notifications/NotificationsList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useEffect, useRef, useState } from "react";
 
 const MyCards = () => {
   const navigate = useNavigate();
@@ -30,6 +31,20 @@ const MyCards = () => {
     markAllAsRead,
   } = useNotifications();
 
+  // --- Ajout : gestion de l’état du tab actif
+  const [activeTab, setActiveTab] = useState<"cards" | "notifications">("cards");
+  const prevUnreadCount = useRef(unreadCount);
+  const isFirstLoad = useRef(true);
+
+  useEffect(() => {
+    // Si une nouvelle notification non lue arrive, passer sur le tab "notifications".
+    if (!isFirstLoad.current && unreadCount > prevUnreadCount.current) {
+      setActiveTab("notifications");
+    }
+    prevUnreadCount.current = unreadCount;
+    isFirstLoad.current = false;
+  }, [unreadCount]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -49,7 +64,11 @@ const MyCards = () => {
             <AddCardDialog onAddCard={addCard} />
           </div>
 
-          <Tabs defaultValue="cards" className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as "cards" | "notifications")}
+            className="space-y-6"
+          >
             <TabsList>
               <TabsTrigger value="cards">
                 {t("myCards") || "Mes cartes"} ({cards.length})
@@ -112,3 +131,4 @@ const MyCards = () => {
 };
 
 export default MyCards;
+
