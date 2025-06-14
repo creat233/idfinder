@@ -1,7 +1,8 @@
+
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +18,7 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [showNotFoundAction, setShowNotFoundAction] = useState(false);
 
   // Ne pas afficher la section de recherche si l'utilisateur n'est pas connecté
   if (!user) {
@@ -34,6 +36,7 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
     }
 
     setIsSearching(true);
+    setShowNotFoundAction(false);
 
     try {
       // Recherche dans la base de données
@@ -56,6 +59,7 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
         // Rediriger vers une page de détails ou afficher les résultats
         navigate(`/recherche/${data.card_number}`);
       } else {
+        setShowNotFoundAction(true);
         toast({
           title: "Carte non trouvée",
           description: "Votre carte n'a pas encore été signalée. Nous vous notifierons dès qu'elle sera publiée.",
@@ -77,6 +81,11 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
+  };
+
+  const handleAddToMyCards = () => {
+    if (!searchQuery.trim()) return;
+    navigate(`/mes-cartes?ajouter=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   return (
@@ -122,6 +131,27 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
         <p className="text-sm text-purple-200 mt-2">
           Entrez le numéro de votre carte d'identité, passeport, permis, carte grise véhicule/moto, séjour, étudiante ou santé
         </p>
+        {showNotFoundAction && (
+          <div className="mt-5 bg-violet-50/80 border border-violet-300 rounded-lg p-4 flex flex-col items-center gap-2">
+            <div className="text-violet-700 font-medium flex items-center gap-2">
+              <LogIn className="h-4 w-4" />
+              Recevez une notification automatique si cette carte est retrouvée !
+            </div>
+            <p className="text-violet-600 text-sm mb-2 text-center">
+              Ajoutez ce numéro à <span className="font-semibold">“Mes cartes”</span> pour recevoir une alerte dès qu’il sera signalé sur FinderID.
+            </p>
+            <Button
+              variant="default"
+              className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6"
+              onClick={handleAddToMyCards}
+            >
+              + Ajouter ce numéro à Mes cartes
+            </Button>
+            <p className="text-xs text-violet-500 mt-1">
+              Vous retrouverez toutes vos cartes sous “Mes cartes”.
+            </p>
+          </div>
+        )}
       </div>
     </motion.div>
   );
