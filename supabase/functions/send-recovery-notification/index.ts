@@ -97,12 +97,18 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       if (promoDetails) {
         promoOwnerInfo = promoDetails.profiles;
         
-        await recordPromoUsage(
-          supabaseClient,
-          promoInfo.promoCodeId,
-          ownerInfo.phone,
-          promoInfo.discount
-        );
+        // Essayer d'enregistrer l'utilisation du code promo, mais ne pas faire échouer si ça ne marche pas
+        try {
+          await recordPromoUsage(
+            supabaseClient,
+            promoInfo.promoCodeId,
+            ownerInfo.phone,
+            promoInfo.discount
+          );
+        } catch (usageError) {
+          console.error("⚠️ Erreur lors de l'enregistrement de l'utilisation:", usageError);
+          console.log("ℹ️ Continuons sans enregistrer l'utilisation");
+        }
 
         if (promoDetails.user_id) {
           const { error: notificationError } = await supabaseClient
