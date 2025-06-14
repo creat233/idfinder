@@ -30,12 +30,14 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
 
     setIsValidating(true);
     try {
-      console.log("Validation du code promo:", promoCode.trim().toUpperCase());
-      const validPromo = await validatePromoCode(promoCode.trim().toUpperCase());
+      const codeToValidate = promoCode.trim().toUpperCase();
+      console.log("🎯 Tentative d'application du code promo:", codeToValidate);
+      
+      const validPromo = await validatePromoCode(codeToValidate);
       
       if (validPromo) {
         const discount = 1000;
-        console.log("Code promo valide, application de la réduction:", discount);
+        console.log("✅ Code promo validé, application de la réduction:", discount);
         
         setAppliedPromo({
           code: validPromo.code,
@@ -45,17 +47,21 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
         
         onPromoApplied?.(discount, validPromo.id);
         
-        showSuccess("Code promo appliqué", `Réduction de ${discount} FCFA appliquée avec succès`);
-        console.log("Code promo appliqué avec succès:", validPromo.code, "Réduction:", discount);
+        showSuccess("Code promo appliqué", `Réduction de ${discount} FCFA appliquée avec succès !`);
+        console.log("🎉 Code promo appliqué avec succès:", {
+          code: validPromo.code,
+          discount,
+          id: validPromo.id
+        });
         
         setPromoCode("");
       } else {
-        console.log("Code promo invalide ou inactif:", promoCode);
-        showError("Code invalide", "Ce code promo n'existe pas ou n'est plus valide");
+        console.log("❌ Échec de validation du code promo:", codeToValidate);
+        showError("Code invalide", "Ce code promo n'existe pas, n'est pas actif ou a expiré");
         setPromoCode("");
       }
     } catch (error) {
-      console.error("Erreur lors de la validation du code promo:", error);
+      console.error("💥 Erreur lors de l'application du code promo:", error);
       showError("Erreur", "Impossible de valider le code promo. Veuillez réessayer.");
       setPromoCode("");
     } finally {
@@ -64,7 +70,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
   };
 
   const handleRemovePromo = () => {
-    console.log("Suppression du code promo:", appliedPromo?.code);
+    console.log("🗑️ Suppression du code promo:", appliedPromo?.code);
     setAppliedPromo(null);
     setPromoCode("");
     onPromoRemoved?.();
