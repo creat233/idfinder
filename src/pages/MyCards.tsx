@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -12,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { AdModal } from "@/components/ads/AdModal";
 
 const MyCards = () => {
   const navigate = useNavigate();
@@ -45,6 +45,9 @@ const MyCards = () => {
   // Pour éviter la double soumission si déjà en train d'ajouter
   const [isAutoAdding, setIsAutoAdding] = useState(false);
 
+  // État pour ouvrir la pub
+  const [showAdModal, setShowAdModal] = useState(false);
+
   useEffect(() => {
     // Fonction pour ajouter automatique
     const handleAutoAddCard = async (numeroCarte: string) => {
@@ -77,10 +80,11 @@ const MyCards = () => {
           description:
             t("cardAddedDescription") ||
             "Le numéro a été ajouté à vos cartes surveillées.",
-          variant: "default", // Fix: type must be "default" or "destructive"
+          variant: "default",
         });
-        // On peut recharger la liste pour afficher à l'utilisateur immédiatement
         refetchCards?.();
+        // 🔥 Afficher la pub modal AdSense après l’ajout
+        setShowAdModal(true);
       } catch (e) {
         toast({
           title: t("addCardError") || "Erreur",
@@ -91,7 +95,6 @@ const MyCards = () => {
         });
       } finally {
         setIsAutoAdding(false);
-        // Nettoyer l’URL (évite doublon sur refresh/back)
         searchParams.delete("ajouter");
         setSearchParams(searchParams, { replace: true });
       }
@@ -99,7 +102,6 @@ const MyCards = () => {
 
     const cardToAdd = searchParams.get("ajouter");
     if (cardToAdd) {
-      // Si déjà présent, toast + nettoyage ; sinon, ajout automatique
       handleAutoAddCard(cardToAdd);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -196,9 +198,10 @@ const MyCards = () => {
           </Tabs>
         </div>
       </main>
+      {/* Ajout de la modal publicitaire */}
+      <AdModal open={showAdModal} onClose={() => setShowAdModal(false)} />
     </div>
   );
 };
 
 export default MyCards;
-
