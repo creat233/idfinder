@@ -8,7 +8,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
 import { useAdminAllRecoveries } from "@/hooks/useAdminAllRecoveries";
-import { AdminPromoPaymentButton } from "./AdminPromoPaymentButton";
+import { AdminRecoveryPaymentButton } from "./AdminRecoveryPaymentButton";
 
 export const AdminAllRecoveries = () => {
   const { recoveries, loading, refetch } = useAdminAllRecoveries();
@@ -19,7 +19,6 @@ export const AdminAllRecoveries = () => {
     recovery.owner_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.owner_phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.reporter_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    recovery.reporter_phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recovery.promo_code?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -63,6 +62,7 @@ export const AdminAllRecoveries = () => {
                 <TableHead>Lieu</TableHead>
                 <TableHead>Code Promo</TableHead>
                 <TableHead>Prix Final</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -106,12 +106,7 @@ export const AdminAllRecoveries = () => {
                       </div>
                       <div className="flex items-center gap-1 text-sm">
                         <Phone className="h-3 w-3" />
-                        <a 
-                          href={`tel:${recovery.reporter_phone}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {recovery.reporter_phone}
-                        </a>
+                        <span className="text-muted-foreground">Récompense: 2000 FCFA</span>
                       </div>
                     </div>
                   </TableCell>
@@ -133,6 +128,9 @@ export const AdminAllRecoveries = () => {
                             -{recovery.discount_amount} FCFA
                           </Badge>
                         )}
+                        <div className="text-xs text-muted-foreground">
+                          Propriétaire gagne: 1000 FCFA
+                        </div>
                       </div>
                     ) : (
                       <span className="text-muted-foreground italic text-sm">Aucun code promo</span>
@@ -145,17 +143,34 @@ export const AdminAllRecoveries = () => {
                     </div>
                   </TableCell>
                   <TableCell>
+                    <Badge 
+                      variant={recovery.status === "recovered" ? "default" : "outline"}
+                      className={recovery.status === "recovered" ? "bg-green-100 text-green-800" : "bg-yellow-50 text-yellow-700"}
+                    >
+                      {recovery.status === "recovered" ? "Récupérée" : "En attente"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-1 text-sm">
                       <Calendar className="h-3 w-3" />
                       {format(new Date(recovery.created_at), "dd/MM/yyyy à HH:mm", { locale: fr })}
                     </div>
                   </TableCell>
                   <TableCell>
-                    {recovery.promo_code && recovery.promo_code_owner_id && recovery.promo_usage_id && (
-                      <AdminPromoPaymentButton
-                        promoUsageId={recovery.promo_usage_id}
-                        promoCodeOwnerId={recovery.promo_code_owner_id}
-                        amount={1000}
+                    {recovery.status !== "recovered" && (
+                      <AdminRecoveryPaymentButton
+                        recovery={{
+                          id: recovery.id,
+                          card_number: recovery.card_number,
+                          owner_name: recovery.owner_name,
+                          owner_phone: recovery.owner_phone,
+                          reporter_id: recovery.reporter_id,
+                          reporter_name: recovery.reporter_name,
+                          final_price: recovery.final_price,
+                          promo_usage_id: recovery.promo_usage_id,
+                          promo_code_owner_id: recovery.promo_code_owner_id,
+                          promo_code: recovery.promo_code,
+                        }}
                       />
                     )}
                   </TableCell>
