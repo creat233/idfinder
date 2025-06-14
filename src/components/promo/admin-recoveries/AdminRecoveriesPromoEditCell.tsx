@@ -52,7 +52,7 @@ export const AdminRecoveriesPromoEditCell = ({
     // (⚠️ Ne pas inclure promo_code_id dans des objets d'autres tables que prévu)
     const { error: updateError } = await supabase
       .from("reported_cards")
-      .update({ promo_code_id: promo.id })
+      .update({ promo_code_id: promo.id } as any) // <--- typage forcé ici
       .eq("id", recoveryId);
 
     if (updateError) {
