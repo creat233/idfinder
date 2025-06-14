@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,7 @@ import NumeroUrgence from "./pages/NumeroUrgence";
 import Support from "./pages/Support";
 import Demo from "./pages/Demo";
 import About from "./pages/About";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +73,11 @@ function App() {
               <AdminRoute>
                 <AdminPromoCodes />
               </AdminRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
             } />
           </Routes>
         </BrowserRouter>
