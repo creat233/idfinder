@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Package, Phone, User, Gift, MapPin, Calendar, DollarSign, UserCheck } from "lucide-react";
+import { Search, Package, Phone, User, Gift, MapPin, Calendar, DollarSign, UserCheck, PhoneCall } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
@@ -23,6 +23,24 @@ export const AdminAllRecoveries = () => {
     recovery.promo_code?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleCallOwner = (phone: string) => {
+    if (phone && phone !== "Non renseigné") {
+      window.location.href = `tel:${phone}`;
+    }
+  };
+
+  const handleCallReporter = (phone: string) => {
+    if (phone && phone !== "Non renseigné") {
+      window.location.href = `tel:${phone}`;
+    }
+  };
+
+  const handleCallPromoOwner = (phone: string) => {
+    if (phone && phone !== "Non renseigné") {
+      window.location.href = `tel:${phone}`;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -36,7 +54,7 @@ export const AdminAllRecoveries = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Package className="h-5 w-5" />
-          Toutes les Demandes de Récupération
+          Demandes de Récupération de Cartes
           <Badge variant="outline" className="bg-blue-50 text-blue-700">
             {recoveries.length} demande{recoveries.length > 1 ? 's' : ''}
           </Badge>
@@ -89,12 +107,19 @@ export const AdminAllRecoveries = () => {
                       </div>
                       <div className="flex items-center gap-1 text-sm">
                         <Phone className="h-3 w-3" />
-                        <a 
-                          href={`tel:${recovery.owner_phone}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {recovery.owner_phone}
-                        </a>
+                        {recovery.owner_phone !== "Non renseigné" ? (
+                          <button
+                            onClick={() => handleCallOwner(recovery.owner_phone)}
+                            className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1"
+                          >
+                            <PhoneCall className="h-3 w-3" />
+                            {recovery.owner_phone}
+                          </button>
+                        ) : (
+                          <span className="text-muted-foreground italic">
+                            {recovery.owner_phone}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </TableCell>
@@ -106,7 +131,22 @@ export const AdminAllRecoveries = () => {
                       </div>
                       <div className="flex items-center gap-1 text-sm">
                         <Phone className="h-3 w-3" />
-                        <span className="text-muted-foreground">Récompense: 2000 FCFA</span>
+                        {recovery.reporter_phone !== "Non renseigné" ? (
+                          <button
+                            onClick={() => handleCallReporter(recovery.reporter_phone)}
+                            className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1"
+                          >
+                            <PhoneCall className="h-3 w-3" />
+                            {recovery.reporter_phone}
+                          </button>
+                        ) : (
+                          <span className="text-muted-foreground italic">
+                            {recovery.reporter_phone}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-green-600 font-medium">
+                        Récompense: 2000 FCFA
                       </div>
                     </div>
                   </TableCell>
@@ -128,9 +168,27 @@ export const AdminAllRecoveries = () => {
                             -{recovery.discount_amount} FCFA
                           </Badge>
                         )}
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-green-600 font-medium">
                           Propriétaire gagne: 1000 FCFA
                         </div>
+                        {recovery.promo_code_owner_phone && (
+                          <div className="flex items-center gap-1 text-xs">
+                            <Phone className="h-3 w-3" />
+                            {recovery.promo_code_owner_phone !== "Non renseigné" ? (
+                              <button
+                                onClick={() => handleCallPromoOwner(recovery.promo_code_owner_phone!)}
+                                className="text-blue-600 hover:underline cursor-pointer flex items-center gap-1"
+                              >
+                                <PhoneCall className="h-2 w-2" />
+                                {recovery.promo_code_owner_phone}
+                              </button>
+                            ) : (
+                              <span className="text-muted-foreground italic">
+                                {recovery.promo_code_owner_phone}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <span className="text-muted-foreground italic text-sm">Aucun code promo</span>

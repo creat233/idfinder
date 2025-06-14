@@ -17,6 +17,7 @@ interface AllRecoveryData {
   final_price: number;
   promo_code?: string;
   promo_code_owner_id?: string;
+  promo_code_owner_phone?: string;
   promo_usage_id?: string;
   discount_amount?: number;
   created_at: string;
@@ -30,12 +31,13 @@ export const useAdminAllRecoveries = () => {
 
   const fetchAllRecoveries = async () => {
     try {
-      console.log("Récupération de toutes les demandes de récupération...");
+      console.log("Récupération des demandes de récupération...");
       
-      // Récupérer toutes les cartes signalées
+      // Récupérer seulement les cartes avec des informations de récupération dans la description
       const { data: reportedCards, error: cardsError } = await supabase
         .from("reported_cards")
         .select("*")
+        .ilike("description", "%Nom du propriétaire:%")
         .order("created_at", { ascending: false });
 
       if (cardsError) {
@@ -43,7 +45,7 @@ export const useAdminAllRecoveries = () => {
         throw cardsError;
       }
 
-      console.log("Toutes les cartes récupérées:", reportedCards?.length || 0);
+      console.log("Cartes avec demandes de récupération:", reportedCards?.length || 0);
 
       if (!reportedCards || reportedCards.length === 0) {
         setRecoveries([]);
@@ -69,17 +71,24 @@ export const useAdminAllRecoveries = () => {
           }
         }
 
-        // Vérifier si la description contient des informations de récupération
+        // Extraire les informations de récupération depuis la description
         const description = card.description || "";
+        
+        // Vérifier que c'est bien une demande de récupération
+        if (!description.includes("Nom du propriétaire:")) {
+          continue; // Passer cette carte car ce n'est pas une vraie demande de récupération
+        }
+
         let ownerName = "Propriétaire non renseigné";
-        let ownerPhone = card.reporter_phone || "Non renseigné";
+        let ownerPhone = "Non renseigné";
         let finalPrice = 7000; // Prix par défaut
         let promoCode = null;
         let promoCodeOwnerId = null;
+        let promoCodeOwnerPhone = null;
         let promoUsageId = null;
         let discountAmount = null;
 
-        // Extraire les informations du propriétaire depuis la description si disponibles
+        // Extraire les informations du propriétaire depuis la description
         const ownerNameMatch = description.match(/Nom du propriétaire: ([^\n]+)/);
         const ownerPhoneMatch = description.match(/Téléphone: ([^\n]+)/);
         const finalPriceMatch = description.match(/Prix final: (\d+) FCFA/);
@@ -116,6 +125,19 @@ export const useAdminAllRecoveries = () => {
               promoCodeOwnerId = usage.promo_codes.user_id;
               promoUsageId = usage.id;
               discountAmount = usage.discount_amount;
+
+              // Récupérer le téléphone du propriétaire du code promo
+              if (promoCodeOwnerId) {
+                const { data: promoOwnerProfile, error: promoOwnerError } = await supabase
+                  .from("profiles")
+                  .select("phone")
+                  .eq("id", promoCodeOwnerId)
+                  .single();
+
+                if (!promoOwnerError && promoOwnerProfile) {
+                  promoCodeOwnerPhone = promoOwnerProfile.phone || "Non renseigné";
+                }
+              }
             }
           }
         }
@@ -142,6 +164,7 @@ export const useAdminAllRecoveries = () => {
           status: card.status || "pending",
           promo_code: promoCode,
           promo_code_owner_id: promoCodeOwnerId,
+          promo_code_owner_phone: promoCodeOwnerPhone,
           promo_usage_id: promoUsageId,
           discount_amount: discountAmount
         };
@@ -149,10 +172,10 @@ export const useAdminAllRecoveries = () => {
         enrichedRecoveries.push(recovery);
       }
 
-      console.log("Demandes de récupération créées:", enrichedRecoveries.length);
+      console.log("Vraies demandes de récupération créées:", enrichedRecoveries.length);
       setRecoveries(enrichedRecoveries);
     } catch (error) {
-      console.error("Error fetching all recovery data:", error);
+      console.error("Error fetching recovery data:", error);
       showError("Erreur", "Impossible de récupérer les données de récupération");
     } finally {
       setLoading(false);
