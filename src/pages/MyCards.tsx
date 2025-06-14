@@ -2,7 +2,7 @@
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUserCards } from "@/hooks/useUserCards";
 import { useNotifications } from "@/hooks/useNotifications";
 import { AddCardDialog } from "@/components/cards/AddCardDialog";
@@ -36,6 +36,22 @@ const MyCards = () => {
   const prevUnreadCount = useRef(unreadCount);
   const isFirstLoad = useRef(true);
 
+  // --- Gérer l'ouverture automatique de la modale Ajouter une carte si ?ajouter=xxx
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [prefillCardNumber, setPrefillCardNumber] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const cardToAdd = searchParams.get("ajouter");
+    if (cardToAdd) {
+      setPrefillCardNumber(cardToAdd);
+      setAddDialogOpen(true);
+      // Nettoyer l’URL après ouverture pour éviter réouverture automatique si on reste sur page :
+      searchParams.delete("ajouter");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
   useEffect(() => {
     // Si une nouvelle notification non lue arrive, passer sur le tab "notifications".
     if (!isFirstLoad.current && unreadCount > prevUnreadCount.current) {
@@ -61,7 +77,12 @@ const MyCards = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">{t("myCards") || "Mes cartes"}</h1>
-            <AddCardDialog onAddCard={addCard} />
+            <AddCardDialog
+              onAddCard={addCard}
+              open={addDialogOpen}
+              setOpen={setAddDialogOpen}
+              prefillCardNumber={prefillCardNumber}
+            />
           </div>
 
           <Tabs
