@@ -30,59 +30,81 @@ export const generateEmailContent = ({
   // Préparer la section code promo si applicable
   let promoSection = "";
   if (promoDetails && promoOwnerInfo && promoInfo) {
+    const promoOwnerName = `${promoOwnerInfo.first_name || 'Non renseigné'} ${promoOwnerInfo.last_name || ''}`.trim();
+    const promoOwnerPhone = promoOwnerInfo.phone || 'Non renseigné';
+    
     promoSection = `
-    <h3>💰 Code promo utilisé</h3>
-    <ul>
-      <li><strong>Code promo:</strong> ${promoDetails.code}</li>
+    <h3 style="color: #16a34a; margin: 20px 0 10px 0;">💰 Code promo utilisé</h3>
+    <ul style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #16a34a;">
+      <li><strong>Code promo:</strong> <span style="font-family: monospace; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">${promoDetails.code}</span></li>
       <li><strong>Réduction appliquée:</strong> ${promoInfo.discount} FCFA</li>
       <li><strong>Prix original:</strong> 7000 FCFA</li>
-      <li><strong>Prix final:</strong> ${promoInfo.finalPrice} FCFA</li>
+      <li><strong>Prix final:</strong> <span style="font-weight: bold; color: #16a34a;">${promoInfo.finalPrice} FCFA</span></li>
     </ul>
     
-    <h3>👤 Propriétaire du code promo</h3>
-    <ul>
-      <li><strong>Nom:</strong> ${promoOwnerInfo.first_name || 'Non renseigné'} ${promoOwnerInfo.last_name || ''}</li>
-      <li><strong>Téléphone:</strong> ${promoOwnerInfo.phone || 'Non renseigné'}</li>
-      <li><strong>Montant à payer au propriétaire:</strong> 1000 FCFA</li>
+    <h3 style="color: #7c3aed; margin: 20px 0 10px 0;">👤 Propriétaire du code promo</h3>
+    <ul style="background: #faf5ff; padding: 15px; border-radius: 8px; border-left: 4px solid #7c3aed;">
+      <li><strong>Nom:</strong> ${promoOwnerName}</li>
+      <li><strong>Téléphone:</strong> <a href="tel:${promoOwnerPhone}" style="color: #7c3aed; text-decoration: none;">${promoOwnerPhone}</a></li>
+      <li><strong>Montant à payer au propriétaire:</strong> <span style="font-weight: bold; color: #16a34a;">1000 FCFA</span></li>
     </ul>
     `;
   }
 
   return `
-    <h2>🔍 Nouvelle demande de récupération - FinderID</h2>
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #ffffff;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: #1f2937; margin: 0 0 10px 0;">🔍 Nouvelle demande de récupération - FinderID</h2>
+        <p style="color: #6b7280; margin: 0;">Demande reçue le ${new Date().toLocaleDateString("fr-FR", { 
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })}</p>
+      </div>
     
-    <h3>📋 Informations de la carte</h3>
-    <ul>
-      <li><strong>Numéro de carte:</strong> ${cardData.card_number}</li>
-      <li><strong>Type de document:</strong> ${getDocumentTypeLabel(cardData.document_type)}</li>
-      <li><strong>Lieu de découverte:</strong> ${cardData.location}</li>
-      <li><strong>Date de découverte:</strong> ${new Date(cardData.found_date).toLocaleDateString("fr-FR")}</li>
-      ${cardData.description ? `<li><strong>Description:</strong> ${cardData.description}</li>` : ''}
-    </ul>
+      <h3 style="color: #1f2937; margin: 20px 0 10px 0;">📋 Informations de la carte</h3>
+      <ul style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+        <li><strong>Numéro de carte:</strong> <span style="font-family: monospace; background: #dbeafe; padding: 2px 6px; border-radius: 4px;">${cardData.card_number}</span></li>
+        <li><strong>Type de document:</strong> ${getDocumentTypeLabel(cardData.document_type)}</li>
+        <li><strong>Lieu de découverte:</strong> ${cardData.location}</li>
+        <li><strong>Date de découverte:</strong> ${new Date(cardData.found_date).toLocaleDateString("fr-FR")}</li>
+        ${cardData.description ? `<li><strong>Description:</strong> ${cardData.description}</li>` : ''}
+      </ul>
 
-    <h3>👤 Informations du propriétaire de la carte (demandeur)</h3>
-    <ul>
-      <li><strong>Nom complet:</strong> ${ownerInfo.name}</li>
-      <li><strong>Téléphone:</strong> ${ownerInfo.phone}</li>
-    </ul>
+      <h3 style="color: #16a34a; margin: 20px 0 10px 0;">👤 Propriétaire de la carte (demandeur)</h3>
+      <ul style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #16a34a;">
+        <li><strong>Nom complet:</strong> ${ownerInfo.name}</li>
+        <li><strong>Téléphone:</strong> <a href="tel:${ownerInfo.phone}" style="color: #16a34a; text-decoration: none;">${ownerInfo.phone}</a></li>
+      </ul>
 
-    <h3>🔍 Informations de la personne qui a signalé la carte</h3>
-    <ul>
-      <li><strong>Nom:</strong> ${cardData.profiles?.first_name || 'Non renseigné'} ${cardData.profiles?.last_name || ''}</li>
-      <li><strong>Téléphone:</strong> ${cardData.profiles?.phone || cardData.reporter_phone || 'Non renseigné'}</li>
-    </ul>
+      <h3 style="color: #dc2626; margin: 20px 0 10px 0;">🔍 Signaleur de la carte</h3>
+      <ul style="background: #fef2f2; padding: 15px; border-radius: 8px; border-left: 4px solid #dc2626;">
+        <li><strong>Nom:</strong> ${cardData.profiles?.first_name || 'Non renseigné'} ${cardData.profiles?.last_name || ''}</li>
+        <li><strong>Téléphone:</strong> <a href="tel:${cardData.profiles?.phone || cardData.reporter_phone || 'Non renseigné'}" style="color: #dc2626; text-decoration: none;">${cardData.profiles?.phone || cardData.reporter_phone || 'Non renseigné'}</a></li>
+        <li><strong>Récompense due:</strong> <span style="font-weight: bold; color: #16a34a;">2000 FCFA</span></li>
+      </ul>
 
-    ${promoSection}
+      ${promoSection}
 
-    <h3>💳 Récapitulatif financier</h3>
-    <ul>
-      <li><strong>Frais de récupération:</strong> ${promoInfo ? promoInfo.finalPrice : 7000} FCFA</li>
-      ${promoInfo ? `<li><strong>Économies réalisées:</strong> ${promoInfo.discount} FCFA</li>` : ''}
-      ${promoOwnerInfo ? `<li><strong>Commission pour le propriétaire du code promo:</strong> 1000 FCFA</li>` : ''}
-      <li><strong>Livraison:</strong> Si applicable (frais supplémentaires)</li>
-    </ul>
+      <h3 style="color: #1f2937; margin: 20px 0 10px 0;">💳 Récapitulatif financier</h3>
+      <div style="background: #f9fafb; padding: 15px; border-radius: 8px; border: 2px solid #e5e7eb;">
+        <ul style="margin: 0;">
+          <li style="margin-bottom: 8px;"><strong>Frais de récupération:</strong> <span style="font-size: 18px; font-weight: bold; color: #1f2937;">${promoInfo ? promoInfo.finalPrice : 7000} FCFA</span></li>
+          ${promoInfo ? `<li style="margin-bottom: 8px;"><strong>Économies réalisées:</strong> <span style="color: #16a34a; font-weight: bold;">-${promoInfo.discount} FCFA</span></li>` : ''}
+          <li style="margin-bottom: 8px;"><strong>Récompense signaleur:</strong> <span style="color: #dc2626; font-weight: bold;">2000 FCFA</span></li>
+          ${promoOwnerInfo ? `<li style="margin-bottom: 8px;"><strong>Commission propriétaire code promo:</strong> <span style="color: #7c3aed; font-weight: bold;">1000 FCFA</span></li>` : ''}
+          <li><strong>Livraison:</strong> <span style="color: #6b7280;">Si applicable (frais supplémentaires)</span></li>
+        </ul>
+      </div>
 
-    <hr>
-    <p><em>Email automatique généré par FinderID - ${new Date().toLocaleString("fr-FR")}</em></p>
+      <div style="margin-top: 30px; padding: 15px; background: #f3f4f6; border-radius: 8px; text-align: center;">
+        <p style="margin: 0; color: #6b7280; font-size: 12px;">
+          <em>Email automatique généré par FinderID - ${new Date().toLocaleString("fr-FR")}</em>
+        </p>
+      </div>
+    </div>
   `;
 };

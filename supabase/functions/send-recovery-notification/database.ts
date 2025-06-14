@@ -15,6 +15,8 @@ export const createSupabaseClient = (req: Request) => {
 };
 
 export const fetchCardData = async (supabaseClient: any, cardId: string): Promise<CardData> => {
+  console.log("📋 Récupération des données de la carte:", cardId);
+  
   // Récupérer d'abord les données de la carte
   const { data: cardData, error: cardError } = await supabaseClient
     .from("reported_cards")
@@ -23,17 +25,21 @@ export const fetchCardData = async (supabaseClient: any, cardId: string): Promis
     .single();
 
   if (cardError) {
-    console.error("Error fetching card data:", cardError);
+    console.error("❌ Erreur lors de la récupération de la carte:", cardError);
     throw cardError;
   }
 
   if (!cardData) {
-    throw new Error("Card not found");
+    throw new Error("Carte introuvable");
   }
+
+  console.log("✅ Carte trouvée:", cardData.card_number);
 
   // Récupérer les informations du profil du signaleur séparément
   let reporterProfile = null;
   if (cardData.reporter_id) {
+    console.log("👤 Récupération du profil du signaleur:", cardData.reporter_id);
+    
     const { data: profile, error: profileError } = await supabaseClient
       .from("profiles")
       .select("first_name, last_name, phone")
@@ -42,6 +48,9 @@ export const fetchCardData = async (supabaseClient: any, cardId: string): Promis
 
     if (!profileError && profile) {
       reporterProfile = profile;
+      console.log("✅ Profil signaleur trouvé:", profile.first_name, profile.last_name);
+    } else {
+      console.log("⚠️ Profil signaleur non trouvé");
     }
   }
 
@@ -53,9 +62,12 @@ export const fetchCardData = async (supabaseClient: any, cardId: string): Promis
 };
 
 export const fetchPromoData = async (supabaseClient: any, promoCodeId: string): Promise<PromoData | null> => {
+  console.log("🎫 Récupération des données du code promo:", promoCodeId);
+  
   const { data: promoData, error: promoError } = await supabaseClient
     .from("promo_codes")
     .select(`
+      id,
       code, 
       user_id,
       profiles!promo_codes_user_id_fkey (
@@ -67,9 +79,19 @@ export const fetchPromoData = async (supabaseClient: any, promoCodeId: string): 
     .eq("id", promoCodeId)
     .single();
 
-  if (promoError || !promoData) {
+  if (promoError) {
+    console.error("❌ Erreur lors de la récupération du code promo:", promoError);
     return null;
   }
+
+  if (!promoData) {
+    console.log("⚠️ Code promo introuvable");
+    return null;
+  }
+
+  console.log("✅ Code promo trouvé:", promoData.code);
+  console.log("👤 Propriétaire du code promo:", promoData.profiles?.first_name, promoData.profiles?.last_name);
+  console.log("📞 Téléphone propriétaire:", promoData.profiles?.phone);
 
   return promoData;
 };
@@ -80,17 +102,40 @@ export const recordPromoUsage = async (
   phone: string,
   discount: number
 ) => {
-  await supabaseClient.from("promo_usage").insert({
-    promo_code_id: promoCodeId,
-    used_by_email: null,
-    used_by_phone: phone,
-    discount_amount: discount,
-  });
+  console.log("📝 Enregistrement de l'utilisation du code promo");
+  
+  const { data, error } = await supabaseClient
+    .from("promo_usage")
+    .insert({
+      promo_code_id: promoCodeId,
+      used_by_email: null,
+      used_by_phone: phone,
+      discount_amount: discount,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("❌ Erreur lors de l'enregistrement:", error);
+    throw error;
+  }
+
+  console.log("✅ Utilisation enregistrée:", data.id);
+  return data;
 };
 
 export const updateCardStatus = async (supabaseClient: any, cardId: string) => {
-  await supabaseClient
+  console.log("🔄 Mise à jour du statut de la carte");
+  
+  const { error } = await supabaseClient
     .from("reported_cards")
     .update({ status: "recovery_requested" })
     .eq("id", cardId);
+
+  if (error) {
+    console.error("❌ Erreur lors de la mise à jour:", error);
+    throw error;
+  }
+
+  console.log("✅ Statut mis à jour");
 };

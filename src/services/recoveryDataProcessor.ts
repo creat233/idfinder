@@ -42,6 +42,9 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       };
       
       console.log("🎫 Code promo trouvé:", promoData.promoCode);
+      console.log("📞 Téléphone propriétaire code promo:", promoData.promoCodeOwnerPhone);
+    } else {
+      console.log("⚠️ Détails du code promo non trouvés");
     }
   }
 
@@ -79,7 +82,8 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
     propriétaire: recovery.owner_name,
     signaleur: recovery.reporter_name,
     prix: recovery.final_price,
-    promo: recovery.promo_code
+    promo: recovery.promo_code,
+    telPromoOwner: recovery.promo_code_owner_phone
   });
 
   return recovery;
