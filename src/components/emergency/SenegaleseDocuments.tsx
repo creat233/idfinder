@@ -4,6 +4,11 @@ import { Accordion } from "@/components/ui/accordion";
 import { CNIDocument } from "./document-types/CNIDocument";
 import { PassportDocument } from "./document-types/PassportDocument";
 import { DriverLicenseDocument } from "./document-types/DriverLicenseDocument";
+import { VehicleRegistrationDocument } from "./document-types/VehicleRegistrationDocument";
+import { MotorcycleRegistrationDocument } from "./document-types/MotorcycleRegistrationDocument";
+import { ResidencePermitDocument } from "./document-types/ResidencePermitDocument";
+import { StudentCardDocument } from "./document-types/StudentCardDocument";
+import { HealthCardDocument } from "./document-types/HealthCardDocument";
 import { DocumentHeader } from "./document-types/DocumentHeader";
 import { DocumentFooter } from "./document-types/DocumentFooter";
 
@@ -36,9 +41,15 @@ export const SenegaleseDocuments = () => {
         <CNIDocument itemVariants={itemVariants} />
         <PassportDocument itemVariants={itemVariants} />
         <DriverLicenseDocument itemVariants={itemVariants} />
+        <VehicleRegistrationDocument itemVariants={itemVariants} />
+        <MotorcycleRegistrationDocument itemVariants={itemVariants} />
+        <ResidencePermitDocument itemVariants={itemVariants} />
+        <StudentCardDocument itemVariants={itemVariants} />
+        <HealthCardDocument itemVariants={itemVariants} />
       </Accordion>
 
       <DocumentFooter itemVariants={itemVariants} />
     </motion.div>
   );
 };
+
