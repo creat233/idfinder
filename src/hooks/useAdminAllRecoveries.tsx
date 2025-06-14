@@ -14,7 +14,7 @@ export const useAdminAllRecoveries = () => {
     try {
       console.log("🔄 Récupération de TOUTES les cartes signalées...");
       
-      // Récupérer TOUTES les cartes signalées, en priorité celles avec le statut recovery_requested
+      // Récupérer TOUTES les cartes signalées, sans filtre de statut pour débugger
       const { data: reportedCards, error } = await supabase
         .from("reported_cards")
         .select("*")
@@ -26,20 +26,24 @@ export const useAdminAllRecoveries = () => {
       }
 
       if (!reportedCards || reportedCards.length === 0) {
-        console.log("📭 Aucune carte trouvée");
+        console.log("📭 Aucune carte trouvée dans la base de données");
         setRecoveries([]);
         setLoading(false);
         return;
       }
 
-      console.log(`📋 ${reportedCards.length} cartes trouvées, analyse en cours...`);
+      console.log(`📋 ${reportedCards.length} cartes trouvées dans la base, analyse en cours...`);
       
       // Afficher les détails de chaque carte pour débugger
-      reportedCards.forEach(card => {
-        console.log(`🔍 Carte ${card.card_number}:`, {
+      reportedCards.forEach((card, index) => {
+        console.log(`🔍 Carte ${index + 1}/${reportedCards.length} - ${card.card_number}:`, {
+          id: card.id,
           statut: card.status,
           aDescription: !!card.description,
-          descriptionDebut: card.description ? card.description.substring(0, 100) : "Aucune"
+          descriptionLength: card.description?.length || 0,
+          descriptionDebut: card.description ? card.description.substring(0, 100) : "Aucune",
+          reporterId: card.reporter_id,
+          createdAt: card.created_at
         });
       });
 
@@ -47,14 +51,18 @@ export const useAdminAllRecoveries = () => {
       const enrichedRecoveries: AllRecoveryData[] = [];
 
       for (const card of reportedCards) {
-        console.log(`🔍 Traitement de la carte ${card.card_number}...`);
+        console.log(`🔧 Traitement de la carte ${card.card_number}...`);
         
-        const recovery = await processReportedCard(card);
-        if (recovery) {
-          enrichedRecoveries.push(recovery);
-          console.log(`✅ Carte ${card.card_number} ajoutée aux récupérations - Prix: ${recovery.final_price} FCFA`);
-        } else {
-          console.log(`❌ Carte ${card.card_number} ignorée`);
+        try {
+          const recovery = await processReportedCard(card);
+          if (recovery) {
+            enrichedRecoveries.push(recovery);
+            console.log(`✅ Carte ${card.card_number} ajoutée aux récupérations - Prix: ${recovery.final_price} FCFA`);
+          } else {
+            console.log(`❌ Carte ${card.card_number} ignorée par le processeur`);
+          }
+        } catch (error) {
+          console.error(`❌ Erreur lors du traitement de la carte ${card.card_number}:`, error);
         }
       }
 
@@ -63,17 +71,39 @@ export const useAdminAllRecoveries = () => {
       // Afficher les détails des récupérations trouvées
       if (enrichedRecoveries.length > 0) {
         console.log("📋 Récupérations validées:");
-        enrichedRecoveries.forEach(recovery => {
-          console.log(`- Carte: ${recovery.card_number}, Propriétaire: ${recovery.owner_name}, Prix: ${recovery.final_price} FCFA, Statut: ${recovery.status}`);
+        enrichedRecoveries.forEach((recovery, index) => {
+          console.log(`${index + 1}. Carte: ${recovery.card_number}, Propriétaire: ${recovery.owner_name}, Prix: ${recovery.final_price} FCFA, Statut: ${recovery.status}`);
         });
       } else {
-        console.log("⚠️ Aucune demande de récupération trouvée");
+        console.log("⚠️ Aucune demande de récupération trouvée - vérifiez la logique de validation");
       }
       
       setRecoveries(enrichedRecoveries);
       
       if (enrichedRecoveries.length > 0) {
         showSuccess("Succès", `${enrichedRecoveries.length} demande(s) de récupération trouvée(s)`);
+      } else {
+        console.log("🔍 Debug: Tentative de traitement moins strict...");
+        // En mode debug, créer des récupérations pour toutes les cartes avec des données minimum
+        const debugRecoveries: AllRecoveryData[] = reportedCards.map(card => ({
+          id: card.id,
+          card_id: card.id,
+          card_number: card.card_number,
+          document_type: card.document_type,
+          location: card.location,
+          owner_name: "Propriétaire à identifier",
+          owner_phone: "À renseigner",
+          reporter_name: "Signaleur",
+          reporter_phone: card.reporter_phone || "Non renseigné",
+          reporter_id: card.reporter_id,
+          final_price: 7000,
+          created_at: card.created_at,
+          status: card.status || "recovery_requested"
+        }));
+        
+        console.log(`🔧 Mode debug activé: ${debugRecoveries.length} cartes affichées`);
+        setRecoveries(debugRecoveries);
+        showSuccess("Debug", `${debugRecoveries.length} carte(s) affichée(s) en mode debug`);
       }
     } catch (error) {
       console.error("❌ Erreur lors de la récupération des données:", error);

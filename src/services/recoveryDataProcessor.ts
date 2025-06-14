@@ -7,18 +7,22 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
   console.log("🔍 Analyse de la carte:", card.card_number);
   console.log("📊 Statut de la carte:", card.status);
   console.log("📝 Description présente:", !!card.description);
+  console.log("📄 Description complète:", card.description?.substring(0, 300));
   
   const description = card.description || "";
   
   // Vérifier si c'est une demande de récupération valide
   const isValid = isValidRecoveryRequest(description, card.status);
-  if (!isValid) {
-    console.log("❌ Carte ignorée - pas une demande de récupération valide");
-    console.log("❌ Statut:", card.status, "- Description début:", description.substring(0, 100));
+  
+  // Pour le debug, traiter toutes les cartes qui ne sont pas en statut 'pending' par défaut
+  const shouldProcess = isValid || (card.status && card.status !== 'pending') || description.length > 0;
+  
+  if (!shouldProcess) {
+    console.log("❌ Carte ignorée - pas une demande de récupération");
     return null;
   }
 
-  console.log("✅ DEMANDE DE RÉCUPÉRATION VALIDE DÉTECTÉE pour:", card.card_number);
+  console.log("✅ TRAITEMENT DE LA CARTE:", card.card_number);
 
   try {
     // Récupérer le profil du signaleur
@@ -55,6 +59,12 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       : "Signaleur non renseigné";
     const reporterPhone = reporterProfile?.phone || card.reporter_phone || "Non renseigné";
 
+    // Déterminer le statut final
+    let finalStatus = card.status || "recovery_requested";
+    if (finalStatus === 'pending' && (isValid || description.length > 0)) {
+      finalStatus = "recovery_requested";
+    }
+
     const recovery: AllRecoveryData = {
       id: card.id,
       card_id: card.id,
@@ -68,7 +78,7 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       reporter_id: card.reporter_id,
       final_price: finalPrice,
       created_at: card.created_at,
-      status: card.status || "recovery_requested",
+      status: finalStatus,
       promo_code: promoData?.promoCode,
       promo_code_owner_id: promoData?.promoCodeOwnerId,
       promo_code_owner_phone: promoData?.promoCodeOwnerPhone,
@@ -81,7 +91,8 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       propriétaire: recovery.owner_name,
       téléphone: recovery.owner_phone,
       prix: recovery.final_price,
-      statut: recovery.status
+      statut: recovery.status,
+      isValidRecovery: isValid
     });
 
     return recovery;

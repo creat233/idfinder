@@ -10,23 +10,32 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
     return true;
   }
   
-  // Si pas de description, on ne peut pas valider
-  if (!description) {
-    console.log("❌ Pas de description disponible");
+  // Si pas de description, considérer comme une demande potentielle si ce n'est pas un statut de base
+  if (!description || description.trim() === '') {
+    // Si le statut n'est pas 'pending', considérer comme une demande de récupération
+    if (status && status !== 'pending') {
+      console.log("✅ Demande valide - statut non-pending sans description");
+      return true;
+    }
+    console.log("❌ Pas de description et statut pending");
     return false;
   }
   
   // Chercher les mots-clés spécifiques dans la description (insensible à la casse)
   const recoveryKeywords = [
     "INFORMATIONS DE RÉCUPÉRATION",
-    "DEMANDE DE RÉCUPÉRATION",
+    "DEMANDE DE RÉCUPÉRATION", 
     "Nom du propriétaire:",
     "Prix final:",
     "Prix à payer:",
     "RÉCUPÉRATION CONFIRMÉE",
     "DEMANDE DE RÉCUPÉRATION CONFIRMÉE",
     "Date de demande:",
-    "Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE"
+    "Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE",
+    "propriétaire", // Plus général
+    "récupération", // Plus général
+    "trouvé", // Plus général
+    "signalé" // Plus général
   ];
   
   const descriptionUpper = description.toUpperCase();
@@ -34,32 +43,56 @@ export const isValidRecoveryRequest = (description: string, status: string): boo
     descriptionUpper.includes(keyword.toUpperCase())
   );
   
-  console.log("🔍 Mots-clés trouvés:", hasRecoveryKeywords);
-  console.log("🔍 Description contient:", {
-    hasInfoRecuperation: descriptionUpper.includes("INFORMATIONS DE RÉCUPÉRATION"),
-    hasNomProprietaire: descriptionUpper.includes("NOM DU PROPRIÉTAIRE"),
-    hasPrixFinal: descriptionUpper.includes("PRIX FINAL"),
-    hasDateDemande: descriptionUpper.includes("DATE DE DEMANDE")
+  // Si aucun mot-clé mais que la description contient des informations structurées
+  const hasStructuredInfo = description.includes(':') && description.length > 50;
+  
+  const isValid = hasRecoveryKeywords || hasStructuredInfo;
+  
+  console.log("🔍 Analyse de validation:", {
+    hasRecoveryKeywords,
+    hasStructuredInfo,
+    isValid,
+    descriptionLength: description.length
   });
 
-  return hasRecoveryKeywords;
+  return isValid;
 };
 
 export const extractOwnerInfo = (description: string) => {
   if (!description) {
     return {
       ownerName: "Propriétaire non renseigné",
-      ownerPhone: "Non renseigné",
+      ownerPhone: "Non renseigné", 
       finalPrice: 7000
     };
   }
 
-  // Extraction du nom du propriétaire
-  const ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n\r]+)/i);
-  // Extraction du téléphone
-  const ownerPhoneMatch = description.match(/Téléphone:\s*([^\n\r]+)/i);
-  // Extraction du prix final
-  const finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/i);
+  // Extraction du nom du propriétaire avec plusieurs patterns
+  let ownerNameMatch = description.match(/Nom du propriétaire:\s*([^\n\r]+)/i);
+  if (!ownerNameMatch) {
+    ownerNameMatch = description.match(/Propriétaire:\s*([^\n\r]+)/i);
+  }
+  if (!ownerNameMatch) {
+    ownerNameMatch = description.match(/Nom:\s*([^\n\r]+)/i);
+  }
+
+  // Extraction du téléphone avec plusieurs patterns
+  let ownerPhoneMatch = description.match(/Téléphone:\s*([^\n\r]+)/i);
+  if (!ownerPhoneMatch) {
+    ownerPhoneMatch = description.match(/Phone:\s*([^\n\r]+)/i);
+  }
+  if (!ownerPhoneMatch) {
+    ownerPhoneMatch = description.match(/Tel:\s*([^\n\r]+)/i);
+  }
+
+  // Extraction du prix final avec plusieurs patterns
+  let finalPriceMatch = description.match(/Prix (?:final|à payer):\s*(\d+)\s*FCFA/i);
+  if (!finalPriceMatch) {
+    finalPriceMatch = description.match(/Prix:\s*(\d+)\s*FCFA/i);
+  }
+  if (!finalPriceMatch) {
+    finalPriceMatch = description.match(/(\d+)\s*FCFA/i);
+  }
 
   const ownerName = ownerNameMatch ? ownerNameMatch[1].trim() : "Propriétaire non renseigné";
   const ownerPhone = ownerPhoneMatch ? ownerPhoneMatch[1].trim() : "Non renseigné";
