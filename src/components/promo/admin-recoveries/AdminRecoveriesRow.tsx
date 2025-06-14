@@ -1,4 +1,3 @@
-
 import { TableRow, TableCell } from "@/components/ui/table";
 import { MapPin, DollarSign } from "lucide-react";
 import { AllRecoveryData } from "@/types/adminRecoveries";
@@ -40,6 +39,8 @@ export const AdminRecoveriesRow = ({
         ownerName={recovery.owner_name}
         ownerPhone={recovery.owner_phone}
         finalPrice={recovery.final_price}
+        discountAmount={recovery.discount_amount}
+        promoCode={recovery.promo_code}
         onCallOwner={onCallOwner}
       />
       <AdminRecoveriesReporterCell
@@ -59,10 +60,24 @@ export const AdminRecoveriesRow = ({
         promoCodeId={recovery.promo_code_id}
         onPromoUpdated={handlePromoUpdated}
       />
+      {/* AFFICHAGE MONTANT FINAL */}
       <TableCell>
-        <div className="flex items-center gap-1">
-          <DollarSign className="h-3 w-3" />
-          <span className="font-semibold">{recovery.final_price} FCFA</span>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1">
+            <DollarSign className="h-3 w-3" />
+            {/* Prix après réduction si code promo present */}
+            {recovery.promo_code && recovery.discount_amount ? (
+              <>
+                <span className="line-through opacity-60 text-sm">{recovery.final_price} FCFA</span>
+                <span className="font-semibold text-green-700 text-sm">{recovery.final_price - recovery.discount_amount} FCFA</span>
+                <span className="ml-2 text-xs text-green-700 font-bold">
+                  -{recovery.discount_amount} FCFA
+                </span>
+              </>
+            ) : (
+              <span className="font-semibold">{recovery.final_price} FCFA</span>
+            )}
+          </div>
         </div>
       </TableCell>
       <AdminRecoveriesStatusCell status={recovery.status} />
