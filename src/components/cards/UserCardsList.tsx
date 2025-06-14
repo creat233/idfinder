@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +23,11 @@ interface UserCardsListProps {
 export const UserCardsList = ({ cards, onToggleStatus, onDeleteCard }: UserCardsListProps) => {
   const { t } = useTranslation();
 
-  const getDocumentTypeLabel = (type: string) => {
+  const getDocumentTypeLabel = (type: string, card_holder_name?: string) => {
+    // Si type="id" et pas de nom titulaire => carte ajoutée automatiquement, donc "Ma carte"
+    if (type === "id" && !card_holder_name) {
+      return t("myCard") || "Ma carte";
+    }
     switch (type) {
       case "id": return t("idCard") || "Carte d'identité";
       case "passport": return t("passport") || "Passeport";
@@ -56,7 +59,9 @@ export const UserCardsList = ({ cards, onToggleStatus, onDeleteCard }: UserCards
         <Card key={card.id}>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">{getDocumentTypeLabel(card.document_type)}</CardTitle>
+              <CardTitle className="text-lg">
+                {getDocumentTypeLabel(card.document_type, card.card_holder_name)}
+              </CardTitle>
               <Badge variant={card.is_active ? "default" : "secondary"}>
                 {card.is_active ? (t("active") || "Actif") : (t("inactive") || "Inactif")}
               </Badge>

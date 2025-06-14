@@ -1,4 +1,3 @@
-
 import { Translations } from './types';
 
 export const cardsTranslations: Translations = {
@@ -93,5 +92,9 @@ export const cardsTranslations: Translations = {
   cardsExplanation: {
     fr: "Ajoutez les numéros de vos cartes d'identité pour recevoir automatiquement une notification si quelqu'un les signale comme trouvées sur FinderID. Vous pourrez ainsi les récupérer rapidement.",
     en: "Add your ID card numbers to automatically receive a notification if someone reports them as found on FinderID. You can then quickly recover them."
-  }
+  },
+  myCard: {
+    fr: "Ma carte",
+    en: "My card"
+  },
 };
