@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -30,7 +29,7 @@ export const useAdminPromoPayments = () => {
       console.log("Confirmation du paiement de récupération:", recoveryData);
 
       // 1. Mettre à jour le statut de la carte comme récupérée
-      const { error: cardUpdateError } = await supabase
+      const { data: updatedRows, error: cardUpdateError } = await supabase
         .from("reported_cards")
         .update({ 
           status: "recovered",
@@ -43,11 +42,18 @@ export const useAdminPromoPayments = () => {
             ).data?.description ?? ""
           ) + `\n\n--- PAIEMENT CONFIRMÉ ---\nDate de confirmation: ${new Date().toLocaleString('fr-FR')}\nStatut: PAYÉ ET RÉCUPÉRÉ`
         })
-        .eq("id", recoveryData.cardId);
+        .eq("id", recoveryData.cardId)
+        .select(); // <-- On veut le row retourné
 
       if (cardUpdateError) {
         console.error("Erreur mise à jour carte:", cardUpdateError);
         throw cardUpdateError;
+      }
+      if (!updatedRows || updatedRows.length === 0) {
+        console.error("Aucune carte mise à jour, id inexistant?");
+      } else {
+        // Log pour diagnostique
+        console.log("Carte après update:", updatedRows[0]);
       }
 
       // 2. Notification au propriétaire (N.B. : reporterId = id signaleur)
@@ -119,6 +125,14 @@ export const useAdminPromoPayments = () => {
         "Paiement confirmé", 
         `Toutes les notifications ont été envoyées et les paiements confirmés (Propriétaire: ${recoveryData.finalPrice} FCFA, Signaleur: 2000 FCFA${recoveryData.promoCode ? `, Propriétaire code promo: 1000 FCFA` : ''})`
       );
+
+      // Ajout : petit délai avant reload pour laisser temps réel se propager
+      setTimeout(() => {
+        if (window && window.location && typeof window.location.reload === "function") {
+          // Ne pas faire reload en prod, mais log la demande de refresh (le hook le gère déjà)
+          console.log("Demande de refresh (hook/list) après paiement confirmé.");
+        }
+      }, 700);
 
       return true;
     } catch (error) {
