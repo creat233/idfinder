@@ -3,26 +3,22 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 
-interface PromoCode {
-  id: string;
-  code: string;
-  is_active: boolean;
-  is_paid: boolean;
-  created_at: string;
-  expires_at: string;
-  total_earnings: number;
-  usage_count: number;
-}
-
 export const usePromoCodes = () => {
-  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [promoCodes, setPromoCodes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const { showSuccess, showError } = useToast();
 
   const fetchPromoCodes = async () => {
     try {
+      setLoading(true);
+      console.log("Récupération des codes promo...");
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      
+      if (!user) {
+        console.log("Utilisateur non connecté");
+        return;
+      }
 
       const { data, error } = await supabase
         .from("promo_codes")
@@ -30,97 +26,111 @@ export const usePromoCodes = () => {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors de la récupération des codes promo:", error);
+        throw error;
+      }
+
+      console.log("Codes promo récupérés:", data?.length || 0);
       setPromoCodes(data || []);
-    } catch (error) {
-      console.error("Error fetching promo codes:", error);
-      showError("Erreur", "Impossible de récupérer vos codes promo");
+    } catch (error: any) {
+      console.error("Erreur fetchPromoCodes:", error);
+      showError("Erreur", "Impossible de récupérer les codes promo");
     } finally {
       setLoading(false);
     }
   };
 
-  const generatePromoCode = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      // Générer le code via la fonction RPC
-      const { data: generatedCode, error: codeError } = await supabase
-        .rpc('generate_promo_code');
-
-      if (codeError) throw codeError;
-
-      // Créer l'entrée dans la table promo_codes
-      const { error } = await supabase.from("promo_codes").insert({
-        user_id: user.id,
-        code: generatedCode,
-      });
-
-      if (error) throw error;
-
-      showSuccess("Code généré", `Votre code promo ${generatedCode} a été généré avec succès et apparaît maintenant sur la page d'administration pour validation.`);
-      
-      fetchPromoCodes();
-      return generatedCode;
-    } catch (error: any) {
-      console.error("Error generating promo code:", error);
-      showError("Erreur", "Impossible de générer le code promo");
-      return null;
-    }
-  };
-
   const validatePromoCode = async (code: string) => {
     try {
-      console.log("Validating promo code:", code);
+      console.log("Validation du code promo:", code);
       
-      // Utiliser maybeSingle() au lieu de single() pour éviter l'erreur PGRST116
       const { data, error } = await supabase
         .from("promo_codes")
         .select("*")
         .eq("code", code)
         .eq("is_active", true)
-        .eq("is_paid", true)
-        .gte("expires_at", new Date().toISOString())
-        .maybeSingle();
+        .single();
 
-      if (error) {
-        console.error("Error validating promo code:", error);
-        return null;
+      if (error && error.code !== 'PGRST116') {
+        console.error("Erreur lors de la validation:", error);
+        throw error;
       }
 
       if (!data) {
-        console.log("No valid promo code found with code:", code);
+        console.log("Code promo non trouvé ou inactif:", code);
         return null;
       }
 
-      console.log("Valid promo code found:", data);
+      // Vérifier si le code a expiré
+      const now = new Date();
+      const expiresAt = new Date(data.expires_at);
+      
+      if (expiresAt < now) {
+        console.log("Code promo expiré:", code);
+        return null;
+      }
+
+      console.log("Code promo valide trouvé:", data);
       return data;
     } catch (error) {
-      console.error("Error validating promo code:", error);
+      console.error("Erreur validatePromoCode:", error);
       return null;
     }
   };
 
-  const recordPromoUsage = async (promoCodeId: string, userEmail?: string, userPhone?: string) => {
+  const createPromoCode = async () => {
     try {
-      console.log("Recording promo usage:", { promoCodeId, userEmail, userPhone });
+      setLoading(true);
+      console.log("Création d'un nouveau code promo...");
       
-      const { error } = await supabase.from("promo_usage").insert({
-        promo_code_id: promoCodeId,
-        used_by_email: userEmail,
-        used_by_phone: userPhone,
-        discount_amount: 1000,
-      });
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("Utilisateur non connecté");
+      }
+
+      // Générer un code promo
+      const { data: codeData, error: codeError } = await supabase
+        .rpc('generate_promo_code');
+
+      if (codeError) {
+        console.error("Erreur génération code:", codeError);
+        throw codeError;
+      }
+
+      console.log("Code généré:", codeData);
+
+      // Insérer le code promo
+      const { data, error } = await supabase
+        .from("promo_codes")
+        .insert({
+          user_id: user.id,
+          code: codeData,
+          is_active: false,
+          is_paid: false
+        })
+        .select()
+        .single();
 
       if (error) {
-        console.error("Error recording promo usage:", error);
+        console.error("Erreur insertion code promo:", error);
         throw error;
       }
+
+      console.log("Code promo créé:", data);
+      showSuccess("Code promo créé", `Votre code ${data.code} a été créé. Il sera activé après paiement.`);
       
-      console.log("Promo usage recorded successfully");
-    } catch (error) {
-      console.error("Error recording promo usage:", error);
+      // Actualiser la liste
+      await fetchPromoCodes();
+      
+      return data;
+    } catch (error: any) {
+      console.error("Erreur createPromoCode:", error);
+      showError("Erreur", error.message || "Impossible de créer le code promo");
+      return null;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -131,9 +141,8 @@ export const usePromoCodes = () => {
   return {
     promoCodes,
     loading,
-    generatePromoCode,
-    validatePromoCode,
-    recordPromoUsage,
-    refetch: fetchPromoCodes,
+    fetchPromoCodes,
+    createPromoCode,
+    validatePromoCode
   };
 };

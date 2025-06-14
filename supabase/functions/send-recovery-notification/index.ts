@@ -19,7 +19,38 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const supabaseClient = createSupabaseClient(req);
-    const { cardId, ownerInfo, promoInfo }: RecoveryNotificationRequest = await req.json();
+    
+    let requestBody;
+    try {
+      requestBody = await req.json();
+    } catch (parseError) {
+      console.error("❌ Erreur de parsing JSON:", parseError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Format de données invalide",
+          details: "Les données reçues ne sont pas au format JSON valide"
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    const { cardId, ownerInfo, promoInfo }: RecoveryNotificationRequest = requestBody;
+
+    if (!cardId || !ownerInfo?.name || !ownerInfo?.phone) {
+      return new Response(
+        JSON.stringify({ 
+          error: "Données manquantes",
+          details: "L'ID de la carte, le nom et le téléphone du propriétaire sont requis"
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
     console.log("🚀 Traitement de la demande de récupération pour la carte:", cardId);
     console.log("👤 Propriétaire:", ownerInfo.name, "-", ownerInfo.phone);
@@ -27,13 +58,10 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("🎁 Code promo utilisé - ID:", promoInfo.promoCodeId, "- Réduction:", promoInfo.discount, "FCFA");
     }
 
-    // Récupérer les informations de la carte et du signaleur
     const cardData = await fetchCardData(supabaseClient, cardId);
 
-    // Calculer le prix final
     const finalPrice = promoInfo ? promoInfo.finalPrice : 7000;
     
-    // Mettre à jour la description de la carte avec les informations du propriétaire
     const updatedDescription = `${cardData.description || ''}
 
 --- INFORMATIONS DE RÉCUPÉRATION ---
@@ -44,7 +72,6 @@ ${promoInfo ? `Code promo utilisé: Oui (réduction de ${promoInfo.discount} FCF
 Date de demande: ${new Date().toLocaleString('fr-FR')}
 Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
 
-    // Mettre à jour la carte avec ces informations
     const { error: updateError } = await supabaseClient
       .from("reported_cards")
       .update({ 
@@ -60,7 +87,6 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
 
     console.log("✅ Description de la carte mise à jour");
 
-    // Si un code promo est utilisé, récupérer ses informations et enregistrer l'utilisation
     let promoDetails = null;
     let promoOwnerInfo = null;
     if (promoInfo) {
@@ -71,7 +97,6 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       if (promoDetails) {
         promoOwnerInfo = promoDetails.profiles;
         
-        // Enregistrer l'utilisation du code promo
         await recordPromoUsage(
           supabaseClient,
           promoInfo.promoCodeId,
@@ -79,7 +104,6 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
           promoInfo.discount
         );
 
-        // Notifier le propriétaire du code promo que son code a été utilisé
         if (promoDetails.user_id) {
           const { error: notificationError } = await supabaseClient
             .from("notifications")
@@ -102,7 +126,6 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       }
     }
 
-    // Générer le contenu de l'email
     console.log("📧 Génération du contenu de l'email...");
     const emailContent = generateEmailContent({
       cardData,
@@ -112,10 +135,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       promoInfo
     });
 
-    // Créer le sujet de l'email
     const subject = `🔍 Demande de récupération - Carte ${cardData.card_number}${promoDetails ? ` (Code promo: ${promoDetails.code})` : ''}`;
 
-    // Envoyer l'email
     console.log("📤 Envoi de l'email...");
     const emailResponse = await sendRecoveryEmail(subject, emailContent);
 
@@ -146,8 +167,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
     console.error("❌ Erreur dans send-recovery-notification:", error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        details: "Une erreur est survenue lors de l'envoi de la demande de récupération"
+        error: error.message || "Erreur interne du serveur",
+        details: "Une erreur est survenue lors du traitement de votre demande"
       }),
       {
         status: 500,

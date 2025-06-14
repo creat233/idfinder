@@ -30,12 +30,12 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
 
     setIsValidating(true);
     try {
-      console.log("Attempting to validate promo code:", promoCode.trim().toUpperCase());
+      console.log("Validation du code promo:", promoCode.trim().toUpperCase());
       const validPromo = await validatePromoCode(promoCode.trim().toUpperCase());
       
       if (validPromo) {
         const discount = 1000;
-        console.log("Valid promo code found, applying discount:", discount);
+        console.log("Code promo valide, application de la réduction:", discount);
         
         setAppliedPromo({
           code: validPromo.code,
@@ -43,25 +43,20 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
           id: validPromo.id,
         });
         
-        // Appeler le callback pour notifier le composant parent
         onPromoApplied?.(discount, validPromo.id);
         
-        showSuccess(t("discountApplied"), `Réduction de ${discount} FCFA appliquée avec succès`);
-        console.log("Promo code applied successfully:", validPromo.code, "Discount:", discount);
+        showSuccess("Code promo appliqué", `Réduction de ${discount} FCFA appliquée avec succès`);
+        console.log("Code promo appliqué avec succès:", validPromo.code, "Réduction:", discount);
         
-        // Vider le champ de saisie après application
         setPromoCode("");
       } else {
-        console.log("Invalid or inactive promo code:", promoCode);
-        // Ne pas afficher d'erreur bloquante, juste informer l'utilisateur
-        showError(t("invalidPromoCode"), "Code invalide - vous pouvez continuer sans code promo");
-        // Vider le champ pour éviter la confusion
+        console.log("Code promo invalide ou inactif:", promoCode);
+        showError("Code invalide", "Ce code promo n'existe pas ou n'est plus valide");
         setPromoCode("");
       }
     } catch (error) {
-      console.error("Error validating promo code:", error);
-      showError("Information", "Code non trouvé - vous pouvez continuer sans code promo");
-      // Vider le champ en cas d'erreur
+      console.error("Erreur lors de la validation du code promo:", error);
+      showError("Erreur", "Impossible de valider le code promo. Veuillez réessayer.");
       setPromoCode("");
     } finally {
       setIsValidating(false);
@@ -69,7 +64,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
   };
 
   const handleRemovePromo = () => {
-    console.log("Removing promo code:", appliedPromo?.code);
+    console.log("Suppression du code promo:", appliedPromo?.code);
     setAppliedPromo(null);
     setPromoCode("");
     onPromoRemoved?.();
@@ -103,7 +98,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
     <div className="space-y-2">
       <div className="flex gap-2">
         <Input
-          placeholder={t("enterPromoCode")}
+          placeholder="Entrez votre code promo"
           value={promoCode}
           onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
           className="flex-1"
@@ -119,7 +114,7 @@ export const PromoCodeInput = ({ onPromoApplied, onPromoRemoved }: PromoCodeInpu
           disabled={!promoCode.trim() || isValidating}
           variant="outline"
         >
-          {isValidating ? "Validation..." : t("applyDiscount")}
+          {isValidating ? "Validation..." : "Appliquer"}
         </Button>
       </div>
       <p className="text-xs text-gray-500">

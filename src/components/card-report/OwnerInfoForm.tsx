@@ -15,7 +15,6 @@ interface OwnerInfoFormProps {
   onPromoRemoved: () => void;
 }
 
-// Mapping des codes pays vers leurs indicatifs téléphoniques
 const countryPhoneCodes: Record<string, string> = {
   'SN': '+221',
   'CI': '+225',
@@ -62,7 +61,6 @@ export const OwnerInfoForm = ({
   const [userCountry, setUserCountry] = useState<string>('SN');
   const [countryCode, setCountryCode] = useState<string>('+221');
 
-  // Récupérer le pays et définir l'indicatif téléphonique
   useEffect(() => {
     const getUserCountry = async () => {
       try {
@@ -79,14 +77,13 @@ export const OwnerInfoForm = ({
             const phoneCode = countryPhoneCodes[profile.country] || '+221';
             setCountryCode(phoneCode);
             
-            // Si le numéro de téléphone est vide, pré-remplir avec l'indicatif
-            if (!ownerPhone) {
+            if (!ownerPhone || ownerPhone === '+221 ') {
               onOwnerPhoneChange(phoneCode + ' ');
             }
           }
         }
       } catch (error) {
-        console.error('Error fetching user country:', error);
+        console.error('Erreur récupération pays utilisateur:', error);
       }
     };
 
@@ -94,15 +91,12 @@ export const OwnerInfoForm = ({
   }, []);
 
   const handlePhoneChange = (value: string) => {
-    // Si l'utilisateur efface tout, remettre l'indicatif du pays
     if (value.length === 0) {
       onOwnerPhoneChange(countryCode + ' ');
       return;
     }
     
-    // Si l'utilisateur essaie de supprimer l'indicatif, le maintenir
     if (!value.startsWith(countryCode)) {
-      // Extraire seulement les chiffres après l'indicatif
       const numbersOnly = value.replace(/[^\d]/g, '');
       onOwnerPhoneChange(countryCode + ' ' + numbersOnly);
       return;
@@ -115,7 +109,6 @@ export const OwnerInfoForm = ({
 
   return (
     <div className="space-y-4">
-      {/* Nom complet */}
       <div className="space-y-2">
         <Label htmlFor="ownerName" className="text-sm font-medium text-gray-700">
           Nom complet *
@@ -131,7 +124,6 @@ export const OwnerInfoForm = ({
         />
       </div>
       
-      {/* Numéro de téléphone */}
       <div className="space-y-2">
         <Label htmlFor="ownerPhone" className="text-sm font-medium text-gray-700">
           Numéro de téléphone *
@@ -158,7 +150,6 @@ export const OwnerInfoForm = ({
         </p>
       </div>
 
-      {/* Code promo */}
       <div className="space-y-2">
         <Label className="text-sm font-medium text-gray-700">
           Code promo (optionnel)
