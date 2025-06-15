@@ -1,4 +1,3 @@
-
 import { Translations } from './types';
 
 export const mcardsTranslations: Translations = {
@@ -13,6 +12,10 @@ export const mcardsTranslations: Translations = {
   createMCard: {
     fr: "Créer une mCard",
     en: "Create mCard"
+  },
+  createForFree: {
+    fr: "Créer gratuitement",
+    en: "Create for free"
   },
   editMCard: {
     fr: "Modifier la mCard",
@@ -257,10 +260,6 @@ export const mcardsTranslations: Translations = {
   upgradeNow: {
     fr: "Mettre à niveau maintenant",
     en: "Upgrade Now"
-  },
-  selectPlanTooltip: {
-    fr: "Vous devez créer une mCard avant de pouvoir sélectionner un plan.",
-    en: "You need to create an mCard before you can select a plan."
   },
   cannotUpgradeToFree: {
     fr: "Vous ne pouvez pas passer à un plan gratuit.",

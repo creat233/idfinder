@@ -5,7 +5,6 @@ import { getPriceInfoForCountry } from "@/utils/pricing";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MCard } from "@/hooks/useMCards";
 import { SelectMCardDialog } from "./SelectMCardDialog";
 
@@ -67,10 +66,13 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
       if (planId !== 'free') {
         onRequestUpgrade(upgradingCardId, planId as 'essential' | 'premium');
       }
-    } else if (mcards.length > 1 && planId !== 'free') {
-        // This case is now for upgrades only, creation is the default
+    } else if (mcards.length >= 1 && planId !== 'free') {
+      if (mcards.length > 1) {
         setSelectedPlan(planId as 'essential' | 'premium');
         setIsSelectCardDialogOpen(true);
+      } else {
+        onStartCreationFlow(planId);
+      }
     } else {
       onStartCreationFlow(planId);
     }
@@ -86,7 +88,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
 
   return (
     <>
-      <TooltipProvider>
+      <div>
         <section className="py-16 bg-muted/40 rounded-lg">
           <div className="container mx-auto px-4 flex flex-col items-center">
             <h2 className="text-3xl font-bold text-center mb-4">{t('mCardPricingTitle')}</h2>
@@ -95,11 +97,6 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
               {plans.map((plan, index) => (
                 <Card key={index} className={cn("flex flex-col", plan.isPopular && "border-primary border-2 relative", upgradingCardId && "ring-2 ring-offset-2 ring-primary/50 transition-all duration-300")}>
-                  {plan.isPopular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 text-sm font-semibold rounded-full">
-                      {t('mostPopular')}
-                    </div>
-                  )}
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{plan.name}</CardTitle>
                     <CardDescription>{plan.description}</CardDescription>
@@ -128,30 +125,17 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
                       </ul>
                     </div>
                     
-                    {plan.id !== 'free' ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="w-full mt-6">
-                            <Button 
-                              size="lg" 
-                              className="w-full" 
-                              disabled={mcards.length === 0} 
-                              variant={plan.isPopular ? 'default' : 'outline'}
-                              onClick={() => handleSelectPlan(plan.id as 'essential' | 'premium')}
-                            >
-                              {upgradingCardId ? t('upgradeNow') : t('selectPlan')}
-                            </Button>
-                          </div>
-                        </TooltipTrigger>
-                        {mcards.length === 0 && (
-                          <TooltipContent>
-                            <p>{t('selectPlanTooltip')}</p>
-                          </TooltipContent>
-                        )}
-                      </Tooltip>
-                    ) : (
-                      <div className="w-full mt-6 h-11" />
-                    )}
+                    <div className="w-full mt-6">
+                      <Button 
+                        size="lg" 
+                        className="w-full"
+                        disabled={upgradingCardId && plan.id === 'free'}
+                        variant={plan.isPopular ? 'default' : 'outline'}
+                        onClick={() => handleSelectPlan(plan.id as 'free' | 'essential' | 'premium')}
+                      >
+                        {upgradingCardId && plan.id !== 'free' ? t('upgradeNow') : (plan.id === 'free' ? t('createForFree') : t('selectPlan'))}
+                      </Button>
+                    </div>
 
                     <p className="text-xs text-muted-foreground mt-2 text-center">
                       {plan.id !== 'free' ? 'Le paiement se fait après la sélection.' : ' '}
@@ -162,7 +146,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
             </div>
           </div>
         </section>
-      </TooltipProvider>
+      </div>
       <SelectMCardDialog 
         isOpen={isSelectCardDialogOpen}
         onOpenChange={setIsSelectCardDialogOpen}
