@@ -253,6 +253,7 @@ export type Database = {
           is_paid: boolean
           paid_at: string | null
           promo_code_id: string
+          reported_card_id: string | null
           used_by_email: string | null
           used_by_phone: string | null
         }
@@ -265,6 +266,7 @@ export type Database = {
           is_paid?: boolean
           paid_at?: string | null
           promo_code_id: string
+          reported_card_id?: string | null
           used_by_email?: string | null
           used_by_phone?: string | null
         }
@@ -277,6 +279,7 @@ export type Database = {
           is_paid?: boolean
           paid_at?: string | null
           promo_code_id?: string
+          reported_card_id?: string | null
           used_by_email?: string | null
           used_by_phone?: string | null
         }
@@ -293,6 +296,13 @@ export type Database = {
             columns: ["promo_code_id"]
             isOneToOne: false
             referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promo_usage_reported_card_id_fkey"
+            columns: ["reported_card_id"]
+            isOneToOne: false
+            referencedRelation: "reported_cards"
             referencedColumns: ["id"]
           },
         ]

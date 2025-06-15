@@ -127,7 +127,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
             supabaseClient,
             promoInfo.promoCodeId,
             ownerInfo.phone,
-            promoInfo.discount
+            promoInfo.discount,
+            cardId
           );
         } catch (usageError) {
           console.error("⚠️ Erreur lors de l'enregistrement de l'utilisation:", usageError);

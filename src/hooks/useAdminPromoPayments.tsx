@@ -117,6 +117,7 @@ export const useAdminPromoPayments = () => {
             used_by_phone: recoveryData.ownerPhone,
             discount_amount: 1000,
             is_paid: false, // On insère en non-payé pour déclencher le trigger sur l'update
+            reported_card_id: recoveryData.cardId,
           })
           .select('id')
           .single();
@@ -135,20 +136,9 @@ export const useAdminPromoPayments = () => {
               console.error("Erreur lors de la mise à jour de promo_usage pour les gains:", earningsError);
            }
           
-          // C. Envoyer la notification de revenu
-          const { error: promoOwnerNotificationError } = await supabase
-            .from("notifications")
-            .insert({
-              user_id: recoveryData.promoCodeOwnerId,
-              type: "promo_payment_received",
-              title: "💰 Paiement reçu - Code promo",
-              message: `Félicitations ! Vous avez reçu un paiement de 1000 FCFA pour l'utilisation de votre code promo ${recoveryData.promoCode}. Le propriétaire a récupéré sa carte avec succès.`,
-              is_read: false
-            });
-
-          if (promoOwnerNotificationError) {
-            console.error("Erreur notification propriétaire code promo:", promoOwnerNotificationError);
-          }
+          // C. La notification de revenu est maintenant gérée par le trigger 'on_promo_payment_processed' dans la base de données.
+          //    Aucune insertion manuelle n'est nécessaire ici pour éviter les doublons.
+          console.log("✅ Paiement du code promo enregistré. Le trigger s'occupera de la notification.");
         }
       }
 

@@ -110,7 +110,8 @@ export const recordPromoUsage = async (
   supabaseClient: any,
   promoCodeId: string,
   phone: string,
-  discount: number
+  discount: number,
+  cardId: string
 ) => {
   console.log("📝 Enregistrement de l'utilisation du code promo");
   
@@ -127,6 +128,7 @@ export const recordPromoUsage = async (
       used_by_email: null,
       used_by_phone: phone,
       discount_amount: discount,
+      reported_card_id: cardId,
     })
     .select()
     .single();
