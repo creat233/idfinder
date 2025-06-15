@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -121,6 +122,11 @@ export const useAuth = () => {
         setError(error.message);
         return false;
       }
+      
+      if (data.user) {
+        // Déclencher la notification de sécurité
+        await supabase.rpc('log_login_event');
+      }
 
       navigate("/");
       return true;
@@ -211,3 +217,4 @@ export const useAuth = () => {
     setError
   };
 };
+

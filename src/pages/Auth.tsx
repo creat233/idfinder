@@ -105,12 +105,17 @@ export const Auth = () => {
           "Compte créé avec toutes vos informations. Vérifiez votre email pour confirmer."
         );
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
+        
+        // Déclencher la notification de sécurité
+        if (data.user) {
+          await supabase.rpc('log_login_event');
+        }
         
         showSuccess(t("loginSuccess"));
         navigate("/");
