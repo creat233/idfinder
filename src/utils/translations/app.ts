@@ -218,5 +218,105 @@ export const appTranslations: Translations = {
   download_started_desc: {
     fr: "L'application FinderID est en cours de téléchargement",
     en: "The FinderID application is being downloaded"
-  }
+  },
+
+  // Traductions pour la page d'accueil
+  heroTitle_part1: {
+    fr: "Retrouvez vos",
+    en: "Find your"
+  },
+  heroTitle_highlight: {
+    fr: "documents perdus",
+    en: "lost documents"
+  },
+  heroTitle_part2: {
+    fr: "en un clic",
+    en: "in one click"
+  },
+  heroSubtitle_base: {
+    fr: "FinderID révolutionne la récupération de documents perdus au Sénégal.",
+    en: "FinderID revolutionizes the recovery of lost documents in Senegal."
+  },
+  heroSubtitle_user: {
+    fr: "Recherchez vos cartes perdues ou signalez des cartes trouvées.",
+    en: "Search for your lost cards or report found cards."
+  },
+  heroSubtitle_guest: {
+    fr: "Signalez, trouvez et récupérez vos pièces d'identité rapidement et en toute sécurité.",
+    en: "Report, find, and recover your ID documents quickly and safely."
+  },
+  reportCard: {
+    fr: "Signaler une carte",
+    en: "Report a card"
+  },
+  getStartedNow: {
+    fr: "Commencer maintenant",
+    en: "Get started now"
+  },
+  myCards: {
+    fr: "Mes cartes",
+    en: "My cards"
+  },
+  seeDemo: {
+    fr: "Voir la démo",
+    en: "See the demo"
+  },
+  promoCodes: {
+    fr: "Codes promo",
+    en: "Promo codes"
+  },
+  welcomeMessageLoggedIn: {
+    fr: "👋 Bienvenue ! Vous pouvez maintenant signaler des cartes trouvées ou gérer vos cartes perdues.",
+    en: "👋 Welcome! You can now report found cards or manage your lost cards."
+  },
+  statusReported: {
+    fr: "Carte signalée",
+    en: "Card reported"
+  },
+  statusNotified: {
+    fr: "Notification envoyée",
+    en: "Notification sent"
+  },
+  statusRecovery: {
+    fr: "Récupération organisée",
+    en: "Recovery organized"
+  },
+  signOutSuccessTitle: {
+    fr: "Déconnexion réussie",
+    en: "Signed out successfully"
+  },
+  signOutSuccessDesc: {
+    fr: "Vous avez été déconnecté avec succès.",
+    en: "You have been successfully signed out."
+  },
+
+  // Traductions pour Hero.tsx (ancienne hero)
+  welcomeMessage: {
+    fr: "La plateforme la plus simple et sécurisée pour retrouver vos pièces d'identité perdues.",
+    en: "The simplest and most secure platform to find your lost identity documents."
+  },
+  searchMyCard: { fr: "Rechercher ma carte", en: "Search for my card" },
+  downloadForAndroid: { fr: "Télécharger pour Android", en: "Download for Android" },
+  neverMissNotification: { fr: "Ne manquez jamais une notification importante", en: "Never miss an important notification" },
+  cardsFound: { fr: "Cartes retrouvées", en: "Cards found" },
+  satisfaction: { fr: "Satisfaction", en: "Satisfaction" },
+  fastService: { fr: "Service rapide", en: "Fast service" },
+  freeDelivery: { fr: "Livraison gratuite", en: "Free delivery" },
+  serviceActive: { fr: "Service actif 24h/7j", en: "Service active 24/7" },
+  directContact: { fr: "Contact direct avec les trouveurs", en: "Direct contact with finders" },
+  preciseGeolocation: { fr: "Géolocalisation précise", en: "Precise geolocation" },
+  homeDeliveryAvailable: { fr: "Livraison à domicile disponible", en: "Home delivery available" },
+  androidAppAvailable: { fr: "App mobile Android disponible", en: "Android mobile app available" },
+  
+  // Traductions pour DashboardHero.tsx
+  dashboardHeroTitle: { fr: "Retrouvez vos papiers d'identité perdus", en: "Find your lost ID papers" },
+  dashboardHeroSubtitle: { fr: "Une solution simple, sécurisée et efficace pour récupérer vos documents d'identité égarés", en: "A simple, secure, and effective solution to recover your lost identity documents" },
+  reportFoundCard: { fr: "Signaler une carte trouvée", en: "Report a found card" },
+  howItWorks: { fr: "Comment ça marche ?", en: "How does it work?" },
+  inviteFriend: { fr: "Inviter un ami", en: "Invite a friend" },
+  downloadApp: { fr: "Télécharger l'app", en: "Download the app" },
+  linkCopiedTitle: { fr: "Lien copié !", en: "Link copied!" },
+  linkCopiedDesc: { fr: "Le message d'invitation a été copié dans le presse-papiers", en: "The invitation message has been copied to the clipboard" },
+  inviteMessageShare: {fr: "🔍 Découvre FinderID - L'app qui aide à retrouver les pièces d'identité perdues !\\n\\n📱 Site web: {siteUrl}\\n💾 Télécharger l'app Android: {apkUrl}\\n\\nRejoins-nous pour une communauté solidaire ! 🤝", en: "🔍 Discover FinderID - The app that helps you find lost ID documents!\\n\\n📱 Website: {siteUrl}\\n💾 Download Android app: {apkUrl}\\n\\nJoin us for a supportive community! 🤝"},
+  inviteTitleShare: {fr: "FinderID - Retrouvez vos papiers perdus", en: "FinderID - Find your lost papers"}
 };

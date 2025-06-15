@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { User } from "@supabase/supabase-js";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface HeroContentProps {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface HeroContentProps {
 }
 
 export const HeroContent = ({ children, user }: HeroContentProps) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -15,14 +17,14 @@ export const HeroContent = ({ children, user }: HeroContentProps) => {
       transition={{ duration: 0.6 }}
     >
       <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-        Retrouvez vos <span className="text-yellow-300">documents perdus</span> en un clic
+        {t("heroTitle_part1")} <span className="text-yellow-300">{t("heroTitle_highlight")}</span> {t("heroTitle_part2")}
       </h1>
       <p className="text-xl text-purple-100 mb-8 leading-relaxed">
-        FinderID révolutionne la récupération de documents perdus au Sénégal. 
+        {t("heroSubtitle_base")}
         {user ? (
-          " Recherchez vos cartes perdues ou signalez des cartes trouvées."
+          ` ${t("heroSubtitle_user")}`
         ) : (
-          " Signalez, trouvez et récupérez vos pièces d'identité rapidement et en toute sécurité."
+          ` ${t("heroSubtitle_guest")}`
         )}
       </p>
       {children}

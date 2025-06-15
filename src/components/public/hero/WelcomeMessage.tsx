@@ -1,12 +1,14 @@
 
 import { motion } from "framer-motion";
 import { User } from "@supabase/supabase-js";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface WelcomeMessageProps {
   user?: User | null;
 }
 
 export const WelcomeMessage = ({ user }: WelcomeMessageProps) => {
+  const { t } = useTranslation();
   if (!user) return null;
 
   return (
@@ -17,7 +19,7 @@ export const WelcomeMessage = ({ user }: WelcomeMessageProps) => {
       className="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
     >
       <p className="text-purple-100 text-sm">
-        👋 Bienvenue ! Vous pouvez maintenant signaler des cartes trouvées ou gérer vos cartes perdues.
+        {t("welcomeMessageLoggedIn")}
       </p>
     </motion.div>
   );

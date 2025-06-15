@@ -66,7 +66,7 @@ export const Hero = () => {
                 onClick={() => window.location.href = '/demo'}
               >
                 <Play className="mr-2 h-5 w-5" />
-                Voir la démo
+                {t("seeDemo")}
               </Button>
               <Button 
                 variant="outline" 
@@ -74,7 +74,7 @@ export const Hero = () => {
                 className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 rounded-full transition-all duration-300"
                 onClick={() => document.getElementById('recherche-section')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Rechercher ma carte
+                {t("searchMyCard")}
                 <Search className="ml-2 h-5 w-5" />
               </Button>
             </div>
@@ -87,10 +87,10 @@ export const Hero = () => {
                 className="text-white border border-white/30 hover:bg-white hover:text-[#9b87f5] px-6 py-3 rounded-full transition-all duration-300"
               >
                 <Download className="mr-2 h-5 w-5" />
-                📱 Télécharger pour Android
+                📱 {t("downloadForAndroid")}
               </Button>
               <p className="text-sm text-purple-200 mt-2">
-                Ne manquez jamais une notification importante
+                {t("neverMissNotification")}
               </p>
             </div>
             
@@ -98,24 +98,24 @@ export const Hero = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8">
               <div className="text-center">
                 <div className="text-2xl font-bold">500+</div>
-                <div className="text-sm text-purple-200">Cartes retrouvées</div>
+                <div className="text-sm text-purple-200">{t("cardsFound")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold">98%</div>
-                <div className="text-sm text-purple-200">Satisfaction</div>
+                <div className="text-sm text-purple-200">{t("satisfaction")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold flex items-center justify-center gap-1">
                   <MapPin className="h-5 w-5" />
                   24h
                 </div>
-                <div className="text-sm text-purple-200">Service rapide</div>
+                <div className="text-sm text-purple-200">{t("fastService")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold flex items-center justify-center gap-1">
                   🚚
                 </div>
-                <div className="text-sm text-purple-200">Livraison gratuite</div>
+                <div className="text-sm text-purple-200">{t("freeDelivery")}</div>
               </div>
             </div>
           </div>
@@ -125,23 +125,23 @@ export const Hero = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm">Service actif 24h/7j</span>
+                  <span className="text-sm">{t("serviceActive")}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-green-400" />
-                  <span className="text-sm">Contact direct avec les trouveurs</span>
+                  <span className="text-sm">{t("directContact")}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-blue-400" />
-                  <span className="text-sm">Géolocalisation précise</span>
+                  <span className="text-sm">{t("preciseGeolocation")}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-lg">🚚</span>
-                  <span className="text-sm">Livraison à domicile disponible</span>
+                  <span className="text-sm">{t("homeDeliveryAvailable")}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Download className="h-5 w-5 text-yellow-400" />
-                  <span className="text-sm">App mobile Android disponible</span>
+                  <span className="text-sm">{t("androidAppAvailable")}</span>
                 </div>
               </div>
             </div>

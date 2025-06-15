@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -8,12 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { PublicHeaderDesktopNav } from "./PublicHeaderDesktopNav";
 import { PublicHeaderMobileNav } from "./PublicHeaderMobileNav";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check current user session
@@ -45,8 +48,8 @@ export const PublicHeader = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast({
-      title: "Déconnexion réussie",
-      description: "Vous avez été déconnecté avec succès.",
+      title: t("signOutSuccessTitle"),
+      description: t("signOutSuccessDesc"),
     });
     navigate("/");
   };
@@ -67,7 +70,7 @@ export const PublicHeader = () => {
               alt="FinderID Logo" 
               className="w-8 h-8"
             />
-            <span className="text-xl font-bold text-gray-900">FinderID</span>
+            <span className="text-xl font-bold text-gray-900">{t("appName")}</span>
           </div>
 
           {/* Navigation Desktop et Boutons */}

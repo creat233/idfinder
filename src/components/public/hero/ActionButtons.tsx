@@ -1,8 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
 import { ScanSearch, Plus, Search, Gift } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ActionButtonsProps {
   user?: User | null;
@@ -11,6 +11,7 @@ interface ActionButtonsProps {
 
 export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handlePrimaryAction = () => {
     if (user) {
@@ -54,10 +55,10 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
         {user ? (
           <>
             <Plus className="mr-2 h-5 w-5" />
-            Signaler une carte
+            {t("reportCard")}
           </>
         ) : (
-          "Commencer maintenant"
+          t("getStartedNow")
         )}
       </Button>
       <Button 
@@ -69,12 +70,12 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
         {user ? (
           <>
             <ScanSearch className="mr-2 h-5 w-5" />
-            Mes cartes
+            {t("myCards")}
           </>
         ) : (
           <>
             <Search className="mr-2 h-5 w-5" />
-            Voir la démo
+            {t("seeDemo")}
           </>
         )}
       </Button>
@@ -86,7 +87,7 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
           className="border-2 border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg bg-transparent"
         >
           <Gift className="mr-2 h-5 w-5" />
-          Codes promo
+          {t("promoCodes")}
         </Button>
       )}
     </div>
