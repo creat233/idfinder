@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,7 @@ export const AdminBulkEmailSender = () => {
             <Mail className="h-5 w-5" />
             Envoyer un e-mail à tous les utilisateurs
           </div>
-          <EmailTemplateSelector useTemplate={useTemplate} />
+          <EmailTemplateSelector useTemplate={useTemplate} context="bulk" />
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

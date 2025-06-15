@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, Send } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
+import { EmailTemplateSelector } from "./EmailTemplateSelector";
 
 export const AdminSingleEmailSender = () => {
   const [recipientEmail, setRecipientEmail] = useState("");
@@ -49,12 +50,21 @@ export const AdminSingleEmailSender = () => {
     }
   };
 
+  const useTemplate = (template: { subject: string, message: string }) => {
+    setSubject(template.subject);
+    setMessage(template.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-primary">
-          <Mail className="h-5 w-5" />
-          Envoyer un e-mail à un utilisateur spécifique
+        <CardTitle className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2 text-primary">
+            <Mail className="h-5 w-5" />
+            Envoyer un e-mail à un utilisateur spécifique
+          </div>
+          <EmailTemplateSelector useTemplate={useTemplate} context="single" />
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
