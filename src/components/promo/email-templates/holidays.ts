@@ -1,3 +1,4 @@
+
 export const holidayWishesTemplate = {
   subject: "🎉 L'équipe FinderID vous souhaite de joyeuses fêtes !",
   message: `<h1>Joyeuses Fêtes !</h1>
@@ -6,7 +7,7 @@ export const holidayWishesTemplate = {
 <p>Que cette nouvelle année vous apporte joie, santé et succès. Nous sommes reconnaissants de vous avoir dans notre communauté.</p>
 <p>Merci pour votre confiance continue.</p>
 <p>Cordialement,</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const newYearWishesTemplate = {
@@ -17,7 +18,7 @@ export const newYearWishesTemplate = {
 <p>Que cette année vous apporte la santé, le bonheur et la réussite dans tous vos projets.</p>
 <p>Nous sommes ravis de vous compter parmi nous et nous vous remercions pour votre confiance.</p>
 <p>À une nouvelle année de sécurité et de sérénité pour vos documents !</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const easterWishesTemplate = {
@@ -27,7 +28,7 @@ export const easterWishesTemplate = {
 <p>Toute l'équipe de FinderID vous souhaite de très joyeuses fêtes de Pâques.</p>
 <p>Que cette journée soit remplie de joie, de partage et de moments précieux avec vos proches.</p>
 <p>Merci pour votre confiance.</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const tabaskiWishesTemplate = {
@@ -37,7 +38,7 @@ export const tabaskiWishesTemplate = {
 <p>À l'occasion de l'Aïd el-Kébir, toute l'équipe de FinderID vous présente ses meilleurs vœux.</p>
 <p>Que cette fête soit synonyme de bonheur, de partage et de prospérité pour vous et vos familles.</p>
 <p>Dewenati !</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const ramadanWishesTemplate = {
@@ -47,7 +48,7 @@ export const ramadanWishesTemplate = {
 <p>En ce début de mois sacré, l'équipe de FinderID vous souhaite un excellent Ramadan.</p>
 <p>Que ce mois de jeûne, de prière et de partage vous apporte la paix, la sérénité et de nombreuses bénédictions.</p>
 <p>Ramadan Mubarak !</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const fathersDayWishesTemplate = {
@@ -57,7 +58,7 @@ export const fathersDayWishesTemplate = {
 <p>En cette journée spéciale, toute l'équipe de FinderID souhaite une excellente Fête des Pères à tous les papas de notre communauté.</p>
 <p>Merci d'être des piliers pour vos familles et des héros du quotidien.</p>
 <p>Passez une merveilleuse journée !</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const mothersDayWishesTemplate = {
@@ -67,7 +68,7 @@ export const mothersDayWishesTemplate = {
 <p>En cette belle journée, l'équipe FinderID tient à souhaiter une magnifique Fête des Mères à toutes les mamans extraordinaires de notre communauté.</p>
 <p>Votre amour et votre dévouement sont une source d'inspiration. Nous vous célébrons aujourd'hui.</p>
 <p>Passez une journée aussi spéciale que vous l'êtes.</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const laborDayWishesTemplate = {
@@ -76,7 +77,7 @@ export const laborDayWishesTemplate = {
 <p>Bonjour,</p>
 <p>En ce jour de la Fête du Travail, l'équipe de FinderID salue le dévouement et les efforts de tous les travailleurs.</p>
 <p>Votre contribution est essentielle à la construction d'un avenir meilleur. Nous vous souhaitons une excellente journée de repos bien mérité.</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const valentinesDayWishesTemplate = {
@@ -86,7 +87,7 @@ export const valentinesDayWishesTemplate = {
 <p>En cette journée dédiée à l'amour, toute l'équipe de FinderID vous souhaite une magnifique Saint-Valentin.</p>
 <p>Protégez ce qui compte le plus, y compris les cadeaux que vous offrez à vos proches.</p>
 <p>Avec tout notre amour,</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const womensDayWishesTemplate = {
@@ -95,7 +96,7 @@ export const womensDayWishesTemplate = {
 <p>Bonjour,</p>
 <p>En cette Journée Internationale des Droits des Femmes, FinderID célèbre toutes les femmes qui, par leur force et leur résilience, inspirent le monde.</p>
 <p>Nous sommes fiers de compter tant de femmes extraordinaires dans notre communauté.</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const independenceDayWishesTemplate = {
@@ -104,7 +105,7 @@ export const independenceDayWishesTemplate = {
 <p>Bonjour,</p>
 <p>En ce jour de fête nationale, toute l'équipe de FinderID souhaite une excellente Fête de l'Indépendance à toute la communauté sénégalaise.</p>
 <p>Ensemble, continuons de construire un avenir sûr et serein.</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
 
 export const birthdayWishesTemplate = {
@@ -115,5 +116,5 @@ export const birthdayWishesTemplate = {
 <p>Nous espérons que cette journée vous est douce et remplie de joie.</p>
 <p>Pour marquer le coup, nous sommes heureux de vous offrir <strong>[Petite offre, ex: un mois d'abonnement premium gratuit ou une réduction]</strong>.</p>
 <p>Merci pour votre confiance et votre fidélité.</p>
-<p>L'équipe FinderID</p>
+<p>L'équipe FinderID</p>`
 };
