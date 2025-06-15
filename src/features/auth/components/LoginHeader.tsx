@@ -1,9 +1,12 @@
 
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
+import { getCountryInfo } from "@/utils/countryUtils";
 
 const LoginHeader = () => {
-  const { t } = useTranslation();
+  const { t, currentCountry, currentLanguage } = useTranslation();
+  const countryInfo = getCountryInfo(currentCountry, currentLanguage as 'fr' | 'en');
+
   return (
     <div className="flex flex-col items-center">
       <motion.div
@@ -25,7 +28,7 @@ const LoginHeader = () => {
           transition={{ delay: 0.5, duration: 0.5 }}
           className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center"
         >
-          <span className="text-xs">🇸🇳</span>
+          <span className="text-xs">{countryInfo.flag}</span>
         </motion.div>
       </motion.div>
       
