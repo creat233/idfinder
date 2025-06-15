@@ -1,4 +1,3 @@
-
 import { Translations } from './types';
 
 export const profileTranslations: Translations = {
@@ -133,13 +132,5 @@ export const profileTranslations: Translations = {
   appTheme: {
     fr: "Thème de l'application",
     en: "Application Theme"
-  },
-  lightMode: {
-    fr: "Clair",
-    en: "Light"
-  },
-  darkMode: {
-    fr: "Sombre",
-    en: "Dark"
   }
 };
