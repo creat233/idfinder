@@ -9,7 +9,7 @@ import { Mail, Send, FileText } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 
-const newFeatureTemplate = {
+const cardRegistrationAnnouncementTemplate = {
   subject: "🎉 Nouvelle fonctionnalité : Sécurisez vos cartes sur FinderID !",
   message: `<h1>Ne perdez plus jamais vos documents importants !</h1>
 <p>Bonjour,</p>
@@ -65,9 +65,9 @@ export const AdminBulkEmailSender = () => {
     }
   };
   
-  const useTemplate = () => {
-    setSubject(newFeatureTemplate.subject);
-    setMessage(newFeatureTemplate.message);
+  const useCardRegistrationTemplate = () => {
+    setSubject(cardRegistrationAnnouncementTemplate.subject);
+    setMessage(cardRegistrationAnnouncementTemplate.message);
     showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
   };
 
@@ -79,9 +79,9 @@ export const AdminBulkEmailSender = () => {
             <Mail className="h-5 w-5" />
             Envoyer un e-mail à tous les utilisateurs
           </div>
-          <Button variant="outline" size="sm" onClick={useTemplate}>
+          <Button variant="outline" size="sm" onClick={useCardRegistrationTemplate}>
             <FileText className="h-4 w-4 mr-2" />
-            Utiliser le modèle "Nouvelle fonctionnalité"
+            Utiliser le modèle "Annonce Enregistrement de Carte"
           </Button>
         </CardTitle>
       </CardHeader>
