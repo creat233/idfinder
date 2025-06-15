@@ -135,10 +135,13 @@ export type Database = {
           created_at: string
           description: string | null
           email: string | null
+          facebook_url: string | null
           full_name: string
           id: string
+          instagram_url: string | null
           is_published: boolean
           job_title: string | null
+          linkedin_url: string | null
           phone_number: string | null
           plan: string
           profile_picture_url: string | null
@@ -146,19 +149,25 @@ export type Database = {
           social_links: Json | null
           subscription_expires_at: string
           subscription_status: string
+          tiktok_url: string | null
+          twitter_url: string | null
           updated_at: string
           user_id: string
           website_url: string | null
+          youtube_url: string | null
         }
         Insert: {
           company?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
+          facebook_url?: string | null
           full_name: string
           id?: string
+          instagram_url?: string | null
           is_published?: boolean
           job_title?: string | null
+          linkedin_url?: string | null
           phone_number?: string | null
           plan?: string
           profile_picture_url?: string | null
@@ -166,19 +175,25 @@ export type Database = {
           social_links?: Json | null
           subscription_expires_at?: string
           subscription_status?: string
+          tiktok_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
           user_id: string
           website_url?: string | null
+          youtube_url?: string | null
         }
         Update: {
           company?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
+          facebook_url?: string | null
           full_name?: string
           id?: string
+          instagram_url?: string | null
           is_published?: boolean
           job_title?: string | null
+          linkedin_url?: string | null
           phone_number?: string | null
           plan?: string
           profile_picture_url?: string | null
@@ -186,9 +201,12 @@ export type Database = {
           social_links?: Json | null
           subscription_expires_at?: string
           subscription_status?: string
+          tiktok_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
           user_id?: string
           website_url?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }

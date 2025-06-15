@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { useUserBadges } from "@/hooks/useUserBadges";
 import { NotificationSettings } from "@/components/profile/NotificationSettings";
-import { useMCards } from "@/hooks/useMCards";
+import { useMCards, MCard } from "@/hooks/useMCards";
 import { MCardsList } from "@/components/mcards/MCardsList";
 
 const Profile = () => {
@@ -43,7 +43,7 @@ const Profile = () => {
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
-  const { mcards, loading: mcardsLoading, createMCard, updateMCard, deleteMCard } = useMCards();
+  const { mcards, loading: mcardsLoading, updateMCard, deleteMCard } = useMCards();
 
   useEffect(() => {
     const getSession = async () => {
@@ -89,6 +89,13 @@ const Profile = () => {
     updateNotificationSettings({ enableSecurityNotifications: checked });
   };
 
+  const handleEditMCard = (mcard: MCard) => {
+    navigate('/mcards', { state: { editMCardId: mcard.id } });
+  };
+
+  const handleUpgradeFromProfile = () => {
+    navigate('/mcards');
+  };
 
   if (loading || profileLoading || cardsLoading || badgesLoading || mcardsLoading) {
     return (
@@ -144,10 +151,10 @@ const Profile = () => {
           <MCardsList
             mcards={mcards}
             loading={mcardsLoading}
-            createMCard={createMCard}
             updateMCard={updateMCard}
             deleteMCard={deleteMCard}
-            onStartUpgradeFlow={() => {}}
+            onStartUpgradeFlow={handleUpgradeFromProfile}
+            onEdit={handleEditMCard}
           />
 
           <Separator />

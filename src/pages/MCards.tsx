@@ -1,25 +1,50 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { Header } from "@/components/Header";
-import { useMCards } from "@/hooks/useMCards";
+import { useMCards, MCard } from "@/hooks/useMCards";
 import { MCardsList } from "@/components/mcards/MCardsList";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { MCardFeatures } from '@/components/mcards/MCardFeatures';
 import { MCardPricing } from '@/components/mcards/MCardPricing';
 import { useToast } from '@/hooks/use-toast';
 import { differenceInDays, parseISO } from 'date-fns';
+import { MCardFormDialog } from '@/components/mcards/MCardFormDialog';
+import { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 const MCards = () => {
   const { mcards, loading, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
 
   const pricingRef = useRef<HTMLElement>(null);
   const [upgradingCardId, setUpgradingCardId] = useState<string | null>(null);
   const [notifiedCards, setNotifiedCards] = useState<string[]>([]);
+  
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingMCard, setEditingMCard] = useState<MCard | null>(null);
+  const [planForNewCard, setPlanForNewCard] = useState<'free' | 'essential' | 'premium' | null>(null);
+
+  const handleOpenEdit = (mcard: MCard) => {
+    setPlanForNewCard(null);
+    setEditingMCard(mcard);
+    setIsFormOpen(true);
+  };
+  
+  useEffect(() => {
+    const editMCardId = location.state?.editMCardId;
+    if (editMCardId && mcards.length > 0) {
+        const cardToEdit = mcards.find(m => m.id === editMCardId);
+        if (cardToEdit) {
+            handleOpenEdit(cardToEdit);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }
+  }, [location.state, mcards, navigate]);
 
   useEffect(() => {
     mcards.forEach(mcard => {
@@ -54,6 +79,44 @@ const MCards = () => {
     pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
+  const handleStartCreationFlow = (plan: 'free' | 'essential' | 'premium') => {
+    setEditingMCard(null);
+    setPlanForNewCard(plan);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = async (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>) => {
+    if (editingMCard) {
+      const result = await updateMCard(editingMCard.id, data);
+      if (result) {
+        setIsFormOpen(false);
+        setEditingMCard(null);
+      }
+    } else if (planForNewCard) {
+      const newCardData: TablesInsert<'mcards'> = {
+        ...(data as TablesInsert<'mcards'>),
+        plan: planForNewCard,
+        subscription_status: planForNewCard === 'free' ? 'trial' : 'pending_payment',
+      };
+      
+      const result = await createMCard(newCardData, { silent: true });
+
+      if (result) {
+        if (planForNewCard === 'free') {
+          toast({ title: t('mCardCreatedSuccess'), description: t('mCardFreePlanActive') });
+        } else {
+          const planName = planForNewCard === 'essential' ? t('planEssential') : t('planPremium');
+          toast({ 
+            title: t('planUpgradeRequestSent'),
+            description: t('planUpgradeRequestSentDescription').replace('{planName}', planName)
+          });
+        }
+        setIsFormOpen(false);
+        setPlanForNewCard(null);
+      }
+    }
+  };
+
   const handleRequestUpgrade = async (mcardId: string, plan: 'essential' | 'premium') => {
     await requestPlanUpgrade(mcardId, plan);
     setUpgradingCardId(null);
@@ -83,6 +146,7 @@ const MCards = () => {
                 mcards={mcards}
                 onRequestUpgrade={handleRequestUpgrade}
                 upgradingCardId={upgradingCardId}
+                onStartCreationFlow={handleStartCreationFlow}
             />
         </section>
 
@@ -90,13 +154,20 @@ const MCards = () => {
             <MCardsList
                 mcards={mcards}
                 loading={loading}
-                createMCard={createMCard}
                 updateMCard={updateMCard}
                 deleteMCard={deleteMCard}
                 onStartUpgradeFlow={handleInitiateUpgrade}
+                onEdit={handleOpenEdit}
             />
         </div>
       </main>
+      <MCardFormDialog
+        isOpen={isFormOpen}
+        onOpenChange={setIsFormOpen}
+        onSubmit={handleFormSubmit}
+        mcard={editingMCard}
+        loading={loading}
+      />
     </div>
   );
 };

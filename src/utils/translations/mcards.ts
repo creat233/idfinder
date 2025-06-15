@@ -82,6 +82,10 @@ export const mcardsTranslations: Translations = {
     fr: "mCard supprimée avec succès !",
     en: "mCard deleted successfully!"
   },
+  mCardFreePlanActive: {
+    fr: "Votre carte gratuite est maintenant active pour 1 mois.",
+    en: "Your free card is now active for 1 month."
+  },
   mcardDescriptionPlaceholder: {
     fr: "Décrivez votre activité, vos services...",
     en: "Describe your business, your services..."
@@ -249,6 +253,10 @@ export const mcardsTranslations: Translations = {
   selectPlan: {
     fr: "Choisir ce plan",
     en: "Select this plan"
+  },
+  upgradeNow: {
+    fr: "Mettre à niveau maintenant",
+    en: "Upgrade Now"
   },
   selectPlanTooltip: {
     fr: "Vous devez créer une mCard avant de pouvoir sélectionner un plan.",

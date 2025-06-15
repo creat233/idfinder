@@ -12,10 +12,11 @@ import { SelectMCardDialog } from "./SelectMCardDialog";
 interface MCardPricingProps {
   mcards: MCard[];
   onRequestUpgrade: (mcardId: string, plan: 'essential' | 'premium') => void;
+  onStartCreationFlow: (plan: 'free' | 'essential' | 'premium') => void;
   upgradingCardId?: string | null;
 }
 
-export const MCardPricing = ({ mcards, onRequestUpgrade, upgradingCardId }: MCardPricingProps) => {
+export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, upgradingCardId }: MCardPricingProps) => {
   const { t } = useTranslation();
   const priceInfo = getPriceInfoForCountry('SN');
   const [isSelectCardDialogOpen, setIsSelectCardDialogOpen] = useState(false);
@@ -61,14 +62,17 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, upgradingCardId }: MCar
     },
   ];
 
-  const handleSelectPlan = (planId: 'essential' | 'premium') => {
+  const handleSelectPlan = (planId: 'free' | 'essential' | 'premium') => {
     if (upgradingCardId) {
-      onRequestUpgrade(upgradingCardId, planId);
-    } else if (mcards.length === 1) {
-      onRequestUpgrade(mcards[0].id, planId);
-    } else if (mcards.length > 1) {
-      setSelectedPlan(planId);
-      setIsSelectCardDialogOpen(true);
+      if (planId !== 'free') {
+        onRequestUpgrade(upgradingCardId, planId as 'essential' | 'premium');
+      }
+    } else if (mcards.length > 1 && planId !== 'free') {
+        // This case is now for upgrades only, creation is the default
+        setSelectedPlan(planId as 'essential' | 'premium');
+        setIsSelectCardDialogOpen(true);
+    } else {
+      onStartCreationFlow(planId);
     }
   };
 

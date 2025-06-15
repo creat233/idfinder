@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -58,7 +57,7 @@ export const useMCards = () => {
     };
   }, [getMCards]);
 
-  const createMCard = useCallback(async (mcardData: TablesInsert<'mcards'>) => {
+  const createMCard = useCallback(async (mcardData: TablesInsert<'mcards'>, options?: { silent?: boolean }) => {
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
@@ -73,7 +72,9 @@ export const useMCards = () => {
       if (error) throw error;
       
       setMCards(prev => [data, ...prev]);
-      toast({ title: t('mCardCreatedSuccess') });
+      if (!options?.silent) {
+        toast({ title: t('mCardCreatedSuccess') });
+      }
       return data;
     } catch (error: any) {
       toast({ variant: "destructive", title: t('mCardError'), description: error.message });
