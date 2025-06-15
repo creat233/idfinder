@@ -89,5 +89,45 @@ export const profileTranslations: Translations = {
   medical: {
     fr: "Médical",
     en: "Medical"
+  },
+  personalStats: {
+    fr: "Statistiques Personnelles",
+    en: "Personal Statistics"
+  },
+  cardsUnderWatch: {
+    fr: "Cartes sous surveillance",
+    en: "Cards under surveillance"
+  },
+  totalEarnings: {
+    fr: "Gains totaux",
+    en: "Total Earnings"
+  },
+  changePassword: {
+    fr: "Changer le mot de passe",
+    en: "Change Password"
+  },
+  newPassword: {
+    fr: "Nouveau mot de passe",
+    en: "New Password"
+  },
+  confirmNewPassword: {
+    fr: "Confirmer le nouveau mot de passe",
+    en: "Confirm New Password"
+  },
+  passwordUpdatedSuccess: {
+    fr: "Mot de passe mis à jour",
+    en: "Password updated successfully"
+  },
+  passwordUpdateError: {
+    fr: "Erreur de mise à jour du mot de passe",
+    en: "Password update error"
+  },
+  passwordsDoNotMatch: {
+    fr: "Les mots de passe ne correspondent pas",
+    en: "Passwords do not match"
+  },
+  passwordTooShort: {
+    fr: "Le mot de passe doit contenir au moins 6 caractères.",
+    en: "Password must be at least 6 characters long."
   }
 };

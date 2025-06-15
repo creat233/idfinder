@@ -10,6 +10,10 @@ import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { CountryInfo } from "@/components/profile/CountryInfo";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useUserCards } from "@/hooks/useUserCards";
+import { PersonalStats } from "@/components/profile/PersonalStats";
+import { PasswordChangeForm } from "@/components/profile/PasswordChangeForm";
+import { Separator } from "@/components/ui/separator";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -23,11 +27,13 @@ const Profile = () => {
     phone,
     country,
     isEditing,
+    totalEarnings,
     setPhone,
     setIsEditing,
     getProfile,
     updateProfile
   } = useProfile();
+  const { cards, loading: cardsLoading } = useUserCards();
 
   useEffect(() => {
     const getSession = async () => {
@@ -63,7 +69,7 @@ const Profile = () => {
     window.location.href = "mailto:idfinder06@gmail.com";
   };
 
-  if (loading || profileLoading) {
+  if (loading || profileLoading || cardsLoading) {
     return (
       <>
         <Header />
@@ -76,8 +82,12 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold mb-6">{t("myProfile")}</h1>
+        <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6 space-y-8">
+          <h1 className="text-2xl font-bold mb-2">{t("myProfile")}</h1>
+          
+          <PersonalStats cardCount={cards.length} totalEarnings={totalEarnings} />
+
+          <Separator />
           
           {/* Informations du pays */}
           <CountryInfo countryCode={country} />
@@ -93,6 +103,12 @@ const Profile = () => {
             updateProfile={handleUpdateProfile}
           />
           
+          <Separator />
+
+          <PasswordChangeForm />
+
+          <Separator />
+
           <SupportSection handleContactSupport={handleContactSupport} />
         </div>
       </main>

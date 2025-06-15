@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -12,6 +11,7 @@ export const useProfile = () => {
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("SN");
   const [isEditing, setIsEditing] = useState(false);
+  const [totalEarnings, setTotalEarnings] = useState(0);
 
   const getProfile = async (session: any) => {
     try {
@@ -43,6 +43,17 @@ export const useProfile = () => {
       setFirstName(profileData.first_name);
       setLastName(profileData.last_name);
       setPhone(profileData.phone);
+      
+      // Fetch total earnings from promo codes
+      const { data: promoData, error: promoError } = await supabase
+        .from('promo_codes')
+        .select('total_earnings')
+        .eq('user_id', session.user.id);
+
+      if (!promoError && promoData) {
+        const earnings = promoData.reduce((acc, code) => acc + (code.total_earnings || 0), 0);
+        setTotalEarnings(earnings);
+      }
       
       // Détecter automatiquement le pays à partir du numéro de téléphone
       if (profileData.phone) {
@@ -102,6 +113,7 @@ export const useProfile = () => {
     phone,
     country,
     isEditing,
+    totalEarnings,
     setPhone,
     setIsEditing,
     getProfile,
