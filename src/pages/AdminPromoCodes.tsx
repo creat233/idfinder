@@ -12,6 +12,7 @@ import { AlertCircle, Shield, Activity } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 import { AdminRevenueDashboard } from "@/components/promo/AdminRevenueDashboard";
+import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 
 const AdminPromoCodes = () => {
   return (
@@ -68,6 +69,9 @@ const AdminPromoCodes = () => {
           
           {/* Module : gestion pubs entreprises */}
           <AdminAdsManager />
+
+          {/* Module : Envoi d'e-mails en masse */}
+          <AdminBulkEmailSender />
           
           {/* Sections principales */}
           <AdminPendingCodes />
