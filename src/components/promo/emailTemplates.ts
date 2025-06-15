@@ -349,7 +349,8 @@ export const documentExpirationReminderTemplate = {
 </p>
 <p>Merci de garder votre compte à jour.</p>
 <p>L'équipe FinderID</p>
-`;
+`
+};
 
 export const successStoryTemplate = {
   subject: "🌟 Histoire de réussite : Comment un membre a retrouvé son document grâce à FinderID !",
@@ -357,10 +358,11 @@ export const successStoryTemplate = {
 <p>Bonjour,</p>
 <p>Nous voulions partager avec vous une histoire inspirante qui montre la force de notre communauté.</p>
 <p><strong>Récemment, [Nom de l'utilisateur], un membre comme vous, a perdu son [Type de document].</strong> Grâce à un autre membre bienveillant qui l'a retrouvé et signalé sur FinderID, [Nom de l'utilisateur] a pu récupérer son document en un temps record !</p>
-<p>C'est la preuve que chaque petit geste compte. En enregistrant vos documents et en signalant ceux que vous trouvez, vous contribuez activement à un réseau d'entraide puissant.</p>
+<p>C'est la preuve que chaque petit geste compte. En registrant vos documents et en signalant ceux que vous trouvez, vous contribuez activement à un réseau d'entraide puissant.</p>
 <p>Merci de faire partie de cette belle aventure.</p>
 <p>L'équipe FinderID</p>
-`;
+`
+};
 
 export const birthdayWishesTemplate = {
   subject: "🎂 Joyeux Anniversaire de la part de FinderID !",
@@ -390,7 +392,8 @@ export const communityGuideTemplate = {
 </p>
 <p>Merci pour votre précieuse aide !</p>
 <p>L'équipe FinderID</p>
-`;
+`
+};
 
 export const yearlyRecapTemplate = {
   subject: "🎉 Votre bilan de l'année sur FinderID !",
@@ -405,7 +408,8 @@ export const yearlyRecapTemplate = {
 <p>Nous sommes incroyablement fiers de vous avoir à nos côtés. Préparez-vous pour une nouvelle année remplie de nouveautés pour sécuriser encore mieux vos biens.</p>
 <p>Merci pour cette année exceptionnelle !</p>
 <p>L'équipe FinderID</p>
-`;
+`
+};
 
 export const fathersDayWishesTemplate = {
   subject: "💙 Bonne Fête des Pères de la part de FinderID !",
