@@ -109,9 +109,9 @@ export const AdminAdsManager: React.FC = () => {
     
     // Also delete from storage if there is an image_url
     if (ad.image_url) {
-        const path = ad.image_url.split('/').pop();
-        if(path) {
-            await supabase.storage.from('admin_ads_media').remove([`public/${path}`]);
+        const fileName = ad.image_url.split('/').pop();
+        if(fileName) {
+            await supabase.storage.from('admin_ads_media').remove([fileName]);
         }
     }
 

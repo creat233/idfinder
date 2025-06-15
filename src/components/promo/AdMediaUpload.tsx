@@ -45,7 +45,7 @@ export function AdMediaUpload({ value, onChange, onRemove }: AdMediaUploadProps)
       
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = `public/${fileName}`;
+      const filePath = fileName;
 
       const { error: uploadError } = await supabase.storage
         .from('admin_ads_media')
