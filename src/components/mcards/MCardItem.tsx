@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { format } from 'date-fns';
 
 interface MCardItemProps {
   mcard: MCard;
@@ -35,6 +36,29 @@ export const MCardItem = ({ mcard, onEdit, onDelete }: MCardItemProps) => {
     navigator.clipboard.writeText(url);
     toast({ title: t('linkCopied') });
   };
+
+  const getStatusVariant = (status: string | null): "default" | "secondary" | "destructive" => {
+    switch (status) {
+      case 'active':
+        return 'default';
+      case 'expired':
+        return 'destructive';
+      case 'trial':
+      case 'pending_payment':
+      default:
+        return 'secondary';
+    }
+  }
+
+  const getStatusText = (status: string | null): string => {
+    switch (status) {
+        case 'active': return t('active');
+        case 'trial': return t('trial');
+        case 'pending_payment': return t('pendingPayment');
+        case 'expired': return t('expired');
+        default: return status || 'N/A';
+    }
+  }
 
   return (
     <Card>
@@ -90,6 +114,19 @@ export const MCardItem = ({ mcard, onEdit, onDelete }: MCardItemProps) => {
         {mcard.description && <p className="text-sm mb-2">{mcard.description}</p>}
         <p className="text-sm text-muted-foreground">URL: /m/{mcard.slug}</p>
       </CardContent>
+      <CardFooter className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">{t('status')}:</span>
+            <Badge variant={getStatusVariant(mcard.subscription_status)}>
+              {getStatusText(mcard.subscription_status)}
+            </Badge>
+          </div>
+          {mcard.subscription_expires_at && (
+              <p className="text-sm text-muted-foreground">
+                  {t('expiresOn')} {format(new Date(mcard.subscription_expires_at), 'dd/MM/yyyy')}
+              </p>
+          )}
+      </CardFooter>
     </Card>
   );
 };

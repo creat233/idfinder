@@ -265,5 +265,33 @@ export const profileTranslations: Translations = {
   linkCopied: {
     fr: "Lien copié !",
     en: "Link copied!"
+  },
+  status: {
+    fr: "Statut",
+    en: "Status"
+  },
+  subscriptionStatus: {
+    fr: "Statut de l'abonnement",
+    en: "Subscription Status"
+  },
+  expiresOn: {
+    fr: "Expire le",
+    en: "Expires on"
+  },
+  trial: {
+    fr: "Essai",
+    en: "Trial"
+  },
+  active: {
+    fr: "Actif",
+    en: "Active"
+  },
+  pendingPayment: {
+    fr: "Paiement en attente",
+    en: "Pending Payment"
+  },
+  expired: {
+    fr: "Expiré",
+    en: "Expired"
   }
 };

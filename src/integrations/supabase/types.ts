@@ -143,6 +143,8 @@ export type Database = {
           profile_picture_url: string | null
           slug: string
           social_links: Json | null
+          subscription_expires_at: string
+          subscription_status: string
           updated_at: string
           user_id: string
           website_url: string | null
@@ -160,6 +162,8 @@ export type Database = {
           profile_picture_url?: string | null
           slug: string
           social_links?: Json | null
+          subscription_expires_at?: string
+          subscription_status?: string
           updated_at?: string
           user_id: string
           website_url?: string | null
@@ -177,6 +181,8 @@ export type Database = {
           profile_picture_url?: string | null
           slug?: string
           social_links?: Json | null
+          subscription_expires_at?: string
+          subscription_status?: string
           updated_at?: string
           user_id?: string
           website_url?: string | null
