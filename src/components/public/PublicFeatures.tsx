@@ -1,27 +1,27 @@
 
 import { motion } from "framer-motion";
-import { Search, Bell, Phone, Shield } from "lucide-react";
+import { Search, Bell, Handshake, Award } from "lucide-react";
 
 const features = [
   {
     icon: Search,
-    title: "Signalement facile",
-    description: "Photographiez et signalez une carte trouvée en quelques secondes avec notre interface intuitive."
+    title: "1. Signalez la trouvaille",
+    description: "Vous avez trouvé une carte ? Entrez son numéro sur notre plateforme en quelques secondes. C'est simple et rapide."
   },
   {
     icon: Bell,
-    title: "Notifications automatiques",
-    description: "Le propriétaire est notifié immédiatement par WhatsApp et email dès qu'une carte est signalée."
+    title: "2. Le propriétaire est alerté",
+    description: "Nous notifions instantanément le propriétaire par WhatsApp et e-mail, lui donnant l'espoir de retrouver son bien."
   },
   {
-    icon: Phone,
-    title: "Contact direct",
-    description: "Mise en relation directe entre le trouveur et le propriétaire pour organiser la récupération."
+    icon: Handshake,
+    title: "3. Coordonnez la restitution",
+    description: "Notre plateforme sécurisée vous met en contact pour convenir d'un rendez-vous pour la restitution."
   },
   {
-    icon: Shield,
-    title: "Sécurité garantie",
-    description: "Vos données sont protégées et seules les informations nécessaires sont partagées."
+    icon: Award,
+    title: "4. Recevez votre récompense",
+    description: "Une fois la carte rendue, recevez 2'000 Fr. pour votre bonne action. Votre honnêteté est précieuse."
   }
 ];
 
@@ -37,11 +37,10 @@ export const PublicFeatures = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Comment ça marche ?
+            Un processus simple, rapide et gratifiant
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            FinderID simplifie la récupération de documents perdus grâce à une technologie moderne 
-            et une approche communautaire.
+            Nous avons conçu une expérience en quatre étapes pour que la restitution de documents perdus soit facile pour tout le monde. Voici comment ça marche.
           </p>
         </motion.div>
 
@@ -53,7 +52,7 @@ export const PublicFeatures = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="text-center"
+              className="text-center p-8 bg-gray-50 rounded-2xl transition-transform transform hover:-translate-y-2"
             >
               <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] rounded-2xl flex items-center justify-center">
                 <feature.icon className="w-8 h-8 text-white" />
