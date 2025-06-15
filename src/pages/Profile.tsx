@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -77,15 +76,6 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          className="mb-6"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t("back")}
-        </Button>
-
         <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6">
           <h1 className="text-2xl font-bold mb-6">{t("myProfile")}</h1>
           
