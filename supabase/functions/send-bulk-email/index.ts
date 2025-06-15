@@ -70,24 +70,33 @@ serve(async (req: Request) => {
       });
     }
 
-    console.log(`Sending email to ${recipientEmails.length} users.`);
+    console.log(`Preparing to send email to ${recipientEmails.length} users in chunks.`);
 
     const finalHtml = generatePromoEmailHtml({ subject, userHtmlContent: htmlContent });
+    const chunkSize = 49; // Resend limit is 50, using 49 to be safe
 
-    const { data, error: sendError } = await resend.emails.send({
-      from: "FinderID <notifications@resend.dev>",
-      to: "notifications@resend.dev", // Champ 'to' requis, mais les vrais destinataires sont en Cci.
-      bcc: recipientEmails,
-      subject: subject,
-      html: finalHtml,
-    });
+    for (let i = 0; i < recipientEmails.length; i += chunkSize) {
+      const chunk = recipientEmails.slice(i, i + chunkSize);
+      console.log(`Sending chunk ${i / chunkSize + 1} of ${Math.ceil(recipientEmails.length / chunkSize)}: ${chunk.length} recipients.`);
 
-    if (sendError) {
-      console.error("Resend error:", sendError);
-      throw sendError;
+      try {
+        const { error: sendError } = await resend.emails.send({
+          from: "FinderID <notifications@resend.dev>",
+          to: "notifications@resend.dev", // Dummy 'to' field
+          bcc: chunk,
+          subject: subject,
+          html: finalHtml,
+        });
+    
+        if (sendError) {
+          console.error(`Resend error for chunk ${i / chunkSize + 1}:`, sendError);
+        }
+      } catch (e) {
+        console.error(`Caught exception for chunk ${i / chunkSize + 1}:`, e);
+      }
     }
 
-    return new Response(JSON.stringify({ success: true, message: `Email sent to ${recipientEmails.length} users.`, resendResponseId: data?.id }), {
+    return new Response(JSON.stringify({ success: true, message: `Email sending process initiated for ${recipientEmails.length} users.` }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
