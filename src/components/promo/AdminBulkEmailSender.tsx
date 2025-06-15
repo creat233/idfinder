@@ -104,6 +104,42 @@ const feedbackRequestTemplate = {
 `
 };
 
+const securityReminderTemplate = {
+  subject: "🔒 Un rappel important sur la sécurité de votre compte FinderID",
+  message: `<h1>Votre sécurité est notre priorité</h1>
+<p>Bonjour,</p>
+<p>Pour garantir que votre compte et vos informations personnelles restent en sécurité, nous aimerions vous rappeler quelques bonnes pratiques essentielles :</p>
+<ul>
+  <li><strong>Utilisez un mot de passe fort et unique</strong> que vous n'utilisez sur aucun autre site.</li>
+  <li><strong>Ne partagez jamais vos informations de connexion</strong> avec qui que ce soit. L'équipe FinderID ne vous demandera jamais votre mot de passe.</li>
+  <li><strong>Méfiez-vous des e-mails de phishing</strong>. Vérifiez toujours que l'expéditeur est bien légitime avant de cliquer sur un lien.</li>
+</ul>
+<p>La sécurité de vos données est une responsabilité partagée. Merci de nous aider à protéger votre compte.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/profile" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Vérifier mes paramètres</a>
+</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+const tipsAndTricksTemplate = {
+  subject: "💡 Tirez le meilleur parti de votre compte FinderID !",
+  message: `<h1>Astuces pour maîtriser FinderID</h1>
+<p>Bonjour,</p>
+<p>Saviez-vous que vous pouviez faire bien plus que simplement enregistrer votre carte d'identité ? Voici quelques astuces pour devenir un pro de FinderID :</p>
+<ul>
+  <li><strong>Enregistrez tout ce qui est important :</strong> Pensez à vos clés, votre téléphone, vos cartes bancaires, ou même votre animal de compagnie avec un QR code sur son collier !</li>
+  <li><strong>Partagez votre code promo :</strong> Chaque utilisation de votre code vous rapporte de l'argent. Partagez-le sur vos réseaux sociaux pour maximiser vos gains !</li>
+  <li><strong>Gardez vos informations à jour :</strong> Un numéro de téléphone ou une adresse e-mail à jour est crucial pour que nous puissions vous contacter si l'un de vos biens est retrouvé.</li>
+</ul>
+<p>Explorez votre tableau de bord pour découvrir toutes les fonctionnalités à votre disposition.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/dashboard" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Explorer le tableau de bord</a>
+</p>
+<p>L'équipe FinderID</p>
+`
+};
+
 export const AdminBulkEmailSender = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -168,6 +204,18 @@ export const AdminBulkEmailSender = () => {
     showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
   };
 
+  const useSecurityReminderTemplate = () => {
+    setSubject(securityReminderTemplate.subject);
+    setMessage(securityReminderTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
+  const useTipsAndTricksTemplate = () => {
+    setSubject(tipsAndTricksTemplate.subject);
+    setMessage(tipsAndTricksTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -196,6 +244,14 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={useFeedbackRequestTemplate}>
               <FileText className="h-4 w-4 mr-2" />
               Demande de Feedback
+            </Button>
+            <Button variant="outline" size="sm" onClick={useSecurityReminderTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Rappel de Sécurité
+            </Button>
+            <Button variant="outline" size="sm" onClick={useTipsAndTricksTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Astuces & Conseils
             </Button>
           </div>
         </CardTitle>
