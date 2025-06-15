@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Plus, Trash2, Pencil, RefreshCcw } from "lucide-react";
+import { AdMediaUpload } from "./AdMediaUpload";
 
 interface AdminAd {
   id: string;
@@ -135,19 +137,27 @@ export const AdminAdsManager: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {ads.map(ad => (
-              <div key={ad.id} className="border rounded p-3 flex flex-col md:flex-row md:items-center justify-between gap-2 bg-gray-50">
-                <div>
+              <div key={ad.id} className="border rounded p-3 flex flex-col md:flex-row justify-between items-start gap-4 bg-gray-50">
+                <div className="flex-grow">
                   <div className="text-sm font-bold">{ad.title} {!ad.is_active && <span className="ml-2 text-xs bg-gray-300 rounded px-2 py-0.5">Inactif</span>}</div>
-                  {ad.message && <div className="text-xs text-gray-700">{ad.message}</div>}
-                  {ad.image_url && (
-                    <img src={ad.image_url} alt="Visuel" className="h-10 mt-1 rounded" />
-                  )}
-                  {ad.target_url && <a href={ad.target_url} target="_blank" rel="noopener" className="text-xs underline text-blue-600">{ad.target_url}</a>}
+                  {ad.message && <div className="text-xs text-gray-700 mt-1">{ad.message}</div>}
+                  {ad.target_url && <a href={ad.target_url} target="_blank" rel="noopener noreferrer" className="text-xs underline text-blue-600 block mt-1">{ad.target_url}</a>}
                   {ad.start_date && ad.end_date && (
-                    <div className="text-xs text-gray-500">Du {ad.start_date} au {ad.end_date}</div>
+                    <div className="text-xs text-gray-500 mt-1">Du {ad.start_date} au {ad.end_date}</div>
                   )}
                 </div>
-                <div className="flex gap-1">
+                {ad.image_url && (
+                  <div className="flex-shrink-0">
+                    {ad.image_url.match(/\.(mp4|webm)$/i) ? (
+                      <video src={ad.image_url} className="h-20 w-auto rounded" controls muted loop playsInline />
+                    ) : (
+                      <a href={ad.image_url} target="_blank" rel="noopener noreferrer">
+                        <img src={ad.image_url} alt="Visuel" className="h-20 w-auto rounded object-cover" />
+                      </a>
+                    )}
+                  </div>
+                )}
+                <div className="flex-shrink-0 flex gap-1 self-start md:self-center">
                   <Button size="icon" variant="outline" onClick={() => handleOpenDialog(ad)}><Pencil className="h-4 w-4" /></Button>
                   <Button size="icon" variant="outline" onClick={() => handleDelete(ad)}><Trash2 className="h-4 w-4" /></Button>
                 </div>
@@ -158,7 +168,7 @@ export const AdminAdsManager: React.FC = () => {
 
         {/* Dialog Ajout/Edition */}
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
-          <DialogContent>
+          <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{form.id ? "Modifier" : "Créer"} une publicité</DialogTitle></DialogHeader>
             <form onSubmit={handleSave} className="space-y-4">
               <div>
@@ -174,8 +184,12 @@ export const AdminAdsManager: React.FC = () => {
                 <Input name="target_url" value={form.target_url ?? ""} onChange={handleInputChange} />
               </div>
               <div>
-                <label className="block text-sm font-medium">Visuel (url image)</label>
-                <Input name="image_url" value={form.image_url ?? ""} onChange={handleInputChange} />
+                <label className="block text-sm font-medium">Visuel (image ou vidéo)</label>
+                <AdMediaUpload
+                  value={form.image_url}
+                  onChange={(url) => setForm(f => ({ ...f, image_url: url }))}
+                  onRemove={() => setForm(f => ({ ...f, image_url: null }))}
+                />
               </div>
               <div className="flex gap-2">
                 <div>
