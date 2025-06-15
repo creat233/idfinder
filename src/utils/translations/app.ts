@@ -265,6 +265,14 @@ export const appTranslations: Translations = {
     fr: "Codes promo",
     en: "Promo codes"
   },
+  // Mobile nav
+  features: { fr: "Fonctionnalités", en: "Features" },
+  pricing: { fr: "Tarifs", en: "Pricing" },
+  demo: { fr: "Démo", en: "Demo" },
+  about: { fr: "À propos", en: "About" },
+  notifications: { fr: "Notifications", en: "Notifications" },
+  emergencyNumbersLink: { fr: "Numéros d'urgence", en: "Emergency Numbers" },
+
   welcomeMessageLoggedIn: {
     fr: "👋 Bienvenue ! Vous pouvez maintenant signaler des cartes trouvées ou gérer vos cartes perdues.",
     en: "👋 Welcome! You can now report found cards or manage your lost cards."

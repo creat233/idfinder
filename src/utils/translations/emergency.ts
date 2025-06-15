@@ -1,3 +1,4 @@
+
 import { Translations } from './types';
 
 export const emergencyTranslations: Translations = {
@@ -41,6 +42,12 @@ export const emergencyTranslations: Translations = {
   emergency_hopital_dakar_desc: { fr: "Hôpital principal de Dakar - Urgences", en: "Dakar main hospital - Emergency" },
   emergency_croix_rouge_service: { fr: "Croix-Rouge Sénégalaise", en: "Senegalese Red Cross" },
   emergency_croix_rouge_desc: { fr: "Organisation humanitaire d'urgence", en: "Emergency humanitarian organization" },
+
+  // Map translations
+  view_on_google_maps: { fr: "Voir sur Google Maps", en: "View on Google Maps" },
+  map_category_police: { fr: "Commissariats", en: "Police Stations" },
+  map_category_medical: { fr: "Hôpitaux", en: "Hospitals" },
+  map_category_fire: { fr: "Sapeurs Pompiers", en: "Firefighters" },
 
   // Senegalese Documents Section
   doc_header_title: { fr: "Documents d'identité et administratifs au Sénégal", en: "Identity and administrative documents in Senegal" },

@@ -5,10 +5,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MapCategoryBadges } from "./MapCategoryBadges";
 import { EmergencyMapProps } from "./types/EmergencyMapTypes";
 import { ExternalLink } from "@/components/ui/external-link";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMapProps) => {
   const [activeCategory, setActiveCategory] = useState<string | null>(selectedCategory);
   const isMobile = useIsMobile();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setActiveCategory(selectedCategory);
@@ -35,28 +37,40 @@ export const EmergencyMap = ({ height = "h-80", selectedCategory }: EmergencyMap
     }
   };
 
+  const getCategoryTranslation = () => {
+    if (!activeCategory) return "";
+    switch (activeCategory) {
+      case "police":
+        return t('map_category_police');
+      case "medical":
+        return t('map_category_medical');
+      case "fire":
+        return t('map_category_fire');
+      default:
+        return "";
+    }
+  };
+
   return (
-    <div className={`relative ${height} rounded-lg overflow-hidden border border-gray-200 shadow-md`}>
+    <div className={`relative h-64 sm:h-80 rounded-lg overflow-hidden border border-gray-200 shadow-md`}>
       <ExternalLink 
         href={getGoogleMapsUrl()} 
         className="absolute inset-0 block"
         showIcon={false}
-        useInAppBrowser={true}
+        useInAppBrowser={false}
         title="Google Maps"
       >
         <div 
           className="absolute inset-0 bg-gradient-to-b from-blue-900 to-blue-700 cursor-pointer"
         >
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="bg-white/20 rounded-full p-4 mb-5">
-              <Navigation className="w-16 h-16 text-white" stroke="white" strokeWidth={1.5} />
+            <div className="bg-white/20 rounded-full p-3 sm:p-4 mb-4 sm:mb-5">
+              <Navigation className="w-12 h-12 sm:w-16 sm:h-16 text-white" stroke="white" strokeWidth={1.5} />
             </div>
-            <p className="text-white font-bold text-2xl mb-2">Voir sur Google Maps</p>
+            <p className="text-white font-bold text-xl sm:text-2xl mb-2 text-center px-2">{t('view_on_google_maps')}</p>
             {activeCategory && (
-              <span className="mt-3 bg-white/90 text-blue-800 px-5 py-2 rounded-full text-lg font-medium">
-                {activeCategory === "police" ? "Commissariats" : 
-                 activeCategory === "medical" ? "Hôpitaux" : 
-                 activeCategory === "fire" ? "Sapeurs Pompiers" : ""}
+              <span className="mt-3 bg-white/90 text-blue-800 px-4 py-1 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg font-medium">
+                {getCategoryTranslation()}
               </span>
             )}
           </div>
