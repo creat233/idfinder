@@ -262,6 +262,10 @@ export const mcardsTranslations: Translations = {
     fr: "Vous devez créer une mCard avant de pouvoir sélectionner un plan.",
     en: "You need to create an mCard before you can select a plan."
   },
+  cannotUpgradeToFree: {
+    fr: "Vous ne pouvez pas passer à un plan gratuit.",
+    en: "You cannot upgrade to a free plan."
+  },
   selectMCardForUpgradeTitle: {
     fr: "Choisir une carte à mettre à niveau",
     en: "Choose a card to upgrade"
