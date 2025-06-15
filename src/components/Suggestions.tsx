@@ -22,6 +22,14 @@ export const Suggestions = () => {
     {
       title: "5. Offre 'Premium' pour les utilisateurs",
       description: "Proposer un abonnement payant qui donnerait des avantages : plus de codes promo, commissions plus élevées, et support prioritaire."
+    },
+    {
+      title: "6. Mettre en place un système de 'gamification'",
+      description: "Introduire des badges ou des classements pour les utilisateurs qui signalent le plus de cartes afin d'augmenter l'engagement."
+    },
+    {
+      title: "7. Partenariats avec des commerces",
+      description: "S'associer avec des magasins ou cafés pour qu'ils deviennent des points de dépôt/collecte officiels pour les objets trouvés."
     }
   ];
 
