@@ -379,6 +379,18 @@ export type Database = {
           user_phone: string
         }[]
       }
+      admin_get_all_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          email: string
+          created_at: string
+          first_name: string
+          last_name: string
+          phone: string
+          country: string
+        }[]
+      }
       can_activate_promo_codes: {
         Args: { user_email: string }
         Returns: boolean
