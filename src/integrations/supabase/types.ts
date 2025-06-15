@@ -399,6 +399,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_daily_user_signups: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          signup_date: string
+          count: number
+        }[]
+      }
       get_public_ads: {
         Args: Record<PropertyKey, never>
         Returns: {

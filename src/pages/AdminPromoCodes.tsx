@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
@@ -14,6 +15,7 @@ import { AdminRevenueDashboard } from "@/components/promo/AdminRevenueDashboard"
 import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 import { AdminUsersList } from "@/components/promo/AdminUsersList";
+import { AdminAnalyticsDashboard } from "@/components/promo/AdminAnalyticsDashboard";
 
 const AdminPromoCodes = () => {
   return (
@@ -67,6 +69,9 @@ const AdminPromoCodes = () => {
           
           {/* Module : Gestion des utilisateurs */}
           <AdminUsersList />
+
+          {/* Module : Analyses et Statistiques */}
+          <AdminAnalyticsDashboard />
 
           {/* Module : Statistiques des revenus */}
           <AdminRevenueDashboard />
