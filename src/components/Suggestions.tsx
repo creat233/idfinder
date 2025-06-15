@@ -30,6 +30,18 @@ export const Suggestions = () => {
     {
       title: "7. Partenariats avec des commerces",
       description: "S'associer avec des magasins ou cafés pour qu'ils deviennent des points de dépôt/collecte officiels pour les objets trouvés."
+    },
+    {
+      title: "8. Offre pour les entreprises (B2B)",
+      description: "Créer une offre dédiée aux entreprises pour qu'elles puissent protéger les badges de leurs employés ou leur matériel avec les QR codes FinderID."
+    },
+    {
+      title: "9. Partenariat avec des assurances",
+      description: "Collaborer avec des assureurs pour offrir des réductions sur leurs polices aux clients qui utilisent activement FinderID."
+    },
+    {
+      title: "10. Développer une application mobile",
+      description: "Créer une application native (iOS/Android) pour une meilleure expérience, avec notifications push et accès hors ligne."
     }
   ];
 
