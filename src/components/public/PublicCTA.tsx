@@ -5,6 +5,7 @@ import { Download, Smartphone, Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@supabase/supabase-js";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface PublicCTAProps {
   user?: User | null;
@@ -14,6 +15,7 @@ interface PublicCTAProps {
 export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleDownloadAPK = () => {
     const link = document.createElement('a');
@@ -24,8 +26,8 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
     document.body.removeChild(link);
     
     toast({
-      title: "Téléchargement démarré",
-      description: "L'application FinderID est en cours de téléchargement",
+      title: t("download_started"),
+      description: t("download_started_desc"),
     });
   };
 
@@ -47,12 +49,12 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            {user ? "Continuez à aider la communauté" : "Prêt à ne plus perdre vos documents ?"}
+            {user ? t("cta_continue_helping") : t("cta_ready_to_not_lose_documents")}
           </h2>
           <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
             {user 
-              ? "Signalez des cartes trouvées et aidez d'autres personnes à récupérer leurs documents."
-              : "Rejoignez notre communauté solidaire dès aujourd'hui et participez à un Sénégal où personne ne perd définitivement ses documents."
+              ? t("cta_report_found_cards_help_others")
+              : t("cta_join_community")
             }
           </p>
           
@@ -66,12 +68,12 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
                 {user ? (
                   <>
                     <Plus className="mr-3 h-6 w-6" />
-                    Signaler une carte trouvée
+                    {t("cta_report_found_card")}
                   </>
                 ) : (
                   <>
                     <Smartphone className="mr-3 h-6 w-6" />
-                    Commencer sur le web
+                    {t("cta_start_on_web")}
                   </>
                 )}
               </Button>
@@ -82,7 +84,7 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
                 className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 rounded-full"
               >
                 <Download className="mr-3 h-6 w-6" />
-                Télécharger l'app Android
+                {t("cta_download_android_app")}
               </Button>
             </div>
           )}
@@ -90,19 +92,19 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold">+1000</div>
-              <div className="text-purple-200">Documents retrouvés</div>
+              <div className="text-purple-200">{t("cta_stats_documents_found")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">24h</div>
-              <div className="text-purple-200">Temps moyen</div>
+              <div className="text-purple-200">{t("cta_stats_average_time")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">100%</div>
-              <div className="text-purple-200">Sécurisé</div>
+              <div className="text-purple-200">{t("cta_stats_secure")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">🇸🇳</div>
-              <div className="text-purple-200">Fait au Sénégal</div>
+              <div className="text-purple-200">{t("cta_stats_made_in_senegal")}</div>
             </div>
           </div>
         </motion.div>

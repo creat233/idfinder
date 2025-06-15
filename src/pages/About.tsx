@@ -3,8 +3,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Shield, Users, Target, Heart } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const About = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -20,12 +23,10 @@ const About = () => {
               className="text-center max-w-4xl mx-auto"
             >
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                À propos de FinderID
+                {t("about_title")}
               </h1>
               <p className="text-xl text-purple-100 leading-relaxed">
-                FinderID est une plateforme innovante qui révolutionne la récupération 
-                de documents perdus au Sénégal, en créant un pont entre ceux qui trouvent 
-                et ceux qui cherchent leurs pièces d'identité.
+                {t("about_subtitle")}
               </p>
             </motion.div>
           </div>
@@ -43,12 +44,10 @@ const About = () => {
                 className="text-center mb-16"
               >
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                  Notre Mission
+                  {t("about_mission_title")}
                 </h2>
                 <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                  Faciliter la récupération des documents perdus en créant une communauté 
-                  solidaire où chaque citoyen peut contribuer à aider ses concitoyens 
-                  à retrouver leurs pièces d'identité importantes.
+                  {t("about_mission_desc")}
                 </p>
               </motion.div>
 
@@ -63,9 +62,9 @@ const About = () => {
                   <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Shield className="h-8 w-8 text-[#9b87f5]" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Sécurité</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("about_value_security_title")}</h3>
                   <p className="text-gray-600">
-                    Protection des données personnelles et transactions sécurisées
+                    {t("about_value_security_desc")}
                   </p>
                 </motion.div>
 
@@ -79,9 +78,9 @@ const About = () => {
                   <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Users className="h-8 w-8 text-[#9b87f5]" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Communauté</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("about_value_community_title")}</h3>
                   <p className="text-gray-600">
-                    Une plateforme collaborative basée sur l'entraide mutuelle
+                    {t("about_value_community_desc")}
                   </p>
                 </motion.div>
 
@@ -95,9 +94,9 @@ const About = () => {
                   <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Target className="h-8 w-8 text-[#9b87f5]" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Efficacité</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("about_value_efficiency_title")}</h3>
                   <p className="text-gray-600">
-                    Processus simplifié pour une récupération rapide des documents
+                    {t("about_value_efficiency_desc")}
                   </p>
                 </motion.div>
 
@@ -111,9 +110,9 @@ const About = () => {
                   <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Heart className="h-8 w-8 text-[#9b87f5]" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Solidarité</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("about_value_solidarity_title")}</h3>
                   <p className="text-gray-600">
-                    Encourager l'esprit d'entraide et de citoyenneté responsable
+                    {t("about_value_solidarity_desc")}
                   </p>
                 </motion.div>
               </div>
@@ -133,24 +132,17 @@ const About = () => {
                 className="text-center mb-12"
               >
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                  Notre Histoire
+                  {t("about_story_title")}
                 </h2>
                 <div className="text-lg text-gray-600 space-y-6 text-left">
                   <p>
-                    FinderID est né d'un constat simple : chaque jour au Sénégal, 
-                    des centaines de personnes perdent leurs documents d'identité, 
-                    créant des situations stressantes et coûteuses.
+                    {t("about_story_p1")}
                   </p>
                   <p>
-                    Parallèlement, de nombreuses personnes trouvent ces documents 
-                    mais ne savent pas comment les restituer efficacement à leurs 
-                    propriétaires légitimes.
+                    {t("about_story_p2")}
                   </p>
                   <p>
-                    C'est de cette problématique qu'est née l'idée de créer une 
-                    plateforme digitale moderne qui connecte les "trouveurs" et 
-                    les "chercheurs", tout en garantissant la sécurité et la 
-                    vérification des identités.
+                    {t("about_story_p3")}
                   </p>
                 </div>
               </motion.div>
@@ -169,14 +161,14 @@ const About = () => {
                 viewport={{ once: true }}
               >
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                  Contactez-nous
+                  {t("about_contact_title")}
                 </h2>
                 <p className="text-lg text-gray-600 mb-8">
-                  Vous avez des questions ou des suggestions ? N'hésitez pas à nous contacter.
+                  {t("about_contact_desc")}
                 </p>
                 <div className="bg-gray-50 rounded-lg p-8">
                   <p className="text-lg font-semibold text-gray-900 mb-2">
-                    Email de support
+                    {t("about_contact_email_label")}
                   </p>
                   <a 
                     href="mailto:idfinder06@gmail.com" 
