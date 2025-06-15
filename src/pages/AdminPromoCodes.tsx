@@ -68,11 +68,11 @@ const AdminPromoCodes = () => {
             </CardContent>
           </Card>
           
-          {/* Module : Configuration */}
-          <AdminSettings />
+          {/* Module : Configuration - Temporairement désactivé pour investigation */}
+          {/* <AdminSettings /> */}
 
-          {/* Module : Gestion des utilisateurs */}
-          <AdminUsersList />
+          {/* Module : Gestion des utilisateurs - Temporairement désactivé pour investigation */}
+          {/* <AdminUsersList /> */}
 
           {/* Module : Analyses et Statistiques */}
           <AdminAnalyticsDashboard />
