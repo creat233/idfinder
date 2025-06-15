@@ -109,6 +109,10 @@ export const AddCardDialog = ({
                 <SelectItem value="passport">{t("passport") || "Passeport"}</SelectItem>
                 <SelectItem value="driver_license">{t("driverLicense") || "Permis de conduire"}</SelectItem>
                 <SelectItem value="student_card">{t("studentCard") || "Carte d'étudiant"}</SelectItem>
+                <SelectItem value="health_card">{t("healthCard") || "Carte de santé"}</SelectItem>
+                <SelectItem value="vehicle_registration">{t("vehicleRegistration") || "Carte grise véhicule"}</SelectItem>
+                <SelectItem value="motorcycle_registration">{t("motorcycleRegistration") || "Carte grise moto"}</SelectItem>
+                <SelectItem value="residence_permit">{t("residencePermit") || "Carte de séjour"}</SelectItem>
               </SelectContent>
             </Select>
           </div>

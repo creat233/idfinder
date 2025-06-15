@@ -1,3 +1,4 @@
+
 import { Translations } from './types';
 
 export const cardsTranslations: Translations = {
@@ -40,6 +41,18 @@ export const cardsTranslations: Translations = {
   healthCard: {
     fr: "Carte de santé",
     en: "Health Card"
+  },
+  vehicleRegistration: {
+    fr: "Carte grise véhicule",
+    en: "Vehicle Registration Card"
+  },
+  motorcycleRegistration: {
+    fr: "Carte grise moto",
+    en: "Motorcycle Registration Card"
+  },
+  residencePermit: {
+    fr: "Carte de séjour",
+    en: "Residence Permit"
   },
   cardHolderName: {
     fr: "Nom du titulaire",
