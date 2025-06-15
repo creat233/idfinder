@@ -129,6 +129,57 @@ export type Database = {
         }
         Relationships: []
       }
+      mcards: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          is_published: boolean
+          job_title: string | null
+          phone_number: string | null
+          profile_picture_url: string | null
+          slug: string
+          social_links: Json | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          is_published?: boolean
+          job_title?: string | null
+          phone_number?: string | null
+          profile_picture_url?: string | null
+          slug: string
+          social_links?: Json | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_published?: boolean
+          job_title?: string | null
+          phone_number?: string | null
+          profile_picture_url?: string | null
+          slug?: string
+          social_links?: Json | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           card_id: string | null

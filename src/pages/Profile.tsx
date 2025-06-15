@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,8 @@ import { Separator } from "@/components/ui/separator";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { useUserBadges } from "@/hooks/useUserBadges";
 import { NotificationSettings } from "@/components/profile/NotificationSettings";
+import { useMCards } from "@/hooks/useMCards";
+import { MCardsList } from "@/components/mcards/MCardsList";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const Profile = () => {
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
+  const { mcards, loading: mcardsLoading, getMCards, createMCard, updateMCard, deleteMCard } = useMCards();
 
   useEffect(() => {
     const getSession = async () => {
@@ -50,6 +52,7 @@ const Profile = () => {
       if (session) {
         await getProfile(session);
         await fetchBadgeStatus(session.user);
+        await getMCards();
       }
       setLoading(false);
     };
@@ -61,20 +64,21 @@ const Profile = () => {
       if (session) {
         getProfile(session);
         fetchBadgeStatus(session.user);
+        getMCards();
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [getProfile, fetchBadgeStatus, getMCards]);
 
   const handleUpdateProfile = () => {
     if (session) {
       updateProfile(session);
     }
   };
-
+  
   const handleContactSupport = () => {
     window.location.href = "mailto:idfinder06@gmail.com";
   };
@@ -88,7 +92,7 @@ const Profile = () => {
   };
 
 
-  if (loading || profileLoading || cardsLoading || badgesLoading) {
+  if (loading || profileLoading || cardsLoading || badgesLoading || mcardsLoading) {
     return (
       <>
         <Header />
@@ -135,6 +139,16 @@ const Profile = () => {
             enableSecurityNotifications={enableSecurityNotifications}
             onSecurityNotificationsChange={handleSecurityNotificationsChange}
             loading={profileLoading}
+          />
+
+          <Separator />
+          
+          <MCardsList
+            mcards={mcards}
+            loading={mcardsLoading}
+            createMCard={createMCard}
+            updateMCard={updateMCard}
+            deleteMCard={deleteMCard}
           />
 
           <Separator />
