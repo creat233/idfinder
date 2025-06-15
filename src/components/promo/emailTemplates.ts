@@ -275,3 +275,4 @@ export const referralProgramReminderTemplate = {
 <p>N'attendez plus pour commencer à partager !</p>
 <p>L'équipe FinderID</p>
 `
+};
