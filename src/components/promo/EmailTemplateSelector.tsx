@@ -32,6 +32,9 @@ import {
   fathersDayWishesTemplate,
   mothersDayWishesTemplate,
   laborDayWishesTemplate,
+  valentinesDayWishesTemplate,
+  womensDayWishesTemplate,
+  independenceDayWishesTemplate,
 } from "./email-templates";
 
 interface EmailTemplateSelectorProps {
@@ -69,6 +72,9 @@ const templateList = [
   { id: "fathersDayWishes", template: fathersDayWishesTemplate, label: "Fête des Pères" },
   { id: "mothersDayWishes", template: mothersDayWishesTemplate, label: "Fête des Mères" },
   { id: "laborDayWishes", template: laborDayWishesTemplate, label: "Fête du Travail" },
+  { id: "valentinesDayWishes", template: valentinesDayWishesTemplate, label: "Saint-Valentin" },
+  { id: "womensDayWishes", template: womensDayWishesTemplate, label: "Journée de la Femme" },
+  { id: "independenceDayWishes", template: independenceDayWishesTemplate, label: "Fête Indépendance" },
 ];
 
 export const EmailTemplateSelector = ({ useTemplate }: EmailTemplateSelectorProps) => {
