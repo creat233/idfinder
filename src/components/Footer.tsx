@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
 import { TikTok } from "./icons/TikTok";
-import { ExternalLink } from "@/components/ui/external-link";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
