@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,6 +25,29 @@ const cardRegistrationAnnouncementTemplate = {
   <a href="https://finder-id-4182.lovable.app/my-cards" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Enregistrer mes cartes maintenant</a>
 </p>
 <p>N'attendez plus une minute pour sécuriser vos documents.</p>
+<p>Merci de votre confiance.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+const promoCodeAnnouncementTemplate = {
+  subject: "💰 Gagnez de l'argent et économisez avec les codes promo FinderID !",
+  message: `<h1>Devenez partenaire FinderID et gagnez de l'argent !</h1>
+<p>Bonjour,</p>
+<p>Saviez-vous que vous pouvez non seulement économiser sur les frais de récupération de documents, mais aussi gagner de l'argent grâce à notre programme de codes promo ?</p>
+<h2>Comment ça marche ?</h2>
+<p>C'est très simple :</p>
+<ol>
+  <li>Rendez-vous dans la section <strong>"Codes Promo"</strong> de votre tableau de bord.</li>
+  <li>Générez votre propre code promo unique.</li>
+  <li>Partagez-le avec vos amis, votre famille et sur vos réseaux sociaux.</li>
+  <li><strong>Chaque fois que quelqu'un utilise votre code, vous gagnez 1000 FCFA !</strong></li>
+</ol>
+<p>Non seulement vous aidez les autres à récupérer leurs documents à moindre coût, mais vous êtes également récompensé pour cela.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/promo-codes" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Générer mon code promo</a>
+</p>
+<p>Commencez à gagner de l'argent dès aujourd'hui tout en contribuant à notre communauté.</p>
 <p>Merci de votre confiance.</p>
 <p>L'équipe FinderID</p>
 `
@@ -71,6 +93,12 @@ export const AdminBulkEmailSender = () => {
     showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
   };
 
+  const usePromoCodeTemplate = () => {
+    setSubject(promoCodeAnnouncementTemplate.subject);
+    setMessage(promoCodeAnnouncementTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -79,10 +107,16 @@ export const AdminBulkEmailSender = () => {
             <Mail className="h-5 w-5" />
             Envoyer un e-mail à tous les utilisateurs
           </div>
-          <Button variant="outline" size="sm" onClick={useCardRegistrationTemplate}>
-            <FileText className="h-4 w-4 mr-2" />
-            Utiliser le modèle "Annonce Enregistrement de Carte"
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <Button variant="outline" size="sm" onClick={useCardRegistrationTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Annonce Enregistrement Carte
+            </Button>
+            <Button variant="outline" size="sm" onClick={usePromoCodeTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Annonce Codes Promo
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
