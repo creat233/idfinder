@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -56,19 +57,39 @@ export const useAdminPromoPayments = () => {
         console.log("Carte après update:", updatedRows[0]);
       }
 
-      // 2. Notification au propriétaire (N.B. : reporterId = id signaleur)
-      const { error: ownerNotificationError } = await supabase
-        .from("notifications")
-        .insert({
-          user_id: recoveryData.reporterId,
-          type: "recovery_payment_confirmed",
-          title: "💰 Paiement confirmé - Récupération de carte",
-          message: `Le paiement de ${recoveryData.finalPrice} FCFA pour la récupération de votre carte a été confirmé par l'administration. Vous pouvez maintenant récupérer votre carte.`,
-          is_read: false
-        });
+      // --- FIX : Logique améliorée pour notifier le propriétaire de la carte ---
+      const { data: cardDetails } = await supabase
+        .from("reported_cards")
+        .select("card_number")
+        .eq("id", recoveryData.cardId)
+        .single();
+      
+      if (cardDetails && cardDetails.card_number) {
+        const { data: cardOwner } = await supabase
+          .from("user_cards")
+          .select("user_id")
+          .eq("card_number", cardDetails.card_number)
+          .single();
 
-      if (ownerNotificationError) {
-        console.error("Erreur notification propriétaire:", ownerNotificationError);
+        // 2. Notification au propriétaire de la carte (si trouvé)
+        if (cardOwner && cardOwner.user_id) {
+          const { error: ownerNotificationError } = await supabase
+            .from("notifications")
+            .insert({
+              user_id: cardOwner.user_id, // ID correct du propriétaire
+              type: "recovery_payment_confirmed",
+              title: "💰 Paiement confirmé - Carte récupérée",
+              message: `La procédure de récupération pour votre carte n. ${cardDetails.card_number} a été finalisée avec succès.`,
+              is_read: false,
+              reported_card_id: recoveryData.cardId,
+            });
+
+          if (ownerNotificationError) {
+            console.error("Erreur notification propriétaire carte:", ownerNotificationError);
+          } else {
+            console.log("✅ Notification envoyée au propriétaire de la carte:", cardOwner.user_id);
+          }
+        }
       }
 
       // 3. Notification au signaleur (récompense)
