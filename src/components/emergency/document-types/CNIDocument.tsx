@@ -8,8 +8,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { DocumentSection, DocumentSubSection } from "./DocumentSection";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const CNIDocument = ({ itemVariants }: { itemVariants: any }) => {
+  const { t } = useTranslation();
   return (
     <motion.div variants={itemVariants}>
       <Card className="mb-4 overflow-hidden border-l-4 border-l-blue-500">
@@ -17,40 +19,40 @@ export const CNIDocument = ({ itemVariants }: { itemVariants: any }) => {
           <AccordionTrigger className="px-6 py-4">
             <div className="flex items-center gap-3">
               <CreditCard className="h-5 w-5 text-blue-500" />
-              <h3 className="text-lg font-medium">Carte nationale d&apos;identité (CNI)</h3>
+              <h3 className="text-lg font-medium">{t('cni_title')}</h3>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <DocumentSection title="Obtention pour la première fois:">
+              <DocumentSection title={t('cni_obtention_title')}>
                 <DocumentSubSection 
-                  title="Documents requis:"
+                  title={t('doc_subsection_docs_required')}
                   items={[
-                    "Acte de naissance de l&apos;intéressé",
-                    "Carte nationale d&apos;identité de l&apos;un des parents (pour les mineurs)",
-                    "Quittance de paiement des frais de timbre"
+                    t('cni_obtention_doc_1'),
+                    t('cni_obtention_doc_2'),
+                    t('cni_obtention_doc_3'),
                   ]}
                 />
                 
                 <DocumentSubSection 
-                  title="Procédure:"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Se présenter à la mairie de votre lieu de résidence avec les documents requis",
-                    "Remplir le formulaire de demande fourni par la mairie",
-                    "Payer les frais de timbre et obtenir la quittance correspondante",
-                    "Le délai de délivrance est généralement de 15 jours"
+                    t('cni_obtention_procedure_1'),
+                    t('cni_obtention_procedure_2'),
+                    t('cni_obtention_procedure_3'),
+                    t('cni_obtention_procedure_4'),
                   ]}
                 />
               </DocumentSection>
               
-              <DocumentSection title="En cas de perte ou de vol:">
+              <DocumentSection title={t('doc_section_loss_theft')}>
                 <DocumentSubSection 
-                  title="Procédure:"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Déposer une plainte auprès du commissariat de police de votre localité",
-                    "Présenter la plainte au service de l&apos;état civil de votre mairie",
-                    "Fournir les documents requis pour une nouvelle demande de CNI",
-                    "Suivre la procédure d&apos;obtention pour la première fois"
+                    t('cni_loss_procedure_1'),
+                    t('cni_loss_procedure_2'),
+                    t('cni_loss_procedure_3'),
+                    t('cni_loss_procedure_4'),
                   ]}
                 />
               </DocumentSection>

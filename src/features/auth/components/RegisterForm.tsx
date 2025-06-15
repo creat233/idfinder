@@ -13,17 +13,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CountrySelect } from "@/components/auth/CountrySelect";
+import { useTranslation } from "@/hooks/useTranslation";
 
 // Schema for registration form with stricter validation
 const registerSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+  email: z.string().email("register_error_email_invalid"),
+  password: z.string().min(6, "register_error_password_short"),
+  firstName: z.string().min(2, "register_error_firstname_short"),
+  lastName: z.string().min(2, "register_error_lastname_short"),
   phone: z.string()
-    .min(8, "Le numéro de téléphone doit contenir au moins 8 chiffres")
-    .regex(/^[\+]?[\d\s\-\(\)]{8,}$/, "Format de téléphone invalide (ex: +221 77 123 45 67)"),
-  country: z.string().min(1, "Le pays est requis"),
+    .min(8, "register_error_phone_short")
+    .regex(/^[\+]?[\d\s\-\(\)]{8,}$/, "register_error_phone_invalid"),
+  country: z.string().min(1, "register_error_country_required"),
 });
 
 type RegisterFormProps = {
@@ -32,6 +33,7 @@ type RegisterFormProps = {
 };
 
 const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
+  const { t } = useTranslation();
   // Initialize registration form with validation
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -45,6 +47,18 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
     },
   });
 
+  const translateError = (messageKey: string | undefined) => {
+    return messageKey ? t(messageKey) : undefined;
+  };
+
+  const { errors } = form.formState;
+  if (errors.email) errors.email.message = translateError(errors.email.message);
+  if (errors.password) errors.password.message = translateError(errors.password.message);
+  if (errors.firstName) errors.firstName.message = translateError(errors.firstName.message);
+  if (errors.lastName) errors.lastName.message = translateError(errors.lastName.message);
+  if (errors.phone) errors.phone.message = translateError(errors.phone.message);
+  if (errors.country) errors.country.message = translateError(errors.country.message);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -54,9 +68,9 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prénom *</FormLabel>
+                <FormLabel>{t('register_firstname_label')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Votre prénom" {...field} />
+                  <Input placeholder={t('register_firstname_placeholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -67,9 +81,9 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nom *</FormLabel>
+                <FormLabel>{t('register_lastname_label')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Votre nom" {...field} />
+                  <Input placeholder={t('register_lastname_placeholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -82,7 +96,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Pays de résidence *</FormLabel>
+              <FormLabel>{t('register_country_label')}</FormLabel>
               <FormControl>
                 <CountrySelect control={form.control} name="country" />
               </FormControl>
@@ -96,16 +110,16 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Téléphone *</FormLabel>
+              <FormLabel>{t('register_phone_label')}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="ex: +221 77 123 45 67" 
+                  placeholder={t('register_phone_placeholder')} 
                   {...field} 
                 />
               </FormControl>
               <FormMessage />
               <p className="text-xs text-muted-foreground">
-                Le numéro de téléphone est obligatoire pour recevoir les notifications WhatsApp
+                {t('register_phone_helptext')}
               </p>
             </FormItem>
           )}
@@ -116,9 +130,9 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email *</FormLabel>
+              <FormLabel>{t('register_email_label')}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Votre adresse email" {...field} />
+                <Input type="email" placeholder={t('register_email_placeholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -130,9 +144,9 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mot de passe *</FormLabel>
+              <FormLabel>{t('register_password_label')}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Choisissez un mot de passe" {...field} />
+                <Input type="password" placeholder={t('register_password_placeholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -140,9 +154,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
         />
 
         <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg">
-          <strong>Important :</strong> Tous les champs marqués d'un (*) sont obligatoires. 
-          Votre numéro de téléphone sera utilisé pour vous contacter via WhatsApp 
-          concernant vos codes promo et les cartes trouvées.
+          <strong>{t('register_important_note_title')}</strong> {t('register_important_note_text')}
         </div>
         
         <Button 
@@ -150,7 +162,7 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
           className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
           disabled={loading}
         >
-          {loading ? 'Inscription en cours...' : 'Créer un compte'}
+          {loading ? t('register_loading_button') : t('register_button')}
         </Button>
       </form>
     </Form>

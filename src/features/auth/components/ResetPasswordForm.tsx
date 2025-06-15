@@ -12,10 +12,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/hooks/useTranslation";
 
 // Schema for reset password form
 const resetPasswordSchema = z.object({
-  email: z.string().email("Email invalide")
+  email: z.string().email("login_error_invalid_email")
 });
 
 type ResetPasswordFormProps = {
@@ -25,6 +26,7 @@ type ResetPasswordFormProps = {
 };
 
 const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormProps) => {
+  const { t } = useTranslation();
   // Initialize form with validation
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -32,6 +34,11 @@ const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormPro
       email: "",
     },
   });
+
+  const translateError = (messageKey: string | undefined) => {
+    return messageKey ? t(messageKey) : undefined;
+  };
+  form.formState.errors.email && (form.formState.errors.email.message = translateError(form.formState.errors.email.message));
 
   return (
     <Form {...form}>
@@ -41,9 +48,9 @@ const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormPro
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('reset_password_email_label')}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Votre adresse email" {...field} />
+                <Input type="email" placeholder={t('reset_password_email_placeholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,7 +63,7 @@ const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormPro
             className="flex-1 px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
             disabled={loading}
           >
-            {loading ? 'Envoi en cours...' : 'Réinitialiser le mot de passe'}
+            {loading ? t('reset_password_loading_button') : t('reset_password_button')}
           </Button>
           
           <Button 
@@ -65,7 +72,7 @@ const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormPro
             onClick={onCancel}
             className="px-4 py-3"
           >
-            Annuler
+            {t('reset_password_cancel_button')}
           </Button>
         </div>
       </form>

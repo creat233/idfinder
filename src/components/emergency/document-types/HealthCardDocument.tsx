@@ -8,8 +8,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { DocumentSection, DocumentSubSection } from "./DocumentSection";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const HealthCardDocument = ({ itemVariants }: { itemVariants: any }) => {
+  const { t } = useTranslation();
   return (
     <motion.div variants={itemVariants}>
       <Card className="mb-4 overflow-hidden border-l-4 border-l-emerald-500">
@@ -17,35 +19,35 @@ export const HealthCardDocument = ({ itemVariants }: { itemVariants: any }) => {
           <AccordionTrigger className="px-6 py-4">
             <div className="flex items-center gap-3">
               <HeartPulse className="h-5 w-5 text-emerald-500" />
-              <h3 className="text-lg font-medium">Carte de santé</h3>
+              <h3 className="text-lg font-medium">{t('health_card_title')}</h3>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <DocumentSection title="Obtention :">
+              <DocumentSection title={t('doc_section_obtention')}>
                 <DocumentSubSection
-                  title="Documents requis :"
+                  title={t('doc_subsection_docs_required')}
                   items={[
-                    "Certificat d’inscription à la mutuelle ou centre de santé",
-                    "Pièce d’identité",
-                    "Photo d’identité",
+                    t('health_card_obtention_doc_1'),
+                    t('health_card_obtention_doc_2'),
+                    t('health_card_obtention_doc_3'),
                   ]}
                 />
                 <DocumentSubSection
-                  title="Procédure :"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Remplir le dossier auprès de la mutuelle ou du centre de santé",
-                    "Payer, si besoin, la cotisation",
-                    "Retirer sa carte de santé lors de la notification de disponibilité"
+                    t('health_card_obtention_procedure_1'),
+                    t('health_card_obtention_procedure_2'),
+                    t('health_card_obtention_procedure_3'),
                   ]}
                 />
               </DocumentSection>
-              <DocumentSection title="En cas de perte ou détérioration :">
+              <DocumentSection title={t('doc_section_loss_deterioration')}>
                 <DocumentSubSection
-                  title="Procédure :"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Demander le renouvellement auprès du centre ayant émis la carte",
-                    "Fournir déclaration de perte/détérioration, pièce d’identité, photo récente"
+                    t('health_card_loss_procedure_1'),
+                    t('health_card_loss_procedure_2'),
                   ]}
                 />
               </DocumentSection>

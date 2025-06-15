@@ -8,8 +8,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { DocumentSection, DocumentSubSection } from "./DocumentSection";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DriverLicenseDocument = ({ itemVariants }: { itemVariants: any }) => {
+  const { t } = useTranslation();
   return (
     <motion.div variants={itemVariants}>
       <Card className="mb-4 overflow-hidden border-l-4 border-l-orange-500">
@@ -17,42 +19,42 @@ export const DriverLicenseDocument = ({ itemVariants }: { itemVariants: any }) =
           <AccordionTrigger className="px-6 py-4">
             <div className="flex items-center gap-3">
               <Car className="h-5 w-5 text-orange-500" />
-              <h3 className="text-lg font-medium">Permis de conduire</h3>
+              <h3 className="text-lg font-medium">{t('driver_license_title')}</h3>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <DocumentSection title="Obtention:">
+              <DocumentSection title={t('driver_license_obtention_title')}>
                 <DocumentSubSection 
-                  title="Documents requis:"
+                  title={t('doc_subsection_docs_required')}
                   items={[
-                    "Carte nationale d'identité en cours de validité (original et copie)",
-                    "Certificat médical d'aptitude physique à la conduite de moins de 3 mois",
-                    "Trois photos d'identité récentes",
-                    "Quittance de paiement des droits d'examen (variable selon la catégorie)",
-                    "Attestation de formation d'une auto-école agréée"
+                    t('driver_license_obtention_doc_1'),
+                    t('driver_license_obtention_doc_2'),
+                    t('driver_license_obtention_doc_3'),
+                    t('driver_license_obtention_doc_4'),
+                    t('driver_license_obtention_doc_5'),
                   ]}
                 />
                 
                 <DocumentSubSection 
-                  title="Procédure:"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "S'inscrire dans une auto-école reconnue pour suivre la formation théorique et pratique",
-                    "Passer l'examen du code de la route",
-                    "Après réussite au code, passer l'examen pratique de conduite",
-                    "Une fois les deux examens réussis, le permis de conduire est délivré dans un délai d'environ 2 à 4 semaines"
+                    t('driver_license_obtention_procedure_1'),
+                    t('driver_license_obtention_procedure_2'),
+                    t('driver_license_obtention_procedure_3'),
+                    t('driver_license_obtention_procedure_4'),
                   ]}
                 />
               </DocumentSection>
               
-              <DocumentSection title="En cas de perte ou de vol:">
+              <DocumentSection title={t('doc_section_loss_theft')}>
                 <DocumentSubSection 
-                  title="Procédure:"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Déposer une déclaration de perte auprès du commissariat de police",
-                    "Se rendre au centre de délivrance des permis avec la déclaration de perte",
-                    "Fournir une copie de la carte nationale d'identité, deux photos d'identité et payer les frais de duplicata",
-                    "Le duplicata est généralement délivré sous 7 à 14 jours"
+                    t('driver_license_loss_procedure_1'),
+                    t('driver_license_loss_procedure_2'),
+                    t('driver_license_loss_procedure_3'),
+                    t('driver_license_loss_procedure_4'),
                   ]}
                 />
               </DocumentSection>

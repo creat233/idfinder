@@ -1,27 +1,27 @@
 
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type DocumentHeaderProps = {
   itemVariants: any;
 };
 
 export const DocumentHeader = ({ itemVariants }: DocumentHeaderProps) => {
+  const { t } = useTranslation();
   return (
     <>
       <motion.h2 
         variants={itemVariants}
         className="text-2xl font-semibold mb-6"
       >
-        Documents d&apos;identité et administratifs au Sénégal
+        {t('doc_header_title')}
       </motion.h2>
 
       <motion.p 
         variants={itemVariants}
         className="text-gray-600 mb-8"
       >
-        Pour obtenir ou renouveler vos documents d&apos;identité tels que la carte nationale d&apos;identité, 
-        le passeport ordinaire et le permis de conduire au Sénégal, voici les procédures à suivre, 
-        ainsi que les démarches en cas de perte de ces documents.
+        {t('doc_header_subtitle')}
       </motion.p>
     </>
   );

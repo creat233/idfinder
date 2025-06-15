@@ -8,8 +8,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { DocumentSection, DocumentSubSection } from "./DocumentSection";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const StudentCardDocument = ({ itemVariants }: { itemVariants: any }) => {
+  const { t } = useTranslation();
   return (
     <motion.div variants={itemVariants}>
       <Card className="mb-4 overflow-hidden border-l-4 border-l-teal-500">
@@ -17,34 +19,34 @@ export const StudentCardDocument = ({ itemVariants }: { itemVariants: any }) => 
           <AccordionTrigger className="px-6 py-4">
             <div className="flex items-center gap-3">
               <GraduationCap className="h-5 w-5 text-teal-500" />
-              <h3 className="text-lg font-medium">Carte étudiante</h3>
+              <h3 className="text-lg font-medium">{t('student_card_title')}</h3>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <DocumentSection title="Obtention :">
+              <DocumentSection title={t('doc_section_obtention')}>
                 <DocumentSubSection
-                  title="Documents requis :"
+                  title={t('doc_subsection_docs_required')}
                   items={[
-                    "Certificat d'inscription de l’établissement",
-                    "Pièce d'identité ou quittance d'inscription",
-                    "Photo d'identité récente",
+                    t('student_card_obtention_doc_1'),
+                    t('student_card_obtention_doc_2'),
+                    t('student_card_obtention_doc_3'),
                   ]}
                 />
                 <DocumentSubSection
-                  title="Procédure :"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Déposer le dossier au secrétariat de l’établissement",
-                    "La carte étudiante est souvent délivrée gratuitement ou rapidement",
+                    t('student_card_obtention_procedure_1'),
+                    t('student_card_obtention_procedure_2'),
                   ]}
                 />
               </DocumentSection>
-              <DocumentSection title="Perte ou renouvellement :">
+              <DocumentSection title={t('doc_section_loss_renewal')}>
                 <DocumentSubSection
-                  title="Procédure :"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Demander un duplicata auprès de l’établissement",
-                    "Fournir déclaration sur l’honneur ou rapport de perte le cas échéant",
+                    t('student_card_loss_procedure_1'),
+                    t('student_card_loss_procedure_2'),
                   ]}
                 />
               </DocumentSection>

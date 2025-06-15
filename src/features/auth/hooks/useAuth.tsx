@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const onRegister = async (values: {
     email: string;
@@ -24,14 +26,14 @@ export const useAuth = () => {
     try {
       // Valider que tous les champs obligatoires sont remplis
       if (!values.firstName.trim() || !values.lastName.trim() || !values.phone.trim()) {
-        setError("Tous les champs obligatoires doivent être remplis");
+        setError(t('register_error_all_fields'));
         return false;
       }
 
       // Valider le format du téléphone
       const phoneRegex = /^[\+]?[\d\s\-\(\)]{8,}$/;
       if (!phoneRegex.test(values.phone)) {
-        setError("Le format du numéro de téléphone est invalide");
+        setError(t('register_error_phone_invalid'));
         return false;
       }
 
@@ -82,8 +84,8 @@ export const useAuth = () => {
           // Don't fail registration if profile update fails, but show warning
           toast({
             variant: "destructive",
-            title: "Attention",
-            description: "Compte créé mais les informations de profil n'ont pas pu être sauvegardées. Veuillez mettre à jour votre profil.",
+            title: t('auth_hook_profile_error_toast_title'),
+            description: t('auth_hook_profile_error_toast_desc'),
           });
         } else {
           console.log("✅ Profil sauvegardé avec succès");
@@ -91,14 +93,14 @@ export const useAuth = () => {
       }
 
       toast({
-        title: "Compte créé avec succès",
-        description: "Vous pouvez maintenant vous connecter avec vos informations complètes",
+        title: t('auth_hook_account_created_toast_title'),
+        description: t('auth_hook_account_created_toast_desc'),
       });
       
       return true;
     } catch (err) {
       console.error("💥 Erreur d'inscription:", err);
-      setError("Une erreur s'est produite lors de l'inscription. Veuillez réessayer.");
+      setError(t('register_error_generic'));
       return false;
     } finally {
       setLoading(false);
@@ -124,7 +126,7 @@ export const useAuth = () => {
       return true;
     } catch (err) {
       console.error("Login error:", err);
-      setError("Une erreur s'est produite lors de la connexion");
+      setError(t('login_general_error'));
       return false;
     } finally {
       setLoading(false);
@@ -146,14 +148,14 @@ export const useAuth = () => {
       }
 
       toast({
-        title: "Email envoyé",
-        description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe",
+        title: t('reset_password_success_toast_title'),
+        description: t('reset_password_success_toast_desc'),
       });
       
       return true;
     } catch (err) {
       console.error("Password reset error:", err);
-      setError("Une erreur s'est produite lors de l'envoi de l'email");
+      setError(t('reset_password_error_generic'));
       return false;
     } finally {
       setLoading(false);
@@ -173,8 +175,8 @@ export const useAuth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user.created_at === session?.user.last_sign_in_at) {
         toast({
-          title: "Compte créé avec succès",
-          description: "Vous pouvez maintenant vous connecter",
+          title: t('auth_hook_account_created_toast_title'),
+          description: t('auth_hook_signed_in_toast_desc'),
         });
       } else if (event === 'SIGNED_IN') {
         if (mounted.current) {
@@ -183,13 +185,13 @@ export const useAuth = () => {
       } else if (event === 'USER_UPDATED') {
         toast({
           variant: "destructive",
-          title: "Erreur",
-          description: "L'utilisateur existe déjà. Veuillez vous connecter.",
+          title: t('auth_hook_user_exists_toast_title'),
+          description: t('auth_hook_user_exists_toast_desc'),
         });
       } else if (event === 'PASSWORD_RECOVERY') {
         toast({
-          title: "Réinitialisation du mot de passe",
-          description: "Veuillez suivre les instructions pour réinitialiser votre mot de passe",
+          title: t('auth_hook_password_recovery_toast_title'),
+          description: t('auth_hook_password_recovery_toast_desc'),
         });
       }
     });
@@ -198,7 +200,7 @@ export const useAuth = () => {
       mounted.current = false;
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, t]);
 
   return {
     loading,

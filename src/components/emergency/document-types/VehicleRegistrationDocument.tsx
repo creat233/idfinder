@@ -8,8 +8,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { DocumentSection, DocumentSubSection } from "./DocumentSection";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const VehicleRegistrationDocument = ({ itemVariants }: { itemVariants: any }) => {
+  const { t } = useTranslation();
   return (
     <motion.div variants={itemVariants}>
       <Card className="mb-4 overflow-hidden border-l-4 border-l-purple-500">
@@ -17,39 +19,39 @@ export const VehicleRegistrationDocument = ({ itemVariants }: { itemVariants: an
           <AccordionTrigger className="px-6 py-4">
             <div className="flex items-center gap-3">
               <Truck className="h-5 w-5 text-purple-500" />
-              <h3 className="text-lg font-medium">Carte grise véhicule</h3>
+              <h3 className="text-lg font-medium">{t('vehicle_registration_title')}</h3>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
             <div className="space-y-4">
-              <DocumentSection title="Obtention pour la première fois :">
+              <DocumentSection title={t('doc_section_obtention_first_time')}>
                 <DocumentSubSection
-                  title="Documents requis :"
+                  title={t('doc_subsection_docs_required')}
                   items={[
-                    "Facture d'achat du véhicule (ou certificat de cession)",
-                    "Ancienne carte grise si véhicule d'occasion",
-                    "Pièce d'identité du propriétaire",
-                    "Justificatif de domicile",
+                    t('vehicle_registration_obtention_doc_1'),
+                    t('vehicle_registration_obtention_doc_2'),
+                    t('vehicle_registration_obtention_doc_3'),
+                    t('vehicle_registration_obtention_doc_4'),
                   ]}
                 />
                 <DocumentSubSection
-                  title="Procédure :"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Se rendre au service des transports terrestres",
-                    "Présenter tous les documents requis",
-                    "Payer les frais d'immatriculation",
-                    "La carte grise est généralement délivrée sous 1 à 2 semaines",
+                    t('vehicle_registration_obtention_procedure_1'),
+                    t('vehicle_registration_obtention_procedure_2'),
+                    t('vehicle_registration_obtention_procedure_3'),
+                    t('vehicle_registration_obtention_procedure_4'),
                   ]}
                 />
               </DocumentSection>
-              <DocumentSection title="En cas de perte ou de vol :">
+              <DocumentSection title={t('doc_section_loss_theft')}>
                 <DocumentSubSection
-                  title="Procédure :"
+                  title={t('doc_subsection_procedure')}
                   items={[
-                    "Déclarer la perte ou le vol au commissariat",
-                    "Se rendre au service des transports pour demander un duplicata",
-                    "Fournir la déclaration de perte/vol, pièce d'identité, justificatif de propriété",
-                    "Payer les frais de duplicata ; le duplicata est habituellement délivré sous 7 à 14 jours",
+                    t('vehicle_registration_loss_procedure_1'),
+                    t('vehicle_registration_loss_procedure_2'),
+                    t('vehicle_registration_loss_procedure_3'),
+                    t('vehicle_registration_loss_procedure_4'),
                   ]}
                 />
               </DocumentSection>

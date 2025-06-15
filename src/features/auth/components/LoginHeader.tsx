@@ -1,7 +1,9 @@
 
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const LoginHeader = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center">
       <motion.div
@@ -33,7 +35,7 @@ const LoginHeader = () => {
         transition={{ delay: 0.3, duration: 0.6 }}
         className="text-4xl font-extrabold text-white mb-3 text-center"
       >
-        Sama Pièce
+        {t('login_header_main_title')}
       </motion.h1>
       
       <motion.p 
@@ -42,7 +44,7 @@ const LoginHeader = () => {
         transition={{ delay: 0.4, duration: 0.6 }}
         className="text-purple-100 text-center text-lg mb-2"
       >
-        Votre plateforme de récupération de documents
+        {t('login_header_subtitle')}
       </motion.p>
       
       <motion.div 
@@ -52,7 +54,7 @@ const LoginHeader = () => {
         className="bg-white/10 backdrop-blur-sm rounded-xl p-4 max-w-sm text-center border border-white/20"
       >
         <p className="text-purple-100 text-sm leading-relaxed">
-          ✨ Signalez, retrouvez et restituez facilement les documents égarés grâce à notre communauté solidaire
+          {t('login_header_tagline')}
         </p>
       </motion.div>
     </div>
