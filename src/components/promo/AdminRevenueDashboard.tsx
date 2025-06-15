@@ -2,6 +2,7 @@
 import { useAdminRevenueStats } from '@/hooks/useAdminRevenueStats';
 import { AdminRevenueStats } from './AdminRevenueStats';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export const AdminRevenueDashboard = () => {
   const { stats, loading } = useAdminRevenueStats();
