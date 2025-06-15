@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Header } from "@/components/Header";
-import { useMCards, MCard } from "@/hooks/useMCards";
+import { useMCards } from "@/hooks/useMCards";
 import { MCardsList } from "@/components/mcards/MCardsList";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { MCardPricing } from '@/components/mcards/MCardPricing';
 import { useToast } from '@/hooks/use-toast';
 import { differenceInDays, parseISO } from 'date-fns';
 import { MCardFormDialog } from '@/components/mcards/MCardFormDialog';
-import { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import { MCard, MCardCreateData, MCardUpdateData } from '@/types/mcard';
 
 const MCards = () => {
   const { mcards, loading, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
@@ -84,7 +84,7 @@ const MCards = () => {
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = async (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => {
+  const handleFormSubmit = async (data: MCardCreateData | MCardUpdateData, profilePictureFile: File | null) => {
     if (editingMCard) {
       const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
       if (result) {
@@ -92,8 +92,8 @@ const MCards = () => {
         setEditingMCard(null);
       }
     } else if (planForNewCard) {
-      const newCardData: TablesInsert<'mcards'> = {
-        ...(data as TablesInsert<'mcards'>),
+      const newCardData: MCardCreateData = {
+        ...(data as MCardCreateData),
         plan: planForNewCard,
         subscription_status: planForNewCard === 'free' ? 'trial' : 'pending_payment',
       };

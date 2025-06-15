@@ -1,5 +1,3 @@
-
-import { MCard } from "@/hooks/useMCards";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { format } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MCard } from "@/types/mcard";
 
 interface MCardItemProps {
   mcard: MCard;

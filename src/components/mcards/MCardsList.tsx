@@ -1,7 +1,6 @@
-import { MCard } from "@/hooks/useMCards";
-import { MCardItem } from "./MCardItem";
 import { useTranslation } from "@/hooks/useTranslation";
-import { TablesUpdate } from "@/integrations/supabase/types";
+import { MCard } from "@/types/mcard";
+import { MCardItem } from "./MCardItem";
 
 interface MCardsListProps {
   mcards: MCard[];

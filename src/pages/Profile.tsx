@@ -17,8 +17,9 @@ import { Separator } from "@/components/ui/separator";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { useUserBadges } from "@/hooks/useUserBadges";
 import { NotificationSettings } from "@/components/profile/NotificationSettings";
-import { useMCards, MCard } from "@/hooks/useMCards";
+import { useMCards } from "@/hooks/useMCards";
 import { MCardsList } from "@/components/mcards/MCardsList";
+import { MCard } from "@/types/mcard";
 
 const Profile = () => {
   const navigate = useNavigate();
