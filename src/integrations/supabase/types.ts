@@ -387,6 +387,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_public_ads: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          end_date: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          message: string | null
+          start_date: string | null
+          target_url: string | null
+          title: string
+          updated_at: string
+        }[]
+      }
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
