@@ -10,9 +10,11 @@ export const usePublicAds = () => {
   useEffect(() => {
     const fetchPublicAds = async () => {
       setLoading(true);
-      // On utilise la fonction RPC pour s'assurer que seuls les publicités publiques
-      // et actives sont retournées, pour tous les types d'utilisateurs.
-      const { data, error } = await supabase.rpc('get_public_ads');
+      // La politique RLS s'occupe de filtrer les publicités
+      // pour les utilisateurs non authentifiés.
+      const { data, error } = await supabase
+        .from('admin_ads')
+        .select('*');
 
       if (error) {
         console.error('Error fetching public ads:', error);
