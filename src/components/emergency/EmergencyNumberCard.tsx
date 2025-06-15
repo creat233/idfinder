@@ -3,7 +3,7 @@ import { PhoneCall, PhoneForwarded } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 export interface EmergencyNumberType {
   service: string;

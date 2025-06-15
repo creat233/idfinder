@@ -1,5 +1,5 @@
 
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 import { Camera, MapPin, Clock, Users } from "lucide-react";
 import { DemoStepCard } from "./DemoStepCard";
 import { motion } from "framer-motion";

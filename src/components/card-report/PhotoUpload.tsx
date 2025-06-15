@@ -1,3 +1,4 @@
+
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Loader2, Upload, X } from "lucide-react";
@@ -5,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 export interface PhotoUploadProps {
   form: UseFormReturn<any>;

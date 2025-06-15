@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { EmergencyNumberCard, EmergencyNumberType } from "./EmergencyNumberCard";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 interface EmergencyNumbersListProps {
   filteredNumbers: EmergencyNumberType[];

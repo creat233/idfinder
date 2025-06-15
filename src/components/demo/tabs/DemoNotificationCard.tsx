@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 export const DemoNotificationCard = () => {
   const { t } = useTranslation();

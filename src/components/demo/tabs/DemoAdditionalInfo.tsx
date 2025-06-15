@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 export const DemoAdditionalInfo = () => {
   const { t } = useTranslation();

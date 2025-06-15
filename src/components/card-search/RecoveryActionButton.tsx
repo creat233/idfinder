@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Phone, ArrowRight } from "lucide-react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 import { getPriceInfoForCountry } from "@/utils/pricing";
 
 interface RecoveryActionButtonProps {

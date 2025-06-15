@@ -1,8 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
 import { ScanSearch, Plus, Search, Gift } from "lucide-react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 interface ActionButtonsProps {
   user?: User | null;

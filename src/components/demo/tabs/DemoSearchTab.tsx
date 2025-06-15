@@ -1,5 +1,5 @@
 
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 import { MapPin, Phone, CheckCircle, Search } from "lucide-react";
 import { DemoNotificationCard } from "./DemoNotificationCard";
 import { DemoStepCard } from "./DemoStepCard";
