@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "npm:resend@2.0.0";
@@ -91,6 +90,8 @@ serve(async (req: Request) => {
 
     const finalHtml = generatePromoEmailHtml({ subject, userHtmlContent: htmlContent });
     const chunkSize = 49; // Resend limit is 50, using 49 to be safe
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") ?? "FinderID <notifications@resend.dev>";
+    const errors: string[] = [];
 
     for (let i = 0; i < recipientEmails.length; i += chunkSize) {
       const chunk = recipientEmails.slice(i, i + chunkSize);
@@ -98,7 +99,7 @@ serve(async (req: Request) => {
 
       try {
         const { error: sendError } = await resend.emails.send({
-          from: "FinderID <notifications@resend.dev>",
+          from: fromEmail,
           to: "notifications@resend.dev", // Dummy 'to' field
           bcc: chunk,
           subject: subject,
@@ -107,10 +108,16 @@ serve(async (req: Request) => {
     
         if (sendError) {
           console.error(`Resend error for chunk ${Math.floor(i / chunkSize) + 1}:`, sendError);
+          errors.push(sendError.message);
         }
       } catch (e) {
         console.error(`Caught exception for chunk ${Math.floor(i / chunkSize) + 1}:`, e);
+        errors.push(e.message);
       }
+    }
+
+    if (errors.length > 0) {
+      throw new Error(`Échec de l'envoi d'e-mails à certains utilisateurs. ${errors.length} lots ont échoué. Première erreur : ${errors[0]}`);
     }
 
     try {
