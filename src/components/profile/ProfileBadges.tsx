@@ -3,22 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Award, Shield } from "lucide-react";
 
-export const ProfileBadges = () => {
+interface ProfileBadgesProps {
+  topReporterEarned: boolean;
+  premiumMemberEarned: boolean;
+}
+
+export const ProfileBadges = ({ topReporterEarned, premiumMemberEarned }: ProfileBadgesProps) => {
   const { t } = useTranslation();
 
-  // Dummy data for now. In the future, this would come from props/state.
   const badges = [
     {
-      icon: <Shield className="h-6 w-6 text-gray-400" />,
+      icon: <Shield className={`h-6 w-6 ${topReporterEarned ? 'text-green-500' : 'text-gray-400'}`} />,
       title: t('topReporter'),
       description: t('topReporterDescription'),
-      earned: false,
+      earned: topReporterEarned,
     },
     {
-      icon: <Award className="h-6 w-6 text-gray-400" />,
+      icon: <Award className={`h-6 w-6 ${premiumMemberEarned ? 'text-yellow-500' : 'text-gray-400'}`} />,
       title: t('premiumMember'),
       description: t('premiumMemberDescription'),
-      earned: false,
+      earned: premiumMemberEarned,
     },
   ];
 

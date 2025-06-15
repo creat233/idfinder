@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import { PersonalStats } from "@/components/profile/PersonalStats";
 import { PasswordChangeForm } from "@/components/profile/PasswordChangeForm";
 import { Separator } from "@/components/ui/separator";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
+import { useUserBadges } from "@/hooks/useUserBadges";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -36,6 +36,7 @@ const Profile = () => {
     updateProfile
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
+  const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
 
   useEffect(() => {
     const getSession = async () => {
@@ -43,6 +44,7 @@ const Profile = () => {
       setSession(session);
       if (session) {
         await getProfile(session);
+        await fetchBadgeStatus(session.user);
       }
       setLoading(false);
     };
@@ -53,6 +55,7 @@ const Profile = () => {
       setSession(session);
       if (session) {
         getProfile(session);
+        fetchBadgeStatus(session.user);
       }
     });
 
@@ -71,7 +74,7 @@ const Profile = () => {
     window.location.href = "mailto:idfinder06@gmail.com";
   };
 
-  if (loading || profileLoading || cardsLoading) {
+  if (loading || profileLoading || cardsLoading || badgesLoading) {
     return (
       <>
         <Header />
@@ -89,7 +92,10 @@ const Profile = () => {
           
           <PersonalStats cardCount={cards.length} totalEarnings={totalEarnings} />
 
-          <ProfileBadges />
+          <ProfileBadges 
+            topReporterEarned={topReporterEarned}
+            premiumMemberEarned={premiumMemberEarned}
+          />
           
           <Separator />
           
