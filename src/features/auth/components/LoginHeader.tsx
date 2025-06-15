@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 import { getCountryInfo } from "@/utils/countryUtils";
 
 const LoginHeader = () => {

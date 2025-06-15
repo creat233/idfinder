@@ -1,6 +1,6 @@
 
 import { useState, useMemo } from "react";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "./useTranslation";
 
 export type EmergencyNumberType = {
   service: string;

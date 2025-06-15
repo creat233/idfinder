@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Search, Bell, Handshake, Award } from "lucide-react";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const featureIcons = {
   search: Search,

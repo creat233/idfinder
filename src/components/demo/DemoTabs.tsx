@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 import { DemoTabsNavigation } from "./tabs/DemoTabsNavigation";
 import { DemoSearchTab } from "./tabs/DemoSearchTab";
 import { DemoReportTab } from "./tabs/DemoReportTab";

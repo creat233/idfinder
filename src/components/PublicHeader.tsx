@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PublicHeaderDesktopNav } from "./PublicHeaderDesktopNav";
 import { PublicHeaderMobileNav } from "./PublicHeaderMobileNav";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

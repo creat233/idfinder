@@ -4,7 +4,7 @@ import { ArrowRight, Share2, Download } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { CardSearchForm } from "@/components/card-search/CardSearchForm";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DashboardHero = () => {
   const { toast } = useToast();

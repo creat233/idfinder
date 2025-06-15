@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { User } from "@supabase/supabase-js";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface HeroContentProps {
   children: React.ReactNode;

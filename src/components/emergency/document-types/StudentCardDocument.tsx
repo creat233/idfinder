@@ -8,7 +8,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { DocumentSection, DocumentSubSection } from "./DocumentSection";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const StudentCardDocument = ({ itemVariants }: { itemVariants: any }) => {
   const { t } = useTranslation();

@@ -12,7 +12,7 @@ import { EmergencyTips } from "@/components/emergency/EmergencyTips";
 import { SenegaleseDocuments } from "@/components/emergency/SenegaleseDocuments";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const NumeroUrgence = () => {
   const { 

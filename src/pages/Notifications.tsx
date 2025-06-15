@@ -2,7 +2,7 @@
 import { Header } from "@/components/Header";
 import { NotificationsList } from "@/components/notifications/NotificationsList";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const Notifications = () => {
   const { notifications, loading, markAsRead, markAllAsRead } = useNotifications();

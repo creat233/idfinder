@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
+
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { getTranslation, Country, Language, getAvailableLanguages } from "@/utils/translations";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from '@supabase/supabase-js';
@@ -13,14 +14,6 @@ interface TranslationContextType {
 }
 
 export const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
-
-export const useTranslation = () => {
-  const context = useContext(TranslationContext);
-  if (context === undefined) {
-    throw new Error('useTranslation must be used within a TranslationProvider');
-  }
-  return context;
-};
 
 const availableLanguages = getAvailableLanguages().map(l => l.code);
 

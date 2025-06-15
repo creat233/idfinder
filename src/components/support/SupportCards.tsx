@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { MessageSquare, PhoneCall, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface SupportCardsProps {
   supportEmail: string;

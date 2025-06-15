@@ -5,7 +5,7 @@ import { useOwnerInfoDialog } from "@/hooks/useOwnerInfoDialog";
 import { OwnerInfoDialogHeader } from "./dialog/OwnerInfoDialogHeader";
 import { OwnerInfoDialogContent } from "./dialog/OwnerInfoDialogContent";
 import { OwnerInfoDialogFooter } from "./dialog/OwnerInfoDialogFooter";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface OwnerInfoDialogProps {
   isOpen: boolean;

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Search, X } from "lucide-react";
 import { MapCategoryBadges } from "@/components/map/MapCategoryBadges";
-import { useTranslation } from "@/providers/TranslationProvider";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface EmergencySearchFilterProps {
   searchTerm: string;
