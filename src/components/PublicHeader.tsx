@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -7,6 +8,7 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import { PublicHeaderDesktopNav } from "./PublicHeaderDesktopNav";
 import { PublicHeaderMobileNav } from "./PublicHeaderMobileNav";
+import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,6 +58,7 @@ export const PublicHeader = () => {
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
+      <PublicAdsDisplay />
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
