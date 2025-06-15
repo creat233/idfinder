@@ -2,7 +2,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
-import { Shield, Users, Target, Heart } from "lucide-react";
+import { Shield, Users, Target, Heart, Phone } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 
 const About = () => {
@@ -171,10 +171,13 @@ const About = () => {
                     {t("about_contact_email_label")}
                   </p>
                   <a 
-                    href="mailto:idfinder06@gmail.com" 
-                    className="text-[#9b87f5] hover:text-[#7E69AB] font-medium text-lg"
+                    href="https://wa.me/221710117579" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#9b87f5] hover:text-[#7E69AB] font-medium text-lg flex items-center justify-center gap-2"
                   >
-                    idfinder06@gmail.com
+                    <Phone className="w-6 h-6" />
+                    +221 71 011 75 79
                   </a>
                 </div>
               </motion.div>

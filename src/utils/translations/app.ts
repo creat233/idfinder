@@ -162,8 +162,8 @@ export const appTranslations: Translations = {
     en: "Do you have questions or suggestions? Do not hesitate to contact us."
   },
   about_contact_email_label: {
-    fr: "Email de support",
-    en: "Support Email"
+    fr: "Contactez-nous sur WhatsApp",
+    en: "Contact us on WhatsApp"
   },
 
   // Traductions pour PublicCTA
