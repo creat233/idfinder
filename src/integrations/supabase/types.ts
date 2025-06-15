@@ -75,6 +75,36 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       card_searches: {
         Row: {
           card_number: string
@@ -398,6 +428,17 @@ export type Database = {
       generate_promo_code: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_audit_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          created_at: string
+          user_email: string
+          action: string
+          details: Json
+          ip_address: string
+        }[]
       }
       get_daily_user_signups: {
         Args: Record<PropertyKey, never>

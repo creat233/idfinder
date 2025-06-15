@@ -16,6 +16,7 @@ import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 import { AdminUsersList } from "@/components/promo/AdminUsersList";
 import { AdminAnalyticsDashboard } from "@/components/promo/AdminAnalyticsDashboard";
+import { AdminAuditLogsList } from "@/components/promo/AdminAuditLogsList";
 
 const AdminPromoCodes = () => {
   return (
@@ -72,6 +73,9 @@ const AdminPromoCodes = () => {
 
           {/* Module : Analyses et Statistiques */}
           <AdminAnalyticsDashboard />
+
+          {/* Module : Journal d'audit et de sécurité */}
+          <AdminAuditLogsList />
 
           {/* Module : Statistiques des revenus */}
           <AdminRevenueDashboard />
