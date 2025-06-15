@@ -209,5 +209,37 @@ export const mcardsTranslations: Translations = {
   draft: {
     fr: "Brouillon",
     en: "Draft"
+  },
+  planEssential: {
+    fr: "Essentiel",
+    en: "Essential"
+  },
+  planEssentialDescription: {
+    fr: "Idéal pour commencer et partager vos coordonnées.",
+    en: "Ideal for starting out and sharing your contact info."
+  },
+  planPremium: {
+    fr: "Premium",
+    en: "Premium"
+  },
+  planPremiumDescription: {
+    fr: "Toutes les fonctionnalités pour une présence professionnelle complète.",
+    en: "All features for a complete professional presence."
+  },
+  perMonth: {
+    fr: "/ mois",
+    en: "/ month"
+  },
+  includedFeatures: {
+    fr: "Ce qui est inclus :",
+    en: "What's included:"
+  },
+  mostPopular: {
+    fr: "Le plus populaire",
+    en: "Most Popular"
+  },
+  selectPlan: {
+    fr: "Choisir ce plan",
+    en: "Select this plan"
   }
 };
