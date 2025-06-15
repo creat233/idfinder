@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "npm:resend@2.0.0";
@@ -54,13 +55,30 @@ serve(async (req: Request) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
     
-    const { data: { users }, error: usersError } = await supabaseAdmin.auth.admin.listUsers();
+    const allUsers = [];
+    let page = 1;
+    const perPage = 1000; // Max users per page, as per Supabase limit
 
-    if (usersError) {
-      throw usersError;
+    while (true) {
+      const { data: { users }, error: usersError } = await supabaseAdmin.auth.admin.listUsers({
+        page,
+        perPage,
+      });
+
+      if (usersError) {
+        throw usersError;
+      }
+
+      if (users.length > 0) {
+        allUsers.push(...users);
+        page++;
+      } else {
+        // No more users to fetch
+        break;
+      }
     }
 
-    const recipientEmails = users.map(u => u.email).filter(Boolean) as string[];
+    const recipientEmails = allUsers.map(u => u.email).filter(Boolean) as string[];
 
     if (recipientEmails.length === 0) {
       return new Response(JSON.stringify({ message: "No users to send email to." }), {
@@ -76,7 +94,7 @@ serve(async (req: Request) => {
 
     for (let i = 0; i < recipientEmails.length; i += chunkSize) {
       const chunk = recipientEmails.slice(i, i + chunkSize);
-      console.log(`Sending chunk ${i / chunkSize + 1} of ${Math.ceil(recipientEmails.length / chunkSize)}: ${chunk.length} recipients.`);
+      console.log(`Sending chunk ${Math.floor(i / chunkSize) + 1} of ${Math.ceil(recipientEmails.length / chunkSize)}: ${chunk.length} recipients.`);
 
       try {
         const { error: sendError } = await resend.emails.send({
@@ -88,10 +106,10 @@ serve(async (req: Request) => {
         });
     
         if (sendError) {
-          console.error(`Resend error for chunk ${i / chunkSize + 1}:`, sendError);
+          console.error(`Resend error for chunk ${Math.floor(i / chunkSize) + 1}:`, sendError);
         }
       } catch (e) {
-        console.error(`Caught exception for chunk ${i / chunkSize + 1}:`, e);
+        console.error(`Caught exception for chunk ${Math.floor(i / chunkSize) + 1}:`, e);
       }
     }
 
