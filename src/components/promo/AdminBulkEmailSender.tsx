@@ -140,6 +140,42 @@ const tipsAndTricksTemplate = {
 `
 };
 
+const monthlyRecapTemplate = {
+  subject: "📰 Votre récapitulatif FinderID !",
+  message: `<h1>Quoi de neuf sur FinderID ?</h1>
+<p>Bonjour,</p>
+<p>Voici un résumé de ce qui s'est passé sur FinderID récemment et des fonctionnalités que vous avez peut-être manquées.</p>
+<h2>Nouveautés :</h2>
+<p><em>[Pensez à remplacer ce contenu par les vraies nouveautés]</em></p>
+<ul>
+  <li><strong>Fonctionnalité A :</strong> Nous avons amélioré la vitesse de recherche.</li>
+  <li><strong>Partenariat B :</strong> Retrouvez nos services dans de nouveaux points relais.</li>
+</ul>
+<h2>Le saviez-vous ?</h2>
+<p>Vous pouvez maintenant ajouter des photos à vos documents pour une identification plus facile.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/dashboard" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Explorer mon tableau de bord</a>
+</p>
+<p>Restez à l'écoute pour d'autres améliorations !</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+const specialPromotionTemplate = {
+  subject: "🎉 Offre Spéciale : Économisez sur les frais de récupération !",
+  message: `<h1>Une offre à ne pas manquer !</h1>
+<p>Bonjour,</p>
+<p>Pour une durée limitée, nous avons une promotion spéciale pour vous !</p>
+<p><strong>Bénéficiez de 50% de réduction sur les frais de récupération pour tous les documents signalés cette semaine !</strong></p>
+<p>C'est le moment ou jamais d'encourager vos proches à utiliser FinderID. Partagez votre code promo et aidez-les à économiser encore plus.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/promo-codes" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Partager mon code promo</a>
+</p>
+<p>L'offre est valable jusqu'au [Date d'expiration].</p>
+<p>Merci de faire partie de notre communauté.</p>
+<p>L'équipe FinderID</p>
+`;
+
 export const AdminBulkEmailSender = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -216,6 +252,18 @@ export const AdminBulkEmailSender = () => {
     showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
   };
 
+  const useMonthlyRecapTemplate = () => {
+    setSubject(monthlyRecapTemplate.subject);
+    setMessage(monthlyRecapTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
+  const useSpecialPromotionTemplate = () => {
+    setSubject(specialPromotionTemplate.subject);
+    setMessage(specialPromotionTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -252,6 +300,14 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={useTipsAndTricksTemplate}>
               <FileText className="h-4 w-4 mr-2" />
               Astuces & Conseils
+            </Button>
+            <Button variant="outline" size="sm" onClick={useMonthlyRecapTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Récap Mensuel
+            </Button>
+            <Button variant="outline" size="sm" onClick={useSpecialPromotionTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Promo Spéciale
             </Button>
           </div>
         </CardTitle>
