@@ -5,7 +5,7 @@ interface PromoEmailTemplateProps {
 }
 
 export const generatePromoEmailHtml = ({ subject, userHtmlContent }: PromoEmailTemplateProps): string => {
-  const logoUrl = "https://finder-id-4182.lovable.app/og-image.png";
+  const logoUrl = "https://finder-id-4182.lovable.app/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png";
 
   return `
     <!DOCTYPE html>
@@ -35,7 +35,7 @@ export const generatePromoEmailHtml = ({ subject, userHtmlContent }: PromoEmailT
           text-align: center;
         }
         .header img {
-          max-width: 200px;
+          max-width: 150px; /* Reduced size for better email compatibility */
           height: auto;
         }
         .content {
