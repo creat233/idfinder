@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash2, Copy, User } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Copy, Eye } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -130,7 +130,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
         <p className="text-sm text-muted-foreground">URL: /m/{mcard.slug}</p>
       </CardContent>
       <CardFooter className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">{t('status')}:</span>
                 <Badge variant={getStatusVariant(mcard.subscription_status)}>
@@ -142,6 +142,10 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
                     {t('expiresOn')} {format(new Date(mcard.subscription_expires_at), 'dd/MM/yyyy')}
                 </p>
             )}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Eye className="h-4 w-4" />
+              <span>{mcard.view_count ?? 0} {t('views') || 'vues'}</span>
+            </div>
         </div>
         {(mcard.subscription_status === 'trial' || mcard.subscription_status === 'expired') && (
             <Button variant="outline" size="sm" onClick={() => onStartUpgradeFlow(mcard.id)}>{t('upgradeSubscription')}</Button>
