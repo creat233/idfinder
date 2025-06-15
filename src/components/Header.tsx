@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, Settings, LogOut } from "lucide-react";
@@ -14,23 +15,32 @@ export const Header = () => {
   const { showSuccess } = useToast();
 
   useEffect(() => {
+    const checkIsAdmin = async () => {
+      const { data, error } = await supabase.rpc('is_admin');
+      if (error) {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+      } else {
+        setIsAdmin(data);
+      }
+    };
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       
-      // Vérifier si l'utilisateur est admin
-      if (user?.email === "mouhamed110000@gmail.com") {
-        setIsAdmin(true);
+      if (user) {
+        await checkIsAdmin();
       }
     };
 
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setUser(session?.user ?? null);
-        if (session?.user?.email === "mouhamed110000@gmail.com") {
-          setIsAdmin(true);
+        if (session?.user) {
+          await checkIsAdmin();
         } else {
           setIsAdmin(false);
         }

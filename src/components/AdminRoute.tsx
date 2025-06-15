@@ -14,33 +14,45 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
-      
-      if (!user) {
-        navigate("/login");
+    const checkAccess = async () => {
+      const { data: isAdmin, error } = await supabase.rpc('is_admin');
+
+      if (error) {
+        console.error('Error checking admin status:', error);
+        if (window.location.pathname.startsWith("/admin")) {
+          navigate("/");
+        }
         return;
       }
 
-      // Rediriger vers l'interface admin si c'est le bon email
-      if (user.email === "mouhamed110000@gmail.com") {
+      if (isAdmin) {
         if (window.location.pathname === "/") {
           navigate("/admin/codes-promo");
         }
       } else {
-        // Rediriger les autres utilisateurs vers le dashboard normal
         if (window.location.pathname.startsWith("/admin")) {
           navigate("/");
         }
       }
     };
 
-    checkUser();
+    const checkUserAndSubscription = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+
+      if (!user) {
+        navigate("/login");
+        setLoading(false);
+        return;
+      }
+      await checkAccess();
+      setLoading(false);
+    };
+
+    checkUserAndSubscription();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         
@@ -49,15 +61,8 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
           return;
         }
 
-        // Redirection automatique basée sur l'email
-        if (currentUser.email === "mouhamed110000@gmail.com") {
-          if (window.location.pathname === "/") {
-            navigate("/admin/codes-promo");
-          }
-        } else {
-          if (window.location.pathname.startsWith("/admin")) {
-            navigate("/");
-          }
+        if (event === 'SIGNED_IN') {
+            await checkAccess();
         }
       }
     );
