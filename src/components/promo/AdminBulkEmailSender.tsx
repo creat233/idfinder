@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +34,10 @@ import {
   birthdayWishesTemplate,
   communityGuideTemplate,
   yearlyRecapTemplate,
+  promoCodeEarningTemplate,
+  fathersDayWishesTemplate,
+  mothersDayWishesTemplate,
+  laborDayWishesTemplate,
 } from "./emailTemplates";
 
 export const AdminBulkEmailSender = () => {
@@ -189,6 +192,22 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={() => useTemplate(yearlyRecapTemplate)}>
               <FileText className="h-4 w-4 mr-2" />
               Bilan Annuel
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(promoCodeEarningTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Revenus Code Promo
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(fathersDayWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Fête des Pères
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(mothersDayWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Fête des Mères
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(laborDayWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Fête du Travail
             </Button>
           </div>
         </CardTitle>

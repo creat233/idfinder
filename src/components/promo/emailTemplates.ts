@@ -1,4 +1,3 @@
-
 export const cardRegistrationAnnouncementTemplate = {
   subject: "🎉 Nouvelle fonctionnalité : Sécurisez vos cartes sur FinderID !",
   message: `<h1>Ne perdez plus jamais vos documents importants !</h1>
@@ -275,8 +274,26 @@ export const referralProgramReminderTemplate = {
 </p>
 <p>N'attendez plus pour commencer à partager !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
+
+export const promoCodeEarningTemplate = {
+  subject: "🚀 Transformez FinderID en source de revenus !",
+  message: `<h1>Commencez à gagner de l'argent avec FinderID !</h1>
+<p>Bonjour,</p>
+<p>Saviez-vous que votre compte FinderID peut devenir une source de revenus ? En achetant votre propre code promo, vous pouvez gagner de l'argent à chaque fois qu'il est utilisé !</p>
+<h2>Comment ça fonctionne ?</h2>
+<ol>
+  <li><strong>Achetez votre code promo</strong> pour une somme modique.</li>
+  <li><strong>Partagez-le</strong> avec vos amis, votre famille, et sur les réseaux sociaux.</li>
+  <li><strong>Gagnez 1000 FCFA</strong> pour chaque personne qui utilise votre code pour récupérer un document.</li>
+</ol>
+<p>C'est une opportunité simple et efficace pour rentabiliser votre compte tout en aidant la communauté.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/promo-codes" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Acheter mon code promo</a>
+</p>
+<p>N'attendez plus pour commencer à gagner !</p>
+<p>L'équipe FinderID</p>
+`;
 
 export const newYearWishesTemplate = {
   subject: "Bonne Année ! ✨ Meilleurs vœux pour la nouvelle année !",
@@ -287,8 +304,7 @@ export const newYearWishesTemplate = {
 <p>Nous sommes ravis de vous compter parmi nous et nous vous remercions pour votre confiance.</p>
 <p>À une nouvelle année de sécurité et de sérénité pour vos documents !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const easterWishesTemplate = {
   subject: "Joyeuses Pâques de la part de l'équipe FinderID ! 🐣",
@@ -298,8 +314,7 @@ export const easterWishesTemplate = {
 <p>Que cette journée soit remplie de joie, de partage et de moments précieux avec vos proches.</p>
 <p>Merci pour votre confiance.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const tabaskiWishesTemplate = {
   subject: "Aid El Kebir Moubarak ! 🐑",
@@ -309,8 +324,7 @@ export const tabaskiWishesTemplate = {
 <p>Que cette fête soit synonyme de bonheur, de partage et de prospérité pour vous et vos familles.</p>
 <p>Dewenati !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const ramadanWishesTemplate = {
   subject: "Ramadan Mubarak ! 🌙",
@@ -320,8 +334,7 @@ export const ramadanWishesTemplate = {
 <p>Que ce mois de jeûne, de prière et de partage vous apporte la paix, la sérénité et de nombreuses bénédictions.</p>
 <p>Ramadan Mubarak !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const documentExpirationReminderTemplate = {
   subject: "Action Requise : Un de vos documents arrive à expiration",
@@ -336,8 +349,7 @@ export const documentExpirationReminderTemplate = {
 </p>
 <p>Merci de garder votre compte à jour.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const successStoryTemplate = {
   subject: "🌟 Histoire de réussite : Comment un membre a retrouvé son document grâce à FinderID !",
@@ -348,8 +360,7 @@ export const successStoryTemplate = {
 <p>C'est la preuve que chaque petit geste compte. En enregistrant vos documents et en signalant ceux que vous trouvez, vous contribuez activement à un réseau d'entraide puissant.</p>
 <p>Merci de faire partie de cette belle aventure.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const birthdayWishesTemplate = {
   subject: "🎂 Joyeux Anniversaire de la part de FinderID !",
@@ -360,8 +371,7 @@ export const birthdayWishesTemplate = {
 <p>Pour marquer le coup, nous sommes heureux de vous offrir <strong>[Petite offre, ex: un mois d'abonnement premium gratuit ou une réduction]</strong>.</p>
 <p>Merci pour votre confiance et votre fidélité.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const communityGuideTemplate = {
   subject: "🤝 Devenez un héros de la communauté FinderID",
@@ -380,8 +390,7 @@ export const communityGuideTemplate = {
 </p>
 <p>Merci pour votre précieuse aide !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const yearlyRecapTemplate = {
   subject: "🎉 Votre bilan de l'année sur FinderID !",
@@ -396,5 +405,33 @@ export const yearlyRecapTemplate = {
 <p>Nous sommes incroyablement fiers de vous avoir à nos côtés. Préparez-vous pour une nouvelle année remplie de nouveautés pour sécuriser encore mieux vos biens.</p>
 <p>Merci pour cette année exceptionnelle !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
+
+export const fathersDayWishesTemplate = {
+  subject: "💙 Bonne Fête des Pères de la part de FinderID !",
+  message: `<h1>Bonne Fête à tous les Papas !</h1>
+<p>Bonjour,</p>
+<p>En cette journée spéciale, toute l'équipe de FinderID souhaite une excellente Fête des Pères à tous les papas de notre communauté.</p>
+<p>Merci d'être des piliers pour vos familles et des héros du quotidien.</p>
+<p>Passez une merveilleuse journée !</p>
+<p>L'équipe FinderID</p>
+`;
+
+export const mothersDayWishesTemplate = {
+  subject: "❤️ Joyeuse Fête des Mères de la part de FinderID !",
+  message: `<h1>Joyeuse Fête à toutes les Mamans !</h1>
+<p>Bonjour,</p>
+<p>En cette belle journée, l'équipe FinderID tient à souhaiter une magnifique Fête des Mères à toutes les mamans extraordinaires de notre communauté.</p>
+<p>Votre amour et votre dévouement sont une source d'inspiration. Nous vous célébrons aujourd'hui.</p>
+<p>Passez une journée aussi spéciale que vous l'êtes.</p>
+<p>L'équipe FinderID</p>
+`;
+
+export const laborDayWishesTemplate = {
+  subject: "Bonne Fête du Travail ! - FinderID",
+  message: `<h1>Bonne Fête du 1er Mai !</h1>
+<p>Bonjour,</p>
+<p>En ce jour de la Fête du Travail, l'équipe de FinderID salue le dévouement et les efforts de tous les travailleurs.</p>
+<p>Votre contribution est essentielle à la construction d'un avenir meilleur. Nous vous souhaitons une excellente journée de repos bien mérité.</p>
+<p>L'équipe FinderID</p>
+`;
