@@ -64,6 +64,17 @@ export const generatePromoEmailHtml = ({ subject, userHtmlContent }: PromoEmailT
           ${userHtmlContent}
         </div>
         <div class="footer">
+          <div style="margin-bottom: 16px;">
+            <a href="https://www.facebook.com/profile.php?id=61573756376174" target="_blank" style="display: inline-block; margin: 0 10px;">
+              <img src="https://cdn.tools.unlayer.com/social/icons/circle-color/facebook.png" alt="Facebook" width="32" height="32" style="text-decoration: none; border: 0;">
+            </a>
+            <a href="https://www.instagram.com/finderid.info?igsh=MXdrNjk4bjQwY3NudA%3D%3D&utm_source=qr" target="_blank" style="display: inline-block; margin: 0 10px;">
+              <img src="https://cdn.tools.unlayer.com/social/icons/circle-color/instagram.png" alt="Instagram" width="32" height="32" style="text-decoration: none; border: 0;">
+            </a>
+            <a href="https://www.tiktok.com/@finderid.info?_t=ZM-8w964za6L5z&_r=1" target="_blank" style="display: inline-block; margin: 0 10px;">
+              <img src="https://cdn.tools.unlayer.com/social/icons/circle-color/tiktok.png" alt="TikTok" width="32" height="32" style="text-decoration: none; border: 0;">
+            </a>
+          </div>
           <p>&copy; ${new Date().getFullYear()} FinderID. Tous droits réservés.</p>
           <p>Vous recevez cet e-mail en tant qu'utilisateur enregistré sur FinderID.</p>
         </div>
