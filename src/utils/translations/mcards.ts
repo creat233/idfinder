@@ -149,5 +149,9 @@ export const mcardsTranslations: Translations = {
   upgradeRequestSentDescription: {
     fr: "Votre statut est maintenant 'En attente de paiement'.",
     en: "Your status is now 'Pending Payment'."
+  },
+  draft: {
+    fr: "Brouillon",
+    en: "Draft"
   }
 };

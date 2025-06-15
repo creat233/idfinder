@@ -1,4 +1,3 @@
-
 import { Translations } from './types';
 
 export const profileTranslations: Translations = {
@@ -107,4 +106,3 @@ export const profileTranslations: Translations = {
     en: "Loading..."
   }
 };
-

@@ -1,4 +1,3 @@
-
 import { MCard } from "@/hooks/useMCards";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,7 +70,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onUpdateSubscription }: MCa
             </div>
             <div className="flex items-center gap-2">
                 <Badge variant={mcard.is_published ? "default" : "secondary"}>
-                    {mcard.is_published ? t('isPublished') : "Draft"}
+                    {mcard.is_published ? t('isPublished') : t('draft')}
                 </Badge>
                 <AlertDialog>
                     <DropdownMenu>
