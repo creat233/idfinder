@@ -202,6 +202,206 @@ export const Suggestions = () => {
     {
       title: "50. IA pour aider à la description",
       description: "Utiliser l'IA pour aider les trouveurs à décrire l'objet trouvé de manière précise."
+    },
+    {
+      title: "51. Marketplace d'objets trouvés non réclamés",
+      description: "Vendre aux enchères les objets non réclamés après un certain délai, avec une partie des bénéfices reversée à des associations."
+    },
+    {
+      title: "52. Notifications intelligentes",
+      description: "Envoyer des rappels pour renouveler des documents qui vont bientôt expirer, en se basant sur les cartes enregistrées."
+    },
+    {
+      title: "53. Partenariats avec les mairies",
+      description: "Intégrer le service avec les bureaux des objets trouvés des mairies pour centraliser les déclarations."
+    },
+    {
+      title: "54. Témoignages vidéo d'utilisateurs",
+      description: "Créer une section sur le site avec des histoires de réussite pour inspirer confiance."
+    },
+    {
+      title: "55. Mode 'Ne pas déranger'",
+      description: "Permettre de suspendre les notifications pour certaines cartes ou pendant des périodes définies."
+    },
+    {
+      title: "56. Statistiques personnelles",
+      description: "Montrer à l'utilisateur combien de fois son profil a été consulté, ou combien de personnes ont scanné ses QR codes."
+    },
+    {
+      title: "57. Intégration avec les agendas (Google Calendar, etc.)",
+      description: "Pour ajouter des rappels de rendez-vous pour le renouvellement de documents."
+    },
+    {
+      title: "58. Service de destruction sécurisée de documents",
+      description: "Proposer un service pour détruire les anciens documents (CNI, passeports) de manière sécurisée."
+    },
+    {
+      title: "59. Extension de navigateur",
+      description: "Une extension qui pourrait aider à remplir automatiquement des formulaires avec les informations des documents (avec l'accord de l'utilisateur)."
+    },
+    {
+      title: "60. Version 'Lite' de l'application",
+      description: "Une version allégée pour les téléphones avec peu d'espace de stockage ou une connexion internet lente."
+    },
+    {
+      title: "61. Filtres de recherche avancés",
+      description: "Pour les administrateurs, permettre de filtrer les cartes par région, type, date de perte, etc."
+    },
+    {
+      title: "62. 'Mur de la générosité'",
+      description: "Un espace pour mettre en avant les trouveurs les plus actifs ou les histoires les plus touchantes."
+    },
+    {
+      title: "63. Codes QR dynamiques",
+      description: "Permettre de changer les informations liées à un QR code sans avoir à le réimprimer."
+    },
+    {
+      title: "64. Support multicanal",
+      description: "En plus de WhatsApp, proposer un chat en direct sur le site web."
+    },
+    {
+      title: "65. Programme éducatif dans les écoles",
+      description: "Sensibiliser les jeunes à l'importance de la protection de leurs documents."
+    },
+    {
+      title: "66. Kits 'Prêt-à-voyager'",
+      description: "Vendre des packs incluant des stickers QR, une pochette de voyage et un guide de sécurité."
+    },
+    {
+      title: "67. Gamification de l'apprentissage",
+      description: "Des quizz ou des défis pour apprendre à mieux utiliser l'application et ses fonctionnalités."
+    },
+    {
+      title: "68. Partenariat avec des influenceurs voyage",
+      description: "Pour promouvoir l'application auprès des voyageurs."
+    },
+    {
+      title: "69. Alertes de sécurité",
+      description: "Informer les utilisateurs sur les nouvelles arnaques ou les risques liés à la perte de documents."
+    },
+    {
+      title: "70. 'Mode panique'",
+      description: "Un bouton qui, en cas de vol de sac, permet de bloquer toutes les cartes enregistrées d'un coup."
+    },
+    {
+      title: "71. Impression de cartes de visite avec QR code FinderID",
+      description: "Pour les professionnels qui veulent protéger leurs contacts."
+    },
+    {
+      title: "72. Synchronisation cloud",
+      description: "Sauvegarder les données de l'utilisateur sur un cloud sécurisé pour une restauration facile."
+    },
+    {
+      title: "73. Reconnaissance optique de caractères (OCR)",
+      description: "Pour scanner un document et pré-remplir les informations dans l'application."
+    },
+    {
+      title: "74. Thèmes personnalisables pour l'application",
+      description: "Laisser les utilisateurs choisir les couleurs ou le mode d'affichage de l'interface."
+    },
+    {
+      title: "75. Service de livraison express des objets trouvés",
+      description: "En partenariat avec un service de coursier."
+    },
+    {
+      title: "76. Abonnement 'Entreprise'",
+      description: "Un tableau de bord pour les entreprises pour gérer les cartes de leurs employés."
+    },
+    {
+      title: "77. Intégration avec les services de police",
+      description: "Faciliter la déclaration de perte/vol en pré-remplissant les formulaires officiels."
+    },
+    {
+      title: "78. Rapports d'impact social",
+      description: "Montrer combien de familles ont été aidées, le temps économisé, etc."
+    },
+    {
+      title: "79. 'Coffre-fort' pour les mots de passe",
+      description: "Un espace sécurisé pour stocker des informations sensibles."
+    },
+    {
+      title: "80. Webinaires sur la cybersécurité",
+      description: "Eduquer les utilisateurs sur les risques en ligne."
+    },
+    {
+      title: "81. Badges de confiance pour les utilisateurs",
+      description: "Vérifier l'identité des utilisateurs pour augmenter la sécurité des échanges."
+    },
+    {
+      title: "82. QR codes sur les bagages",
+      description: "Des étiquettes spéciales pour les valises."
+    },
+    {
+      title: "83. Géolocalisation du dernier scan",
+      description: "Indiquer sur une carte où le QR code a été scanné pour la dernière fois (avec l'accord du trouveur)."
+    },
+    {
+      title: "84. Historique des modifications",
+      description: "Permettre de voir qui a modifié une information et quand."
+    },
+    {
+      title: "85. Export des données utilisateur",
+      description: "Permettre de télécharger toutes ses informations au format PDF ou CSV."
+    },
+    {
+      title: "86. Centre d'aide interactif",
+      description: "Avec des guides vidéo et des FAQ dynamiques."
+    },
+    {
+      title: "87. Notifications de proximité (Bluetooth LE)",
+      description: "Pour retrouver des objets proches (clés, portefeuille)."
+    },
+    {
+      title: "88. 'Mode enfant'",
+      description: "Une interface simplifiée pour que les enfants puissent aussi utiliser le service pour leurs affaires scolaires."
+    },
+    {
+      title: "89. Partenariat avec des espaces de coworking",
+      description: "Pour protéger le matériel informatique des membres."
+    },
+    {
+      title: "90. Sondages et boîte à idées",
+      description: "Pour recueillir les suggestions des utilisateurs directement dans l'app."
+    },
+    {
+      title: "91. Service de traduction automatique dans le chat",
+      description: "Pour faciliter la communication entre trouveurs et propriétaires de différentes nationalités."
+    },
+    {
+      title: "92. 'Checklist de voyage' personnalisable",
+      description: "Aider les utilisateurs à ne rien oublier avant de partir."
+    },
+    {
+      title: "93. Récompenses pour les trouveurs",
+      description: "Permettre au propriétaire d'envoyer une récompense monétaire (pourboire) au trouveur de manière sécurisée."
+    },
+    {
+      title: "94. Analyse prédictive des pertes",
+      description: "Identifier les schémas et alerter les utilisateurs dans les zones à haut risque."
+    },
+    {
+      title: "95. Widget pour l'écran d'accueil du téléphone",
+      description: "Pour un accès rapide à ses cartes ou pour scanner un code."
+    },
+    {
+      title: "96. Intégration avec les assistants vocaux (Google Assistant, Siri)",
+      description: "'Hey Google, où est mon portefeuille ?'"
+    },
+    {
+      title: "97. Assurance pour les frais de remplacement",
+      description: "Couvrir le coût de refabrication des documents."
+    },
+    {
+      title: "98. Certificats de restitution",
+      description: "Générer un document officiel attestant qu'un objet a été rendu."
+    },
+    {
+      title: "99. Communauté d'entraide locale",
+      description: "Mettre en relation des utilisateurs dans une même ville."
+    },
+    {
+      title: "100. Version open source d'une partie du code",
+      description: "Pour encourager la collaboration et la transparence."
     }
   ];
 
