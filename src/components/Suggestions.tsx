@@ -42,6 +42,46 @@ export const Suggestions = () => {
     {
       title: "10. Développer une application mobile",
       description: "Créer une application native (iOS/Android) pour une meilleure expérience, avec notifications push et accès hors ligne."
+    },
+    {
+      title: "11. Système de parrainage",
+      description: "Permettre aux utilisateurs d'inviter des amis et de gagner des récompenses pour chaque ami qui utilise le service."
+    },
+    {
+      title: "12. Blog et contenu éducatif",
+      description: "Créer un blog avec des articles sur la sécurité des biens et des histoires de restitution pour engager la communauté."
+    },
+    {
+      title: "13. Intégration avec les objets connectés (IoT)",
+      description: "Explorer des partenariats pour intégrer FinderID avec des traqueurs Bluetooth ou d'autres gadgets."
+    },
+    {
+      title: "14. Assistance perte de documents à l'étranger",
+      description: "Offrir un service spécial pour les voyageurs avec des informations sur les démarches consulaires."
+    },
+    {
+      title: "15. Alertes de proximité",
+      description: "Dans l'app mobile, alerter un utilisateur s'il s'éloigne trop d'un objet important via un tag."
+    },
+    {
+      title: "16. Fonction 'Coffre-fort numérique'",
+      description: "Permettre aux utilisateurs de stocker des copies numériques cryptées de leurs documents."
+    },
+    {
+      title: "17. Campagnes de sensibilisation",
+      description: "Mener des campagnes dans les lieux publics (aéroports, gares) pour promouvoir le service."
+    },
+    {
+      title: "18. Service de messagerie anonyme et sécurisé",
+      description: "Améliorer la messagerie entre trouveur et propriétaire pour garantir l'anonymat."
+    },
+    {
+      title: "19. Personnalisation des stickers QR Code",
+      description: "Laisser les utilisateurs choisir le design ou ajouter un message personnalisé sur leurs stickers."
+    },
+    {
+      title: "20. Programme de fidélité",
+      description: "Récompenser les utilisateurs fidèles avec des avantages exclusifs, des réductions et un statut spécial."
     }
   ];
 
