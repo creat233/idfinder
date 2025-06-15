@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
@@ -10,6 +9,7 @@ import { ConnectionStatus } from "@/components/ConnectionStatus";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Shield, Activity } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 
 const AdminPromoCodes = () => {
   return (
@@ -60,6 +60,9 @@ const AdminPromoCodes = () => {
               </div>
             </CardContent>
           </Card>
+          
+          {/* Module : gestion pubs entreprises */}
+          <AdminAdsManager />
           
           {/* Sections principales */}
           <AdminPendingCodes />
