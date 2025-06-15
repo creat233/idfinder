@@ -39,6 +39,11 @@ const countries = [
   { code: "TN", name: "Tunisie", flag: "🇹🇳" },
   { code: "LY", name: "Libye", flag: "🇱🇾" },
   { code: "EG", name: "Égypte", flag: "🇪🇬" },
+
+  // Pays d'Afrique Centrale
+  { code: "CM", name: "Cameroun", flag: "🇨🇲" },
+  { code: "GA", name: "Gabon", flag: "🇬🇦" },
+  { code: "CD", name: "RD Congo", flag: "🇨🇩" },
   
   // Pays européens (migration)
   { code: "FR", name: "France", flag: "🇫🇷" },

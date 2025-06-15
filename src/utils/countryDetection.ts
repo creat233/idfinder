@@ -431,6 +431,39 @@ const countryInfo: Record<string, {
       fire: '180',
       medical: '123'
     }
+  },
+  'CM': {
+    name: { fr: 'Cameroun', en: 'Cameroon' },
+    flag: '🇨🇲',
+    currency: { fr: 'Franc CFA (XAF)', en: 'CFA Franc (XAF)' },
+    timezone: 'GMT+1',
+    emergencyNumbers: {
+      police: '117',
+      fire: '118',
+      medical: '119'
+    }
+  },
+  'GA': {
+    name: { fr: 'Gabon', en: 'Gabon' },
+    flag: '🇬🇦',
+    currency: { fr: 'Franc CFA (XAF)', en: 'CFA Franc (XAF)' },
+    timezone: 'GMT+1',
+    emergencyNumbers: {
+      police: '1730',
+      fire: '18',
+      medical: '1300'
+    }
+  },
+  'CD': {
+    name: { fr: 'RD Congo', en: 'DR Congo' },
+    flag: '🇨🇩',
+    currency: { fr: 'Franc congolais (CDF)', en: 'Congolese Franc (CDF)' },
+    timezone: 'GMT+1',
+    emergencyNumbers: {
+      police: '112',
+      fire: '118',
+      medical: '112'
+    }
   }
 };
 
