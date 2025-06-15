@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -64,14 +63,7 @@ const MyCards = () => {
       const numeroNorm = numeroCarte.trim();
       if (!numeroNorm) return;
       if (cards.some(card => card.card_number === numeroNorm)) {
-        toast({
-          title: t("alreadyInMyCards") || "Déjà dans vos cartes",
-          description:
-            t("alreadyInMyCardsDescription") ||
-            "Ce numéro figure déjà dans la liste de vos cartes.",
-          variant: "default",
-        });
-        // Nettoyer l’URL
+        // Le toast a été retiré pour éviter la redondance avec la nouvelle notification.
         searchParams.delete("ajouter");
         setSearchParams(searchParams, { replace: true });
         return;
@@ -81,13 +73,6 @@ const MyCards = () => {
         await addCard({
           card_number: numeroNorm,
           document_type: "id", // par défaut
-        });
-        toast({
-          title: t("cardAdded") || "Carte ajoutée",
-          description:
-            t("cardAddedDescription") ||
-            "Le numéro a été ajouté à vos cartes surveillées.",
-          variant: "default",
         });
         refetchCards?.();
         // 🔥 Afficher la pub modal après l’ajout

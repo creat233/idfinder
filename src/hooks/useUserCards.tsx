@@ -54,7 +54,7 @@ export const useUserCards = () => {
 
       if (error) throw error;
       
-      showSuccess("Carte ajoutée", "Votre carte a été ajoutée avec succès");
+      // La notification toast a été retirée car une notification persistante est maintenant créée.
       fetchCards();
     } catch (error: any) {
       console.error("Error adding card:", error);
