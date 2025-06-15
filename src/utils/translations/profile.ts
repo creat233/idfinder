@@ -129,5 +129,17 @@ export const profileTranslations: Translations = {
   passwordTooShort: {
     fr: "Le mot de passe doit contenir au moins 6 caractères.",
     en: "Password must be at least 6 characters long."
+  },
+  appTheme: {
+    fr: "Thème de l'application",
+    en: "Application Theme"
+  },
+  lightMode: {
+    fr: "Clair",
+    en: "Light"
+  },
+  darkMode: {
+    fr: "Sombre",
+    en: "Dark"
   }
 };

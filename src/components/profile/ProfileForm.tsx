@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSelect } from "./LanguageSelect";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "@/hooks/useTranslation";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 interface ProfileFormProps {
   firstName: string;
@@ -71,6 +72,8 @@ export const ProfileForm = ({
         currentLanguage={currentLanguage}
         onLanguageChange={changeLanguage}
       />
+
+      <ThemeSwitcher />
 
       <div className="flex justify-end space-x-4 mt-6">
         {isEditing ? (
