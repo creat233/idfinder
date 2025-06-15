@@ -26,7 +26,7 @@ export const ProfileForm = ({
   setIsEditing,
   updateProfile
 }: ProfileFormProps) => {
-  const { currentLanguage, changeLanguage } = useTranslation();
+  const { t, currentLanguage, changeLanguage } = useTranslation();
   const form = useForm({
     defaultValues: {
       language: currentLanguage
@@ -36,7 +36,7 @@ export const ProfileForm = ({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-1">Prénom</label>
+        <label className="block text-sm font-medium mb-1">{t('firstName')}</label>
         <Input
           type="text"
           value={firstName}
@@ -46,7 +46,7 @@ export const ProfileForm = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Nom</label>
+        <label className="block text-sm font-medium mb-1">{t('lastName')}</label>
         <Input
           type="text"
           value={lastName}
@@ -56,7 +56,7 @@ export const ProfileForm = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Téléphone</label>
+        <label className="block text-sm font-medium mb-1">{t('phone')}</label>
         <Input
           type="tel"
           value={phone}
@@ -80,13 +80,13 @@ export const ProfileForm = ({
               onClick={() => setIsEditing(false)}
               disabled={loading}
             >
-              Annuler
+              {t('cancel')}
             </Button>
             <Button
               onClick={updateProfile}
               disabled={loading}
             >
-              Enregistrer
+              {t('save')}
             </Button>
           </>
         ) : (
@@ -94,7 +94,7 @@ export const ProfileForm = ({
             onClick={() => setIsEditing(true)}
             disabled={loading}
           >
-            Modifier le téléphone
+            {t('editPhone')}
           </Button>
         )}
       </div>

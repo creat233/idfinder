@@ -34,9 +34,25 @@ export const profileTranslations: Translations = {
     fr: "Annuler",
     en: "Cancel"
   },
+  editPhone: {
+    fr: "Modifier le téléphone",
+    en: "Edit phone"
+  },
+  appLanguage: {
+    fr: "Langue de l'application",
+    en: "Application language"
+  },
+  selectLanguage: {
+    fr: "Sélectionnez une langue",
+    en: "Select a language"
+  },
   contactSupport: {
     fr: "Contacter le support",
     en: "Contact Support"
+  },
+  supportAndFaq: {
+    fr: "Assistance et FAQ",
+    en: "Support & FAQ"
   },
   deleteAccount: {
     fr: "Supprimer le compte",

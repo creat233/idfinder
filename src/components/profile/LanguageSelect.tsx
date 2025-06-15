@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface LanguageSelectProps {
   control: Control<any>;
@@ -22,6 +23,7 @@ const languages = [
 ];
 
 export function LanguageSelect({ control, name, currentLanguage, onLanguageChange }: LanguageSelectProps) {
+  const { t } = useTranslation();
   const {
     field,
     fieldState: { error },
@@ -38,7 +40,7 @@ export function LanguageSelect({ control, name, currentLanguage, onLanguageChang
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={name}>Langue de l'application</Label>
+      <Label htmlFor={name}>{t('appLanguage')}</Label>
       <Select
         value={field.value}
         onValueChange={handleChange}
@@ -48,7 +50,7 @@ export function LanguageSelect({ control, name, currentLanguage, onLanguageChang
           id={name}
           className={`w-full bg-white border ${error ? "border-destructive" : "border-input hover:border-primary"} rounded-lg px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
         >
-          <SelectValue placeholder="Sélectionnez une langue" />
+          <SelectValue placeholder={t('selectLanguage')} />
         </SelectTrigger>
         <SelectContent
           className="bg-white border border-gray-200 rounded-lg shadow-lg"
