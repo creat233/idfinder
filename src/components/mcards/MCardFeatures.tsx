@@ -35,9 +35,9 @@ export const MCardFeatures = () => {
         <h2 className="text-3xl font-bold text-center mb-12">{t('mCardFeaturesTitle')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300">
+            <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300 group">
               <CardHeader>
-                <div className="mx-auto bg-primary/10 rounded-full p-3 w-fit">
+                <div className="mx-auto bg-primary/10 rounded-full p-3 w-fit transition-transform group-hover:scale-110 duration-300">
                   {feature.icon}
                 </div>
               </CardHeader>

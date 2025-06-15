@@ -241,5 +241,9 @@ export const mcardsTranslations: Translations = {
   selectPlan: {
     fr: "Choisir ce plan",
     en: "Select this plan"
+  },
+  selectPlanTooltip: {
+    fr: "Vous devez créer une mCard avant de pouvoir sélectionner un plan.",
+    en: "You need to create an mCard before you can select a plan."
   }
 };

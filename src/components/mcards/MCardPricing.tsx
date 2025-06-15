@@ -5,6 +5,7 @@ import { getPriceInfoForCountry } from "@/utils/pricing";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const MCardPricing = () => {
   const { t } = useTranslation();
@@ -78,9 +79,18 @@ export const MCardPricing = () => {
                   </ul>
                 </div>
                 
-                <Button size="lg" className="w-full mt-6" disabled variant={plan.isPopular ? 'default' : 'outline'}>
-                  {t('selectPlan')}
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="w-full mt-6">
+                      <Button size="lg" className="w-full" disabled variant={plan.isPopular ? 'default' : 'outline'}>
+                        {t('selectPlan')}
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t('selectPlanTooltip')}</p>
+                  </TooltipContent>
+                </Tooltip>
                  <p className="text-xs text-muted-foreground mt-2 text-center">Créez une carte pour commencer. Le paiement se fait après.</p>
               </CardContent>
             </Card>
