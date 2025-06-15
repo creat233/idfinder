@@ -158,8 +158,7 @@ const monthlyRecapTemplate = {
 </p>
 <p>Restez à l'écoute pour d'autres améliorations !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 const specialPromotionTemplate = {
   subject: "🎉 Offre Spéciale : Économisez sur les frais de récupération !",
