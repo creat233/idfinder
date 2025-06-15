@@ -1,5 +1,6 @@
 
 import { useState, useMemo } from "react";
+import { useTranslation } from "./useTranslation";
 
 export type EmergencyNumberType = {
   service: string;
@@ -8,73 +9,32 @@ export type EmergencyNumberType = {
   category: "police" | "medical" | "fire" | "other";
 };
 
-const emergencyNumbers: EmergencyNumberType[] = [
-  {
-    service: "Police Nationale",
-    number: "17",
-    category: "police",
-    description: "Urgences police et sécurité"
-  },
-  {
-    service: "Pompiers",
-    number: "18",
-    category: "fire",
-    description: "Incendies, accidents et secours"
-  },
-  {
-    service: "SAMU",
-    number: "15",
-    category: "medical",
-    description: "Urgences médicales"
-  },
-  {
-    service: "Numéro d'urgence européen",
-    number: "112",
-    category: "other",
-    description: "Toutes urgences (valable dans toute l'Union Européenne)"
-  },
-  {
-    service: "Centre Anti-Poison",
-    number: "818 00 15 15",
-    category: "medical",
-    description: "Intoxications et expositions à des substances toxiques"
-  },
-  {
-    service: "Gendarmerie Nationale",
-    number: "800 00 20 20",
-    category: "police",
-    description: "Sécurité en zones rurales et périurbaines"
-  },
-  {
-    service: "Clinique Medic'Kane",
-    number: "33 867 46 77",
-    category: "medical",
-    description: "Clinique médicale privée avec services d'urgence"
-  },
-  {
-    service: "Commissariat Central Dakar",
-    number: "33 823 25 29",
-    category: "police",
-    description: "Commissariat central de Dakar"
-  },
-  {
-    service: "Hôpital Principal de Dakar",
-    number: "33 839 50 50",
-    category: "medical",
-    description: "Hôpital principal de Dakar - Urgences"
-  },
-  {
-    service: "Croix-Rouge Sénégalaise",
-    number: "33 823 39 92",
-    category: "other",
-    description: "Organisation humanitaire d'urgence"
-  }
+const emergencyNumberKeys = [
+  { serviceKey: "emergency_police_nationale_service", number: "17", category: "police" as const, descriptionKey: "emergency_police_nationale_desc" },
+  { serviceKey: "emergency_pompiers_service", number: "18", category: "fire" as const, descriptionKey: "emergency_pompiers_desc" },
+  { serviceKey: "emergency_samu_service", number: "15", category: "medical" as const, descriptionKey: "emergency_samu_desc" },
+  { serviceKey: "emergency_european_service", number: "112", category: "other" as const, descriptionKey: "emergency_european_desc" },
+  { serviceKey: "emergency_anti_poison_service", number: "818 00 15 15", category: "medical" as const, descriptionKey: "emergency_anti_poison_desc" },
+  { serviceKey: "emergency_gendarmerie_service", number: "800 00 20 20", category: "police" as const, descriptionKey: "emergency_gendarmerie_desc" },
+  { serviceKey: "emergency_medic_kane_service", number: "33 867 46 77", category: "medical" as const, descriptionKey: "emergency_medic_kane_desc" },
+  { serviceKey: "emergency_commissariat_dakar_service", number: "33 823 25 29", category: "police" as const, descriptionKey: "emergency_commissariat_dakar_desc" },
+  { serviceKey: "emergency_hopital_dakar_service", number: "33 839 50 50", category: "medical" as const, descriptionKey: "emergency_hopital_dakar_desc" },
+  { serviceKey: "emergency_croix_rouge_service", number: "33 823 39 92", category: "other" as const, descriptionKey: "emergency_croix_rouge_desc" }
 ];
 
 export const useEmergencyNumbers = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showMap, setShowMap] = useState<boolean>(false);
+
+  const emergencyNumbers: EmergencyNumberType[] = useMemo(() => 
+    emergencyNumberKeys.map(item => ({
+      service: t(item.serviceKey),
+      number: item.number,
+      description: t(item.descriptionKey),
+      category: item.category,
+    })), [t]);
 
   const filteredNumbers = useMemo(() => {
     let filtered = emergencyNumbers;
@@ -96,7 +56,7 @@ export const useEmergencyNumbers = () => {
     }
 
     return filtered;
-  }, [searchTerm, activeCategory]);
+  }, [searchTerm, activeCategory, emergencyNumbers]);
 
   return {
     searchTerm,

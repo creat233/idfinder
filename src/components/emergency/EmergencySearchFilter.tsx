@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Search, X } from "lucide-react";
 import { MapCategoryBadges } from "@/components/map/MapCategoryBadges";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface EmergencySearchFilterProps {
   searchTerm: string;
@@ -21,6 +22,7 @@ export const EmergencySearchFilter = ({
   showMap,
   setShowMap
 }: EmergencySearchFilterProps) => {
+  const { t } = useTranslation();
   const handleCategoryClick = (category: string) => {
     setActiveCategory(activeCategory === category ? null : category);
   };
@@ -36,7 +38,7 @@ export const EmergencySearchFilter = ({
         <Input
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Rechercher un numéro d'urgence..."
+          placeholder={t('search_emergency_number_placeholder')}
           className="pl-10 pr-10"
         />
         {searchTerm && (
@@ -62,7 +64,7 @@ export const EmergencySearchFilter = ({
           onClick={handleMapToggle}
         >
           <MapPin className="h-4 w-4" />
-          {showMap ? "Masquer la carte" : "Afficher la carte"}
+          {showMap ? t('hide_map') : t('show_map')}
         </Button>
       </div>
     </div>

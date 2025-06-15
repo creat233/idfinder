@@ -3,6 +3,7 @@ import { PhoneCall, PhoneForwarded } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface EmergencyNumberType {
   service: string;
@@ -17,6 +18,7 @@ interface EmergencyNumberCardProps {
 }
 
 export const EmergencyNumberCard = ({ item, index }: EmergencyNumberCardProps) => {
+  const { t } = useTranslation();
   const handleCall = (phoneNumber: string) => {
     window.location.href = `tel:${phoneNumber}`;
   };
@@ -69,7 +71,7 @@ export const EmergencyNumberCard = ({ item, index }: EmergencyNumberCardProps) =
               }
             >
               <PhoneForwarded size={16} />
-              Appeler
+              {t('call')}
             </Button>
           </div>
         </CardContent>

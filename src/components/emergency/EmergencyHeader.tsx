@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const EmergencyHeader = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -16,7 +18,7 @@ export const EmergencyHeader = () => {
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour
+          {t('back')}
         </Button>
       </div>
 
@@ -26,9 +28,9 @@ export const EmergencyHeader = () => {
         transition={{ duration: 0.5 }}
         className="text-center mb-12"
       >
-        <h1 className="text-4xl font-bold mb-4">Numéros d'Urgence au Sénégal</h1>
+        <h1 className="text-4xl font-bold mb-4">{t('emergency_page_title')}</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          En cas d'urgence, contactez immédiatement les services appropriés. Ces numéros sont disponibles 24h/24 et 7j/7.
+          {t('emergency_page_subtitle')}
         </p>
       </motion.div>
     </>

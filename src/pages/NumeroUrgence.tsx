@@ -12,6 +12,7 @@ import { EmergencyTips } from "@/components/emergency/EmergencyTips";
 import { SenegaleseDocuments } from "@/components/emergency/SenegaleseDocuments";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const NumeroUrgence = () => {
   const { 
@@ -25,6 +26,7 @@ const NumeroUrgence = () => {
   } = useEmergencyNumbers();
   
   const [showDocuments, setShowDocuments] = useState(false);
+  const { t } = useTranslation();
 
   const handleDocumentsToggle = () => {
     setShowDocuments(!showDocuments);
@@ -70,12 +72,12 @@ const NumeroUrgence = () => {
               >
                 {showDocuments ? (
                   <>
-                    Masquer les informations sur les documents
+                    {t('hide_documents_info')}
                     <ChevronUp className="h-5 w-5" />
                   </>
                 ) : (
                   <>
-                    Afficher les informations sur les documents d'identité
+                    {t('show_documents_info')}
                     <ChevronDown className="h-5 w-5" />
                   </>
                 )}

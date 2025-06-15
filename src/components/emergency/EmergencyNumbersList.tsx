@@ -1,12 +1,14 @@
 
 import { motion } from "framer-motion";
 import { EmergencyNumberCard, EmergencyNumberType } from "./EmergencyNumberCard";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface EmergencyNumbersListProps {
   filteredNumbers: EmergencyNumberType[];
 }
 
 export const EmergencyNumbersList = ({ filteredNumbers }: EmergencyNumbersListProps) => {
+  const { t } = useTranslation();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -30,7 +32,7 @@ export const EmergencyNumbersList = ({ filteredNumbers }: EmergencyNumbersListPr
         ))
       ) : (
         <div className="col-span-full text-center py-12">
-          <p className="text-gray-500 text-lg">Aucun résultat trouvé. Veuillez modifier votre recherche.</p>
+          <p className="text-gray-500 text-lg">{t('no_results_found')}</p>
         </div>
       )}
     </motion.div>
