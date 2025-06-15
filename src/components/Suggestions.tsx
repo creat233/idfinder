@@ -82,6 +82,50 @@ export const Suggestions = () => {
     {
       title: "20. Programme de fidélité",
       description: "Récompenser les utilisateurs fidèles avec des avantages exclusifs, des réductions et un statut spécial."
+    },
+    {
+      title: "21. API pour les développeurs",
+      description: "Ouvrir une API pour permettre à des services tiers d'intégrer la recherche d'objets ou de documents."
+    },
+    {
+      title: "22. Assurance perte/vol",
+      description: "Proposer une micro-assurance en partenariat pour couvrir les frais de remplacement des documents en cas de non-récupération."
+    },
+    {
+      title: "23. Tableau de bord pour les entreprises partenaires",
+      description: "Fournir un tableau de bord aux entreprises pour suivre l'utilisation des QR codes par leurs employés."
+    },
+    {
+      title: "24. Version multilingue étendue",
+      description: "Ajouter plus de langues locales (wolof, pulaar, etc.) et internationales pour une meilleure accessibilité."
+    },
+    {
+      title: "25. Dons à des œuvres caritatives",
+      description: "Permettre aux utilisateurs de faire un don à une association lors de la récupération d'un objet."
+    },
+    {
+      title: "26. Kiosques libre-service",
+      description: "Installer des bornes dans des lieux publics (mairies, centres commerciaux) pour déclarer ou rechercher un document."
+    },
+    {
+      title: "27. Rapports de statistiques publiques",
+      description: "Publier des rapports anonymisés sur les types de documents les plus perdus et les zones à risque pour sensibiliser."
+    },
+    {
+      title: "28. Fonction 'Voyage'",
+      description: "Permettre d'activer un mode 'voyage' qui sauvegarde temporairement des informations utiles (numéro de vol, réservation d'hôtel)."
+    },
+    {
+      title: "29. Alertes SMS",
+      description: "En plus des notifications push, proposer des alertes par SMS pour les utilisateurs sans smartphone ou sans connexion internet."
+    },
+    {
+      title: "30. Validation d'identité renforcée",
+      description: "Mettre en place une vérification d'identité plus poussée pour le propriétaire avant de dévoiler les informations de récupération."
+    },
+    {
+      title: "31. Guide des bonnes pratiques",
+      description: "Créer un guide interactif dans l'application pour apprendre aux utilisateurs comment mieux protéger leurs affaires au quotidien."
     }
   ];
 
