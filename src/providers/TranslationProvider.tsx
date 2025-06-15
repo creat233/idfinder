@@ -1,6 +1,8 @@
+
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { getTranslation, Country, Language, getAvailableLanguages } from "@/utils/translations";
 import { supabase } from "@/integrations/supabase/client";
+import { User } from '@supabase/supabase-js';
 
 interface TranslationContextType {
   t: (key: string, replacements?: Record<string, string | number>) => string;
@@ -8,6 +10,7 @@ interface TranslationContextType {
   currentLanguage: Language;
   setCurrentCountry: (country: string) => void;
   changeLanguage: (language: string) => void;
+  user: User | null;
 }
 
 export const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
@@ -17,33 +20,46 @@ const availableLanguages = getAvailableLanguages().map(l => l.code);
 export const TranslationProvider = ({ children }: { children: ReactNode }) => {
   const [currentCountry, setCurrentCountry] = useState<Country>("SN");
   const [currentLanguage, setCurrentLanguage] = useState<Language>("fr");
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const loadUserPreferences = async () => {
-      try {
-        const savedLanguage = localStorage.getItem("app_language") as Language;
-        if (savedLanguage && availableLanguages.includes(savedLanguage)) {
-          setCurrentLanguage(savedLanguage);
-        }
+    // Language preference
+    const savedLanguage = localStorage.getItem("app_language") as Language;
+    if (savedLanguage && availableLanguages.includes(savedLanguage)) {
+      setCurrentLanguage(savedLanguage);
+    }
 
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('country')
-            .eq('id', user.id)
-            .single();
-          
-          if (profile?.country) {
-            setCurrentCountry(profile.country as Country);
-          }
+    // Auth state and user profile
+    const fetchUserAndProfile = async (user: User | null) => {
+      setUser(user);
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('country')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile?.country) {
+          setCurrentCountry(profile.country as Country);
         }
-      } catch (error) {
-        console.error('Error loading user preferences:', error);
+      } else {
+        setCurrentCountry('SN');
       }
     };
+    
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      fetchUserAndProfile(session?.user ?? null);
+    });
 
-    loadUserPreferences();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        fetchUserAndProfile(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
   
   const changeLanguage = (language: string) => {
@@ -70,6 +86,7 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
     currentLanguage,
     setCurrentCountry: (country: string) => setCurrentCountry(country as Country),
     changeLanguage,
+    user,
   };
 
   return (

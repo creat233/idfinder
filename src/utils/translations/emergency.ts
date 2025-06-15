@@ -2,7 +2,8 @@
 import { Translations } from './types';
 
 export const emergencyTranslations: Translations = {
-  emergency_page_title: { fr: "Numéros d'Urgence au Sénégal", en: "Emergency Numbers in Senegal" },
+  emergency_page_title_generic: { fr: "Numéros d'Urgence", en: "Emergency Numbers" },
+  emergency_page_title_with_country: { fr: "Numéros d'Urgence - {country}", en: "Emergency Numbers - {country}" },
   emergency_page_subtitle: { fr: "En cas d'urgence, contactez immédiatement les services appropriés. Ces numéros sont disponibles 24h/24 et 7j/7.", en: "In case of emergency, contact the appropriate services immediately. These numbers are available 24/7." },
   
   hide_documents_info: { fr: "Masquer les informations sur les documents", en: "Hide document information" },
