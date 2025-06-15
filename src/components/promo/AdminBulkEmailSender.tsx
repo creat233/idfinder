@@ -53,6 +53,57 @@ const promoCodeAnnouncementTemplate = {
 `
 };
 
+const welcomeEmailTemplate = {
+  subject: "Bienvenue sur FinderID ! 🎉 Prêt à sécuriser vos documents ?",
+  message: `<h1>Bienvenue dans la communauté FinderID !</h1>
+<p>Bonjour,</p>
+<p>Merci de nous avoir rejoints ! Vous avez fait le premier pas pour ne plus jamais perdre vos documents importants.</p>
+<h2>Que faire maintenant ?</h2>
+<p>La première étape est simple et rapide :</p>
+<ol>
+  <li>Rendez-vous dans la section <strong>"Mes cartes"</strong>.</li>
+  <li>Ajoutez votre premier document (carte d'identité, passeport, etc.).</li>
+</ol>
+<p>Une fois vos documents enregistrés, vous serez immédiatement notifié si quelqu'un les retrouve.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/my-cards" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Ajouter mon premier document</a>
+</p>
+<p>Si vous avez des questions, n'hésitez pas à consulter notre <a href="https://finder-id-4182.lovable.app/support">page d'aide</a>.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+const inactivityReminderTemplate = {
+  subject: "🤔 On ne vous voit plus sur FinderID...",
+  message: `<h1>Ça fait un bail !</h1>
+<p>Bonjour,</p>
+<p>Nous avons remarqué que vous n'êtes pas venu sur FinderID depuis un moment. Vos documents sont-ils toujours à jour ?</p>
+<p>Assurer la sécurité de vos biens est notre priorité. N'oubliez pas que vous pouvez :</p>
+<ul>
+  <li><strong>Ajouter de nouveaux documents</strong> à tout moment.</li>
+  <li><strong>Générer un code promo</strong> pour gagner de l'argent en aidant les autres.</li>
+</ul>
+<p>Revenez nous voir pour vous assurer que tout est en ordre !</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/dashboard" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Accéder à mon tableau de bord</a>
+</p>
+<p>À très bientôt !</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+const feedbackRequestTemplate = {
+  subject: "Votre avis compte ! Aidez-nous à améliorer FinderID.",
+  message: `<h1>On a besoin de vous !</h1>
+<p>Bonjour,</p>
+<p>Chez FinderID, nous travaillons constamment à améliorer notre service pour vous offrir la meilleure expérience possible. Et pour cela, votre avis est essentiel !</p>
+<p>Qu'est-ce que vous aimez sur FinderID ? Y a-t-il quelque chose que nous pourrions améliorer ? Une fonctionnalité que vous aimeriez voir ?</p>
+<p>Prenez quelques instants pour nous faire part de vos suggestions en répondant simplement à cet e-mail. Chaque retour est lu et pris en compte.</p>
+<p>Merci de nous aider à construire un meilleur FinderID, ensemble.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
 export const AdminBulkEmailSender = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -99,6 +150,24 @@ export const AdminBulkEmailSender = () => {
     showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
   };
 
+  const useWelcomeEmailTemplate = () => {
+    setSubject(welcomeEmailTemplate.subject);
+    setMessage(welcomeEmailTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
+  const useInactivityReminderTemplate = () => {
+    setSubject(inactivityReminderTemplate.subject);
+    setMessage(inactivityReminderTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
+  const useFeedbackRequestTemplate = () => {
+    setSubject(feedbackRequestTemplate.subject);
+    setMessage(feedbackRequestTemplate.message);
+    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -115,6 +184,18 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={usePromoCodeTemplate}>
               <FileText className="h-4 w-4 mr-2" />
               Annonce Codes Promo
+            </Button>
+            <Button variant="outline" size="sm" onClick={useWelcomeEmailTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              E-mail de Bienvenue
+            </Button>
+            <Button variant="outline" size="sm" onClick={useInactivityReminderTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Rappel d'Inactivité
+            </Button>
+            <Button variant="outline" size="sm" onClick={useFeedbackRequestTemplate}>
+              <FileText className="h-4 w-4 mr-2" />
+              Demande de Feedback
             </Button>
           </div>
         </CardTitle>
