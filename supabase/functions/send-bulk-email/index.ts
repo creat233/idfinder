@@ -96,6 +96,21 @@ serve(async (req: Request) => {
       }
     }
 
+    try {
+      const { error: notificationError } = await supabaseAdmin.from('notifications').insert({
+        user_id: user.id,
+        type: 'admin_bulk_email_sent',
+        title: "Envoi d'e-mails en masse terminé",
+        message: `L'envoi de l'e-mail "${subject}" à ${recipientEmails.length} utilisateurs est maintenant terminé.`
+      });
+    
+      if (notificationError) {
+        console.error("Error creating completion notification:", notificationError);
+      }
+    } catch(e) {
+      console.error("Exception while creating completion notification:", e);
+    }
+
     return new Response(JSON.stringify({ success: true, message: `Email sending process initiated for ${recipientEmails.length} users.` }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
