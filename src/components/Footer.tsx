@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
@@ -14,7 +13,7 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img 
-                src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
+                src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
                 alt="FinderID Logo" 
                 className="w-10 h-10"
               />
@@ -113,7 +112,7 @@ export const Footer = () => {
         
         <div className="mt-12 pt-8 border-t border-primary-foreground/20 text-center text-primary-foreground/60 flex items-center justify-center gap-2">
           <img 
-            src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
+            src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
             alt="FinderID Logo" 
             className="w-5 h-5"
           />

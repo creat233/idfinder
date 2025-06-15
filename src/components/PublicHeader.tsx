@@ -61,7 +61,7 @@ export const PublicHeader = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
             <img 
-              src="/lovable-uploads/bc867b36-0b80-4eaf-b5de-c4299829a42e.png" 
+              src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
               alt="FinderID Logo" 
               className="w-8 h-8"
             />

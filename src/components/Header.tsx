@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, Settings, LogOut } from "lucide-react";
@@ -72,7 +71,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/dd162e07-382f-4111-a227-a319a73cc433.png" 
+              src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
               alt="FinderID Logo" 
               className="h-8 w-8"
             />
