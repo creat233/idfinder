@@ -1,31 +1,41 @@
 
 import { motion } from "framer-motion";
 import { Search, Bell, Handshake, Award } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
-const features = [
-  {
-    icon: Search,
-    title: "1. Signalez la trouvaille",
-    description: "Vous avez trouvé une carte ? Entrez son numéro sur notre plateforme en quelques secondes. C'est simple et rapide."
-  },
-  {
-    icon: Bell,
-    title: "2. Le propriétaire est alerté",
-    description: "Nous notifions instantanément le propriétaire par WhatsApp et e-mail, lui donnant l'espoir de retrouver son bien."
-  },
-  {
-    icon: Handshake,
-    title: "3. Coordonnez la restitution",
-    description: "Notre plateforme sécurisée vous met en contact pour convenir d'un rendez-vous pour la restitution."
-  },
-  {
-    icon: Award,
-    title: "4. Recevez votre récompense",
-    description: "Une fois la carte rendue, recevez 2'000 Fr. pour votre bonne action. Votre honnêteté est précieuse."
-  }
-];
+const featureIcons = {
+  search: Search,
+  bell: Bell,
+  handshake: Handshake,
+  award: Award,
+};
 
 export const PublicFeatures = () => {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: featureIcons.search,
+      title: t("features_signal_title"),
+      description: t("features_signal_desc")
+    },
+    {
+      icon: featureIcons.bell,
+      title: t("features_alert_title"),
+      description: t("features_alert_desc")
+    },
+    {
+      icon: featureIcons.handshake,
+      title: t("features_coordinate_title"),
+      description: t("features_coordinate_desc")
+    },
+    {
+      icon: featureIcons.award,
+      title: t("features_reward_title"),
+      description: t("features_reward_desc")
+    }
+  ];
+
   return (
     <section id="fonctionnalites" className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -37,10 +47,10 @@ export const PublicFeatures = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Un processus simple, rapide et gratifiant
+            {t("features_main_title")}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Nous avons conçu une expérience en quatre étapes pour que la restitution de documents perdus soit facile pour tout le monde. Voici comment ça marche.
+            {t("features_main_desc")}
           </p>
         </motion.div>
 

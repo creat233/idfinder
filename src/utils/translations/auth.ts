@@ -58,6 +58,14 @@ export const authTranslations: Translations = {
     fr: "Connexion réussie",
     en: "Login successful"
   },
+  logoutSuccess: {
+    fr: "Déconnexion réussie",
+    en: "Logout successful"
+  },
+  loggedOutSuccessfully: {
+    fr: "Vous avez été déconnecté avec succès",
+    en: "You have been successfully logged out"
+  },
   error: {
     fr: "Erreur",
     en: "Error"

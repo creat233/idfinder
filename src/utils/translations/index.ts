@@ -7,6 +7,7 @@ import { cardsTranslations } from './cards';
 import { notificationsTranslations } from './notifications';
 import { reportingTranslations } from './reporting';
 import { promoTranslations } from './promo';
+import { featuresTranslations } from './features';
 import { getAvailableLanguages } from './languages';
 
 // Combine all translations
@@ -17,7 +18,8 @@ export const translations: Record<string, { fr: string; en: string }> = {
   ...cardsTranslations,
   ...notificationsTranslations,
   ...reportingTranslations,
-  ...promoTranslations
+  ...promoTranslations,
+  ...featuresTranslations
 };
 
 export const getTranslation = (country: Country, language: Language, key: string): string => {

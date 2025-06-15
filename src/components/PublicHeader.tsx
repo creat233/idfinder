@@ -9,12 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { PublicHeaderDesktopNav } from "./PublicHeaderDesktopNav";
 import { PublicHeaderMobileNav } from "./PublicHeaderMobileNav";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check current user session
@@ -46,8 +48,8 @@ export const PublicHeader = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast({
-      title: "Déconnexion réussie",
-      description: "Vous avez été déconnecté avec succès",
+      title: t("logoutSuccess"),
+      description: t("loggedOutSuccessfully"),
     });
     navigate("/");
   };
