@@ -1,8 +1,11 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DemoPricing = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -14,7 +17,7 @@ export const DemoPricing = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Comment ça fonctionne financièrement ?
+            {t("howItWorksFinancially")}
           </h2>
         </motion.div>
 
@@ -24,12 +27,12 @@ export const DemoPricing = () => {
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
                 💰
               </div>
-              <CardTitle className="text-2xl text-green-700">Pour le trouveur</CardTitle>
+              <CardTitle className="text-2xl text-green-700">{t("forTheFinder")}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
               <div className="text-4xl font-bold text-green-600 mb-4">2000 Fr</div>
               <p className="text-gray-700">
-                Récompense versée automatiquement une fois le document restitué au propriétaire
+                {t("finderReward")}
               </p>
             </CardContent>
           </Card>
@@ -39,15 +42,15 @@ export const DemoPricing = () => {
               <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
                 📄
               </div>
-              <CardTitle className="text-2xl text-blue-700">Pour le propriétaire</CardTitle>
+              <CardTitle className="text-2xl text-blue-700">{t("forTheOwner")}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
               <div className="text-4xl font-bold text-blue-600 mb-4">7000 Fr</div>
               <p className="text-gray-700 mb-4">
-                Frais de récupération incluant la récompense du trouveur et les frais de service
+                {t("ownerFee")}
               </p>
               <p className="text-sm text-gray-600">
-                + Frais de livraison si vous choisissez cette option
+                {t("plusDelivery")}
               </p>
             </CardContent>
           </Card>
@@ -55,8 +58,7 @@ export const DemoPricing = () => {
 
         <div className="mt-8 text-center">
           <p className="text-gray-600 max-w-2xl mx-auto">
-            <strong>Option livraison :</strong> Nous proposons un service de livraison à domicile 
-            pour vous faire parvenir votre document récupéré. Les frais de livraison sont à la charge du propriétaire.
+            <strong>{t("deliveryOption")}</strong> {t("deliveryOptionDesc")}
           </p>
         </div>
       </div>

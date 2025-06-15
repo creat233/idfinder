@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DemoHero = () => {
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleDownloadAPK = () => {
     const link = document.createElement('a');
@@ -16,8 +18,8 @@ export const DemoHero = () => {
     document.body.removeChild(link);
     
     toast({
-      title: "Téléchargement démarré",
-      description: "L'application FinderID est en cours de téléchargement",
+      title: t("downloadStarted"),
+      description: t("downloadingApp"),
     });
   };
 
@@ -31,11 +33,10 @@ export const DemoHero = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Démo Interactive
+            {t("interactiveDemo")}
           </h1>
           <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
-            Découvrez comment Sama Pièce vous aide à retrouver vos documents perdus 
-            ou à signaler des pièces trouvées en quelques clics seulement.
+            {t("discoverSamaPiece")}
           </p>
           
           {/* Download Button */}
@@ -51,10 +52,10 @@ export const DemoHero = () => {
               className="bg-white text-[#9b87f5] hover:bg-gray-100 font-semibold px-8 py-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
             >
               <Download className="mr-3 h-6 w-6" />
-              📱 Télécharger pour Android
+              {t("downloadForAndroid")}
             </Button>
             <p className="text-sm text-purple-200 mt-2">
-              Ne manquez jamais une notification importante
+              {t("neverMissNotification")}
             </p>
           </motion.div>
 
@@ -62,19 +63,19 @@ export const DemoHero = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold">2000 Fr</div>
-              <div className="text-purple-200">Récompense trouveur</div>
+              <div className="text-purple-200">{t("finderRewardTitle")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">7000 Fr</div>
-              <div className="text-purple-200">Frais récupération</div>
+              <div className="text-purple-200">{t("recoveryFeeTitle")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">24h</div>
-              <div className="text-purple-200">Temps moyen</div>
+              <div className="text-purple-200">{t("averageTimeTitle")}</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold">🚚</div>
-              <div className="text-purple-200">Livraison disponible</div>
+              <div className="text-purple-200">{t("deliveryAvailableTitle")}</div>
             </div>
           </div>
         </motion.div>

@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DemoCTA = () => {
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleDownloadAPK = () => {
     const link = document.createElement('a');
@@ -16,8 +18,8 @@ export const DemoCTA = () => {
     document.body.removeChild(link);
     
     toast({
-      title: "Téléchargement démarré",
-      description: "L'application FinderID est en cours de téléchargement",
+      title: t("downloadStarted"),
+      description: t("downloadingApp"),
     });
   };
 
@@ -31,10 +33,10 @@ export const DemoCTA = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Prêt à commencer ?
+            {t("readyToStart")}
           </h2>
           <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-            Rejoignez notre communauté solidaire et ne perdez plus jamais vos documents !
+            {t("joinCommunity")}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -43,7 +45,7 @@ export const DemoCTA = () => {
               className="bg-white text-[#9b87f5] hover:bg-gray-100 font-semibold px-8 py-4 rounded-full shadow-lg"
               onClick={() => window.location.href = '/signaler'}
             >
-              Commencer maintenant
+              {t("startNow")}
             </Button>
             <Button 
               onClick={handleDownloadAPK}
@@ -52,7 +54,7 @@ export const DemoCTA = () => {
               className="border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 rounded-full"
             >
               <Download className="mr-2 h-5 w-5" />
-              Télécharger l'app
+              {t("downloadApp")}
             </Button>
           </div>
         </motion.div>

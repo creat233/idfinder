@@ -2,28 +2,31 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DemoTestimonials = () => {
+  const { t } = useTranslation();
+
   const testimonials = [
     {
       name: "Fatou Diop",
-      story: "J'ai retrouvé ma carte d'identité perdue en moins de 12h grâce à Sama Pièce !",
-      type: "Carte d'identité",
-      time: "12 heures",
+      story: t("testimonial1Story"),
+      type: t("idCard"),
+      time: t("testimonial1Time"),
       cost: "7000 Fr"
     },
     {
       name: "Mamadou Fall",
-      story: "Quelqu'un avait trouvé mon permis de conduire. Le contact s'est fait rapidement.",
-      type: "Permis de conduire",
-      time: "6 heures",
+      story: t("testimonial2Story"),
+      type: t("driverLicense"),
+      time: t("testimonial2Time"),
       cost: "7000 Fr"
     },
     {
       name: "Aissatou Ba",
-      story: "J'ai pu aider une personne à récupérer sa carte étudiante et j'ai reçu ma récompense !",
-      type: "Carte étudiante",
-      time: "24 heures",
+      story: t("testimonial3Story"),
+      type: t("studentCard"),
+      time: t("testimonial3Time"),
       reward: "2000 Fr"
     }
   ];
@@ -39,10 +42,10 @@ export const DemoTestimonials = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Témoignages de Réussite
+            {t("successStories")}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Découvrez comment Sama Pièce a aidé nos utilisateurs
+            {t("discoverHow")}
           </p>
         </motion.div>
 

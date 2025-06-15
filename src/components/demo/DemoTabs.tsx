@@ -5,32 +5,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Phone, CheckCircle, Camera, Clock, Users, Bell, CreditCard, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const DemoTabs = () => {
   const [activeTab, setActiveTab] = useState<'search' | 'report'>('search');
+  const { t } = useTranslation();
 
   const searchSteps = [
     {
-      title: "1. Recherchez votre document",
-      description: "Utilisez notre moteur de recherche avancé pour trouver votre carte",
+      title: t("searchStep1Title"),
+      description: t("searchStep1Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <Search className="w-8 h-8" />
     },
     {
-      title: "2. Localisez votre pièce",
-      description: "Visualisez l'emplacement exact où elle a été trouvée avec tous les détails",
+      title: t("searchStep2Title"),
+      description: t("searchStep2Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <MapPin className="w-8 h-8" />
     },
     {
-      title: "3. Contactez le trouveur",
-      description: "Communiquez directement via notre plateforme sécurisée",
+      title: t("searchStep3Title"),
+      description: t("searchStep3Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <Phone className="w-8 h-8" />
     },
     {
-      title: "4. Récupérez votre document",
-      description: "Organisez la récupération ou demandez une livraison (frais à votre charge)",
+      title: t("searchStep4Title"),
+      description: t("searchStep4Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <CheckCircle className="w-8 h-8" />
     }
@@ -38,26 +40,26 @@ export const DemoTabs = () => {
 
   const reportSteps = [
     {
-      title: "1. Prenez une photo",
-      description: "Photographiez le document trouvé en masquant les infos sensibles",
+      title: t("reportStep1Title"),
+      description: t("reportStep1Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <Camera className="w-8 h-8" />
     },
     {
-      title: "2. Indiquez le lieu",
-      description: "Précisez où vous avez trouvé le document avec le maximum de détails",
+      title: t("reportStep2Title"),
+      description: t("reportStep2Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <MapPin className="w-8 h-8" />
     },
     {
-      title: "3. Publiez l'annonce",
-      description: "Votre signalement est immédiatement visible et recherchable",
+      title: t("reportStep3Title"),
+      description: t("reportStep3Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <Clock className="w-8 h-8" />
     },
     {
-      title: "4. Recevez votre récompense",
-      description: "Gagnez 2000 Fr une fois le document restitué au propriétaire",
+      title: t("reportStep4Title"),
+      description: t("reportStep4Desc"),
       image: "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png",
       icon: <Users className="w-8 h-8" />
     }
@@ -74,10 +76,10 @@ export const DemoTabs = () => {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Processus étape par étape
+            {t("stepByStep")}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Choisissez votre scénario et découvrez comment FinderID vous aide en quelques clics
+            {t("chooseScenario")}
           </p>
         </motion.div>
 
@@ -100,7 +102,7 @@ export const DemoTabs = () => {
               }`}
             >
               <MapPin className="w-6 h-6 mr-3" />
-              J'ai perdu ma pièce
+              {t("lostMyDocument")}
             </Button>
             <Button
               onClick={() => setActiveTab('report')}
@@ -112,7 +114,7 @@ export const DemoTabs = () => {
               }`}
             >
               <Camera className="w-6 h-6 mr-3" />
-              J'ai trouvé une pièce
+              {t("foundADocument")}
             </Button>
           </div>
         </motion.div>
@@ -133,10 +135,10 @@ export const DemoTabs = () => {
                   </div>
                   <div>
                     <CardTitle className="text-2xl text-blue-900">
-                      🔔 Système de notification automatique
+                      {t("autoNotificationSystem")}
                     </CardTitle>
                     <CardDescription className="text-blue-700 text-lg">
-                      Ne trouvez pas votre carte ? Soyez alerté dès qu'elle est signalée !
+                      {t("cantFindCard")}
                     </CardDescription>
                   </div>
                 </div>
@@ -147,22 +149,22 @@ export const DemoTabs = () => {
                     <div className="flex items-start gap-3">
                       <Badge className="bg-blue-500 text-white font-bold text-lg px-3 py-1">1</Badge>
                       <div>
-                        <h4 className="font-semibold text-blue-900">Enregistrez votre carte</h4>
-                        <p className="text-blue-700">Ajoutez le numéro de votre carte sur la page "Mes cartes"</p>
+                        <h4 className="font-semibold text-blue-900">{t("registerYourCard")}</h4>
+                        <p className="text-blue-700">{t("registerYourCardDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Badge className="bg-blue-500 text-white font-bold text-lg px-3 py-1">2</Badge>
                       <div>
-                        <h4 className="font-semibold text-blue-900">Activez la surveillance</h4>
-                        <p className="text-blue-700">Notre système surveille automatiquement les signalements</p>
+                        <h4 className="font-semibold text-blue-900">{t("activateMonitoring")}</h4>
+                        <p className="text-blue-700">{t("activateMonitoringDesc")}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Badge className="bg-blue-500 text-white font-bold text-lg px-3 py-1">3</Badge>
                       <div>
-                        <h4 className="font-semibold text-blue-900">Recevez une notification</h4>
-                        <p className="text-blue-700">Alerte instantanée dès que votre carte est signalée</p>
+                        <h4 className="font-semibold text-blue-900">{t("receiveNotification")}</h4>
+                        <p className="text-blue-700">{t("receiveNotificationDesc")}</p>
                       </div>
                     </div>
                   </div>
@@ -172,10 +174,10 @@ export const DemoTabs = () => {
                       className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
                     >
                       <CreditCard className="mr-3 h-6 w-6" />
-                      Gérer mes cartes
+                      {t("manageMyCards")}
                     </Button>
                     <p className="text-center text-blue-600 text-sm mt-3 font-medium">
-                      Gratuit et sans engagement
+                      {t("freeAndNoStrings")}
                     </p>
                   </div>
                 </div>
@@ -241,19 +243,19 @@ export const DemoTabs = () => {
           className="mt-16 text-center"
         >
           <div className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] rounded-2xl p-8 text-white shadow-2xl">
-            <h3 className="text-2xl font-bold mb-4">🚀 Processus rapide et sécurisé</h3>
+            <h3 className="text-2xl font-bold mb-4">{t("fastAndSecure")}</h3>
             <div className="grid md:grid-cols-3 gap-6 mt-6">
               <div>
                 <div className="text-3xl font-bold">24h</div>
-                <div className="text-purple-100">Temps moyen de récupération</div>
+                <div className="text-purple-100">{t("averageRecoveryTime")}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold">2000 Fr</div>
-                <div className="text-purple-100">Récompense pour le trouveur</div>
+                <div className="text-purple-100">{t("finderRewardPlatform")}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold">100%</div>
-                <div className="text-purple-100">Plateforme sécurisée</div>
+                <div className="text-purple-100">{t("securePlatform")}</div>
               </div>
             </div>
           </div>

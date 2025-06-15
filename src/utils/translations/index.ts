@@ -1,3 +1,4 @@
+
 import { Country, Language, Translations } from './types';
 import { appTranslations } from './app';
 import { authTranslations } from './auth';
@@ -7,6 +8,7 @@ import { notificationsTranslations } from './notifications';
 import { reportingTranslations } from './reporting';
 import { promoTranslations } from './promo';
 import { featuresTranslations } from './features';
+import { demoTranslations } from './demo';
 import { getAvailableLanguages } from './languages';
 import { emergencyTranslations } from './emergency';
 
@@ -20,6 +22,7 @@ export const translations: Record<string, { fr: string; en: string }> = {
   ...reportingTranslations,
   ...promoTranslations,
   ...featuresTranslations,
+  ...demoTranslations,
   ...emergencyTranslations
 };
 
