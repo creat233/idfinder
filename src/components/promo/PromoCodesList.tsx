@@ -33,50 +33,50 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
   };
 
   const openWhatsApp = (promoCode: string) => {
-    const message = encodeURIComponent(`Bonjour, je souhaite activer mon code promo ${promoCode} en payant 1000 FCFA`);
+    const message = encodeURIComponent(t("whatsapp_activation_message", { code: promoCode }));
     window.open(`https://wa.me/221710117579?text=${message}`, '_blank');
   };
 
   const shareOnWhatsApp = (code: string) => {
-    const shareText = encodeURIComponent(`🎉 Économisez 1000 FCFA sur FinderID avec mon code promo : ${code}\n\n💳 FinderID vous aide à retrouver vos documents perdus rapidement !\n\n🔗 Utilisez ce code lors de votre récupération pour bénéficier de la réduction.\n\nRejoignez-nous : ${window.location.origin}`);
+    const shareText = encodeURIComponent(t("share_message_generic", { code, origin: window.location.origin }));
     window.open(`https://wa.me/?text=${shareText}`, '_blank');
   };
 
   const shareOnFacebook = (code: string) => {
     const shareUrl = window.location.origin;
-    const shareText = encodeURIComponent(`Économisez 1000 FCFA sur FinderID avec mon code promo : ${code}. FinderID vous aide à retrouver vos documents perdus rapidement !`);
+    const shareText = encodeURIComponent(t("share_message_facebook_quote", { code }));
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`, '_blank');
   };
 
   const shareOnTwitter = (code: string) => {
     const shareUrl = window.location.origin;
-    const shareText = encodeURIComponent(`🎉 Économisez 1000 FCFA sur @FinderID avec mon code promo : ${code}\n\n💳 Retrouvez vos documents perdus rapidement !\n\n${shareUrl}`);
+    const shareText = encodeURIComponent(t("share_message_twitter", { code, origin: shareUrl }));
     window.open(`https://twitter.com/intent/tweet?text=${shareText}`, '_blank');
   };
 
   const shareViaSMS = (code: string) => {
-    const message = encodeURIComponent(`🎉 Économisez 1000 FCFA sur FinderID avec mon code promo : ${code}\n\nFindRID vous aide à retrouver vos documents perdus rapidement !\n\nRejoignez-nous : ${window.location.origin}`);
+    const message = encodeURIComponent(t("share_message_sms", { code, origin: window.location.origin }));
     window.open(`sms:?body=${message}`, '_self');
   };
 
   const shareViaEmail = (code: string) => {
-    const subject = encodeURIComponent(`Code promo FinderID : ${code} - Économisez 1000 FCFA`);
-    const body = encodeURIComponent(`Bonjour,\n\nJe partage avec vous mon code promo FinderID : ${code}\n\nCe code vous permet d'économiser 1000 FCFA sur les frais de récupération de vos documents perdus.\n\nFindRID est une plateforme révolutionnaire qui vous aide à retrouver vos pièces d'identité perdues rapidement et en toute sécurité.\n\nPour utiliser ce code :\n1. Rendez-vous sur ${window.location.origin}\n2. Recherchez votre document perdu\n3. Utilisez le code ${code} lors du processus de récupération\n\nBonne chance !\n\nCordialement`);
+    const subject = encodeURIComponent(t("share_message_email_subject", { code }));
+    const body = encodeURIComponent(t("share_message_email_body", { code, origin: window.location.origin }));
     window.open(`mailto:?subject=${subject}&body=${body}`, '_self');
   };
 
   const shareGeneric = (code: string) => {
-    const shareText = `🎉 Économisez 1000 FCFA sur FinderID avec mon code promo : ${code}\n\n💳 FinderID vous aide à retrouver vos documents perdus rapidement !\n\n🔗 Rejoignez-nous : ${window.location.origin}`;
+    const shareText = t("share_message_generic", { code, origin: window.location.origin });
     
     if (navigator.share) {
       navigator.share({
-        title: `Code Promo FinderID - ${code}`,
+        title: t("share_title_generic", { code }),
         text: shareText,
         url: window.location.origin
       });
     } else {
       navigator.clipboard.writeText(shareText);
-      showSuccess("Texte copié", "Le texte de partage a été copié dans le presse-papiers");
+      showSuccess(t("share_text_copied"), t("share_text_copied_desc"));
     }
   };
 
@@ -131,7 +131,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
             {!promoCode.is_active && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                 <p className="text-sm text-yellow-800 mb-2">
-                  <strong>💰 Activation requise :</strong> Contactez le service client pour activer votre code et commencer à gagner de l'argent !
+                  <strong>{t("activation_required_title")}</strong> {t("activation_required_desc")}
                 </p>
                 <Button
                   onClick={() => openWhatsApp(promoCode.code)}
@@ -147,7 +147,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
             {promoCode.is_active && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <p className="text-sm text-green-800 mb-3">
-                  <strong>🎉 Code actif !</strong> Partagez votre code pour commencer à gagner 1000 FCFA à chaque utilisation pendant 2 mois !
+                  <strong>{t("code_active_title")}</strong> {t("code_active_desc")}
                 </p>
                 
                 {/* Options de partage */}
@@ -160,7 +160,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                       className="flex-1"
                     >
                       <Copy className="h-4 w-4 mr-2" />
-                      Copier le code
+                      {t("copyCode")}
                     </Button>
                     <Button
                       variant="outline"
@@ -169,12 +169,12 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                       className="flex-1"
                     >
                       <Share2 className="h-4 w-4 mr-2" />
-                      Partager
+                      {t("share")}
                     </Button>
                   </div>
 
                   <div className="border-t pt-3">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">📱 Partager sur les réseaux sociaux :</p>
+                    <p className="text-xs text-gray-600 mb-2 font-medium">{t("share_on_socials")}</p>
                     <div className="grid grid-cols-2 gap-2">
                       <Button
                         variant="outline"
@@ -183,7 +183,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                         className="text-green-600 border-green-200 hover:bg-green-50"
                       >
                         <MessageCircle className="h-4 w-4 mr-2" />
-                        WhatsApp
+                        {t("shareOnWhatsApp")}
                       </Button>
                       <Button
                         variant="outline"
@@ -192,7 +192,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                         className="text-blue-600 border-blue-200 hover:bg-blue-50"
                       >
                         <Facebook className="h-4 w-4 mr-2" />
-                        Facebook
+                        {t("shareOnFacebook")}
                       </Button>
                       <Button
                         variant="outline"
@@ -201,7 +201,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                         className="text-blue-400 border-blue-200 hover:bg-blue-50"
                       >
                         <Twitter className="h-4 w-4 mr-2" />
-                        Twitter
+                        {t("shareOnTwitter")}
                       </Button>
                       <Button
                         variant="outline"
@@ -210,13 +210,13 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                         className="text-gray-600 border-gray-200 hover:bg-gray-50"
                       >
                         <Mail className="h-4 w-4 mr-2" />
-                        Email
+                        {t("shareViaEmail")}
                       </Button>
                     </div>
                   </div>
 
                   <div className="border-t pt-3">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">📞 Partager directement :</p>
+                    <p className="text-xs text-gray-600 mb-2 font-medium">{t("share_directly")}</p>
                     <Button
                       variant="outline"
                       size="sm"
@@ -224,7 +224,7 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
                       className="w-full text-purple-600 border-purple-200 hover:bg-purple-50"
                     >
                       <Phone className="h-4 w-4 mr-2" />
-                      Partager par SMS
+                      {t("shareViaSMS")}
                     </Button>
                   </div>
                 </div>
@@ -234,10 +234,10 @@ export const PromoCodesList = ({ promoCodes }: PromoCodesListProps) => {
             {promoCode.is_active && promoCode.usage_count > 0 && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <p className="text-sm text-blue-800">
-                  <strong>💰 Revenus générés :</strong> {promoCode.total_earnings} FCFA
+                  <strong>{t("revenue_generated_title")}</strong> {promoCode.total_earnings} FCFA
                 </p>
                 <p className="text-xs text-blue-600 mt-1">
-                  Continuez à partager votre code pour augmenter vos revenus !
+                  {t("revenue_generated_desc")}
                 </p>
               </div>
             )}

@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Share2, TrendingUp, Users } from "lucide-react";
@@ -24,7 +25,7 @@ export const PromoCodesManager = () => {
           {t("promoCodes")}
         </h1>
         <p className="text-gray-600">
-          Générez et partagez vos codes promo pour gagner de l'argent
+          {t("promo_manager_title")}
         </p>
       </div>
 
@@ -36,7 +37,7 @@ export const PromoCodesManager = () => {
               <TrendingUp className="h-8 w-8 text-green-600" />
               <div>
                 <p className="text-2xl font-bold text-green-600">{totalEarnings} FCFA</p>
-                <p className="text-sm text-gray-600">Revenus totaux</p>
+                <p className="text-sm text-gray-600">{t("total_revenue")}</p>
               </div>
             </div>
           </CardContent>
@@ -48,7 +49,7 @@ export const PromoCodesManager = () => {
               <Users className="h-8 w-8 text-blue-600" />
               <div>
                 <p className="text-2xl font-bold text-blue-600">{totalUsage}</p>
-                <p className="text-sm text-gray-600">Utilisations</p>
+                <p className="text-sm text-gray-600">{t("total_usages")}</p>
               </div>
             </div>
           </CardContent>
@@ -60,7 +61,7 @@ export const PromoCodesManager = () => {
               <Share2 className="h-8 w-8 text-purple-600" />
               <div>
                 <p className="text-2xl font-bold text-purple-600">{activeCodes.length}</p>
-                <p className="text-sm text-gray-600">Codes actifs</p>
+                <p className="text-sm text-gray-600">{t("active_codes")}</p>
               </div>
             </div>
           </CardContent>
@@ -72,26 +73,26 @@ export const PromoCodesManager = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-purple-800">
             <Share2 className="h-5 w-5" />
-            💡 Conseils pour maximiser vos revenus
+            {t("tips_title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div>
-              <h4 className="font-semibold text-purple-800 mb-1">📱 Partagez sur les réseaux sociaux</h4>
-              <p className="text-purple-700">WhatsApp, Facebook, Twitter - Touchez un large public</p>
+              <h4 className="font-semibold text-purple-800 mb-1">{t("tip_social_title")}</h4>
+              <p className="text-purple-700">{t("tip_social_desc")}</p>
             </div>
             <div>
-              <h4 className="font-semibold text-purple-800 mb-1">👥 Partagez avec vos proches</h4>
-              <p className="text-purple-700">Famille, amis, collègues - Ils vous font confiance</p>
+              <h4 className="font-semibold text-purple-800 mb-1">{t("tip_relatives_title")}</h4>
+              <p className="text-purple-700">{t("tip_relatives_desc")}</p>
             </div>
             <div>
-              <h4 className="font-semibold text-purple-800 mb-1">💰 Gagnez 1000 FCFA par utilisation</h4>
-              <p className="text-purple-700">Chaque personne qui utilise votre code vous rapporte de l'argent</p>
+              <h4 className="font-semibold text-purple-800 mb-1">{t("tip_earn_title")}</h4>
+              <p className="text-purple-700">{t("tip_earn_desc")}</p>
             </div>
             <div>
-              <h4 className="font-semibold text-purple-800 mb-1">⏰ Validité de 2 mois</h4>
-              <p className="text-purple-700">Vous avez 2 mois pour partager et gagner</p>
+              <h4 className="font-semibold text-purple-800 mb-1">{t("tip_validity_title")}</h4>
+              <p className="text-purple-700">{t("tip_validity_desc")}</p>
             </div>
           </div>
         </CardContent>
@@ -107,13 +108,13 @@ export const PromoCodesManager = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 mb-2">Comment ça marche ?</h3>
+            <h3 className="font-semibold text-blue-800 mb-2">{t("how_it_works_title")}</h3>
             <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
-              <li>Générez votre code promo unique (gratuit)</li>
-              <li>Payez 1000 FCFA pour l'activer via WhatsApp</li>
-              <li>Partagez votre code sur vos réseaux sociaux et avec vos proches</li>
-              <li>Gagnez 1000 FCFA à chaque utilisation de votre code</li>
-              <li>Collectez vos revenus pendant 2 mois</li>
+              <li>{t("how_it_works_step1")}</li>
+              <li>{t("how_it_works_step2")}</li>
+              <li>{t("how_it_works_step3")}</li>
+              <li>{t("how_it_works_step4")}</li>
+              <li>{t("how_it_works_step5")}</li>
             </ol>
           </div>
           
@@ -122,7 +123,7 @@ export const PromoCodesManager = () => {
               {t("promoCodePrice")}
             </p>
             <p className="text-sm text-gray-600 mb-4">
-              Investissement unique - Revenus potentiels illimités
+              {t("investment_info")}
             </p>
             <Button 
               onClick={handleGenerateCode}
@@ -131,7 +132,7 @@ export const PromoCodesManager = () => {
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
             >
               <Plus className="mr-2 h-5 w-5" />
-              {loading ? "Génération..." : t("generateCode")}
+              {loading ? t("generating_code") : t("generateCode")}
             </Button>
           </div>
         </CardContent>
@@ -146,7 +147,7 @@ export const PromoCodesManager = () => {
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-              <p className="text-gray-600 mt-2">Chargement...</p>
+              <p className="text-gray-600 mt-2">{t("loading")}</p>
             </div>
           ) : (
             <PromoCodesList promoCodes={promoCodes} />

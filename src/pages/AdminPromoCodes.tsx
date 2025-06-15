@@ -19,8 +19,11 @@ import { AdminAnalyticsDashboard } from "@/components/promo/AdminAnalyticsDashbo
 import { AdminAuditLogsList } from "@/components/promo/AdminAuditLogsList";
 import { AdminSettings } from "@/components/promo/AdminSettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const AdminPromoCodes = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -31,15 +34,14 @@ const AdminPromoCodes = () => {
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Shield className="h-8 w-8 text-orange-600" />
-              <h1 className="text-3xl font-bold text-orange-800">Administration FinderID</h1>
+              <h1 className="text-3xl font-bold text-orange-800">{t("admin_title")}</h1>
             </div>
-            <p className="text-muted-foreground">Interface d'administration des codes promo et récupérations</p>
+            <p className="text-muted-foreground">{t("admin_subtitle")}</p>
             
             <Alert className="max-w-2xl mx-auto">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Zone d'administration sécurisée</strong> - Accès restreint aux administrateurs autorisés. 
-                Toutes les actions sont enregistrées et tracées.
+                <strong>{t("admin_secure_zone")}</strong> - {t("admin_secure_zone_desc")}
               </AlertDescription>
             </Alert>
           </div>
@@ -49,22 +51,22 @@ const AdminPromoCodes = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-green-800">
                 <Activity className="h-5 w-5" />
-                Statut du Système
+                {t("system_status")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">✅</div>
-                  <p className="text-sm text-green-700">Base de données</p>
+                  <p className="text-sm text-green-700">{t("db_status")}</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">✅</div>
-                  <p className="text-sm text-green-700">Fonctions RPC</p>
+                  <p className="text-sm text-green-700">{t("rpc_status")}</p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">✅</div>
-                  <p className="text-sm text-green-700">Temps réel</p>
+                  <p className="text-sm text-green-700">{t("realtime_status")}</p>
                 </div>
               </div>
             </CardContent>
@@ -72,11 +74,11 @@ const AdminPromoCodes = () => {
           
           <Tabs defaultValue="codes" className="w-full">
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
-              <TabsTrigger value="codes">Codes & Récup.</TabsTrigger>
-              <TabsTrigger value="users">Utilisateurs & Comms</TabsTrigger>
-              <TabsTrigger value="marketing">Marketing & Finances</TabsTrigger>
-              <TabsTrigger value="analytics">Analyses & Logs</TabsTrigger>
-              <TabsTrigger value="settings">Paramètres</TabsTrigger>
+              <TabsTrigger value="codes">{t("tabs_codes")}</TabsTrigger>
+              <TabsTrigger value="users">{t("tabs_users")}</TabsTrigger>
+              <TabsTrigger value="marketing">{t("tabs_marketing")}</TabsTrigger>
+              <TabsTrigger value="analytics">{t("tabs_analytics")}</TabsTrigger>
+              <TabsTrigger value="settings">{t("tabs_settings")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="codes" className="mt-6 space-y-6">

@@ -1,10 +1,9 @@
-
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { getTranslation, Country, Language, getAvailableLanguages } from "@/utils/translations";
 import { supabase } from "@/integrations/supabase/client";
 
 interface TranslationContextType {
-  t: (key: string) => string;
+  t: (key: string, replacements?: Record<string, string | number>) => string;
   currentCountry: Country;
   currentLanguage: Language;
   setCurrentCountry: (country: string) => void;
@@ -55,8 +54,14 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const t = (key: string): string => {
-    return getTranslation(currentCountry, currentLanguage, key);
+  const t = (key: string, replacements?: Record<string, string | number>): string => {
+    let translation = getTranslation(currentCountry, currentLanguage, key);
+    if (replacements) {
+      Object.keys(replacements).forEach(placeholder => {
+        translation = translation.replace(`{${placeholder}}`, String(replacements[placeholder]));
+      });
+    }
+    return translation;
   };
   
   const value = {
