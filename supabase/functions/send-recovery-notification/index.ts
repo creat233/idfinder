@@ -91,6 +91,26 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
 
     console.log("✅ Description et statut de la carte mis à jour vers 'recovery_requested'");
 
+    // Notifier la personne qui a trouvé la carte
+    if (cardData.finder_id) {
+      const { error: finderNotificationError } = await supabaseClient
+        .from("notifications")
+        .insert({
+          user_id: cardData.finder_id,
+          type: "card_report_received",
+          title: "✅ Prise en charge de votre signalement",
+          message: `Merci d'avoir signalé la carte ${cardData.card_number}. Nous avons initié le processus et vous tiendrons informé de la suite.`,
+          is_read: false,
+          reported_card_id: cardId,
+        });
+
+      if (finderNotificationError) {
+        console.error("⚠️ Erreur notification du trouveur:", finderNotificationError);
+      } else {
+        console.log("✅ Notification envoyée au trouveur:", cardData.finder_id);
+      }
+    }
+
     let promoDetails = null;
     let promoOwnerInfo = null;
     if (promoInfo) {
@@ -122,7 +142,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
               type: "promo_code_used",
               title: "🎉 Code promo utilisé !",
               message: `Votre code promo ${promoDetails.code} vient d'être utilisé ! Attendez la confirmation de récupération pour recevoir votre revenu de 1000 FCFA.`,
-              is_read: false
+              is_read: false,
+              reported_card_id: cardId
             });
           
           if (notificationError) {
