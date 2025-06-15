@@ -7,17 +7,19 @@ import { PlusCircle } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { MCardFormDialog } from "./MCardFormDialog";
 import { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
+import { useToast } from "@/hooks/use-toast";
 
 interface MCardsListProps {
   mcards: MCard[];
   loading: boolean;
   createMCard: (data: TablesInsert<'mcards'>) => Promise<MCard | null>;
-  updateMCard: (id: string, data: TablesUpdate<'mcards'>) => Promise<MCard | null>;
+  updateMCard: (id: string, data: TablesUpdate<'mcards'>, options?: { silent?: boolean }) => Promise<MCard | null>;
   deleteMCard: (id: string) => Promise<void>;
 }
 
 export const MCardsList = ({ mcards, loading, createMCard, updateMCard, deleteMCard }: MCardsListProps) => {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMCard, setEditingMCard] = useState<MCard | null>(null);
 
@@ -46,6 +48,16 @@ export const MCardsList = ({ mcards, loading, createMCard, updateMCard, deleteMC
     }
   };
 
+  const handleUpdateSubscription = async (id: string) => {
+    const result = await updateMCard(id, { subscription_status: 'pending_payment' }, { silent: true });
+    if (result) {
+      toast({
+        title: t('upgradeRequestSent'),
+        description: t('upgradeRequestSentDescription'),
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -70,6 +82,7 @@ export const MCardsList = ({ mcards, loading, createMCard, updateMCard, deleteMC
               mcard={mcard} 
               onEdit={handleOpenEdit}
               onDelete={deleteMCard}
+              onUpdateSubscription={handleUpdateSubscription}
             />
           ))}
         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -59,7 +58,7 @@ export const useMCards = () => {
     }
   }, [t, toast]);
 
-  const updateMCard = useCallback(async (id: string, mcardData: TablesUpdate<'mcards'>) => {
+  const updateMCard = useCallback(async (id: string, mcardData: TablesUpdate<'mcards'>, options?: { silent?: boolean }) => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -72,7 +71,9 @@ export const useMCards = () => {
       if (error) throw error;
       
       setMCards(prev => prev.map(card => card.id === id ? data : card));
-      toast({ title: t('mCardUpdatedSuccess') });
+      if (!options?.silent) {
+        toast({ title: t('mCardUpdatedSuccess') });
+      }
       return data;
     } catch (error: any) {
       toast({ variant: "destructive", title: t('mCardError'), description: error.message });

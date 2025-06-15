@@ -293,5 +293,29 @@ export const profileTranslations: Translations = {
   expired: {
     fr: "Expiré",
     en: "Expired"
+  },
+  upgradeSubscription: {
+    fr: "Mettre à niveau",
+    en: "Upgrade Subscription"
+  },
+  upgradePromptTitle: {
+    fr: "Activer votre abonnement",
+    en: "Activate Your Subscription"
+  },
+  upgradePromptDescription: {
+    fr: "Pour activer ou renouveler votre abonnement, veuillez effectuer votre paiement via Wave/Orange Money au +221 77 123 45 67. Une fois le paiement effectué, cliquez sur 'Confirmer' et un administrateur validera votre abonnement.",
+    en: "To activate or renew your subscription, please make your payment via Wave/Orange Money to +221 77 123 45 67. Once payment is made, click 'Confirm' and an administrator will validate your subscription."
+  },
+  confirmUpgrade: {
+    fr: "Confirmer",
+    en: "Confirm"
+  },
+  upgradeRequestSent: {
+    fr: "Demande envoyée",
+    en: "Request sent"
+  },
+  upgradeRequestSentDescription: {
+    fr: "Votre statut est maintenant 'En attente de paiement'.",
+    en: "Your status is now 'Pending Payment'."
   }
 };

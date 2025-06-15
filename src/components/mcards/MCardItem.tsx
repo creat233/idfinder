@@ -24,9 +24,10 @@ interface MCardItemProps {
   mcard: MCard;
   onEdit: (mcard: MCard) => void;
   onDelete: (id: string) => void;
+  onUpdateSubscription: (id: string) => void;
 }
 
-export const MCardItem = ({ mcard, onEdit, onDelete }: MCardItemProps) => {
+export const MCardItem = ({ mcard, onEdit, onDelete, onUpdateSubscription }: MCardItemProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
 
@@ -114,18 +115,39 @@ export const MCardItem = ({ mcard, onEdit, onDelete }: MCardItemProps) => {
         {mcard.description && <p className="text-sm mb-2">{mcard.description}</p>}
         <p className="text-sm text-muted-foreground">URL: /m/{mcard.slug}</p>
       </CardContent>
-      <CardFooter className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{t('status')}:</span>
-            <Badge variant={getStatusVariant(mcard.subscription_status)}>
-              {getStatusText(mcard.subscription_status)}
-            </Badge>
-          </div>
-          {mcard.subscription_expires_at && (
-              <p className="text-sm text-muted-foreground">
-                  {t('expiresOn')} {format(new Date(mcard.subscription_expires_at), 'dd/MM/yyyy')}
-              </p>
-          )}
+      <CardFooter className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">{t('status')}:</span>
+                <Badge variant={getStatusVariant(mcard.subscription_status)}>
+                {getStatusText(mcard.subscription_status)}
+                </Badge>
+            </div>
+            {mcard.subscription_expires_at && (
+                <p className="text-sm text-muted-foreground">
+                    {t('expiresOn')} {format(new Date(mcard.subscription_expires_at), 'dd/MM/yyyy')}
+                </p>
+            )}
+        </div>
+        {(mcard.subscription_status === 'trial' || mcard.subscription_status === 'expired') && (
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="outline" size="sm">{t('upgradeSubscription')}</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                    <AlertDialogTitle>{t('upgradePromptTitle')}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        {t('upgradePromptDescription')}
+                    </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onUpdateSubscription(mcard.id)}>{t('confirmUpgrade')}</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        )}
       </CardFooter>
     </Card>
   );
