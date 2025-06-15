@@ -11,7 +11,7 @@ import { MCardFeatures } from '@/components/mcards/MCardFeatures';
 import { MCardPricing } from '@/components/mcards/MCardPricing';
 
 const MCards = () => {
-  const { mcards, loading, getMCards, createMCard, updateMCard, deleteMCard } = useMCards();
+  const { mcards, loading, getMCards, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -38,7 +38,10 @@ const MCards = () => {
         </div>
         
         <MCardFeatures />
-        <MCardPricing />
+        <MCardPricing 
+          mcards={mcards}
+          onRequestUpgrade={requestPlanUpgrade}
+        />
 
         <div className="max-w-7xl mx-auto mt-16">
             <MCardsList

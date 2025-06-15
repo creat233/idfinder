@@ -97,5 +97,33 @@ export const useMCards = () => {
     }
   }, [t, toast]);
 
-  return { mcards, loading, getMCards, createMCard, updateMCard, deleteMCard };
+  const requestPlanUpgrade = useCallback(async (id: string, plan: 'essential' | 'premium') => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('mcards')
+        .update({ plan, subscription_status: 'pending_payment' })
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      setMCards(prev => prev.map(card => card.id === id ? data : card));
+      
+      const planName = plan === 'essential' ? t('planEssential') : t('planPremium');
+      toast({ 
+        title: t('planUpgradeRequestSent'),
+        description: t('planUpgradeRequestSentDescription').replace('{planName}', planName)
+      });
+      return data;
+    } catch (error: any) {
+      toast({ variant: "destructive", title: t('mCardError'), description: error.message });
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [t, toast]);
+
+  return { mcards, loading, getMCards, createMCard, updateMCard, deleteMCard, requestPlanUpgrade };
 };

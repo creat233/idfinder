@@ -140,6 +140,7 @@ export type Database = {
           is_published: boolean
           job_title: string | null
           phone_number: string | null
+          plan: string
           profile_picture_url: string | null
           slug: string
           social_links: Json | null
@@ -159,6 +160,7 @@ export type Database = {
           is_published?: boolean
           job_title?: string | null
           phone_number?: string | null
+          plan?: string
           profile_picture_url?: string | null
           slug: string
           social_links?: Json | null
@@ -178,6 +180,7 @@ export type Database = {
           is_published?: boolean
           job_title?: string | null
           phone_number?: string | null
+          plan?: string
           profile_picture_url?: string | null
           slug?: string
           social_links?: Json | null

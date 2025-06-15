@@ -210,6 +210,14 @@ export const mcardsTranslations: Translations = {
     fr: "Brouillon",
     en: "Draft"
   },
+  planFree: {
+    fr: "Gratuit",
+    en: "Free"
+  },
+  planFreeDescription: {
+    fr: "Créez votre carte et partagez-la. Idéal pour essayer.",
+    en: "Create your card and share it. Ideal for trying out."
+  },
   planEssential: {
     fr: "Essentiel",
     en: "Essential"
@@ -245,5 +253,25 @@ export const mcardsTranslations: Translations = {
   selectPlanTooltip: {
     fr: "Vous devez créer une mCard avant de pouvoir sélectionner un plan.",
     en: "You need to create an mCard before you can select a plan."
+  },
+  selectMCardForUpgradeTitle: {
+    fr: "Choisir une carte à mettre à niveau",
+    en: "Choose a card to upgrade"
+  },
+  selectMCardForUpgradeDescription: {
+    fr: "Veuillez sélectionner la carte pour laquelle vous souhaitez appliquer ce plan.",
+    en: "Please select the card you want to apply this plan to."
+  },
+  selectForThisCard: {
+    fr: "Appliquer à cette carte",
+    en: "Apply to this card"
+  },
+  planUpgradeRequestSent: {
+    fr: "Demande de mise à niveau envoyée",
+    en: "Upgrade request sent"
+  },
+  planUpgradeRequestSentDescription: {
+    fr: "Votre demande pour le plan {planName} a été envoyée. Votre statut est 'En attente de paiement'.",
+    en: "Your request for the {planName} plan has been sent. Your status is 'Pending Payment'."
   }
 };
