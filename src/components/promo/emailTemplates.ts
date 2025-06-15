@@ -1,4 +1,3 @@
-
 export const cardRegistrationAnnouncementTemplate = {
   subject: "🎉 Nouvelle fonctionnalité : Sécurisez vos cartes sur FinderID !",
   message: `<h1>Ne perdez plus jamais vos documents importants !</h1>
@@ -167,3 +166,70 @@ export const specialPromotionTemplate = {
 <p>L'équipe FinderID</p>
 `
 };
+
+export const termsUpdateTemplate = {
+  subject: "Mise à jour importante de nos Conditions d'Utilisation",
+  message: `<h1>Mise à jour de nos Conditions d'Utilisation et Politique de Confidentialité</h1>
+<p>Bonjour,</p>
+<p>La transparence et la protection de vos données sont au cœur de nos priorités. C'est pourquoi nous vous informons d'une mise à jour de nos <strong>Conditions d'Utilisation</strong> et de notre <strong>Politique de Confidentialité</strong>.</p>
+<p>Ces changements visent à clarifier nos engagements et à nous conformer aux dernières réglementations. Nous vous invitons à les consulter attentivement.</p>
+<p>En continuant à utiliser FinderID après le [Date d'effet], vous acceptez ces nouvelles conditions.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/terms" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Consulter les nouvelles conditions</a>
+</p>
+<p>Merci de votre confiance.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const partnershipAnnouncementTemplate = {
+  subject: "🤝 FinderID s'associe pour mieux vous servir !",
+  message: `<h1>Un nouveau partenariat pour renforcer notre réseau !</h1>
+<p>Bonjour,</p>
+<p>Nous sommes fiers de vous annoncer notre nouveau partenariat avec <strong>[Nom du partenaire]</strong> !</p>
+<p>Grâce à cette collaboration, le processus de récupération de vos documents perdus est encore plus simple et rapide. Vous pouvez désormais [bénéfice du partenariat, ex: déposer/récupérer vos documents dans leurs locaux].</p>
+<p>Ce partenariat renforce notre mission : vous aider à retrouver vos biens en toute sérénité.</p>
+<p>Pour en savoir plus, consultez notre blog.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const holidayWishesTemplate = {
+  subject: "🎉 L'équipe FinderID vous souhaite de joyeuses fêtes !",
+  message: `<h1>Joyeuses Fêtes !</h1>
+<p>Bonjour,</p>
+<p>En cette période de fêtes, toute l'équipe de FinderID tenait à vous souhaiter de merveilleux moments auprès de vos proches.</p>
+<p>Que cette nouvelle année vous apporte joie, santé et succès. Nous sommes reconnaissants de vous avoir dans notre communauté.</p>
+<p>Merci pour votre confiance continue.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const userSatisfactionSurveyTemplate = {
+  subject: "📝 Votre avis est précieux : participez à notre sondage !",
+  message: `<h1>Aidez-nous à nous améliorer !</h1>
+<p>Bonjour,</p>
+<p>Votre satisfaction est notre moteur. Pour continuer à faire évoluer FinderID dans la bonne direction, nous aimerions connaître votre opinion à travers un court sondage.</p>
+<p>Cela ne vous prendra que 2 minutes et vos réponses nous seront d'une aide immense.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="[Lien vers votre sondage]" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Participer au sondage</a>
+</p>
+<p>Nous vous remercions d'avance pour votre contribution !</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const securityAlertTemplate = {
+  subject: "🚨 Alerte de sécurité importante concernant votre compte",
+  message: `<h1>Information de sécurité critique</h1>
+<p>Bonjour,</p>
+<p>Nous souhaitons attirer votre attention sur une information importante concernant la sécurité de vos comptes en ligne.</p>
+<p><strong>[Décrire la menace ou le conseil de sécurité. Ex: Une nouvelle vague de phishing cible les utilisateurs de services en ligne. Ne cliquez jamais sur des liens suspects.]</strong></p>
+<p>Rappel : L'équipe FinderID ne vous demandera jamais votre mot de passe par e-mail. Soyez vigilant.</p>
+<p>Pour revoir vos paramètres de sécurité, cliquez ci-dessous :</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/profile" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Vérifier ma sécurité</a>
+</p>
+<p>L'équipe FinderID</p>
+`

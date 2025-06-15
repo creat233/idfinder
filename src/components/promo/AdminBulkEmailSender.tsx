@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,12 @@ import {
   securityReminderTemplate,
   tipsAndTricksTemplate,
   monthlyRecapTemplate,
-  specialPromotionTemplate
+  specialPromotionTemplate,
+  termsUpdateTemplate,
+  partnershipAnnouncementTemplate,
+  holidayWishesTemplate,
+  userSatisfactionSurveyTemplate,
+  securityAlertTemplate
 } from "./emailTemplates";
 
 export const AdminBulkEmailSender = () => {
@@ -104,6 +108,26 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={() => useTemplate(specialPromotionTemplate)}>
               <FileText className="h-4 w-4 mr-2" />
               Promo Spéciale
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(termsUpdateTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Mise à jour CGU
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(partnershipAnnouncementTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Annonce Partenariat
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(holidayWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Vœux
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(userSatisfactionSurveyTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Sondage Satisfaction
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(securityAlertTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Alerte Sécurité
             </Button>
           </div>
         </CardTitle>
