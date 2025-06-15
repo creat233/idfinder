@@ -49,6 +49,7 @@ const countries = [
   { code: "CH", name: "Suisse", flag: "🇨🇭" },
   { code: "PT", name: "Portugal", flag: "🇵🇹" },
   { code: "NL", name: "Pays-Bas", flag: "🇳🇱" },
+  { code: "GB", name: "Royaume-Uni", flag: "🇬🇧" },
   
   // Amérique du Nord
   { code: "CA", name: "Canada", flag: "🇨🇦" },
