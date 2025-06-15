@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { useUserCards } from "@/hooks/useUserCards";
 import { PersonalStats } from "@/components/profile/PersonalStats";
 import { PasswordChangeForm } from "@/components/profile/PasswordChangeForm";
 import { Separator } from "@/components/ui/separator";
+import { ProfileBadges } from "@/components/profile/ProfileBadges";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -87,6 +89,8 @@ const Profile = () => {
           
           <PersonalStats cardCount={cards.length} totalEarnings={totalEarnings} />
 
+          <ProfileBadges />
+          
           <Separator />
           
           {/* Informations du pays */}
