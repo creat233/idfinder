@@ -1,3 +1,4 @@
+
 export const cardRegistrationAnnouncementTemplate = {
   subject: "🎉 Nouvelle fonctionnalité : Sécurisez vos cartes sur FinderID !",
   message: `<h1>Ne perdez plus jamais vos documents importants !</h1>
@@ -320,3 +321,4 @@ export const ramadanWishesTemplate = {
 <p>Ramadan Mubarak !</p>
 <p>L'équipe FinderID</p>
 `
+};
