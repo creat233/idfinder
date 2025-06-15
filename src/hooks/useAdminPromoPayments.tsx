@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -21,7 +20,7 @@ export const useAdminPromoPayments = () => {
     reporterId: string;
     reporterName: string;
     finalPrice: number;
-    promoUsageId?: string; // <- très important ici
+    promoCodeId?: string; // <- On utilise l'ID du code promo
     promoCodeOwnerId?: string;
     promoCode?: string;
   }) => {
@@ -44,7 +43,7 @@ export const useAdminPromoPayments = () => {
           ) + `\n\n--- PAIEMENT CONFIRMÉ ---\nDate de confirmation: ${new Date().toLocaleString('fr-FR')}\nStatut: PAYÉ ET RÉCUPÉRÉ`
         })
         .eq("id", recoveryData.cardId)
-        .select(); // <-- On veut le row retourné
+        .select();
 
       if (cardUpdateError) {
         console.error("Erreur mise à jour carte:", cardUpdateError);
@@ -53,11 +52,10 @@ export const useAdminPromoPayments = () => {
       if (!updatedRows || updatedRows.length === 0) {
         console.error("Aucune carte mise à jour, id inexistant?");
       } else {
-        // Log pour diagnostique
         console.log("Carte après update:", updatedRows[0]);
       }
 
-      // --- FIX : Logique améliorée pour notifier le propriétaire de la carte ---
+      // --- Logique améliorée pour notifier le propriétaire de la carte ---
       const { data: cardDetails } = await supabase
         .from("reported_cards")
         .select("card_number")
@@ -107,25 +105,39 @@ export const useAdminPromoPayments = () => {
         console.error("Erreur notification signaleur:", reporterNotificationError);
       }
 
-      // 4. Si un code promo a été utilisé, notifier le propriétaire SEULEMENT à la confirmation ET MAJ la promo_usage
-      if (recoveryData.promoUsageId && recoveryData.promoCodeOwnerId && recoveryData.promoCode) {
-        // Get admin who validates
+      // 4. Si un code promo a été utilisé, créer l'usage, mettre à jour les gains et notifier
+      if (recoveryData.promoCodeId && recoveryData.promoCodeOwnerId && recoveryData.promoCode) {
         const adminId = await getCurrentAdminId();
 
-        // Marquer l'utilisation comme payée
-        const { error: updatePromoError } = await supabase
+        // A. Créer l'enregistrement promo_usage, qui déclenchera le comptage d'utilisation
+        const { error: usageError } = await supabase
           .from("promo_usage")
-          .update({ 
+          .insert({
+            promo_code_id: recoveryData.promoCodeId,
+            used_by_phone: recoveryData.ownerPhone,
+            discount_amount: 1000,
             is_paid: true,
             paid_at: new Date().toISOString(),
-            admin_confirmed_by: adminId ?? null
-          })
-          .eq("id", recoveryData.promoUsageId);
+            admin_confirmed_by: adminId ?? null,
+          });
 
-        if (updatePromoError) {
-          console.error("Erreur mise à jour promo usage:", updatePromoError);
+        if (usageError) {
+          console.error("Erreur lors de la création de l'utilisation du promo:", usageError);
         } else {
-          // Envoyer la notification de revenu SEULEMENT lors de la confirmation
+           // B. Mettre à jour manuellement les gains (car notre trigger est sur UPDATE, pas INSERT)
+           const { error: earningsError } = await supabase.from('promo_codes').update({
+                  total_earnings: supabase.sql(`total_earnings + 1000`)
+              }).eq('id', recoveryData.promoCodeId);
+           
+           if(earningsError) {
+              console.error("Erreur manuelle mise à jour gains:", earningsError);
+              // Fallback au cas où la RPC n'existe pas ou échoue
+              await supabase.from('promo_codes').update({
+                  total_earnings: supabase.sql(`total_earnings + 1000`)
+              }).eq('id', recoveryData.promoCodeId);
+           }
+          
+          // C. Envoyer la notification de revenu
           const { error: promoOwnerNotificationError } = await supabase
             .from("notifications")
             .insert({
@@ -147,13 +159,7 @@ export const useAdminPromoPayments = () => {
         `Toutes les notifications ont été envoyées et les paiements confirmés (Propriétaire: ${recoveryData.finalPrice} FCFA, Signaleur: 2000 FCFA${recoveryData.promoCode ? `, Propriétaire code promo: 1000 FCFA` : ''})`
       );
 
-      // Ajout : petit délai avant reload pour laisser temps réel se propager
-      setTimeout(() => {
-        if (window && window.location && typeof window.location.reload === "function") {
-          // Ne pas faire reload en prod, mais log la demande de refresh (le hook le gère déjà)
-          console.log("Demande de refresh (hook/list) après paiement confirmé.");
-        }
-      }, 700);
+      console.log("Demande de refresh (hook/list) après paiement confirmé.");
 
       return true;
     } catch (error) {

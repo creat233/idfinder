@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Gift, Save, Phone, X } from "lucide-react";
+import { Gift, Save, X } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { TableCell } from "@/components/ui/table";
@@ -34,7 +35,7 @@ export const AdminRecoveriesPromoEditCell = ({
     // Vérifier que le code promo existe et est actif/valide
     const { data: promo, error } = await supabase
       .from("promo_codes")
-      .select("id, code, is_active, is_paid, expires_at")
+      .select("id, code, is_active, is_paid, expires_at, user_id")
       .eq("code", inputValue.trim().toUpperCase())
       .maybeSingle();
 
@@ -74,10 +75,25 @@ export const AdminRecoveriesPromoEditCell = ({
         setLoading(false);
         return;
       }
+      
+      // Notifier le propriétaire du code promo de son utilisation
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert({
+            user_id: promo.user_id,
+            type: "promo_code_used",
+            title: "🎉 Code promo utilisé !",
+            message: `Votre code promo ${promo.code} vient d'être utilisé ! Attendez la confirmation de récupération pour recevoir votre revenu de 1000 FCFA.`,
+            is_read: false
+        });
+
+      if (notificationError) {
+          console.warn("La notification au propriétaire du code a échoué mais le code a été associé.", notificationError);
+      }
 
       showSuccess(
         "Code promo associé ✔️",
-        `Code ${promo.code} associé à la récupération ${recoveryId} !`
+        `Code ${promo.code} associé à la récupération ! Le propriétaire du code a été notifié.`
       );
       setEditing(false);
       setLoading(false);
