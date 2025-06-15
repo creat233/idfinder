@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { ExternalLink } from "@/components/ui/external-link";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 export const DocumentFooter = ({ itemVariants }: { itemVariants: any }) => {
   const { t } = useTranslation();

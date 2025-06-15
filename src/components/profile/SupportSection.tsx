@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 interface SupportSectionProps {
   handleContactSupport: () => void;

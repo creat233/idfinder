@@ -1,5 +1,5 @@
 
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 export const PromoCodeEmptyState = () => {
   const { t } = useTranslation();
