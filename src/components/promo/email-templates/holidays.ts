@@ -187,3 +187,33 @@ export const birthdayWishesTemplate = {
 <p>Merci pour votre confiance et votre fidélité.</p>
 <p>L'équipe FinderID</p>`
 };
+
+export const laylatAlQadrWishesTemplate = {
+  subject: "Laylat al-Qadr Moubarak - FinderID",
+  message: `<h1>Laylat al-Qadr Moubarak</h1>
+<p>Bonjour,</p>
+<p>En cette Nuit du Destin, l'équipe de FinderID vous souhaite une soirée de prière et de recueillement remplie de bénédictions.</p>
+<p>Que vos vœux soient exaucés.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const pentecostWishesTemplate = {
+  subject: "Joyeuse Pentecôte - FinderID",
+  message: `<h1>Bonne Fête de la Pentecôte</h1>
+<p>Bonjour,</p>
+<p>L'équipe de FinderID souhaite une joyeuse fête de la Pentecôte à toute la communauté chrétienne.</p>
+<p>Que l'Esprit Saint vous illumine et vous guide.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const achouraWishesTemplate = {
+  subject: "Bonne fête de l'Achoura (Tamkharit) - FinderID",
+  message: `<h1>Excellente Fête de l'Achoura</h1>
+<p>Bonjour,</p>
+<p>À l'occasion de l'Achoura, aussi appelée Tamkharit, l'équipe de FinderID vous présente ses meilleurs vœux de paix, de partage et de pardon.</p>
+<p>Que cette journée soit bénie pour vous et vos proches.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};

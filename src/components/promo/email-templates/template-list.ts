@@ -1,3 +1,4 @@
+
 import {
   cardRegistrationAnnouncementTemplate,
   promoCodeAnnouncementTemplate,
@@ -39,6 +40,9 @@ import {
   assumptionDayWishesTemplate,
   allSaintsDayWishesTemplate,
   peaceDayWishesTemplate,
+  laylatAlQadrWishesTemplate,
+  pentecostWishesTemplate,
+  achouraWishesTemplate,
 } from "./";
 
 export interface EmailTemplate {
@@ -89,11 +93,14 @@ export const templateCategories: TemplateCategory[] = [
       { id: "newYearWishes", template: newYearWishesTemplate, label: "Nouvel An", contexts: ['bulk'] },
       { id: "christmasWishes", template: christmasWishesTemplate, label: "Noël", contexts: ['bulk'] },
       { id: "easterWishes", template: easterWishesTemplate, label: "Pâques", contexts: ['bulk'] },
+      { id: "pentecostWishes", template: pentecostWishesTemplate, label: "Pentecôte", contexts: ['bulk'] },
       { id: "assumptionDayWishes", template: assumptionDayWishesTemplate, label: "Assomption", contexts: ['bulk'] },
       { id: "allSaintsDayWishes", template: allSaintsDayWishesTemplate, label: "Toussaint", contexts: ['bulk'] },
       { id: "ramadanWishes", template: ramadanWishesTemplate, label: "Ramadan", contexts: ['bulk'] },
+      { id: "laylatAlQadrWishes", template: laylatAlQadrWishesTemplate, label: "Nuit du Destin", contexts: ['bulk'] },
       { id: "koriteWishes", template: koriteWishesTemplate, label: "Korité", contexts: ['bulk'] },
       { id: "tabaskiWishes", template: tabaskiWishesTemplate, label: "Tabaski", contexts: ['bulk'] },
+      { id: "achouraWishes", template: achouraWishesTemplate, label: "Achoura (Tamkharit)", contexts: ['bulk'] },
       { id: "mawlidWishes", template: mawlidWishesTemplate, label: "Mawlid (Gamou)", contexts: ['bulk'] },
       { id: "magalDeToubaWishes", template: magalDeToubaWishesTemplate, label: "Magal de Touba", contexts: ['bulk'] },
       { id: "fathersDayWishes", template: fathersDayWishesTemplate, label: "Fête des Pères", contexts: ['bulk'] },
