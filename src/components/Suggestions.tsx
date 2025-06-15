@@ -14,6 +14,14 @@ export const Suggestions = () => {
     {
       title: "3. Optimiser la page 'carte trouvée'",
       description: "Améliorer les instructions pour la récupération de la carte, avec potentiellement une carte géographique."
+    },
+    {
+      title: "4. Vendre des stickers QR Code physiques",
+      description: "Créer une boutique pour vendre des stickers QR à coller sur n'importe quel objet (clés, sac...). Les affiliés peuvent toucher une commission sur les ventes."
+    },
+    {
+      title: "5. Offre 'Premium' pour les utilisateurs",
+      description: "Proposer un abonnement payant qui donnerait des avantages : plus de codes promo, commissions plus élevées, et support prioritaire."
     }
   ];
 
