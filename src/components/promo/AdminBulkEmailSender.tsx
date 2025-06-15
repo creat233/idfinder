@@ -1,44 +1,14 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Send, FileText } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  cardRegistrationAnnouncementTemplate,
-  promoCodeAnnouncementTemplate,
-  welcomeEmailTemplate,
-  inactivityReminderTemplate,
-  feedbackRequestTemplate,
-  securityReminderTemplate,
-  tipsAndTricksTemplate,
-  monthlyRecapTemplate,
-  specialPromotionTemplate,
-  termsUpdateTemplate,
-  partnershipAnnouncementTemplate,
-  holidayWishesTemplate,
-  newYearWishesTemplate,
-  easterWishesTemplate,
-  tabaskiWishesTemplate,
-  ramadanWishesTemplate,
-  userSatisfactionSurveyTemplate,
-  securityAlertTemplate,
-  featureUpdateTemplate,
-  accountAnniversaryTemplate,
-  referralProgramReminderTemplate,
-  documentExpirationReminderTemplate,
-  successStoryTemplate,
-  birthdayWishesTemplate,
-  communityGuideTemplate,
-  yearlyRecapTemplate,
-  promoCodeEarningTemplate,
-  fathersDayWishesTemplate,
-  mothersDayWishesTemplate,
-  laborDayWishesTemplate,
-} from "./emailTemplates";
+import { EmailTemplateSelector } from "./EmailTemplateSelector";
 
 export const AdminBulkEmailSender = () => {
   const [subject, setSubject] = useState("");
@@ -88,128 +58,7 @@ export const AdminBulkEmailSender = () => {
             <Mail className="h-5 w-5" />
             Envoyer un e-mail à tous les utilisateurs
           </div>
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            <Button variant="outline" size="sm" onClick={() => useTemplate(cardRegistrationAnnouncementTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Annonce Enregistrement Carte
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(promoCodeAnnouncementTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Annonce Codes Promo
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(welcomeEmailTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              E-mail de Bienvenue
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(inactivityReminderTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Rappel d'Inactivité
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(feedbackRequestTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Demande de Feedback
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(securityReminderTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Rappel de Sécurité
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(tipsAndTricksTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Astuces & Conseils
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(monthlyRecapTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Récap Mensuel
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(specialPromotionTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Promo Spéciale
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(termsUpdateTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Mise à jour CGU
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(partnershipAnnouncementTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Annonce Partenariat
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(holidayWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Vœux
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(newYearWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Nouvel An
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(easterWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Pâques
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(tabaskiWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Tabaski
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(ramadanWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Ramadan
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(userSatisfactionSurveyTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Sondage Satisfaction
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(securityAlertTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Alerte Sécurité
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(featureUpdateTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Mise à Jour Fonctionnalité
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(accountAnniversaryTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Anniversaire Compte
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(referralProgramReminderTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Rappel Parrainage
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(documentExpirationReminderTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Rappel Expiration Document
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(successStoryTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Histoire de Réussite
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(birthdayWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Vœux Anniversaire
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(communityGuideTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Guide Communauté
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(yearlyRecapTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Bilan Annuel
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(promoCodeEarningTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Revenus Code Promo
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(fathersDayWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Fête des Pères
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(mothersDayWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Fête des Mères
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => useTemplate(laborDayWishesTemplate)}>
-              <FileText className="h-4 w-4 mr-2" />
-              Fête du Travail
-            </Button>
-          </div>
+          <EmailTemplateSelector useTemplate={useTemplate} />
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

@@ -60,8 +60,7 @@ export const welcomeEmailTemplate = {
 </p>
 <p>Si vous avez des questions, n'hésitez pas à consulter notre <a href="https://finder-id-4182.lovable.app/support">page d'aide</a>.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const inactivityReminderTemplate = {
   subject: "🤔 On ne vous voit plus sur FinderID...",
@@ -79,8 +78,7 @@ export const inactivityReminderTemplate = {
 </p>
 <p>À très bientôt !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const feedbackRequestTemplate = {
   subject: "Votre avis compte ! Aidez-nous à améliorer FinderID.",
@@ -109,8 +107,7 @@ export const securityReminderTemplate = {
   <a href="https://finder-id-4182.lovable.app/profile" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Vérifier mes paramètres</a>
 </p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const tipsAndTricksTemplate = {
   subject: "💡 Tirez le meilleur parti de votre compte FinderID !",
@@ -127,8 +124,7 @@ export const tipsAndTricksTemplate = {
   <a href="https://finder-id-4182.lovable.app/dashboard" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Explorer le tableau de bord</a>
 </p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const monthlyRecapTemplate = {
   subject: "📰 Votre récapitulatif FinderID !",
@@ -148,8 +144,7 @@ export const monthlyRecapTemplate = {
 </p>
 <p>Restez à l'écoute pour d'autres améliorations !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const specialPromotionTemplate = {
   subject: "🎉 Offre Spéciale : Économisez sur les frais de récupération !",
@@ -164,8 +159,7 @@ export const specialPromotionTemplate = {
 <p>L'offre est valable jusqu'au [Date d'expiration].</p>
 <p>Merci de faire partie de notre communauté.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const termsUpdateTemplate = {
   subject: "Mise à jour importante de nos Conditions d'Utilisation",
@@ -179,8 +173,7 @@ export const termsUpdateTemplate = {
 </p>
 <p>Merci de votre confiance.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const partnershipAnnouncementTemplate = {
   subject: "🤝 FinderID s'associe pour mieux vous servir !",
@@ -191,8 +184,7 @@ export const partnershipAnnouncementTemplate = {
 <p>Ce partenariat renforce notre mission : vous aider à retrouver vos biens en toute sérénité.</p>
 <p>Pour en savoir plus, consultez notre blog.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const holidayWishesTemplate = {
   subject: "🎉 L'équipe FinderID vous souhaite de joyeuses fêtes !",
@@ -203,8 +195,7 @@ export const holidayWishesTemplate = {
 <p>Merci pour votre confiance continue.</p>
 <p>Cordialement,</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const userSatisfactionSurveyTemplate = {
   subject: "📝 Votre avis est précieux : participez à notre sondage !",
@@ -217,8 +208,7 @@ export const userSatisfactionSurveyTemplate = {
 </p>
 <p>Nous vous remercions d'avance pour votre contribution !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const securityAlertTemplate = {
   subject: "🚨 Alerte de sécurité importante concernant votre compte",
@@ -232,8 +222,7 @@ export const securityAlertTemplate = {
   <a href="https://finder-id-4182.lovable.app/profile" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Vérifier ma sécurité</a>
 </p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const featureUpdateTemplate = {
   subject: "📣 Annonce de mise à jour : découvrez nos nouveautés !",
@@ -249,8 +238,7 @@ export const featureUpdateTemplate = {
   <a href="https://finder-id-4182.lovable.app/dashboard" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Découvrir les nouveautés</a>
 </p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const accountAnniversaryTemplate = {
   subject: "🎂 Joyeux anniversaire sur FinderID !",
@@ -260,8 +248,7 @@ export const accountAnniversaryTemplate = {
 <p>Pour célébrer, nous vous offrons un avantage spécial : <strong>[Offre spéciale, ex: 20% de réduction sur votre prochain frais de récupération]</strong>.</p>
 <p>Nous espérons vous compter parmi nous pour de nombreuses années encore.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const referralProgramReminderTemplate = {
   subject: "💸 Rappel : Gagnez de l'argent avec notre programme de parrainage !",
@@ -349,8 +336,7 @@ export const documentExpirationReminderTemplate = {
 </p>
 <p>Merci de garder votre compte à jour.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const successStoryTemplate = {
   subject: "🌟 Histoire de réussite : Comment un membre a retrouvé son document grâce à FinderID !",
@@ -361,8 +347,7 @@ export const successStoryTemplate = {
 <p>C'est la preuve que chaque petit geste compte. En registrant vos documents et en signalant ceux que vous trouvez, vous contribuez activement à un réseau d'entraide puissant.</p>
 <p>Merci de faire partie de cette belle aventure.</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const birthdayWishesTemplate = {
   subject: "🎂 Joyeux Anniversaire de la part de FinderID !",
@@ -392,8 +377,7 @@ export const communityGuideTemplate = {
 </p>
 <p>Merci pour votre précieuse aide !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const yearlyRecapTemplate = {
   subject: "🎉 Votre bilan de l'année sur FinderID !",
@@ -408,8 +392,7 @@ export const yearlyRecapTemplate = {
 <p>Nous sommes incroyablement fiers de vous avoir à nos côtés. Préparez-vous pour une nouvelle année remplie de nouveautés pour sécuriser encore mieux vos biens.</p>
 <p>Merci pour cette année exceptionnelle !</p>
 <p>L'équipe FinderID</p>
-`
-};
+`;
 
 export const fathersDayWishesTemplate = {
   subject: "💙 Bonne Fête des Pères de la part de FinderID !",
