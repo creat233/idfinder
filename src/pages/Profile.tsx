@@ -43,7 +43,7 @@ const Profile = () => {
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
-  const { mcards, loading: mcardsLoading, updateMCard, deleteMCard } = useMCards();
+  const { mcards, loading: mcardsLoading, deleteMCard, updateMCard } = useMCards();
 
   useEffect(() => {
     const getSession = async () => {
@@ -151,7 +151,6 @@ const Profile = () => {
           <MCardsList
             mcards={mcards}
             loading={mcardsLoading}
-            updateMCard={updateMCard}
             deleteMCard={deleteMCard}
             onStartUpgradeFlow={handleUpgradeFromProfile}
             onEdit={handleEditMCard}
