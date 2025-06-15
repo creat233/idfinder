@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -5,7 +6,7 @@ import { getPriceInfoForCountry } from "@/utils/pricing";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MCard } from "@/hooks/useMCards";
+import { MCard } from "@/types/mcard";
 import { SelectMCardDialog } from "./SelectMCardDialog";
 
 interface MCardPricingProps {

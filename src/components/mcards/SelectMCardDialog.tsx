@@ -1,7 +1,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MCard } from "@/hooks/useMCards";
+import { MCard } from "@/types/mcard";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface SelectMCardDialogProps {

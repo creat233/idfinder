@@ -15,7 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useTranslation } from "@/hooks/useTranslation";
-import { MCard } from "@/hooks/useMCards";
+import { MCard } from "@/types/mcard";
 import { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import { useEffect, useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
