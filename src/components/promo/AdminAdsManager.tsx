@@ -81,19 +81,26 @@ export const AdminAdsManager: React.FC = () => {
       // Insert
       ({ error } = await supabase.from("admin_ads").insert([toSend]));
     } else {
-      // Update: explicitly cast as the correct update type, and ensure we send title
-      // Strip ID from update payload
-      const { id, ...fields } = toSend;
-      // Title is required for update per Supabase types
-      const updatePayload = {
+      // Update: ensure correct types
+      const { id } = toSend;
+      // Build payload with all updatable props (Supabase types: title required, others optional or nullable)
+      const updatePayload: {
+        title: string;
+        message: string | null;
+        image_url: string | null;
+        target_url: string | null;
+        is_active: boolean;
+        start_date: string | null;
+        end_date: string | null;
+        // updated_at?: string; // can be uncommented if you want to track this manually
+      } = {
         title: form.title ?? "",
-        message: form.message ?? null,
-        image_url: form.image_url ?? null,
-        target_url: form.target_url ?? null,
+        message: form.message === "" ? null : form.message ?? null,
+        image_url: form.image_url === "" ? null : form.image_url ?? null,
+        target_url: form.target_url === "" ? null : form.target_url ?? null,
         is_active: !!form.is_active,
-        start_date: form.start_date ?? null,
-        end_date: form.end_date ?? null,
-        // updated_at: new Date().toISOString(), // Optionally update timestamp
+        start_date: (form.start_date && form.start_date !== "") ? form.start_date : null,
+        end_date: (form.end_date && form.end_date !== "") ? form.end_date : null,
       };
       ({ error } = await supabase.from("admin_ads").update(updatePayload).eq("id", id));
     }
