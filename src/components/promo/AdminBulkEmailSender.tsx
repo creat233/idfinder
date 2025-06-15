@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,10 @@ import {
   partnershipAnnouncementTemplate,
   holidayWishesTemplate,
   userSatisfactionSurveyTemplate,
-  securityAlertTemplate
+  securityAlertTemplate,
+  featureUpdateTemplate,
+  accountAnniversaryTemplate,
+  referralProgramReminderTemplate
 } from "./emailTemplates";
 
 export const AdminBulkEmailSender = () => {
@@ -128,6 +132,18 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={() => useTemplate(securityAlertTemplate)}>
               <FileText className="h-4 w-4 mr-2" />
               Alerte Sécurité
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(featureUpdateTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Mise à Jour Fonctionnalité
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(accountAnniversaryTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Anniversaire Compte
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(referralProgramReminderTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Rappel Parrainage
             </Button>
           </div>
         </CardTitle>

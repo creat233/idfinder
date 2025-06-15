@@ -233,3 +233,45 @@ export const securityAlertTemplate = {
 </p>
 <p>L'équipe FinderID</p>
 `
+};
+
+export const featureUpdateTemplate = {
+  subject: "📣 Annonce de mise à jour : découvrez nos nouveautés !",
+  message: `<h1>De nouvelles fonctionnalités sont arrivées !</h1>
+<p>Bonjour,</p>
+<p>Nous sommes constamment à l'écoute de vos retours et nous avons le plaisir de vous annoncer le déploiement de nouvelles améliorations :</p>
+<ul>
+  <li><strong>[Nom de la fonctionnalité 1] :</strong> [Brève description de la fonctionnalité et de son avantage].</li>
+  <li><strong>[Nom de la fonctionnalité 2] :</strong> [Brève description de la fonctionnalité et de son avantage].</li>
+</ul>
+<p>Nous espérons que ces nouveautés vous plairont !</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/dashboard" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Découvrir les nouveautés</a>
+</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const accountAnniversaryTemplate = {
+  subject: "🎂 Joyeux anniversaire sur FinderID !",
+  message: `<h1>Déjà un an avec nous !</h1>
+<p>Bonjour,</p>
+<p>Cela fait maintenant un an que vous avez rejoint la communauté FinderID, et nous tenions à vous remercier pour votre confiance.</p>
+<p>Pour célébrer, nous vous offrons un avantage spécial : <strong>[Offre spéciale, ex: 20% de réduction sur votre prochain frais de récupération]</strong>.</p>
+<p>Nous espérons vous compter parmi nous pour de nombreuses années encore.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const referralProgramReminderTemplate = {
+  subject: "💸 Rappel : Gagnez de l'argent avec notre programme de parrainage !",
+  message: `<h1>Partagez FinderID et soyez récompensé !</h1>
+<p>Bonjour,</p>
+<p>Saviez-vous que vous pouviez gagner de l'argent simplement en parlant de FinderID à vos amis ?</p>
+<p>Pour chaque personne qui utilise votre code promo, <strong>vous recevez 1000 FCFA</strong>. C'est un excellent moyen d'aider la communauté tout en étant récompensé.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/promo-codes" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Obtenir mon code de parrainage</a>
+</p>
+<p>N'attendez plus pour commencer à partager !</p>
+<p>L'équipe FinderID</p>
+`
