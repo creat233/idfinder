@@ -5,7 +5,9 @@ import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/type
 import { useTranslation } from './useTranslation';
 import { v4 as uuidv4 } from 'uuid';
 
-export type MCard = Tables<'mcards'>;
+export type MCard = Tables<'mcards'> & {
+  view_count?: number;
+};
 
 export const useMCards = () => {
   const [mcards, setMCards] = useState<MCard[]>([]);
