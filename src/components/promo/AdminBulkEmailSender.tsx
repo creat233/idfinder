@@ -21,6 +21,10 @@ import {
   termsUpdateTemplate,
   partnershipAnnouncementTemplate,
   holidayWishesTemplate,
+  newYearWishesTemplate,
+  easterWishesTemplate,
+  tabaskiWishesTemplate,
+  ramadanWishesTemplate,
   userSatisfactionSurveyTemplate,
   securityAlertTemplate,
   featureUpdateTemplate,
@@ -124,6 +128,22 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={() => useTemplate(holidayWishesTemplate)}>
               <FileText className="h-4 w-4 mr-2" />
               Vœux
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(newYearWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Nouvel An
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(easterWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Pâques
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(tabaskiWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Tabaski
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(ramadanWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Ramadan
             </Button>
             <Button variant="outline" size="sm" onClick={() => useTemplate(userSatisfactionSurveyTemplate)}>
               <FileText className="h-4 w-4 mr-2" />

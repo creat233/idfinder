@@ -276,3 +276,47 @@ export const referralProgramReminderTemplate = {
 <p>L'équipe FinderID</p>
 `
 };
+
+export const newYearWishesTemplate = {
+  subject: "Bonne Année ! ✨ Meilleurs vœux pour la nouvelle année !",
+  message: `<h1>Bonne et Heureuse Année !</h1>
+<p>Bonjour,</p>
+<p>Toute l'équipe de FinderID vous souhaite une excellente nouvelle année !</p>
+<p>Que cette année vous apporte la santé, le bonheur et la réussite dans tous vos projets.</p>
+<p>Nous sommes ravis de vous compter parmi nous et nous vous remercions pour votre confiance.</p>
+<p>À une nouvelle année de sécurité et de sérénité pour vos documents !</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const easterWishesTemplate = {
+  subject: "Joyeuses Pâques de la part de l'équipe FinderID ! 🐣",
+  message: `<h1>Joyeuses Pâques !</h1>
+<p>Bonjour,</p>
+<p>Toute l'équipe de FinderID vous souhaite de très joyeuses fêtes de Pâques.</p>
+<p>Que cette journée soit remplie de joie, de partage et de moments précieux avec vos proches.</p>
+<p>Merci pour votre confiance.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const tabaskiWishesTemplate = {
+  subject: "Aid El Kebir Moubarak ! 🐑",
+  message: `<h1>Excellente fête de Tabaski !</h1>
+<p>Bonjour,</p>
+<p>À l'occasion de l'Aïd el-Kébir, toute l'équipe de FinderID vous présente ses meilleurs vœux.</p>
+<p>Que cette fête soit synonyme de bonheur, de partage et de prospérité pour vous et vos familles.</p>
+<p>Dewenati !</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const ramadanWishesTemplate = {
+  subject: "Ramadan Mubarak ! 🌙",
+  message: `<h1>Bon début de Ramadan !</h1>
+<p>Bonjour,</p>
+<p>En ce début de mois sacré, l'équipe de FinderID vous souhaite un excellent Ramadan.</p>
+<p>Que ce mois de jeûne, de prière et de partage vous apporte la paix, la sérénité et de nombreuses bénédictions.</p>
+<p>Ramadan Mubarak !</p>
+<p>L'équipe FinderID</p>
+`
