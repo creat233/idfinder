@@ -126,6 +126,82 @@ export const Suggestions = () => {
     {
       title: "31. Guide des bonnes pratiques",
       description: "Créer un guide interactif dans l'application pour apprendre aux utilisateurs comment mieux protéger leurs affaires au quotidien."
+    },
+    {
+      title: "32. Mode Famille",
+      description: "Permettre de lier les comptes des membres d'une famille pour gérer les objets de tous."
+    },
+    {
+      title: "33. Impression à domicile",
+      description: "Fournir des modèles de QR codes à imprimer soi-même pour une solution rapide et gratuite."
+    },
+    {
+      title: "34. Challenge de la communauté",
+      description: "Organiser des événements (en ligne ou hors ligne) pour encourager les restitutions."
+    },
+    {
+      title: "35. Intégration avec les réseaux sociaux",
+      description: "Partage facile des trouvailles (de manière anonyme) pour augmenter la portée."
+    },
+    {
+      title: "36. Service de conciergerie",
+      description: "Un service premium pour s'occuper de toutes les démarches de récupération à la place de l'utilisateur."
+    },
+    {
+      title: "37. QR Codes pour animaux de compagnie",
+      description: "Des médailles QR pour les colliers d'animaux."
+    },
+    {
+      title: "38. Feedback et notation",
+      description: "Permettre au propriétaire de noter l'expérience avec le trouveur (et vice-versa) pour renforcer la confiance."
+    },
+    {
+      title: "39. Rapports d'incidents détaillés",
+      description: "Permettre de joindre plus d'informations lors de la déclaration de perte (circonstances, etc.)."
+    },
+    {
+      title: "40. Fonctionnalité 'scanner' dans l'app",
+      description: "Intégrer un lecteur de QR code directement dans l'app pour ne pas dépendre de l'appareil photo natif."
+    },
+    {
+      title: "41. Carte des 'zones chaudes' de perte",
+      description: "Utiliser les données pour montrer les endroits où les objets sont le plus souvent perdus."
+    },
+    {
+      title: "42. Partenariats avec des événements",
+      description: "Fournir des bracelets ou badges QR pour les festivals, conférences, etc."
+    },
+    {
+      title: "43. Support client via WhatsApp",
+      description: "Offrir un canal de support plus direct et populaire."
+    },
+    {
+      title: "44. Contenu vidéo",
+      description: "Tutoriels, témoignages et astuces en format vidéo."
+    },
+    {
+      title: "45. Programme Ambassadeur",
+      description: "Recruter des ambassadeurs dans les universités ou les grandes entreprises pour promouvoir le service."
+    },
+    {
+      title: "46. Service d'impression et livraison de stickers",
+      description: "Commander des stickers personnalisés et les recevoir à domicile."
+    },
+    {
+      title: "47. 'Mode vacances' amélioré",
+      description: "Bloquer temporairement les cartes et documents signalés non-utilisés pendant un voyage."
+    },
+    {
+      title: "48. Intégration avec des services de VTC",
+      description: "Partenariat avec Uber/Yango pour faciliter la récupération d'objets oubliés dans les voitures."
+    },
+    {
+      title: "49. Génération de documents temporaires",
+      description: "En cas de perte de CNI, générer une attestation temporaire (si légalement possible)."
+    },
+    {
+      title: "50. IA pour aider à la description",
+      description: "Utiliser l'IA pour aider les trouveurs à décrire l'objet trouvé de manière précise."
     }
   ];
 
