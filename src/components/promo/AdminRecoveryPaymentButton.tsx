@@ -13,7 +13,7 @@ interface AdminRecoveryPaymentButtonProps {
     reporter_id: string;
     reporter_name: string;
     final_price: number;
-    promo_usage_id?: string;
+    promo_code_id?: string;
     promo_code_owner_id?: string;
     promo_code?: string;
   };
@@ -31,7 +31,7 @@ export const AdminRecoveryPaymentButton = ({ recovery, onPaymentConfirmed }: Adm
       reporterId: recovery.reporter_id,
       reporterName: recovery.reporter_name,
       finalPrice: recovery.final_price,
-      promoUsageId: recovery.promo_usage_id,
+      promoCodeId: recovery.promo_code_id,
       promoCodeOwnerId: recovery.promo_code_owner_id,
       promoCode: recovery.promo_code,
     });

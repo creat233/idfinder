@@ -20,7 +20,7 @@ export const useAdminPromoPayments = () => {
     reporterId: string;
     reporterName: string;
     finalPrice: number;
-    promoCodeId?: string; // <- On utilise l'ID du code promo
+    promoCodeId?: string;
     promoCodeOwnerId?: string;
     promoCode?: string;
   }) => {
@@ -109,32 +109,30 @@ export const useAdminPromoPayments = () => {
       if (recoveryData.promoCodeId && recoveryData.promoCodeOwnerId && recoveryData.promoCode) {
         const adminId = await getCurrentAdminId();
 
-        // A. Créer l'enregistrement promo_usage, qui déclenchera le comptage d'utilisation
-        const { error: usageError } = await supabase
+        // A. Créer l'enregistrement promo_usage avec is_paid: false pour que le trigger d'UPDATE fonctionne
+        const { data: usage, error: usageError } = await supabase
           .from("promo_usage")
           .insert({
             promo_code_id: recoveryData.promoCodeId,
             used_by_phone: recoveryData.ownerPhone,
             discount_amount: 1000,
-            is_paid: true,
-            paid_at: new Date().toISOString(),
-            admin_confirmed_by: adminId ?? null,
-          });
+            is_paid: false, // On insère en non-payé pour déclencher le trigger sur l'update
+          })
+          .select('id')
+          .single();
 
-        if (usageError) {
+        if (usageError || !usage) {
           console.error("Erreur lors de la création de l'utilisation du promo:", usageError);
         } else {
-           // B. Mettre à jour manuellement les gains (car notre trigger est sur UPDATE, pas INSERT)
-           const { error: earningsError } = await supabase.from('promo_codes').update({
-                  total_earnings: supabase.sql(`total_earnings + 1000`)
-              }).eq('id', recoveryData.promoCodeId);
+           // B. Mettre à jour immédiatement pour déclencher le trigger qui calcule les gains
+           const { error: earningsError } = await supabase.from('promo_usage').update({
+                  is_paid: true,
+                  paid_at: new Date().toISOString(),
+                  admin_confirmed_by: adminId ?? null
+              }).eq('id', usage.id);
            
            if(earningsError) {
-              console.error("Erreur manuelle mise à jour gains:", earningsError);
-              // Fallback au cas où la RPC n'existe pas ou échoue
-              await supabase.from('promo_codes').update({
-                  total_earnings: supabase.sql(`total_earnings + 1000`)
-              }).eq('id', recoveryData.promoCodeId);
+              console.error("Erreur lors de la mise à jour de promo_usage pour les gains:", earningsError);
            }
           
           // C. Envoyer la notification de revenu

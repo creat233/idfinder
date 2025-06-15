@@ -1,3 +1,4 @@
+
 import { TableRow, TableCell } from "@/components/ui/table";
 import { MapPin, DollarSign } from "lucide-react";
 import { AllRecoveryData } from "@/types/adminRecoveries";
@@ -93,7 +94,7 @@ export const AdminRecoveriesRow = ({
               reporter_id: recovery.reporter_id,
               reporter_name: recovery.reporter_name,
               final_price: recovery.final_price,
-              promo_usage_id: recovery.promo_usage_id,
+              promo_code_id: recovery.promo_code_id,
               promo_code_owner_id: recovery.promo_code_owner_id,
               promo_code: recovery.promo_code,
             }}
