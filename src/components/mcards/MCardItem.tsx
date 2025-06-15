@@ -87,6 +87,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete }: MCardItemProps) => {
         </div>
       </CardHeader>
       <CardContent>
+        {mcard.description && <p className="text-sm mb-2">{mcard.description}</p>}
         <p className="text-sm text-muted-foreground">URL: /m/{mcard.slug}</p>
       </CardContent>
     </Card>

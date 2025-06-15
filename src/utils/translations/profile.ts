@@ -202,6 +202,10 @@ export const profileTranslations: Translations = {
     fr: "Entreprise",
     en: "Company"
   },
+  description: {
+    fr: "Description",
+    en: "Description"
+  },
   phoneNumber: {
     fr: "Numéro de téléphone",
     en: "Phone Number"
@@ -245,6 +249,10 @@ export const profileTranslations: Translations = {
   mCardDeletedSuccess: {
     fr: "mCard supprimée avec succès !",
     en: "mCard deleted successfully!"
+  },
+  mcardDescriptionPlaceholder: {
+    fr: "Décrivez votre activité, vos services...",
+    en: "Describe your business, your services..."
   },
   mCardError: {
     fr: "Une erreur est survenue.",

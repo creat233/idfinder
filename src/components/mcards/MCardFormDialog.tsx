@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -31,6 +32,7 @@ const formSchema = z.object({
   slug: z.string().min(3, "Le slug est requis").regex(/^[a-z0-9-]+$/, "Slug invalide (lettres minuscules, chiffres et tirets)"),
   job_title: z.string().optional(),
   company: z.string().optional(),
+  description: z.string().optional(),
   phone_number: z.string().optional(),
   email: z.string().email("Email invalide").optional().or(z.literal('')),
   website_url: z.string().url("URL invalide").optional().or(z.literal('')),
@@ -46,6 +48,7 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
       slug: mcard?.slug || "",
       job_title: mcard?.job_title || "",
       company: mcard?.company || "",
+      description: mcard?.description || "",
       phone_number: mcard?.phone_number || "",
       email: mcard?.email || "",
       website_url: mcard?.website_url || "",
@@ -82,6 +85,10 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
           <div className="space-y-2">
             <Label htmlFor="company">{t('company')}</Label>
             <Input id="company" {...register("company")} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="description">{t('description')}</Label>
+            <Textarea id="description" {...register("description")} placeholder={t('mcardDescriptionPlaceholder')} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone_number">{t('phoneNumber')}</Label>
@@ -122,4 +129,3 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
     </Dialog>
   );
 };
-
