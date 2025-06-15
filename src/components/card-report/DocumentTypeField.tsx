@@ -26,21 +26,21 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
   });
 
   const documentTypes = [
-    { value: "id", label: "Carte d'identité nationale" },
-    { value: "driver_license", label: "Permis de conduire" },
-    { value: "passport", label: "Passeport" },
-    { value: "vehicle_registration", label: "Carte grise véhicule" },
-    { value: "motorcycle_registration", label: "Carte grise moto" },
-    { value: "residence_permit", label: "Carte de séjour" },
-    { value: "student_card", label: "Carte étudiante (Gratuit - Contact direct)" },
-    { value: "health_card", label: "Carte de santé (Gratuit - Contact direct)" },
+    { value: "id", label: t("idCard") },
+    { value: "driver_license", label: t("driverLicense") },
+    { value: "passport", label: t("passport") },
+    { value: "vehicle_registration", label: t("vehicleRegistration") },
+    { value: "motorcycle_registration", label: t("motorcycleRegistration") },
+    { value: "residence_permit", label: t("residencePermit") },
+    { value: "student_card", label: t("documentTypeStudentCardFree") },
+    { value: "health_card", label: t("documentTypeHealthCardFree") },
   ];
 
   const isFreeService = field.value === "student_card" || field.value === "health_card";
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="documentType">Type de document</Label>
+      <Label htmlFor="documentType">{t("documentType")}</Label>
       <Select
         value={field.value}
         onValueChange={field.onChange}
@@ -50,7 +50,7 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           id="documentType"
           className={`w-full ${error ? "border-destructive" : ""}`}
         >
-          <SelectValue placeholder="Sélectionnez le type de document" />
+          <SelectValue placeholder={t("selectDocumentType")} />
         </SelectTrigger>
         <SelectContent>
           {documentTypes.map((docType) => (
@@ -71,8 +71,8 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
           <p className="text-sm text-green-700">
             <strong>
-              {field.value === "student_card" ? "Carte étudiante" : "Carte de santé"} - Service gratuit :
-            </strong> Votre numéro de téléphone sera affiché directement pour permettre au propriétaire de vous contacter immédiatement.
+              {field.value === "student_card" ? t("studentCard") : t("healthCard")} - {t("freeServiceTitle")}
+            </strong> {t("freeServiceDesc")}
           </p>
         </div>
       )}
@@ -82,13 +82,13 @@ export function DocumentTypeField({ form }: DocumentTypeFieldProps) {
           <span className="text-lg">📦</span>
           <div>
             <p className="text-sm text-blue-700 font-medium">
-              Option de livraison à domicile
+              {t("deliveryOptionTitle")}
             </p>
             <p className="text-xs text-blue-600 mt-1">
-              Pour tous les types de documents, nous proposons un service de livraison à domicile
+              {t("deliveryOptionDesc1")}
             </p>
             <p className="text-xs text-blue-600 mt-1">
-              Coût de livraison : 2000 FCFA (négociable selon la distance)
+              {t("deliveryOptionDesc2")}
             </p>
           </div>
         </div>

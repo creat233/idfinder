@@ -1,4 +1,3 @@
-
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Loader2, Upload, X } from "lucide-react";
@@ -6,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export interface PhotoUploadProps {
   form: UseFormReturn<any>;
@@ -15,17 +15,47 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const currentFile = form.watch("photoUrl");
   const { showSuccess, showError } = useToast();
+  const { t } = useTranslation();
+
+  const handleFileUpload = useCallback(async (file: File) => {
+    try {
+      setIsUploading(true);
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `card_photos/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('card_photos')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('card_photos')
+        .getPublicUrl(filePath);
+
+      form.setValue("photoUrl", publicUrl, { shouldValidate: true });
+      
+      showSuccess(t("photoUploadSuccessTitle"), t("photoUploadSuccessDesc"));
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      showError(t("photoUploadErrorTitle"), t("photoUploadErrorUpload"));
+    } finally {
+      setIsUploading(false);
+    }
+  }, [form, showSuccess, showError, t]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
       if (file.size > 5 * 1024 * 1024) {
-        showError("Erreur", "La taille du fichier ne doit pas dépasser 5 Mo");
+        showError(t("photoUploadErrorTitle"), t("photoUploadErrorSize"));
         return;
       }
       handleFileUpload(file);
     }
-  }, []);
+  }, [handleFileUpload, showError, t]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -35,39 +65,6 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
     },
     maxFiles: 1,
   });
-
-  const handleFileUpload = async (file: File) => {
-    try {
-      setIsUploading(true);
-      
-      // Create a unique file name
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = `card_photos/${fileName}`;
-
-      // Upload file to Supabase Storage
-      const { error: uploadError, data } = await supabase.storage
-        .from('card_photos')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      // Get the public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('card_photos')
-        .getPublicUrl(filePath);
-
-      // Set the URL in the form
-      form.setValue("photoUrl", publicUrl, { shouldValidate: true });
-      
-      showSuccess("Photo ajoutée avec succès", "Votre photo a été téléchargée");
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      showError("Erreur", "Une erreur est survenue lors du téléchargement de la photo");
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   const handleRemoveFile = () => {
     form.setValue("photoUrl", "", { shouldValidate: true });
@@ -110,10 +107,10 @@ export function PhotoUpload({ form }: PhotoUploadProps) {
               <Upload className="h-8 w-8 text-gray-500" />
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-700">
-                  Glissez et déposez votre photo ici, ou cliquez pour sélectionner
+                  {t("photoUploadTitle")}
                 </p>
                 <p className="text-xs text-gray-500">
-                  PNG ou JPG (max. 5 Mo)
+                  {t("photoUploadDesc")}
                 </p>
               </div>
             </>

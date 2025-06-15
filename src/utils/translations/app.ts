@@ -42,6 +42,10 @@ export const appTranslations: Translations = {
     fr: "Chargement...",
     en: "Loading..."
   },
+  error: {
+    fr: "Erreur",
+    en: "Error"
+  },
   // Traductions pour la page Support
   supportAndFaq: {
     fr: "Support et FAQ",

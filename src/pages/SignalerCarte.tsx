@@ -91,18 +91,18 @@ const SignalerCarte = () => {
 
       if (data.documentType === "student_card") {
         showSuccess(
-          t("studentCardReported") || "Carte étudiante signalée avec succès",
-          t("studentCardMessage") || "Votre numéro sera affiché directement pour que l'étudiant puisse vous contacter"
+          t("studentCardReported"),
+          t("studentCardMessage")
         );
       } else if (data.documentType === "health_card") {
         showSuccess(
-          "Carte de santé signalée avec succès",
-          "Votre numéro sera affiché directement pour que le propriétaire puisse vous contacter"
+          t("healthCardReported"),
+          t("healthCardMessage")
         );
       } else {
         showSuccess(
-          t("cardReported") || "Carte signalée avec succès",
-          t("thankYouMessage") || "Merci d'avoir signalé cette carte"
+          t("cardReported"),
+          t("thankYouMessage")
         );
       }
 
@@ -110,8 +110,8 @@ const SignalerCarte = () => {
     } catch (error) {
       console.error("Error submitting form:", error);
       showError(
-        t("error") || "Erreur",
-        t("submitError") || "Une erreur est survenue lors de la soumission du formulaire"
+        t("error"),
+        t("submitError")
       );
     } finally {
       setIsSubmitting(false);
@@ -132,16 +132,20 @@ const SignalerCarte = () => {
 
             <FormField
               name="cardNumber"
-              label={t("cardNumber") || "Numéro de la carte"}
-              placeholder={t("enterCardNumber") || "Entrez le numéro de la carte"}
+              label={t("cardNumber")}
+              placeholder={t("enterCardNumber")}
               control={form.control}
             />
 
-            <LocationField form={form} />
+            <LocationField 
+              form={form}
+              label={t("location")}
+              placeholder={t("locationPlaceholder")}
+            />
 
             <FormField
               name="foundDate"
-              label={t("foundDate") || "Date de découverte"}
+              label={t("foundDate")}
               type="date"
               placeholder=""
               control={form.control}
@@ -149,8 +153,8 @@ const SignalerCarte = () => {
 
             <FormField
               name="description"
-              label={t("description") || "Description"}
-              placeholder={t("descriptionPlaceholder") || "Ajoutez des détails sur l'endroit où vous avez trouvé la carte"}
+              label={t("description")}
+              placeholder={t("descriptionPlaceholder")}
               control={form.control}
               textarea
             />
@@ -161,14 +165,14 @@ const SignalerCarte = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h3 className="font-semibold text-blue-800 mb-2">
                   {watchedDocumentType === "student_card" 
-                    ? (t("freeServiceStudentCards") || "Service gratuit pour cartes étudiantes")
-                    : "Service gratuit pour cartes de santé"
+                    ? t("freeServiceStudentCards")
+                    : t("freeServiceHealthCards")
                   }
                 </h3>
                 <p className="text-sm text-blue-700">
                   {watchedDocumentType === "student_card" 
-                    ? (t("studentCardInfo") || "En signalant une carte étudiante, votre numéro de téléphone sera visible directement pour que l'étudiant puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes étudiantes.")
-                    : "En signalant une carte de santé, votre numéro de téléphone sera visible directement pour que le propriétaire puisse vous contacter immédiatement. C'est un service gratuit pour faciliter la récupération des cartes de santé."
+                    ? t("studentCardInfo")
+                    : t("healthCardInfo")
                   }
                 </p>
               </div>
@@ -179,7 +183,7 @@ const SignalerCarte = () => {
               className="w-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? (t("sending") || "Envoi en cours...") : (t("signalCard") || "Signaler la carte")}
+              {isSubmitting ? t("sending") : t("signalCard")}
             </Button>
           </form>
         </div>

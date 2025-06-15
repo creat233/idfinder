@@ -110,4 +110,36 @@ export const cardsTranslations: Translations = {
     fr: "Ma carte",
     en: "My card"
   },
+  selectDocumentType: {
+    fr: "Sélectionnez le type de document",
+    en: "Select document type"
+  },
+  documentTypeStudentCardFree: {
+    fr: "Carte étudiante (Gratuit - Contact direct)",
+    en: "Student Card (Free - Direct Contact)"
+  },
+  documentTypeHealthCardFree: {
+    fr: "Carte de santé (Gratuit - Contact direct)",
+    en: "Health Card (Free - Direct Contact)"
+  },
+  freeServiceTitle: {
+    fr: "Service gratuit :",
+    en: "Free service:"
+  },
+  freeServiceDesc: {
+    fr: "Votre numéro de téléphone sera affiché directement pour permettre au propriétaire de vous contacter immédiatement.",
+    en: "Your phone number will be displayed directly to allow the owner to contact you immediately."
+  },
+  deliveryOptionTitle: {
+    fr: "Option de livraison à domicile",
+    en: "Home delivery option"
+  },
+  deliveryOptionDesc1: {
+    fr: "Pour tous les types de documents, nous proposons un service de livraison à domicile",
+    en: "For all document types, we offer a home delivery service"
+  },
+  deliveryOptionDesc2: {
+    fr: "Coût de livraison : 2000 FCFA (négociable selon la distance)",
+    en: "Delivery cost: 2000 FCFA (negotiable depending on distance)"
+  }
 };
