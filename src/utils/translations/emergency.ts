@@ -168,15 +168,15 @@ export const emergencyTranslations: Translations = {
   health_card_obtention_procedure_2: { fr: "Remplir le formulaire d'adhésion et fournir les pièces justificatives", en: "Fill out the membership form and provide supporting documents" },
   health_card_loss_title: { fr: "En cas de perte ou de vol :", en: "In case of loss or theft:" },
   health_card_loss_procedure_1: { fr: "Contacter votre organisme d'assurance maladie ou votre mutuelle", en: "Contact your health insurance organization or your mutual" },
-  health_card_loss_procedure_2: { fr: "Demander un duplicata en suivant leurs instructions", en: "Request a duplicate by following their instructions" }
-};
+  health_card_loss_procedure_2: { fr: "Demander un duplicata en suivant leurs instructions", en: "Request a duplicate by following their instructions" },
 
-// General document section titles
-doc_section_obtention: { fr: "Obtention :", en: "Obtaining:" },
-doc_section_obtention_first_time: { fr: "Obtention pour la première fois :", en: "Obtaining for the first time:" },
-doc_section_loss_theft: { fr: "En cas de perte ou de vol:", en: "In case of loss or theft:" },
-doc_section_loss_renewal: { fr: "Perte ou renouvellement :", en: "Loss or renewal:" },
-doc_section_renewal_loss: { fr: "Renouvellement ou perte :", en: "Renewal or loss:" },
-doc_section_loss_deterioration: { fr: "En cas de perte ou détérioration :", en: "In case of loss or damage:" },
-doc_subsection_docs_required: { fr: "Documents requis :", en: "Required documents:" },
-doc_subsection_procedure: { fr: "Procédure :", en: "Procedure:" }
+  // General document section titles
+  doc_section_obtention: { fr: "Obtention :", en: "Obtaining:" },
+  doc_section_obtention_first_time: { fr: "Obtention pour la première fois :", en: "Obtaining for the first time:" },
+  doc_section_loss_theft: { fr: "En cas de perte ou de vol:", en: "In case of loss or theft:" },
+  doc_section_loss_renewal: { fr: "Perte ou renouvellement :", en: "Loss or renewal:" },
+  doc_section_renewal_loss: { fr: "Renouvellement ou perte :", en: "Renewal or loss:" },
+  doc_section_loss_deterioration: { fr: "En cas de perte ou détérioration :", en: "In case of loss or damage:" },
+  doc_subsection_docs_required: { fr: "Documents requis :", en: "Required documents:" },
+  doc_subsection_procedure: { fr: "Procédure⯯:", en: "Procedure:" }
+};
