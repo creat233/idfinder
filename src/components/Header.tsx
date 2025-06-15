@@ -1,13 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Settings, LogOut } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { HeaderLinks } from "./HeaderLinks";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
-// import { useTranslation } from "@/hooks/useTranslation"; // Temporarily removed to prevent app crash
+import { AppMobileNav } from "./AppMobileNav";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +14,6 @@ export const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  // const { t } = useTranslation(); // Temporarily removed
 
   useEffect(() => {
     const checkIsAdmin = async () => {
@@ -100,22 +98,16 @@ export const Header = () => {
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
-            <div className="flex flex-col space-y-4 pt-4">
-              <HeaderLinks
-                user={user}
-                isAdmin={isAdmin}
-                onSignOut={handleSignOut}
-                onMenuClose={() => setIsMenuOpen(false)}
-                isMobile
-              />
-            </div>
-          </div>
-        )}
       </nav>
+
+      {/* Mobile Navigation */}
+      <AppMobileNav
+        user={user}
+        isAdmin={isAdmin}
+        isMenuOpen={isMenuOpen}
+        onSignOut={handleSignOut}
+        onClose={() => setIsMenuOpen(false)}
+      />
     </header>
   );
 };

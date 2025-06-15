@@ -2,29 +2,19 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
-import { useState } from "react";
 import { NotificationsNavIcon } from "./NotificationsNavIcon";
 
 type HeaderLinksProps = {
   user: any;
   isAdmin: boolean;
   onSignOut: () => void;
-  onMenuClose?: () => void;
-  isMobile?: boolean;
 };
 
 export const HeaderLinks = ({
   user,
   isAdmin,
   onSignOut,
-  onMenuClose,
-  isMobile = false,
 }: HeaderLinksProps) => {
-  // Gestion pour fermer le menu mobile après clic
-  const handleClick = (cb?: () => void) => {
-    if (onMenuClose) onMenuClose();
-    if (cb) cb();
-  };
 
   if (user) {
     if (isAdmin) {
@@ -33,26 +23,23 @@ export const HeaderLinks = ({
         <>
           <Link
             to="/admin/codes-promo"
-            className={`text-gray-700 hover:text-orange-600${isMobile ? " block py-2" : ""}`}
-            onClick={() => handleClick()}
+            className="text-gray-700 hover:text-orange-600"
           >
             Administration
           </Link>
           <Link
             to="/profile"
-            className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-            onClick={() => handleClick()}
+            className="text-gray-700 hover:text-primary"
           >
             <User className="h-5 w-5" />
-            {isMobile && <span className="ml-2">Profil</span>}
           </Link>
-          <NotificationsNavIcon isMobile={isMobile} onClick={() => handleClick()} />
+          <NotificationsNavIcon />
           <Button
             variant="ghost"
-            onClick={() => handleClick(onSignOut)}
-            className={`text-gray-700 hover:text-primary${isMobile ? " w-full justify-start block py-2 p-0" : ""}`}
+            onClick={onSignOut}
+            className="text-gray-700 hover:text-primary"
           >
-            <LogOut className="h-5 w-5" /> {isMobile && <span className="ml-2">Déconnexion</span>}
+            <LogOut className="h-5 w-5" />
           </Button>
         </>
       );
@@ -62,40 +49,35 @@ export const HeaderLinks = ({
         <>
           <Link
             to="/signaler"
-            className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-            onClick={() => handleClick()}
+            className="text-gray-700 hover:text-primary"
           >
             Signaler une carte
           </Link>
           <Link
             to="/mes-cartes"
-            className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-            onClick={() => handleClick()}
+            className="text-gray-700 hover:text-primary"
           >
             Mes cartes
           </Link>
           <Link
             to="/codes-promo"
-            className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-            onClick={() => handleClick()}
+            className="text-gray-700 hover:text-primary"
           >
             Codes promo
           </Link>
-          <NotificationsNavIcon isMobile={isMobile} onClick={() => handleClick()} />
+          <NotificationsNavIcon />
           <Link
             to="/profile"
-            className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-            onClick={() => handleClick()}
+            className="text-gray-700 hover:text-primary"
           >
             <User className="h-5 w-5" />
-            {isMobile && <span className="ml-2">Profil</span>}
           </Link>
           <Button
             variant="ghost"
-            onClick={() => handleClick(onSignOut)}
-            className={`text-gray-700 hover:text-primary${isMobile ? " w-full justify-start block py-2 p-0" : ""}`}
+            onClick={onSignOut}
+            className="text-gray-700 hover:text-primary"
           >
-            <LogOut className="h-5 w-5" /> {isMobile && <span className="ml-2">Déconnexion</span>}
+            <LogOut className="h-5 w-5" />
           </Button>
         </>
       );
@@ -106,19 +88,17 @@ export const HeaderLinks = ({
       <>
         <Link
           to="/urgence"
-          className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-          onClick={() => handleClick()}
+          className="text-gray-700 hover:text-primary"
         >
           Numéros d'urgence
         </Link>
         <Link
           to="/support"
-          className={`text-gray-700 hover:text-primary${isMobile ? " block py-2" : ""}`}
-          onClick={() => handleClick()}
+          className="text-gray-700 hover:text-primary"
         >
           Support
         </Link>
-        <Link to="/auth" onClick={() => handleClick()}>
+        <Link to="/auth">
           <Button>Se connecter</Button>
         </Link>
       </>
