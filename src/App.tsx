@@ -22,6 +22,7 @@ import Demo from "./pages/Demo";
 import About from "./pages/About";
 import Notifications from "./pages/Notifications";
 import { TranslationProvider } from "@/providers/TranslationProvider";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ function App() {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/demo" element={<Demo />} />
