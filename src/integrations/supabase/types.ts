@@ -184,24 +184,30 @@ export type Database = {
         Row: {
           country: string | null
           created_at: string
+          enable_security_notifications: boolean
           first_name: string | null
           id: string
+          is_on_vacation: boolean
           last_name: string | null
           phone: string | null
         }
         Insert: {
           country?: string | null
           created_at?: string
+          enable_security_notifications?: boolean
           first_name?: string | null
           id: string
+          is_on_vacation?: boolean
           last_name?: string | null
           phone?: string | null
         }
         Update: {
           country?: string | null
           created_at?: string
+          enable_security_notifications?: boolean
           first_name?: string | null
           id?: string
+          is_on_vacation?: boolean
           last_name?: string | null
           phone?: string | null
         }
@@ -487,6 +493,10 @@ export type Database = {
       is_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      log_login_event: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {

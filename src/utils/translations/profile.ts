@@ -149,5 +149,25 @@ export const profileTranslations: Translations = {
   passwordTooShort: {
     fr: "Le mot de passe doit contenir au moins 6 caractères.",
     en: "Password must be at least 6 characters long."
+  },
+  notificationSettings: {
+    fr: "Paramètres de notification",
+    en: "Notification Settings"
+  },
+  vacationMode: {
+    fr: "Mode vacances",
+    en: "Vacation Mode"
+  },
+  vacationModeDescription: {
+    fr: "Mettez en pause toutes les notifications lorsque vous êtes absent.",
+    en: "Pause all notifications when you are away."
+  },
+  securityNotifications: {
+    fr: "Notifications de sécurité",
+    en: "Security Notifications"
+  },
+  securityNotificationsDescription: {
+    fr: "Recevez une alerte lorsqu'une nouvelle connexion est détectée.",
+    en: "Get an alert when a new login is detected."
   }
 };

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import { PasswordChangeForm } from "@/components/profile/PasswordChangeForm";
 import { Separator } from "@/components/ui/separator";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { useUserBadges } from "@/hooks/useUserBadges";
+import { NotificationSettings } from "@/components/profile/NotificationSettings";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -30,10 +32,13 @@ const Profile = () => {
     country,
     isEditing,
     totalEarnings,
+    isOnVacation,
+    enableSecurityNotifications,
     setPhone,
     setIsEditing,
     getProfile,
-    updateProfile
+    updateProfile,
+    updateNotificationSettings
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
@@ -73,6 +78,15 @@ const Profile = () => {
   const handleContactSupport = () => {
     window.location.href = "mailto:idfinder06@gmail.com";
   };
+  
+  const handleVacationModeChange = (checked: boolean) => {
+    updateNotificationSettings({ isOnVacation: checked });
+  };
+
+  const handleSecurityNotificationsChange = (checked: boolean) => {
+    updateNotificationSettings({ enableSecurityNotifications: checked });
+  };
+
 
   if (loading || profileLoading || cardsLoading || badgesLoading) {
     return (
@@ -113,6 +127,16 @@ const Profile = () => {
             updateProfile={handleUpdateProfile}
           />
           
+          <Separator />
+
+          <NotificationSettings
+            isOnVacation={isOnVacation}
+            onVacationModeChange={handleVacationModeChange}
+            enableSecurityNotifications={enableSecurityNotifications}
+            onSecurityNotificationsChange={handleSecurityNotificationsChange}
+            loading={profileLoading}
+          />
+
           <Separator />
 
           <PasswordChangeForm />
