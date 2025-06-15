@@ -318,5 +318,143 @@ export const appTranslations: Translations = {
   linkCopiedTitle: { fr: "Lien copié !", en: "Link copied!" },
   linkCopiedDesc: { fr: "Le message d'invitation a été copié dans le presse-papiers", en: "The invitation message has been copied to the clipboard" },
   inviteMessageShare: {fr: "🔍 Découvre FinderID - L'app qui aide à retrouver les pièces d'identité perdues !\\n\\n📱 Site web: {siteUrl}\\n💾 Télécharger l'app Android: {apkUrl}\\n\\nRejoins-nous pour une communauté solidaire ! 🤝", en: "🔍 Discover FinderID - The app that helps you find lost ID documents!\\n\\n📱 Website: {siteUrl}\\n💾 Download Android app: {apkUrl}\\n\\nJoin us for a supportive community! 🤝"},
-  inviteTitleShare: {fr: "FinderID - Retrouvez vos papiers perdus", en: "FinderID - Find your lost papers"}
+  inviteTitleShare: {fr: "FinderID - Retrouvez vos papiers perdus", en: "FinderID - Find your lost papers"},
+
+  // Search translations
+  search: {
+    fr: "Rechercher",
+    en: "Search",
+  },
+  searching: {
+    fr: "Recherche...",
+    en: "Searching...",
+  },
+  search_your_card: {
+    fr: "Recherchez votre carte perdue",
+    en: "Search for your lost card",
+  },
+  search_placeholder_generic: {
+    fr: "Entrez le numéro de carte : CNI, passeport, permis, carte grise, séjour, étudiante ou santé",
+    en: "Enter card number: ID card, passport, driver's license, registration, residence permit, student or health card",
+  },
+  search_description_generic: {
+    fr: "Entrez le numéro de votre carte d'identité, passeport, permis, carte grise véhicule/moto, séjour, étudiante ou santé",
+    en: "Enter your ID card, passport, driver's license, vehicle/motorcycle registration, residence permit, student or health card number",
+  },
+  search_not_found_notification_prompt: {
+    fr: "Recevez une notification automatique si cette carte est retrouvée !",
+    en: "Get an automatic notification if this card is found!",
+  },
+  search_not_found_add_to_my_cards_prompt: {
+    fr: "Ajoutez ce numéro à “Mes cartes” pour recevoir une alerte dès qu’il sera signalé sur FinderID.",
+    en: "Add this number to “My Cards” to receive an alert as soon as it is reported on FinderID.",
+  },
+  search_not_found_add_to_my_cards_button: {
+    fr: "+ Ajouter ce numéro à Mes cartes",
+    en: "+ Add this number to My Cards",
+  },
+  search_not_found_my_cards_info: {
+    fr: "Vous retrouverez toutes vos cartes sous “Mes cartes”.",
+    en: "You will find all your cards under “My Cards”.",
+  },
+  toast_field_required_title: {
+    fr: "Champ requis",
+    en: "Field required",
+  },
+  toast_field_required_desc: {
+    fr: "Veuillez entrer un numéro de pièce d'identité pour rechercher",
+    en: "Please enter an ID number to search",
+  },
+  toast_card_found_title: {
+    fr: "Carte trouvée !",
+    en: "Card found!",
+  },
+  toast_card_found_desc_redirecting: {
+    fr: "Votre document a été trouvé. Redirection en cours...",
+    en: "Your document has been found. Redirecting...",
+  },
+  toast_card_found_desc_platform: {
+    fr: "Votre document a été trouvé et signalé sur notre plateforme",
+    en: "Your document was found and reported on our platform",
+  },
+  toast_card_not_found_title: {
+    fr: "Carte non trouvée",
+    en: "Card not found",
+  },
+  toast_card_not_found_desc: {
+    fr: "Votre carte n'a pas encore été signalée. Nous vous notifierons dès qu'elle sera publiée.",
+    en: "Your card has not been reported yet. We will notify you as soon as it is published.",
+  },
+  toast_search_error_title: {
+    fr: "Erreur",
+    en: "Error",
+  },
+  toast_search_error_desc: {
+    fr: "Une erreur est survenue lors de la recherche",
+    en: "An error occurred during the search",
+  },
+  card_search_form_title: {
+    fr: "Rechercher votre document",
+    en: "Search for your document",
+  },
+  card_search_form_subtitle: {
+    fr: "Entrez le numéro de votre pièce d'identité (CNI, passeport, permis, carte grise véhicule/moto, carte séjour, étudiante ou santé)",
+    en: "Enter your ID number (ID card, passport, driver's license, vehicle/motorcycle registration, residence permit, student or health card)",
+  },
+  card_search_form_placeholder: {
+    fr: "Ex : n° de CNI, passeport, permis, carte grise, séjour, étudiante ou santé",
+    en: "e.g., ID card no., passport, driver's license, registration, residence, student or health card",
+  },
+  card_search_not_found_subtitle: {
+    fr: "Votre document n'a pas encore été signalé sur notre plateforme",
+    en: "Your document has not been reported on our platform yet",
+  },
+  card_search_notification_system_title: {
+    fr: "Système de notification automatique",
+    en: "Automatic notification system",
+  },
+  card_search_notification_step1: {
+    fr: "Votre recherche a été enregistrée dans notre système",
+    en: "Your search has been saved in our system",
+  },
+  card_search_notification_step2: {
+    fr: "Dès qu'une carte avec ce numéro sera signalée, vous recevrez une notification immédiate",
+    en: "As soon as a card with this number is reported, you will receive an immediate notification",
+  },
+  card_search_notification_step3: {
+    fr: "Vous pourrez alors contacter directement la personne qui l'a trouvée",
+    en: "You can then contact the person who found it directly",
+  },
+  card_search_what_to_do_title: {
+    fr: "En attendant, que faire ?",
+    en: "In the meantime, what to do?",
+  },
+  card_search_what_to_do_item1: {
+    fr: "• Revenez vérifier régulièrement sur la plateforme",
+    en: "• Check back regularly on the platform",
+  },
+  card_search_what_to_do_item2: {
+    fr: "• Téléchargez notre application mobile pour recevoir les notifications en temps réel",
+    en: "• Download our mobile app to receive real-time notifications",
+  },
+  card_search_what_to_do_item3: {
+    fr: "• Partagez l'information avec vos proches - ils pourraient l'avoir trouvée !",
+    en: "• Share the information with your relatives - they might have found it!",
+  },
+  card_search_what_to_do_item4: {
+    fr: "• Contactez les lieux que vous avez récemment visités",
+    en: "• Contact the places you have recently visited",
+  },
+  card_search_download_app_button: {
+    fr: "📱 Télécharger l'app mobile pour les notifications",
+    en: "📱 Download the mobile app for notifications",
+  },
+  card_search_download_started_title: {
+    fr: "Téléchargement démarré",
+    en: "Download started",
+  },
+  card_search_download_started_desc: {
+    fr: "L'application mobile vous permettra de recevoir des notifications instantanées",
+    en: "The mobile app will allow you to receive instant notifications",
+  },
 };

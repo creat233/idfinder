@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { FoundCardResult } from "@/components/card-report/FoundCardResult";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export const CardSearchForm = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,12 +18,13 @@ export const CardSearchForm = () => {
   const [showNotFoundMessage, setShowNotFoundMessage] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       toast({
-        title: "Champ requis",
-        description: "Veuillez entrer un numéro de pièce d'identité pour rechercher",
+        title: t("toast_field_required_title"),
+        description: t("toast_field_required_desc"),
         variant: "destructive",
       });
       return;
@@ -48,21 +50,21 @@ export const CardSearchForm = () => {
       if (data) {
         setFoundCard(data);
         toast({
-          title: "Carte trouvée !",
-          description: "Votre document a été trouvé et signalé sur notre plateforme",
+          title: t("toast_card_found_title"),
+          description: t("toast_card_found_desc_platform"),
         });
       } else {
         setShowNotFoundMessage(true);
         toast({
-          title: "Carte non trouvée",
-          description: "Votre carte n'a pas encore été signalée. Nous vous notifierons dès qu'elle sera publiée.",
+          title: t("toast_card_not_found_title"),
+          description: t("toast_card_not_found_desc"),
         });
       }
     } catch (error) {
       console.error('Erreur lors de la recherche:', error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la recherche",
+        title: t("toast_search_error_title"),
+        description: t("toast_search_error_desc"),
         variant: "destructive",
       });
     } finally {
@@ -82,10 +84,10 @@ export const CardSearchForm = () => {
       <Card className="border-2 border-primary/20 shadow-lg">
         <CardHeader>
           <CardTitle className="text-center text-2xl text-primary">
-            Rechercher votre document
+            {t("card_search_form_title")}
           </CardTitle>
           <p className="text-center text-gray-600">
-            Entrez le numéro de votre pièce d'identité (CNI, passeport, permis, carte grise véhicule/moto, carte séjour, étudiante ou santé)
+            {t("card_search_form_subtitle")}
           </p>
         </CardHeader>
         <CardContent>
@@ -93,7 +95,7 @@ export const CardSearchForm = () => {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
-                placeholder="Ex : n° de CNI, passeport, permis, carte grise, séjour, étudiante ou santé"
+                placeholder={t("card_search_form_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -108,12 +110,12 @@ export const CardSearchForm = () => {
               {isSearching ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Recherche...
+                  {t("searching")}
                 </>
               ) : (
                 <>
                   <Search className="mr-2 h-5 w-5" />
-                  Rechercher
+                  {t("search")}
                 </>
               )}
             </Button>
@@ -137,8 +139,8 @@ export const CardSearchForm = () => {
                 <AlertCircle className="h-6 w-6 text-orange-600" />
               </div>
               <div>
-                <CardTitle className="text-xl text-orange-800">Carte non trouvée</CardTitle>
-                <p className="text-orange-700">Votre document n'a pas encore été signalé sur notre plateforme</p>
+                <CardTitle className="text-xl text-orange-800">{t("toast_card_not_found_title")}</CardTitle>
+                <p className="text-orange-700">{t("card_search_not_found_subtitle")}</p>
               </div>
             </div>
           </CardHeader>
@@ -146,20 +148,20 @@ export const CardSearchForm = () => {
             <div className="bg-white p-4 rounded-lg border border-orange-200">
               <h4 className="font-semibold text-orange-800 mb-3 flex items-center gap-2">
                 <Bell className="h-5 w-5" />
-                Système de notification automatique
+                {t("card_search_notification_system_title")}
               </h4>
               <div className="space-y-3 text-sm text-orange-700">
                 <div className="flex items-start gap-3">
                   <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300">1</Badge>
-                  <p>Votre recherche a été enregistrée dans notre système</p>
+                  <p>{t("card_search_notification_step1")}</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300">2</Badge>
-                  <p>Dès qu'une carte avec ce numéro sera signalée, vous recevrez une notification immédiate</p>
+                  <p>{t("card_search_notification_step2")}</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300">3</Badge>
-                  <p>Vous pourrez alors contacter directement la personne qui l'a trouvée</p>
+                  <p>{t("card_search_notification_step3")}</p>
                 </div>
               </div>
             </div>
@@ -167,13 +169,13 @@ export const CardSearchForm = () => {
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
               <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                En attendant, que faire ?
+                {t("card_search_what_to_do_title")}
               </h4>
               <ul className="text-sm text-blue-700 space-y-1">
-                <li>• Revenez vérifier régulièrement sur la plateforme</li>
-                <li>• Téléchargez notre application mobile pour recevoir les notifications en temps réel</li>
-                <li>• Partagez l'information avec vos proches - ils pourraient l'avoir trouvée !</li>
-                <li>• Contactez les lieux que vous avez récemment visités</li>
+                <li>{t("card_search_what_to_do_item1")}</li>
+                <li>{t("card_search_what_to_do_item2")}</li>
+                <li>{t("card_search_what_to_do_item3")}</li>
+                <li>{t("card_search_what_to_do_item4")}</li>
               </ul>
             </div>
 
@@ -181,19 +183,19 @@ export const CardSearchForm = () => {
             <div className="bg-violet-50 p-4 rounded-lg border border-violet-200 flex flex-col items-center gap-2 mt-4">
               <div className="text-violet-700 font-medium flex items-center gap-2">
                 <LogIn className="h-4 w-4" />
-                Recevez une notification automatique si cette carte est retrouvée !
+                {t("search_not_found_notification_prompt")}
               </div>
               <p className="text-violet-600 text-sm mb-2 text-center">
-                Ajoutez ce numéro à <span className="font-semibold">“Mes cartes”</span> pour recevoir une alerte dès qu’il sera signalé sur FinderID.
+                {t("search_not_found_add_to_my_cards_prompt")}
               </p>
               <Button
                 variant="default"
                 className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6"
                 onClick={() => navigate(`/mes-cartes?ajouter=${encodeURIComponent(searchQuery.trim())}`)}
               >
-                + Ajouter ce numéro à Mes cartes
+                {t("search_not_found_add_to_my_cards_button")}
               </Button>
-              <p className="text-xs text-violet-500 mt-1">Vous retrouverez toutes vos cartes sous “Mes cartes”.</p>
+              <p className="text-xs text-violet-500 mt-1">{t("search_not_found_my_cards_info")}</p>
             </div>
 
             <div className="text-center">
@@ -209,12 +211,12 @@ export const CardSearchForm = () => {
                   document.body.removeChild(link);
                   
                   toast({
-                    title: "Téléchargement démarré",
-                    description: "L'application mobile vous permettra de recevoir des notifications instantanées",
+                    title: t("card_search_download_started_title"),
+                    description: t("card_search_download_started_desc"),
                   });
                 }}
               >
-                📱 Télécharger l'app mobile pour les notifications
+                {t("card_search_download_app_button")}
               </Button>
             </div>
           </CardContent>
