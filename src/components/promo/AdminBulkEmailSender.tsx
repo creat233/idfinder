@@ -29,7 +29,8 @@ import {
   securityAlertTemplate,
   featureUpdateTemplate,
   accountAnniversaryTemplate,
-  referralProgramReminderTemplate
+  referralProgramReminderTemplate,
+  documentExpirationReminderTemplate
 } from "./emailTemplates";
 
 export const AdminBulkEmailSender = () => {
@@ -164,6 +165,10 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={() => useTemplate(referralProgramReminderTemplate)}>
               <FileText className="h-4 w-4 mr-2" />
               Rappel Parrainage
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(documentExpirationReminderTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Rappel Expiration Document
             </Button>
           </div>
         </CardTitle>

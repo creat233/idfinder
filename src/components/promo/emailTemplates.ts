@@ -322,3 +322,19 @@ export const ramadanWishesTemplate = {
 <p>L'équipe FinderID</p>
 `
 };
+
+export const documentExpirationReminderTemplate = {
+  subject: "Action Requise : Un de vos documents arrive à expiration",
+  message: `<h1>N'oubliez pas de mettre à jour vos documents !</h1>
+<p>Bonjour,</p>
+<p>Ceci est un rappel pour vous informer que l'un de vos documents enregistrés sur FinderID est sur le point d'expirer :</p>
+<p><strong>[Nom du document] - expire le [Date d'expiration]</strong></p>
+<p>Pour continuer à être protégé et pour faciliter toute future récupération, il est important que vos informations soient à jour.</p>
+<p>Veuillez prendre un moment pour mettre à jour les détails de votre document dans votre compte.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/my-cards" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Mettre à jour mes documents</a>
+</p>
+<p>Merci de garder votre compte à jour.</p>
+<p>L'équipe FinderID</p>
+`
+};
