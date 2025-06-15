@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
@@ -68,17 +69,17 @@ const AdminPromoCodes = () => {
             </CardContent>
           </Card>
           
-          {/* Module : Configuration */}
-          <AdminSettings />
+          {/* Module : Configuration - Temporairement désactivé pour investigation */}
+          {/* <AdminSettings /> */}
 
-          {/* Module : Gestion des utilisateurs */}
-          <AdminUsersList />
+          {/* Module : Gestion des utilisateurs - Temporairement désactivé pour investigation */}
+          {/* <AdminUsersList /> */}
 
-          {/* Module : Analyses et Statistiques */}
-          <AdminAnalyticsDashboard />
+          {/* Module : Analyses et Statistiques - Temporairement désactivé pour investigation */}
+          {/* <AdminAnalyticsDashboard /> */}
 
-          {/* Module : Journal d'audit et de sécurité */}
-          <AdminAuditLogsList />
+          {/* Module : Journal d'audit et de sécurité - Temporairement désactivé pour investigation */}
+          {/* <AdminAuditLogsList /> */}
 
           {/* Module : Statistiques des revenus */}
           <AdminRevenueDashboard />
