@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { ScanSearch, Plus, Search, Gift } from "lucide-react";
+import { ScanSearch, Plus, Search, Gift, CreditCard } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface ActionButtonsProps {
@@ -46,7 +46,7 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
   if (isLoading) return null;
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
+    <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
       <Button 
         size="lg"
         onClick={handlePrimaryAction}
@@ -88,6 +88,17 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
         >
           <Gift className="mr-2 h-5 w-5" />
           {t("promoCodes")}
+        </Button>
+      )}
+      {user && (
+        <Button 
+          variant="outline"
+          size="lg"
+          onClick={() => navigate('/mcards')}
+          className="border-2 border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg bg-transparent"
+        >
+          <CreditCard className="mr-2 h-5 w-5" />
+          {t("myMCards")}
         </Button>
       )}
     </div>

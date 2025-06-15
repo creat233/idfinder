@@ -21,6 +21,7 @@ import Support from "./pages/Support";
 import Demo from "./pages/Demo";
 import About from "./pages/About";
 import Notifications from "./pages/Notifications";
+import MCards from "./pages/MCards";
 import { TranslationProvider } from "@/providers/TranslationProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -29,8 +30,8 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TranslationProvider>
+      <TranslationProvider>
+        <BrowserRouter>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -72,6 +73,11 @@ function App() {
                   <PromoCodes />
                 </ProtectedRoute>
               } />
+               <Route path="/mcards" element={
+                <ProtectedRoute>
+                  <MCards />
+                </ProtectedRoute>
+              } />
               
               {/* Routes d'administration */}
               <Route path="/admin/codes-promo" element={
@@ -86,8 +92,8 @@ function App() {
               } />
             </Routes>
           </TooltipProvider>
-        </TranslationProvider>
-      </BrowserRouter>
+        </BrowserRouter>
+      </TranslationProvider>
     </QueryClientProvider>
   );
 }

@@ -150,6 +150,10 @@ export const mcardsTranslations: Translations = {
     fr: "Votre statut est maintenant 'En attente de paiement'.",
     en: "Your status is now 'Pending Payment'."
   },
+  myMCards: {
+    fr: "Mes mCards",
+    en: "My mCards"
+  },
   draft: {
     fr: "Brouillon",
     en: "Draft"
