@@ -338,3 +338,63 @@ export const documentExpirationReminderTemplate = {
 <p>L'équipe FinderID</p>
 `
 };
+
+export const successStoryTemplate = {
+  subject: "🌟 Histoire de réussite : Comment un membre a retrouvé son document grâce à FinderID !",
+  message: `<h1>Une histoire qui réchauffe le cœur !</h1>
+<p>Bonjour,</p>
+<p>Nous voulions partager avec vous une histoire inspirante qui montre la force de notre communauté.</p>
+<p><strong>Récemment, [Nom de l'utilisateur], un membre comme vous, a perdu son [Type de document].</strong> Grâce à un autre membre bienveillant qui l'a retrouvé et signalé sur FinderID, [Nom de l'utilisateur] a pu récupérer son document en un temps record !</p>
+<p>C'est la preuve que chaque petit geste compte. En enregistrant vos documents et en signalant ceux que vous trouvez, vous contribuez activement à un réseau d'entraide puissant.</p>
+<p>Merci de faire partie de cette belle aventure.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const birthdayWishesTemplate = {
+  subject: "🎂 Joyeux Anniversaire de la part de FinderID !",
+  message: `<h1>Joyeux Anniversaire !</h1>
+<p>Bonjour [Prénom de l'utilisateur],</p>
+<p>Toute l'équipe de FinderID se joint à moi pour vous souhaiter un très joyeux anniversaire !</p>
+<p>Nous espérons que cette journée vous est douce et remplie de joie.</p>
+<p>Pour marquer le coup, nous sommes heureux de vous offrir <strong>[Petite offre, ex: un mois d'abonnement premium gratuit ou une réduction]</strong>.</p>
+<p>Merci pour votre confiance et votre fidélité.</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const communityGuideTemplate = {
+  subject: "🤝 Devenez un héros de la communauté FinderID",
+  message: `<h1>Comment aider à retrouver un document ?</h1>
+<p>Bonjour,</p>
+<p>Vous avez trouvé un document perdu ? Vous pouvez devenir le héros de quelqu'un aujourd'hui !</p>
+<p>Voici comment faire pour le signaler sur FinderID :</p>
+<ol>
+  <li>Rendez-vous sur notre page d'accueil et cliquez sur <strong>"J'ai trouvé un document"</strong>.</li>
+  <li>Entrez le numéro du document que vous avez trouvé.</li>
+  <li>Suivez les instructions pour nous donner quelques détails.</li>
+</ol>
+<p>C'est rapide, simple, et vous pourriez faire une énorme différence dans la vie de quelqu'un. Chaque document retrouvé renforce notre communauté.</p>
+<p style="text-align: center; margin: 24px 0;">
+  <a href="https://finder-id-4182.lovable.app/" style="background-color: #9b87f5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">Signaler un document trouvé</a>
+</p>
+<p>Merci pour votre précieuse aide !</p>
+<p>L'équipe FinderID</p>
+`
+};
+
+export const yearlyRecapTemplate = {
+  subject: "🎉 Votre bilan de l'année sur FinderID !",
+  message: `<h1>Retour sur votre année avec nous !</h1>
+<p>Bonjour [Prénom de l'utilisateur],</p>
+<p>L'année touche à sa fin, et c'est le moment de jeter un œil à ce que nous avons accompli ensemble.</p>
+<ul>
+  <li>Vous protégez actuellement <strong>[Nombre de documents]</strong> documents avec nous.</li>
+  <li>Vous faites partie de la communauté FinderID depuis <strong>[Nombre de jours/mois]</strong>.</li>
+  <li>Grâce à des membres comme vous, <strong>[Nombre de documents retrouvés]</strong> documents ont été réunis avec leur propriétaire cette année.</li>
+</ul>
+<p>Nous sommes incroyablement fiers de vous avoir à nos côtés. Préparez-vous pour une nouvelle année remplie de nouveautés pour sécuriser encore mieux vos biens.</p>
+<p>Merci pour cette année exceptionnelle !</p>
+<p>L'équipe FinderID</p>
+`
+};

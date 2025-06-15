@@ -30,7 +30,11 @@ import {
   featureUpdateTemplate,
   accountAnniversaryTemplate,
   referralProgramReminderTemplate,
-  documentExpirationReminderTemplate
+  documentExpirationReminderTemplate,
+  successStoryTemplate,
+  birthdayWishesTemplate,
+  communityGuideTemplate,
+  yearlyRecapTemplate,
 } from "./emailTemplates";
 
 export const AdminBulkEmailSender = () => {
@@ -169,6 +173,22 @@ export const AdminBulkEmailSender = () => {
             <Button variant="outline" size="sm" onClick={() => useTemplate(documentExpirationReminderTemplate)}>
               <FileText className="h-4 w-4 mr-2" />
               Rappel Expiration Document
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(successStoryTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Histoire de Réussite
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(birthdayWishesTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Vœux Anniversaire
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(communityGuideTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Guide Communauté
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => useTemplate(yearlyRecapTemplate)}>
+              <FileText className="h-4 w-4 mr-2" />
+              Bilan Annuel
             </Button>
           </div>
         </CardTitle>
