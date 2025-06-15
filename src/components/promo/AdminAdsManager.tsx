@@ -81,9 +81,21 @@ export const AdminAdsManager: React.FC = () => {
       // Insert
       ({ error } = await supabase.from("admin_ads").insert([toSend]));
     } else {
-      // Update
+      // Update: explicitly cast as the correct update type, and ensure we send title
+      // Strip ID from update payload
       const { id, ...fields } = toSend;
-      ({ error } = await supabase.from("admin_ads").update(fields).eq("id", id));
+      // Title is required for update per Supabase types
+      const updatePayload = {
+        title: form.title ?? "",
+        message: form.message ?? null,
+        image_url: form.image_url ?? null,
+        target_url: form.target_url ?? null,
+        is_active: !!form.is_active,
+        start_date: form.start_date ?? null,
+        end_date: form.end_date ?? null,
+        // updated_at: new Date().toISOString(), // Optionally update timestamp
+      };
+      ({ error } = await supabase.from("admin_ads").update(updatePayload).eq("id", id));
     }
     if (error) {
       alert("Erreur lors de l'enregistrement");
