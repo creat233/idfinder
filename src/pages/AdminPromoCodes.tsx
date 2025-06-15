@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 import { AdminRevenueDashboard } from "@/components/promo/AdminRevenueDashboard";
 import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
+import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 
 const AdminPromoCodes = () => {
   return (
@@ -72,6 +73,9 @@ const AdminPromoCodes = () => {
 
           {/* Module : Envoi d'e-mails en masse */}
           <AdminBulkEmailSender />
+
+          {/* Module : Envoi d'e-mail à un utilisateur */}
+          <AdminSingleEmailSender />
           
           {/* Sections principales */}
           <AdminPendingCodes />
