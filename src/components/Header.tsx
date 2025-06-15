@@ -1,20 +1,21 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, Settings, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, Link } from "react-router-dom";
-import { useToast } from "@/hooks/useToast";
+import { useToast } from "@/hooks/use-toast";
 import { HeaderLinks } from "./HeaderLinks";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
-import { useTranslation } from "@/hooks/useTranslation";
+// import { useTranslation } from "@/hooks/useTranslation"; // Temporarily removed to prevent app crash
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { showSuccess } = useToast();
-  const { t } = useTranslation();
+  const { toast } = useToast();
+  // const { t } = useTranslation(); // Temporarily removed
 
   useEffect(() => {
     const checkIsAdmin = async () => {
@@ -57,7 +58,10 @@ export const Header = () => {
       await supabase.auth.signOut();
       setUser(null);
       setIsAdmin(false);
-      showSuccess(t("logoutSuccess"), t("loggedOutSuccessfully"));
+      toast({
+        title: "Déconnexion réussie",
+        description: "Vous avez été déconnecté avec succès.",
+      });
       navigate("/");
     } catch (error) {
       console.error("Error signing out:", error);
