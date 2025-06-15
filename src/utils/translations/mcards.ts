@@ -273,5 +273,21 @@ export const mcardsTranslations: Translations = {
   planUpgradeRequestSentDescription: {
     fr: "Votre demande pour le plan {planName} a été envoyée. Votre statut est 'En attente de paiement'.",
     en: "Your request for the {planName} plan has been sent. Your status is 'Pending Payment'."
+  },
+  freePlanExpiryTitle: {
+    fr: "Abonnement gratuit sur le point d'expirer",
+    en: "Free Plan About to Expire"
+  },
+  freePlanExpiryDescription: {
+    fr: "Votre plan gratuit pour la carte {cardName} expire dans {daysLeft} jours. Mettez à niveau pour ne pas perdre l'accès.",
+    en: "Your free plan for the card {cardName} expires in {daysLeft} days. Upgrade to avoid losing access."
+  },
+  freePlanExpiredTitle: {
+    fr: "Abonnement gratuit expiré",
+    en: "Free Plan Expired"
+  },
+  freePlanExpiredDescription: {
+    fr: "Votre plan gratuit pour la carte {cardName} a expiré. Mettez à niveau pour la réactiver.",
+    en: "Your free plan for the card {cardName} has expired. Upgrade to reactivate it."
   }
 };

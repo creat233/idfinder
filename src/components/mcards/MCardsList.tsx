@@ -14,9 +14,10 @@ interface MCardsListProps {
   createMCard: (data: TablesInsert<'mcards'>) => Promise<MCard | null>;
   updateMCard: (id: string, data: TablesUpdate<'mcards'>, options?: { silent?: boolean }) => Promise<MCard | null>;
   deleteMCard: (id: string) => Promise<void>;
+  onStartUpgradeFlow: (cardId: string) => void;
 }
 
-export const MCardsList = ({ mcards, loading, createMCard, updateMCard, deleteMCard }: MCardsListProps) => {
+export const MCardsList = ({ mcards, loading, createMCard, updateMCard, deleteMCard, onStartUpgradeFlow }: MCardsListProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
