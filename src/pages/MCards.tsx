@@ -55,13 +55,13 @@ const MCards = () => {
   }, [mcards, t, toast, notifiedCards]);
 
   const handleInitiateUpgrade = (cardId: string) => {
-    setUploadingCardId(cardId);
+    setUpgradingCardId(cardId);
     pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const handleRequestUpgrade = async (mcardId: string, plan: 'essential' | 'premium') => {
     await requestPlanUpgrade(mcardId, plan);
-    setUploadingCardId(null);
+    setUpgradingCardId(null);
   };
 
   return (

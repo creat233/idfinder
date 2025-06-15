@@ -149,6 +149,7 @@ const Profile = () => {
             createMCard={createMCard}
             updateMCard={updateMCard}
             deleteMCard={deleteMCard}
+            onStartUpgradeFlow={() => {}}
           />
 
           <Separator />
