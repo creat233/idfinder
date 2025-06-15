@@ -43,7 +43,7 @@ const Profile = () => {
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
-  const { mcards, loading: mcardsLoading, deleteMCard, updateMCard } = useMCards();
+  const { mcards, loading: mcardsLoading, deleteMCard } = useMCards();
 
   useEffect(() => {
     const getSession = async () => {
