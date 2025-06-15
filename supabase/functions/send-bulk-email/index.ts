@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "npm:resend@2.0.0";
@@ -111,7 +110,7 @@ serve(async (req: Request) => {
       console.error("Exception while creating completion notification:", e);
     }
 
-    return new Response(JSON.stringify({ success: true, message: `Email sending process initiated for ${recipientEmails.length} users.` }), {
+    return new Response(JSON.stringify({ success: true, message: `L'e-mail a été envoyé avec succès à ${recipientEmails.length} utilisateurs.` }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ export const AdminBulkEmailSender = () => {
     setSending(true);
     try {
       // On autorise le HTML dans le message pour plus de flexibilité
-      const { error } = await supabase.functions.invoke('send-bulk-email', {
+      const { data, error } = await supabase.functions.invoke('send-bulk-email', {
         body: { subject, htmlContent: message },
       });
 
@@ -32,7 +33,7 @@ export const AdminBulkEmailSender = () => {
         throw new Error(error.message);
       }
 
-      showSuccess("E-mails en cours d'envoi", "Les e-mails sont en train d'être envoyés à tous les utilisateurs.");
+      showSuccess("Envoi terminé !", data.message || "Les e-mails ont été envoyés à tous les utilisateurs.");
       setSubject("");
       setMessage("");
     } catch (error: any) {
