@@ -1,12 +1,17 @@
 
 import { Button } from "@/components/ui/button";
 import { Phone, ArrowRight } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
+import { getPriceInfoForCountry } from "@/utils/pricing";
 
 interface RecoveryActionButtonProps {
   onRecoveryClick: () => void;
 }
 
 export const RecoveryActionButton = ({ onRecoveryClick }: RecoveryActionButtonProps) => {
+  const { currentCountry } = useTranslation();
+  const priceInfo = getPriceInfoForCountry(currentCountry);
+
   return (
     <div className="text-center space-y-3 sm:space-y-4">
       {/* Main action button - responsive sizing */}
@@ -26,7 +31,7 @@ export const RecoveryActionButton = ({ onRecoveryClick }: RecoveryActionButtonPr
       {/* Pricing info - responsive text */}
       <div className="space-y-1 text-center">
         <p className="text-xs sm:text-sm text-gray-600">
-          Frais de récupération : <span className="font-semibold text-gray-800">7000 FCFA</span>
+          Frais de récupération : <span className="font-semibold text-gray-800">{priceInfo.baseFee} {priceInfo.symbol}</span>
         </p>
         <p className="text-xs text-green-600 font-medium">
           💰 Réductible avec un code promo

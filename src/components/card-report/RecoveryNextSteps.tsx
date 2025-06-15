@@ -1,9 +1,12 @@
 
+import { PriceInfo } from "@/utils/pricing";
+
 interface RecoveryNextStepsProps {
   finalPrice: number;
+  priceInfo: PriceInfo;
 }
 
-export const RecoveryNextSteps = ({ finalPrice }: RecoveryNextStepsProps) => {
+export const RecoveryNextSteps = ({ finalPrice, priceInfo }: RecoveryNextStepsProps) => {
   return (
     <div className="bg-blue-50 p-3 sm:p-4 rounded-lg border border-blue-200">
       <p className="text-sm sm:text-base text-blue-800 font-semibold mb-2">
@@ -24,7 +27,7 @@ export const RecoveryNextSteps = ({ finalPrice }: RecoveryNextStepsProps) => {
         </li>
         <li className="flex items-start">
           <span className="mr-2">•</span>
-          <span>Paiement des frais : <span className="font-semibold">{finalPrice} FCFA</span> + livraison si applicable</span>
+          <span>Paiement des frais : <span className="font-semibold">{finalPrice} {priceInfo.symbol}</span> + livraison si applicable</span>
         </li>
       </ul>
     </div>

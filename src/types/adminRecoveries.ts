@@ -1,3 +1,4 @@
+
 export interface AllRecoveryData {
   id: string;
   card_id: string;
@@ -18,6 +19,8 @@ export interface AllRecoveryData {
   discount_amount?: number;
   created_at: string;
   status: string;
+  currency?: string;
+  currency_symbol?: string;
 }
 
 export interface ReportedCard {
@@ -30,6 +33,10 @@ export interface ReportedCard {
   reporter_id: string;
   reporter_phone?: string;
   created_at: string;
+  recovery_base_fee?: number;
+  recovery_final_price?: number;
+  recovery_currency?: string;
+  recovery_currency_symbol?: string;
 }
 
 export interface ReporterProfile {

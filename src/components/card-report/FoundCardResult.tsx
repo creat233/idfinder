@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
 import { OwnerInfoDialog } from "./OwnerInfoDialog";
+import { useTranslation } from "@/hooks/useTranslation";
+import { getPriceInfoForCountry } from "@/utils/pricing";
 
 interface FoundCardResultProps {
   cardData: {
@@ -21,6 +23,8 @@ interface FoundCardResultProps {
 
 export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { currentCountry } = useTranslation();
+  const priceInfo = getPriceInfoForCountry(currentCountry);
   
   const handleRetrieveClick = () => {
     setIsDialogOpen(true);
@@ -124,7 +128,7 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h4 className="font-semibold text-blue-800 mb-2">Informations de récupération</h4>
             <div className="space-y-2 text-sm text-blue-700">
-              <p>• Frais de récupération : <strong>7000 Fr</strong> (incluant la récompense du trouveur)</p>
+              <p>• Frais de récupération : <strong>{priceInfo.baseFee} {priceInfo.symbol}</strong> (incluant la récompense du trouveur)</p>
               <p>• Livraison à domicile disponible (frais supplémentaires à votre charge)</p>
               <p>• Récupération en main propre possible selon accord avec le trouveur</p>
             </div>

@@ -29,7 +29,7 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
     const reporterProfile = await fetchReporterProfile(card.reporter_id);
 
     // Extraire les informations depuis la description
-    const { ownerName, ownerPhone, finalPrice } = extractOwnerInfo(description);
+    const { ownerName, ownerPhone, finalPrice: priceFromDescription } = extractOwnerInfo(description);
 
     // Traiter les informations de code promo si présentes
     let promoData = null;
@@ -65,6 +65,10 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       finalStatus = "recovery_requested";
     }
 
+    const finalPrice = card.recovery_final_price !== null && card.recovery_final_price !== undefined
+      ? Number(card.recovery_final_price)
+      : priceFromDescription;
+
     const recovery: AllRecoveryData = {
       id: card.id,
       card_id: card.id,
@@ -83,7 +87,9 @@ export const processReportedCard = async (card: ReportedCard): Promise<AllRecove
       promo_code_owner_id: promoData?.promoCodeOwnerId,
       promo_code_owner_phone: promoData?.promoCodeOwnerPhone,
       promo_usage_id: promoData?.promoUsageId,
-      discount_amount: promoData?.discountAmount
+      discount_amount: promoData?.discountAmount,
+      currency: card.recovery_currency,
+      currency_symbol: card.recovery_currency_symbol,
     };
 
     console.log("✅ RÉCUPÉRATION CRÉÉE AVEC SUCCÈS:", {

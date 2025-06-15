@@ -1,4 +1,6 @@
 
+import { PriceInfo } from "@/utils/pricing";
+
 interface RecoveryPriceSummaryProps {
   cardData: {
     card_number: string;
@@ -7,6 +9,7 @@ interface RecoveryPriceSummaryProps {
   baseFee: number;
   discount: number;
   finalPrice: number;
+  priceInfo: PriceInfo;
 }
 
 export const RecoveryPriceSummary = ({
@@ -14,6 +17,7 @@ export const RecoveryPriceSummary = ({
   baseFee,
   discount,
   finalPrice,
+  priceInfo,
 }: RecoveryPriceSummaryProps) => {
   return (
     <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border">
@@ -36,19 +40,19 @@ export const RecoveryPriceSummary = ({
       <div className="mt-3 pt-3 border-t border-gray-200 space-y-2">
         <div className="flex justify-between items-center text-sm sm:text-base">
           <span className="font-medium">Frais de récupération :</span>
-          <span>{baseFee} FCFA</span>
+          <span>{baseFee} {priceInfo.symbol}</span>
         </div>
         
         {discount > 0 && (
           <div className="flex justify-between items-center text-sm text-green-600">
             <span className="font-medium">Réduction :</span>
-            <span>-{discount} FCFA</span>
+            <span>-{discount} {priceInfo.symbol}</span>
           </div>
         )}
         
         <div className="flex justify-between items-center text-base sm:text-lg font-bold text-gray-800 pt-2 border-t border-gray-300">
           <span>Total à payer :</span>
-          <span>{finalPrice} FCFA</span>
+          <span>{finalPrice} {priceInfo.symbol}</span>
         </div>
         
         {discount > 0 && (

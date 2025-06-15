@@ -1,17 +1,21 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+import { getPriceInfoForCountry, PriceInfo } from "@/utils/pricing";
+import { Country } from "@/utils/translations";
 
-export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
+export const useOwnerInfoDialog = (isOpen: boolean, cardData: any, currentCountry: Country) => {
   const [ownerName, setOwnerName] = useState("");
-  const [ownerPhone, setOwnerPhone] = useState("+221 ");
+  const [ownerPhone, setOwnerPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [promoCodeId, setPromoCodeId] = useState<string>("");
   const { showSuccess, showError } = useToast();
 
-  const baseFee = 7000;
+  const priceInfo: PriceInfo = useMemo(() => getPriceInfoForCountry(currentCountry), [currentCountry]);
+
+  const baseFee = priceInfo.baseFee;
   const finalPrice = baseFee - discount;
 
   const handlePromoApplied = (discountAmount: number, codeId: string) => {
@@ -28,7 +32,7 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
 
   const resetForm = () => {
     setOwnerName("");
-    setOwnerPhone("+221 ");
+    setOwnerPhone("");
     setDiscount(0);
     setPromoCodeId("");
   };
@@ -60,7 +64,13 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
           promoCodeId,
           discount,
           finalPrice
-        } : null
+        } : null,
+        priceInfo: {
+          baseFee: priceInfo.baseFee,
+          finalPrice: finalPrice,
+          currency: priceInfo.currency,
+          symbol: priceInfo.symbol,
+        }
       };
 
       console.log("Données de la demande:", requestData);
@@ -78,7 +88,7 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
 
       showSuccess(
         "Demande envoyée", 
-        `Votre demande de récupération a été envoyée avec succès. Prix à payer: ${finalPrice} FCFA`
+        `Votre demande de récupération a été envoyée avec succès. Prix à payer: ${finalPrice} ${priceInfo.symbol}`
       );
 
       return true;
@@ -103,6 +113,7 @@ export const useOwnerInfoDialog = (isOpen: boolean, cardData: any) => {
     baseFee,
     discount,
     finalPrice,
+    priceInfo,
     handlePromoApplied,
     handlePromoRemoved,
     handleSubmit,

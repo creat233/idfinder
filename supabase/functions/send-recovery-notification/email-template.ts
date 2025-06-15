@@ -1,5 +1,5 @@
 
-import { CardData, PromoData } from "./types.ts";
+import { CardData, PromoData, PriceInfo } from "./types.ts";
 import { getDocumentTypeLabel } from "./utils.ts";
 
 interface EmailTemplateProps {
@@ -18,6 +18,7 @@ interface EmailTemplateProps {
     discount: number;
     finalPrice: number;
   };
+  priceInfo: PriceInfo;
 }
 
 export const generateEmailContent = ({
@@ -25,7 +26,8 @@ export const generateEmailContent = ({
   ownerInfo,
   promoDetails,
   promoOwnerInfo,
-  promoInfo
+  promoInfo,
+  priceInfo,
 }: EmailTemplateProps): string => {
   // Préparer la section code promo si applicable
   let promoSection = "";
@@ -37,9 +39,9 @@ export const generateEmailContent = ({
     <h3 style="color: #16a34a; margin: 20px 0 10px 0;">💰 Code promo utilisé</h3>
     <ul style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #16a34a;">
       <li><strong>Code promo:</strong> <span style="font-family: monospace; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">${promoDetails.code}</span></li>
-      <li><strong>Réduction appliquée:</strong> ${promoInfo.discount} FCFA</li>
-      <li><strong>Prix original:</strong> 7000 FCFA</li>
-      <li><strong>Prix final:</strong> <span style="font-weight: bold; color: #16a34a;">${promoInfo.finalPrice} FCFA</span></li>
+      <li><strong>Réduction appliquée:</strong> ${promoInfo.discount} ${priceInfo.symbol}</li>
+      <li><strong>Prix original:</strong> ${priceInfo.baseFee} ${priceInfo.symbol}</li>
+      <li><strong>Prix final:</strong> <span style="font-weight: bold; color: #16a34a;">${promoInfo.finalPrice} ${priceInfo.symbol}</span></li>
     </ul>
     
     <h3 style="color: #7c3aed; margin: 20px 0 10px 0;">👤 Propriétaire du code promo (À PAYER - 1000 FCFA)</h3>
@@ -93,10 +95,10 @@ export const generateEmailContent = ({
       <h3 style="color: #1f2937; margin: 20px 0 10px 0;">💳 Récapitulatif des paiements à effectuer</h3>
       <div style="background: #f9fafb; padding: 15px; border-radius: 8px; border: 2px solid #e5e7eb;">
         <ul style="margin: 0;">
-          <li style="margin-bottom: 8px;"><strong>🔸 Propriétaire (récupération):</strong> <span style="font-size: 18px; font-weight: bold; color: #1f2937;">${promoInfo ? promoInfo.finalPrice : 7000} FCFA</span></li>
+          <li style="margin-bottom: 8px;"><strong>🔸 Propriétaire (récupération):</strong> <span style="font-size: 18px; font-weight: bold; color: #1f2937;">${priceInfo.finalPrice} ${priceInfo.symbol}</span></li>
           <li style="margin-bottom: 8px;"><strong>🔸 Signaleur (récompense):</strong> <span style="color: #dc2626; font-weight: bold; font-size: 16px;">2000 FCFA</span></li>
           ${promoOwnerInfo ? `<li style="margin-bottom: 8px;"><strong>🔸 Propriétaire code promo:</strong> <span style="color: #7c3aed; font-weight: bold; font-size: 16px;">1000 FCFA</span></li>` : ''}
-          ${promoInfo ? `<li style="margin-bottom: 8px;"><strong>💰 Économies client:</strong> <span style="color: #16a34a; font-weight: bold;">-${promoInfo.discount} FCFA</span></li>` : ''}
+          ${promoInfo ? `<li style="margin-bottom: 8px;"><strong>💰 Économies client:</strong> <span style="color: #16a34a; font-weight: bold;">-${promoInfo.discount} ${priceInfo.symbol}</span></li>` : ''}
         </ul>
       </div>
 

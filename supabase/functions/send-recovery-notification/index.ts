@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { corsHeaders } from "./utils.ts";
 import { RecoveryNotificationRequest } from "./types.ts";
@@ -37,13 +36,13 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { cardId, ownerInfo, promoInfo }: RecoveryNotificationRequest = requestBody;
+    const { cardId, ownerInfo, promoInfo, priceInfo }: RecoveryNotificationRequest = requestBody;
 
-    if (!cardId || !ownerInfo?.name || !ownerInfo?.phone) {
+    if (!cardId || !ownerInfo?.name || !ownerInfo?.phone || !priceInfo) {
       return new Response(
         JSON.stringify({ 
           error: "Données manquantes",
-          details: "L'ID de la carte, le nom et le téléphone du propriétaire sont requis"
+          details: "L'ID de la carte, le nom, le téléphone du propriétaire et les informations de prix sont requis"
         }),
         {
           status: 400,
@@ -60,15 +59,15 @@ const handler = async (req: Request): Promise<Response> => {
 
     const cardData = await fetchCardData(supabaseClient, cardId);
 
-    const finalPrice = promoInfo ? promoInfo.finalPrice : 7000;
+    const finalPrice = priceInfo.finalPrice;
     
     const updatedDescription = `${cardData.description || ''}
 
 --- INFORMATIONS DE RÉCUPÉRATION ---
 Nom du propriétaire: ${ownerInfo.name}
 Téléphone: ${ownerInfo.phone}
-Prix final: ${finalPrice} FCFA
-${promoInfo ? `Code promo utilisé: Oui (réduction de ${promoInfo.discount} FCFA)` : 'Code promo utilisé: Non'}
+Prix final: ${finalPrice} ${priceInfo.currency}
+${promoInfo ? `Code promo utilisé: Oui (réduction de ${promoInfo.discount} ${priceInfo.currency})` : 'Code promo utilisé: Non'}
 Date de demande: ${new Date().toLocaleString('fr-FR')}
 Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
 
@@ -77,7 +76,11 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       .from("reported_cards")
       .update({ 
         description: updatedDescription,
-        status: "recovery_requested" 
+        status: "recovery_requested",
+        recovery_base_fee: priceInfo.baseFee,
+        recovery_final_price: finalPrice,
+        recovery_currency: priceInfo.currency,
+        recovery_currency_symbol: priceInfo.symbol,
       })
       .eq("id", cardId);
 
@@ -139,7 +142,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
       ownerInfo,
       promoDetails,
       promoOwnerInfo,
-      promoInfo
+      promoInfo,
+      priceInfo
     });
 
     const subject = `🔍 Demande de récupération - Carte ${cardData.card_number}${promoDetails ? ` (Code promo: ${promoDetails.code})` : ''}`;
@@ -161,6 +165,8 @@ Statut: DEMANDE DE RÉCUPÉRATION CONFIRMÉE`;
         message: "Demande de récupération envoyée avec succès",
         cardNumber: cardData.card_number,
         finalPrice: finalPrice,
+        currency: priceInfo.currency,
+        symbol: priceInfo.symbol,
         promoUsed: !!promoInfo,
         status: "recovery_requested"
       }),

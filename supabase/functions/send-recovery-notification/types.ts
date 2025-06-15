@@ -1,4 +1,11 @@
 
+export interface PriceInfo {
+  baseFee: number;
+  finalPrice: number;
+  currency: string;
+  symbol: string;
+}
+
 export interface RecoveryNotificationRequest {
   cardId: string;
   ownerInfo: {
@@ -10,6 +17,7 @@ export interface RecoveryNotificationRequest {
     discount: number;
     finalPrice: number;
   };
+  priceInfo: PriceInfo;
 }
 
 export interface CardData {
@@ -25,6 +33,10 @@ export interface CardData {
     phone?: string;
   };
   reporter_phone?: string;
+  recovery_base_fee?: number;
+  recovery_final_price?: number;
+  recovery_currency?: string;
+  recovery_currency_symbol?: string;
 }
 
 export interface PromoData {

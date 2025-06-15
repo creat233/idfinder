@@ -5,6 +5,7 @@ import { useOwnerInfoDialog } from "@/hooks/useOwnerInfoDialog";
 import { OwnerInfoDialogHeader } from "./dialog/OwnerInfoDialogHeader";
 import { OwnerInfoDialogContent } from "./dialog/OwnerInfoDialogContent";
 import { OwnerInfoDialogFooter } from "./dialog/OwnerInfoDialogFooter";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface OwnerInfoDialogProps {
   isOpen: boolean;
@@ -18,6 +19,8 @@ interface OwnerInfoDialogProps {
 }
 
 export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogProps) => {
+  const { currentCountry } = useTranslation();
+  
   const {
     ownerName,
     setOwnerName,
@@ -27,11 +30,12 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
     baseFee,
     discount,
     finalPrice,
+    priceInfo,
     handlePromoApplied,
     handlePromoRemoved,
     handleSubmit,
     resetForm,
-  } = useOwnerInfoDialog(isOpen, cardData);
+  } = useOwnerInfoDialog(isOpen, cardData, currentCountry);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     const success = await handleSubmit(e);
@@ -64,6 +68,7 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
                 baseFee={baseFee}
                 discount={discount}
                 finalPrice={finalPrice}
+                priceInfo={priceInfo}
               />
             </div>
             

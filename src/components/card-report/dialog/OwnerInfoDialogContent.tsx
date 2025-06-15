@@ -2,6 +2,7 @@
 import { OwnerInfoForm } from "../OwnerInfoForm";
 import { RecoveryPriceSummary } from "../RecoveryPriceSummary";
 import { RecoveryNextSteps } from "../RecoveryNextSteps";
+import { PriceInfo } from "@/utils/pricing";
 
 interface OwnerInfoDialogContentProps {
   ownerName: string;
@@ -17,6 +18,7 @@ interface OwnerInfoDialogContentProps {
   baseFee: number;
   discount: number;
   finalPrice: number;
+  priceInfo: PriceInfo;
 }
 
 export const OwnerInfoDialogContent = ({
@@ -30,6 +32,7 @@ export const OwnerInfoDialogContent = ({
   baseFee,
   discount,
   finalPrice,
+  priceInfo,
 }: OwnerInfoDialogContentProps) => {
   return (
     <div className="space-y-6">
@@ -52,12 +55,13 @@ export const OwnerInfoDialogContent = ({
           baseFee={baseFee}
           discount={discount}
           finalPrice={finalPrice}
+          priceInfo={priceInfo}
         />
       </div>
       
       {/* Prochaines étapes */}
       <div className="space-y-4">
-        <RecoveryNextSteps finalPrice={finalPrice} />
+        <RecoveryNextSteps finalPrice={finalPrice} priceInfo={priceInfo} />
       </div>
     </div>
   );

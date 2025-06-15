@@ -308,6 +308,10 @@ export type Database = {
           location: string
           photo_url: string | null
           promo_code_id: string | null
+          recovery_base_fee: number | null
+          recovery_currency: string | null
+          recovery_currency_symbol: string | null
+          recovery_final_price: number | null
           reporter_id: string
           reporter_phone: string | null
           status: string | null
@@ -322,6 +326,10 @@ export type Database = {
           location: string
           photo_url?: string | null
           promo_code_id?: string | null
+          recovery_base_fee?: number | null
+          recovery_currency?: string | null
+          recovery_currency_symbol?: string | null
+          recovery_final_price?: number | null
           reporter_id: string
           reporter_phone?: string | null
           status?: string | null
@@ -336,6 +344,10 @@ export type Database = {
           location?: string
           photo_url?: string | null
           promo_code_id?: string | null
+          recovery_base_fee?: number | null
+          recovery_currency?: string | null
+          recovery_currency_symbol?: string | null
+          recovery_final_price?: number | null
           reporter_id?: string
           reporter_phone?: string | null
           status?: string | null

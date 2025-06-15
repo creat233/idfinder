@@ -16,6 +16,7 @@ interface AdminRecoveryPaymentButtonProps {
     promo_code_id?: string;
     promo_code_owner_id?: string;
     promo_code?: string;
+    currency_symbol?: string;
   };
   onPaymentConfirmed?: () => void;
 }
@@ -66,7 +67,7 @@ export const AdminRecoveryPaymentButton = ({ recovery, onPaymentConfirmed }: Adm
       <div className="text-xs space-y-1">
         <div className="flex items-center gap-1">
           <Badge variant="outline" className="bg-blue-50 text-blue-700 text-xs">
-            Propriétaire: {recovery.final_price} FCFA
+            Propriétaire: {recovery.final_price} {recovery.currency_symbol || 'FCFA'}
           </Badge>
         </div>
         <div className="flex items-center gap-1">
