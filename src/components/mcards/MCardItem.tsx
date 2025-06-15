@@ -1,3 +1,4 @@
+
 import { MCard } from "@/hooks/useMCards";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,10 +24,10 @@ interface MCardItemProps {
   mcard: MCard;
   onEdit: (mcard: MCard) => void;
   onDelete: (id: string) => void;
-  onUpdateSubscription: (id: string) => void;
+  onStartUpgradeFlow: (id: string) => void;
 }
 
-export const MCardItem = ({ mcard, onEdit, onDelete, onUpdateSubscription }: MCardItemProps) => {
+export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCardItemProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
 
@@ -129,23 +130,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onUpdateSubscription }: MCa
             )}
         </div>
         {(mcard.subscription_status === 'trial' || mcard.subscription_status === 'expired') && (
-            <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button variant="outline" size="sm">{t('upgradeSubscription')}</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                    <AlertDialogTitle>{t('upgradePromptTitle')}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        {t('upgradePromptDescription')}
-                    </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                    <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onUpdateSubscription(mcard.id)}>{t('confirmUpgrade')}</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <Button variant="outline" size="sm" onClick={() => onStartUpgradeFlow(mcard.id)}>{t('upgradeSubscription')}</Button>
         )}
       </CardFooter>
     </Card>
