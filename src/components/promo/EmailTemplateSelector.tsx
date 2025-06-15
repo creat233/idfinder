@@ -32,7 +32,7 @@ import {
   fathersDayWishesTemplate,
   mothersDayWishesTemplate,
   laborDayWishesTemplate,
-} from "./emailTemplates";
+} from "./email-templates";
 
 interface EmailTemplateSelectorProps {
   useTemplate: (template: { subject: string; message: string }) => void;
