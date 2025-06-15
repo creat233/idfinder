@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { Header } from "@/components/Header";
 import { useMCards, MCard } from "@/hooks/useMCards";
@@ -85,9 +84,9 @@ const MCards = () => {
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = async (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>) => {
+  const handleFormSubmit = async (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => {
     if (editingMCard) {
-      const result = await updateMCard(editingMCard.id, data);
+      const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
       if (result) {
         setIsFormOpen(false);
         setEditingMCard(null);
@@ -99,7 +98,7 @@ const MCards = () => {
         subscription_status: planForNewCard === 'free' ? 'trial' : 'pending_payment',
       };
       
-      const result = await createMCard(newCardData, { silent: true });
+      const result = await createMCard(newCardData, profilePictureFile, { silent: true });
 
       if (result) {
         if (planForNewCard === 'free') {
@@ -163,7 +162,12 @@ const MCards = () => {
       </main>
       <MCardFormDialog
         isOpen={isFormOpen}
-        onOpenChange={setIsFormOpen}
+        onOpenChange={(isOpen) => {
+            if (!isOpen) {
+                setEditingMCard(null);
+            }
+            setIsFormOpen(isOpen);
+        }}
         onSubmit={handleFormSubmit}
         mcard={editingMCard}
         loading={loading}

@@ -1,3 +1,4 @@
+
 import { Translations } from './types';
 
 export const mcardsTranslations: Translations = {
@@ -328,6 +329,22 @@ export const mcardsTranslations: Translations = {
   mCardApprovedSuccessDescription: {
     fr: "L'abonnement de la mCard a été activé avec succès.",
     en: "The mCard subscription has been activated successfully."
+  },
+  profilePhoto: {
+    fr: "Photo de profil",
+    en: "Profile Photo"
+  },
+  dropImage: {
+    fr: "Cliquez ou déposez une image",
+    en: "Click or drop an image here"
+  },
+  dropImageActive: {
+    fr: "Déposez l'image ici...",
+    en: "Drop the image here..."
+  },
+  removeImage: {
+    fr: "Supprimer l'image",
+    en: "Remove image"
   },
   plan: {
     fr: "Plan",

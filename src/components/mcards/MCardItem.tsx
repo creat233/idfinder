@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash2, Copy } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Copy, User } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { format } from 'date-fns';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface MCardItemProps {
   mcard: MCard;
@@ -26,6 +27,13 @@ interface MCardItemProps {
   onDelete: (id: string) => void;
   onStartUpgradeFlow: (id: string) => void;
 }
+
+const getInitials = (name: string): string => {
+    if (!name) return "NN";
+    const names = name.split(' ');
+    const initials = names.map(n => n[0]).join('');
+    return (initials.length > 2 ? initials.substring(0, 2) : initials).toUpperCase();
+};
 
 export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCardItemProps) => {
   const { t } = useTranslation();
@@ -65,9 +73,15 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
     <Card>
       <CardHeader>
         <div className="flex justify-between items-start">
-            <div>
-                <CardTitle>{mcard.full_name}</CardTitle>
-                <CardDescription>{mcard.job_title} at {mcard.company}</CardDescription>
+            <div className="flex items-center gap-4 flex-1">
+                <Avatar className="h-16 w-16">
+                    <AvatarImage src={mcard.profile_picture_url || undefined} alt={mcard.full_name || 'Profile picture'} />
+                    <AvatarFallback>{getInitials(mcard.full_name || '')}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                    <CardTitle>{mcard.full_name}</CardTitle>
+                    <CardDescription>{mcard.job_title} at {mcard.company}</CardDescription>
+                </div>
             </div>
             <div className="flex items-center gap-2">
                 <Badge variant={mcard.is_published ? "default" : "secondary"}>
