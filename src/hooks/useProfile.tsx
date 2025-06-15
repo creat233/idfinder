@@ -1,6 +1,7 @@
-import { useState } from "react";
+
+import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/useToast";
+import { useToast } from "@/hooks/use-toast";
 import { detectCountryFromPhone } from "@/utils/countryUtils";
 
 export const useProfile = () => {
@@ -15,7 +16,7 @@ export const useProfile = () => {
   const [isOnVacation, setIsOnVacation] = useState(false);
   const [enableSecurityNotifications, setEnableSecurityNotifications] = useState(true);
 
-  const getProfile = async (session: any) => {
+  const getProfile = useCallback(async (session: any) => {
     try {
       setLoading(true);
 
@@ -82,9 +83,9 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showError]);
 
-  const updateProfile = async (session: any) => {
+  const updateProfile = useCallback(async (session: any) => {
     try {
       setLoading(true);
 
@@ -110,9 +111,9 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [phone, country, showError, showSuccess]);
 
-  const updateNotificationSettings = async (settings: { isOnVacation?: boolean; enableSecurityNotifications?: boolean }) => {
+  const updateNotificationSettings = useCallback(async (settings: { isOnVacation?: boolean; enableSecurityNotifications?: boolean }) => {
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
@@ -144,7 +145,7 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showError, showSuccess]);
 
   return {
     loading,
