@@ -1,4 +1,3 @@
-
 import { Translations } from './types';
 
 export const emergencyTranslations: Translations = {
@@ -119,55 +118,65 @@ export const emergencyTranslations: Translations = {
 
   // Motorcycle Registration
   motorcycle_registration_title: { fr: "Carte grise moto", en: "Motorcycle Registration Card" },
+  motorcycle_registration_obtention_title: { fr: "Obtention:", en: "Obtaining:" },
+  motorcycle_registration_obtention_docs_title: { fr: "Documents requis:", en: "Required documents:" },
   motorcycle_registration_obtention_doc_1: { fr: "Facture d'achat ou certificat de cession", en: "Purchase invoice or certificate of transfer" },
+  motorcycle_registration_obtention_doc_2: { fr: "Pièce d'identité du propriétaire", en: "Owner's identity document" },
+  motorcycle_registration_obtention_doc_3: { fr: "Justificatif de domicile", en: "Proof of address" },
+  motorcycle_registration_obtention_procedure_title: { fr: "Procédure:", en: "Procedure:" },
   motorcycle_registration_obtention_procedure_1: { fr: "Se rendre au service des transports avec les documents", en: "Go to the transport department with the documents" },
-  motorcycle_registration_obtention_procedure_2: { fr: "Remplir la demande et payer les frais d’immatriculation", en: "Fill out the application and pay the registration fees" },
+  motorcycle_registration_obtention_procedure_2: { fr: "Payer les frais d'immatriculation", en: "Pay the registration fees" },
   motorcycle_registration_obtention_procedure_3: { fr: "La carte grise est disponible en moyenne sous 1 à 2 semaines", en: "The registration card is available on average within 1 to 2 weeks" },
+  motorcycle_registration_loss_title: { fr: "En cas de perte ou de vol:", en: "In case of loss or theft:" },
   motorcycle_registration_loss_procedure_1: { fr: "Déclarer la perte ou le vol au commissariat", en: "Report the loss or theft to the police station" },
   motorcycle_registration_loss_procedure_2: { fr: "Fournir déclaration de perte/vol, pièce d'identité et justificatif de propriété au service des transports", en: "Provide declaration of loss/theft, identity document and proof of ownership to the transport department" },
   motorcycle_registration_loss_procedure_3: { fr: "Payer les frais de duplicata (généralement délivré sous 7 à 14 jours)", en: "Pay the duplicate fees (usually issued within 7 to 14 days)" },
 
   // Residence Permit
   residence_permit_title: { fr: "Carte de séjour", en: "Residence Permit" },
+  residence_permit_obtention_title: { fr: "Procédure d'obtention :", en: "Obtaining procedure:" },
   residence_permit_obtention_doc_1: { fr: "Passeport en cours de validité", en: "Valid passport" },
-  residence_permit_obtention_doc_2: { fr: "Visa ou justificatif d'entrée régulière", en: "Visa or proof of regular entry" },
-  residence_permit_obtention_doc_3: { fr: "Attestation d’hébergement ou contrat de location", en: "Certificate of accommodation or rental agreement" },
-  residence_permit_obtention_doc_4: { fr: "Deux photos d'identité", en: "Two identity photos" },
-  residence_permit_obtention_procedure_1: { fr: "Se rendre au service de l’émigration ou de la préfecture", en: "Go to the emigration service or the prefecture" },
-  residence_permit_obtention_procedure_2: { fr: "Remplir le dossier, présenter les pièces et payer les frais", en: "Fill out the file, present the documents and pay the fees" },
-  residence_permit_obtention_procedure_3: { fr: "Le délai d’obtention varie selon la préfecture (en général 2 à 4 semaines)", en: "The obtaining period varies depending on the prefecture (usually 2 to 4 weeks)" },
-  residence_permit_loss_procedure_1: { fr: "En cas de perte, déposer une déclaration au commissariat", en: "In case of loss, file a declaration at the police station" },
-  residence_permit_loss_procedure_2: { fr: "Demander un duplicata auprès de la préfecture, fournir déclaration, pièces d'identité, justificatif de domicile", en: "Request a duplicate from the prefecture, provide declaration, identity documents, proof of address" },
-  residence_permit_loss_procedure_3: { fr: "Pour le renouvellement, présenter l’ancienne carte, justificatifs de séjour, et payer les frais", en: "For renewal, present the old card, proof of stay, and pay the fees" },
+  residence_permit_obtention_doc_2: { fr: "Justificatif de domicile (bail, facture...)", en: "Proof of address (lease, bill...)" },
+  residence_permit_obtention_doc_3: { fr: "Justificatif de ressources financières", en: "Proof of financial resources" },
+  residence_permit_obtention_doc_4: { fr: "Contrat de travail ou inscription scolaire/universitaire", en: "Work contract or school/university registration" },
+  residence_permit_obtention_procedure_title: { fr: "Procédure:", en: "Procedure:" },
+  residence_permit_obtention_procedure_1: { fr: "Se rendre à la Direction de la Police des Étrangers et des Titres de Voyage (DPETV)", en: "Go to the Directorate of Foreigners Police and Travel Documents (DPETV)" },
+  residence_permit_obtention_procedure_2: { fr: "Remplir le formulaire de demande et fournir les documents requis", en: "Fill out the application form and provide the required documents" },
+  residence_permit_obtention_procedure_3: { fr: "Payer les frais de timbre et de traitement", en: "Pay the stamp and processing fees" },
+  residence_permit_loss_title: { fr: "En cas de perte ou de vol :", en: "In case of loss or theft:" },
+  residence_permit_loss_procedure_1: { fr: "Faire une déclaration de perte auprès du commissariat de police", en: "Make a declaration of loss at the police station" },
+  residence_permit_loss_procedure_2: { fr: "Contacter la DPETV pour la procédure de remplacement", en: "Contact the DPETV for the replacement procedure" },
 
   // Student Card
-  student_card_title: { fr: "Carte étudiante", en: "Student Card" },
-  student_card_obtention_doc_1: { fr: "Certificat d'inscription de l’établissement", en: "Registration certificate from the institution" },
-  student_card_obtention_doc_2: { fr: "Pièce d'identité ou quittance d'inscription", en: "Identity document or registration receipt" },
-  student_card_obtention_doc_3: { fr: "Photo d'identité récente", en: "Recent identity photo" },
-  student_card_obtention_procedure_1: { fr: "Déposer le dossier au secrétariat de l’établissement", en: "Submit the file to the institution's secretariat" },
-  student_card_obtention_procedure_2: { fr: "La carte étudiante est souvent délivrée gratuitement ou rapidement", en: "The student card is often issued free of charge or quickly" },
-  student_card_loss_procedure_1: { fr: "Demander un duplicata auprès de l’établissement", en: "Request a duplicate from the institution" },
-  student_card_loss_procedure_2: { fr: "Fournir déclaration sur l’honneur ou rapport de perte le cas échéant", en: "Provide a sworn statement or loss report if applicable" },
+  student_card_title: { fr: "Carte d'étudiant", en: "Student Card" },
+  student_card_obtention_title: { fr: "Obtention :", en: "Obtaining:" },
+  student_card_obtention_docs_title: { fr: "Documents requis:", en: "Required documents:" },
+  student_card_obtention_procedure_title: { fr: "Procédure:", en: "Procedure:" },
+  student_card_obtention_procedure_1: { fr: "S'inscrire dans un établissement d'enseignement supérieur", en: "Enroll in a higher education institution" },
+  student_card_obtention_procedure_2: { fr: "Fournir les documents demandés par l'établissement (certificat de scolarité, photos, etc.)", en: "Provide the documents requested by the institution (school certificate, photos, etc.)" },
+  student_card_obtention_procedure_3: { fr: "La carte est généralement délivrée par l'établissement après l'inscription", en: "The card is usually issued by the institution after registration" },
+  student_card_loss_title: { fr: "En cas de perte ou de vol :", en: "In case of loss or theft:" },
+  student_card_loss_procedure_1: { fr: "Contacter le service de la scolarité de votre établissement", en: "Contact the registrar's office of your institution" },
+  student_card_loss_procedure_2: { fr: "Suivre la procédure interne pour obtenir un duplicata (peut inclure des frais)", en: "Follow the internal procedure to obtain a duplicate (may include fees)" },
 
   // Health Card
   health_card_title: { fr: "Carte de santé", en: "Health Card" },
-  health_card_obtention_doc_1: { fr: "Certificat d’inscription à la mutuelle ou centre de santé", en: "Certificate of registration with the mutual insurance company or health center" },
-  health_card_obtention_doc_2: { fr: "Pièce d’identité", en: "Identity document" },
-  health_card_obtention_doc_3: { fr: "Photo d’identité", en: "Identity photo" },
-  health_card_obtention_procedure_1: { fr: "Remplir le dossier auprès de la mutuelle ou du centre de santé", en: "Fill out the file with the mutual insurance company or health center" },
-  health_card_obtention_procedure_2: { fr: "Payer, si besoin, la cotisation", en: "Pay the contribution, if necessary" },
-  health_card_obtention_procedure_3: { fr: "Retirer sa carte de santé lors de la notification de disponibilité", en: "Withdraw your health card upon notification of availability" },
-  health_card_loss_procedure_1: { fr: "Demander le renouvellement auprès du centre ayant émis la carte", en: "Request renewal from the center that issued the card" },
-  health_card_loss_procedure_2: { fr: "Fournir déclaration de perte/détérioration, pièce d’identité, photo récente", en: "Provide declaration of loss/damage, identity document, recent photo" },
-
-  // General document section titles
-  doc_section_obtention: { fr: "Obtention :", en: "Obtaining:" },
-  doc_section_obtention_first_time: { fr: "Obtention pour la première fois :", en: "Obtaining for the first time:" },
-  doc_section_loss_theft: { fr: "En cas de perte ou de vol:", en: "In case of loss or theft:" },
-  doc_section_loss_renewal: { fr: "Perte ou renouvellement :", en: "Loss or renewal:" },
-  doc_section_renewal_loss: { fr: "Renouvellement ou perte :", en: "Renewal or loss:" },
-  doc_section_loss_deterioration: { fr: "En cas de perte ou détérioration :", en: "In case of loss or damage:" },
-  doc_subsection_docs_required: { fr: "Documents requis :", en: "Required documents:" },
-  doc_subsection_procedure: { fr: "Procédure :", en: "Procedure:" }
+  health_card_obtention_title: { fr: "Obtention :", en: "Obtaining:" },
+  health_card_obtention_docs_title: { fr: "Documents requis:", en: "Required documents:" },
+  health_card_obtention_procedure_title: { fr: "Procédure:", en: "Procedure:" },
+  health_card_obtention_procedure_1: { fr: "S'affilier à une mutuelle de santé ou à un régime d'assurance maladie", en: "Join a health mutual or a health insurance scheme" },
+  health_card_obtention_procedure_2: { fr: "Remplir le formulaire d'adhésion et fournir les pièces justificatives", en: "Fill out the membership form and provide supporting documents" },
+  health_card_loss_title: { fr: "En cas de perte ou de vol :", en: "In case of loss or theft:" },
+  health_card_loss_procedure_1: { fr: "Contacter votre organisme d'assurance maladie ou votre mutuelle", en: "Contact your health insurance organization or your mutual" },
+  health_card_loss_procedure_2: { fr: "Demander un duplicata en suivant leurs instructions", en: "Request a duplicate by following their instructions" }
 };
+
+// General document section titles
+doc_section_obtention: { fr: "Obtention :", en: "Obtaining:" },
+doc_section_obtention_first_time: { fr: "Obtention pour la première fois :", en: "Obtaining for the first time:" },
+doc_section_loss_theft: { fr: "En cas de perte ou de vol:", en: "In case of loss or theft:" },
+doc_section_loss_renewal: { fr: "Perte ou renouvellement :", en: "Loss or renewal:" },
+doc_section_renewal_loss: { fr: "Renouvellement ou perte :", en: "Renewal or loss:" },
+doc_section_loss_deterioration: { fr: "En cas de perte ou détérioration :", en: "In case of loss or damage:" },
+doc_subsection_docs_required: { fr: "Documents requis :", en: "Required documents:" },
+doc_subsection_procedure: { fr: "Procédure :", en: "Procedure:" }
