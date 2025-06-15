@@ -3,23 +3,11 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Trash2, Pencil, RefreshCcw } from "lucide-react";
-import { AdMediaUpload } from "./AdMediaUpload";
-
-interface AdminAd {
-  id: string;
-  title: string;
-  message: string | null;
-  image_url: string | null;
-  target_url: string | null;
-  is_active: boolean;
-  start_date: string | null;
-  end_date: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import { Plus, RefreshCcw } from "lucide-react";
+import { AdminAd } from "@/types/adminAds";
+import { AdminAdList } from "./AdminAdList";
+import { AdminAdForm } from "./AdminAdForm";
 
 export const AdminAdsManager: React.FC = () => {
   const [ads, setAds] = useState<AdminAd[]>([]);
@@ -52,6 +40,14 @@ export const AdminAdsManager: React.FC = () => {
       [e.target.name]: e.target.value
     });
   };
+  
+  const handleMediaChange = (url: string | null) => {
+    setForm(f => ({ ...f, image_url: url }));
+  };
+  
+  const handleIsActiveChange = (checked: boolean) => {
+    setForm(f => ({ ...f, is_active: checked }));
+  };
 
   const resetForm = () => {
     setForm({ is_active: true });
@@ -67,7 +63,6 @@ export const AdminAdsManager: React.FC = () => {
     e.preventDefault();
     setSaving(true);
 
-    // Validation minimum
     if (!form.title || form.title.trim() === "") {
       alert("Le titre est obligatoire.");
       setSaving(false);
@@ -75,9 +70,8 @@ export const AdminAdsManager: React.FC = () => {
     }
     let error;
     if (!form.id) {
-      // Insert
       const insertPayload = {
-        title: form.title, // Now TS knows this is a string
+        title: form.title,
         message: form.message || null,
         image_url: form.image_url || null,
         target_url: form.target_url || null,
@@ -87,7 +81,6 @@ export const AdminAdsManager: React.FC = () => {
       };
       ({ error } = await supabase.from("admin_ads").insert(insertPayload));
     } else {
-      // Update
       const { id } = form;
       const updatePayload = {
         title: form.title,
@@ -113,6 +106,15 @@ export const AdminAdsManager: React.FC = () => {
 
   const handleDelete = async (ad: AdminAd) => {
     if (!window.confirm(`Supprimer la publicité "${ad.title}" ?`)) return;
+    
+    // Also delete from storage if there is an image_url
+    if (ad.image_url) {
+        const path = ad.image_url.split('/').pop();
+        if(path) {
+            await supabase.storage.from('admin_ads_media').remove([`public/${path}`]);
+        }
+    }
+
     await supabase.from("admin_ads").delete().eq("id", ad.id);
     fetchAds();
   };
@@ -130,88 +132,25 @@ export const AdminAdsManager: React.FC = () => {
         <Button size="sm" onClick={() => handleOpenDialog()}><Plus className="h-4 w-4 mr-1" /> Nouvelle publicité</Button>
       </CardHeader>
       <CardContent>
-        {loading ? (
-          <div className="text-center py-6">Chargement...</div>
-        ) : ads.length === 0 ? (
-          <div className="text-center text-gray-500 py-6">Aucune publicité créée.</div>
-        ) : (
-          <div className="space-y-3">
-            {ads.map(ad => (
-              <div key={ad.id} className="border rounded p-3 flex flex-col md:flex-row justify-between items-start gap-4 bg-gray-50">
-                <div className="flex-grow">
-                  <div className="text-sm font-bold">{ad.title} {!ad.is_active && <span className="ml-2 text-xs bg-gray-300 rounded px-2 py-0.5">Inactif</span>}</div>
-                  {ad.message && <div className="text-xs text-gray-700 mt-1">{ad.message}</div>}
-                  {ad.target_url && <a href={ad.target_url} target="_blank" rel="noopener noreferrer" className="text-xs underline text-blue-600 block mt-1">{ad.target_url}</a>}
-                  {ad.start_date && ad.end_date && (
-                    <div className="text-xs text-gray-500 mt-1">Du {ad.start_date} au {ad.end_date}</div>
-                  )}
-                </div>
-                {ad.image_url && (
-                  <div className="flex-shrink-0">
-                    {ad.image_url.match(/\.(mp4|webm)$/i) ? (
-                      <video src={ad.image_url} className="h-20 w-auto rounded" controls muted loop playsInline />
-                    ) : (
-                      <a href={ad.image_url} target="_blank" rel="noopener noreferrer">
-                        <img src={ad.image_url} alt="Visuel" className="h-20 w-auto rounded object-cover" />
-                      </a>
-                    )}
-                  </div>
-                )}
-                <div className="flex-shrink-0 flex gap-1 self-start md:self-center">
-                  <Button size="icon" variant="outline" onClick={() => handleOpenDialog(ad)}><Pencil className="h-4 w-4" /></Button>
-                  <Button size="icon" variant="outline" onClick={() => handleDelete(ad)}><Trash2 className="h-4 w-4" /></Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <AdminAdList
+            ads={ads}
+            loading={loading}
+            onEdit={handleOpenDialog}
+            onDelete={handleDelete}
+        />
 
-        {/* Dialog Ajout/Edition */}
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>{form.id ? "Modifier" : "Créer"} une publicité</DialogTitle></DialogHeader>
-            <form onSubmit={handleSave} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Titre *</label>
-                <Input name="title" value={form.title ?? ""} onChange={handleInputChange} required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Message</label>
-                <textarea name="message" value={form.message ?? ""} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Lien cible (URL promotionnelle)</label>
-                <Input name="target_url" value={form.target_url ?? ""} onChange={handleInputChange} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Visuel (image ou vidéo)</label>
-                <AdMediaUpload
-                  value={form.image_url}
-                  onChange={(url) => setForm(f => ({ ...f, image_url: url }))}
-                  onRemove={() => setForm(f => ({ ...f, image_url: null }))}
-                />
-              </div>
-              <div className="flex gap-2">
-                <div>
-                  <label className="block text-sm font-medium">Début (AAAA-MM-JJ)</label>
-                  <Input name="start_date" value={form.start_date ?? ""} onChange={handleInputChange} type="date" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">Fin</label>
-                  <Input name="end_date" value={form.end_date ?? ""} onChange={handleInputChange} type="date" />
-                </div>
-              </div>
-              <div>
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" name="is_active" checked={!!form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} />
-                  Activer cette publicité
-                </label>
-              </div>
-              <div className="flex gap-2 items-center justify-between">
-                <Button type="submit" disabled={saving}>{saving ? "Enregistrement..." : "Enregistrer"}</Button>
-                <Button type="button" variant="secondary" onClick={() => setShowDialog(false)}>Annuler</Button>
-              </div>
-            </form>
+            <AdminAdForm
+              form={form}
+              saving={saving}
+              onSubmit={handleSave}
+              onFormChange={handleInputChange}
+              onMediaChange={handleMediaChange}
+              onIsActiveChange={handleIsActiveChange}
+              onCancel={() => setShowDialog(false)}
+            />
           </DialogContent>
         </Dialog>
       </CardContent>
