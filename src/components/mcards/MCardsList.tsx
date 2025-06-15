@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { MCard, useMCards } from "@/hooks/useMCards";
 import { MCardItem } from "./MCardItem";
@@ -61,10 +60,7 @@ export const MCardsList = ({ mcards, loading, createMCard, updateMCard, deleteMC
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">{t('mCardTitle')}</h2>
-          <p className="text-sm text-muted-foreground">{t('mCardDescription')}</p>
-        </div>
+        <h2 className="text-2xl font-semibold">{t('myMCards')}</h2>
         <Button onClick={handleOpenCreate}>
           <PlusCircle className="mr-2 h-4 w-4" />
           {t('createMCard')}

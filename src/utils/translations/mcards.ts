@@ -154,6 +154,58 @@ export const mcardsTranslations: Translations = {
     fr: "Mes mCards",
     en: "My mCards"
   },
+  mCardFeaturesTitle: {
+    fr: "Pourquoi utiliser une mCard ?",
+    en: "Why use an mCard?"
+  },
+  mCardFeature1Title: {
+    fr: "Partage Facile",
+    en: "Easy Sharing"
+  },
+  mCardFeature1Desc: {
+    fr: "Partagez vos coordonnées via un lien ou un QR code, sans contact.",
+    en: "Share your contact details via a link or QR code, contactless."
+  },
+  mCardFeature2Title: {
+    fr: "Toujours à Jour",
+    en: "Always Updated"
+  },
+  mCardFeature2Desc: {
+    fr: "Modifiez vos informations à tout moment, elles sont mises à jour instantanément.",
+    en: "Modify your information at any time, it is updated instantly."
+  },
+  mCardFeature3Title: {
+    fr: "Image Professionnelle",
+    en: "Professional Image"
+  },
+  mCardFeature3Desc: {
+    fr: "Présentez une image moderne et technologique à vos contacts.",
+    en: "Present a modern and technological image to your contacts."
+  },
+  mCardFeature4Title: {
+    fr: "Écologique",
+    en: "Eco-Friendly"
+  },
+  mCardFeature4Desc: {
+    fr: "Réduisez votre empreinte carbone en évitant les cartes papier.",
+    en: "Reduce your carbon footprint by avoiding paper cards."
+  },
+  mCardPricingTitle: {
+    fr: "Un tarif simple et transparent",
+    en: "Simple and transparent pricing"
+  },
+  annualSubscription: {
+    fr: "Abonnement Annuel",
+    en: "Annual Subscription"
+  },
+  perYear: {
+    fr: "/ an",
+    en: "/ year"
+  },
+  mCardPriceDescription: {
+    fr: "Un paiement unique pour une année de service. Pas de frais cachés.",
+    en: "A single payment for a year of service. No hidden fees."
+  },
   draft: {
     fr: "Brouillon",
     en: "Draft"

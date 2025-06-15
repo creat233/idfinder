@@ -7,6 +7,8 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { MCardFeatures } from '@/components/mcards/MCardFeatures';
+import { MCardPricing } from '@/components/mcards/MCardPricing';
 
 const MCards = () => {
   const { mcards, loading, getMCards, createMCard, updateMCard, deleteMCard } = useMCards();
@@ -30,7 +32,15 @@ const MCards = () => {
           {t("back") || "Retour"}
         </Button>
 
-        <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">{t('mCardTitle')}</h1>
+          <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto">{t('mCardDescription')}</p>
+        </div>
+        
+        <MCardFeatures />
+        <MCardPricing />
+
+        <div className="max-w-7xl mx-auto mt-16">
             <MCardsList
                 mcards={mcards}
                 loading={loading}
