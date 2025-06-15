@@ -18,6 +18,7 @@ import { AdminUsersList } from "@/components/promo/AdminUsersList";
 import { AdminAnalyticsDashboard } from "@/components/promo/AdminAnalyticsDashboard";
 import { AdminAuditLogsList } from "@/components/promo/AdminAuditLogsList";
 import { AdminSettings } from "@/components/promo/AdminSettings";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AdminPromoCodes = () => {
   return (
@@ -69,37 +70,44 @@ const AdminPromoCodes = () => {
             </CardContent>
           </Card>
           
-          {/* Module : Configuration */}
-          <AdminSettings />
+          <Tabs defaultValue="codes" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+              <TabsTrigger value="codes">Codes & Récup.</TabsTrigger>
+              <TabsTrigger value="users">Utilisateurs & Comms</TabsTrigger>
+              <TabsTrigger value="marketing">Marketing & Finances</TabsTrigger>
+              <TabsTrigger value="analytics">Analyses & Logs</TabsTrigger>
+              <TabsTrigger value="settings">Paramètres</TabsTrigger>
+            </TabsList>
 
-          {/* Module : Gestion des utilisateurs */}
-          <AdminUsersList />
+            <TabsContent value="codes" className="mt-6 space-y-6">
+              <AdminPendingCodes />
+              <AdminPromoActivation />
+              <AdminPromoCodesList />
+              <AdminAllRecoveries />
+              <AdminRecoveredCards />
+              <AdminRecoveriesList />
+            </TabsContent>
 
-          {/* Module : Analyses et Statistiques */}
-          <AdminAnalyticsDashboard />
+            <TabsContent value="users" className="mt-6 space-y-6">
+              <AdminUsersList />
+              <AdminBulkEmailSender />
+              <AdminSingleEmailSender />
+            </TabsContent>
 
-          {/* Module : Journal d'audit et de sécurité */}
-          <AdminAuditLogsList />
+            <TabsContent value="marketing" className="mt-6 space-y-6">
+               <AdminAdsManager />
+               <AdminRevenueDashboard />
+            </TabsContent>
 
-          {/* Module : Statistiques des revenus */}
-          <AdminRevenueDashboard />
-          
-          {/* Module : gestion pubs entreprises */}
-          <AdminAdsManager />
+            <TabsContent value="analytics" className="mt-6 space-y-6">
+              <AdminAnalyticsDashboard />
+              <AdminAuditLogsList />
+            </TabsContent>
 
-          {/* Module : Envoi d'e-mails en masse */}
-          <AdminBulkEmailSender />
-
-          {/* Module : Envoi d'e-mail à un utilisateur */}
-          <AdminSingleEmailSender />
-          
-          {/* Sections principales */}
-          <AdminPendingCodes />
-          <AdminAllRecoveries />
-          <AdminRecoveredCards />
-          <AdminPromoActivation />
-          <AdminRecoveriesList />
-          <AdminPromoCodesList />
+            <TabsContent value="settings" className="mt-6 space-y-6">
+              <AdminSettings />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>
