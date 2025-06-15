@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -11,7 +12,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { AdModal } from "@/components/ads/AdModal";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from "@/components/ui/dialog";
 
 const MyCards = () => {
   const navigate = useNavigate();
@@ -83,7 +90,7 @@ const MyCards = () => {
           variant: "default",
         });
         refetchCards?.();
-        // 🔥 Afficher la pub modal AdSense après l’ajout
+        // 🔥 Afficher la pub modal après l’ajout
         setShowAdModal(true);
       } catch (e) {
         toast({
@@ -198,8 +205,29 @@ const MyCards = () => {
           </Tabs>
         </div>
       </main>
-      {/* Ajout de la modal publicitaire */}
-      <AdModal open={showAdModal} onClose={() => setShowAdModal(false)} />
+      {/* Remplacement de la modal publicitaire */}
+      <Dialog open={showAdModal} onOpenChange={setShowAdModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Publicité</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 text-center">
+            <p className="mb-4">Visitez notre partenaire pour tous vos besoins médicaux.</p>
+            <a 
+              href="https://medickane.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <h3 className="text-lg font-bold text-blue-600">Clinique Médicale Medic'kane</h3>
+              <p className="text-sm text-gray-500">Votre santé, notre priorité.</p>
+            </a>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowAdModal(false)} className="w-full">Continuer</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
