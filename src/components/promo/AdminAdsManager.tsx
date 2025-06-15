@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -72,38 +71,34 @@ export const AdminAdsManager: React.FC = () => {
       setSaving(false);
       return;
     }
-    const toSend = {
-      ...form,
-      is_active: !!form.is_active,
-    };
     let error;
     if (!form.id) {
       // Insert
-      ({ error } = await supabase.from("admin_ads").insert([toSend]));
-    } else {
-      // Update: ensure correct types
-      const { id } = toSend;
-      // Build payload with all updatable props (Supabase types: title required, others optional or nullable)
-      const updatePayload: {
-        title: string;
-        message: string | null;
-        image_url: string | null;
-        target_url: string | null;
-        is_active: boolean;
-        start_date: string | null;
-        end_date: string | null;
-        // updated_at?: string; // can be uncommented if you want to track this manually
-      } = {
-        title: form.title ?? "",
-        message: form.message === "" ? null : form.message ?? null,
-        image_url: form.image_url === "" ? null : form.image_url ?? null,
-        target_url: form.target_url === "" ? null : form.target_url ?? null,
+      const insertPayload = {
+        title: form.title, // Now TS knows this is a string
+        message: form.message || null,
+        image_url: form.image_url || null,
+        target_url: form.target_url || null,
         is_active: !!form.is_active,
-        start_date: (form.start_date && form.start_date !== "") ? form.start_date : null,
-        end_date: (form.end_date && form.end_date !== "") ? form.end_date : null,
+        start_date: form.start_date || null,
+        end_date: form.end_date || null,
       };
-      ({ error } = await supabase.from("admin_ads").update(updatePayload).eq("id", id));
+      ({ error } = await supabase.from("admin_ads").insert(insertPayload));
+    } else {
+      // Update
+      const { id } = form;
+      const updatePayload = {
+        title: form.title,
+        message: form.message || null,
+        image_url: form.image_url || null,
+        target_url: form.target_url || null,
+        is_active: !!form.is_active,
+        start_date: form.start_date || null,
+        end_date: form.end_date || null,
+      };
+      ({ error } = await supabase.from("admin_ads").update(updatePayload).eq("id", id!));
     }
+
     if (error) {
       alert("Erreur lors de l'enregistrement");
       console.error(error);
