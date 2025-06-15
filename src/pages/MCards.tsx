@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
@@ -13,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { differenceInDays, parseISO } from 'date-fns';
 
 const MCards = () => {
-  const { mcards, loading, getMCards, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
+  const { mcards, loading, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -21,10 +20,6 @@ const MCards = () => {
   const pricingRef = useRef<HTMLElement>(null);
   const [upgradingCardId, setUpgradingCardId] = useState<string | null>(null);
   const [notifiedCards, setNotifiedCards] = useState<string[]>([]);
-
-  useEffect(() => {
-    getMCards();
-  }, [getMCards]);
 
   useEffect(() => {
     mcards.forEach(mcard => {

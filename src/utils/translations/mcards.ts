@@ -289,5 +289,41 @@ export const mcardsTranslations: Translations = {
   freePlanExpiredDescription: {
     fr: "Votre plan gratuit pour la carte {cardName} a expiré. Mettez à niveau pour la réactiver.",
     en: "Your free plan for the card {cardName} has expired. Upgrade to reactivate it."
+  },
+  pendingMCardPaymentsTitle: {
+    fr: "Paiements mCard en attente",
+    en: "Pending mCard Payments"
+  },
+  pendingMCardPaymentsDescription: {
+    fr: "Validez les paiements pour activer les abonnements mCard des utilisateurs.",
+    en: "Validate payments to activate user mCard subscriptions."
+  },
+  noPendingMCardPayments: {
+    fr: "Aucun paiement en attente pour les mCards.",
+    en: "No pending payments for mCards."
+  },
+  validatePayment: {
+    fr: "Valider le paiement",
+    en: "Validate Payment"
+  },
+  mCardApprovalError: {
+    fr: "Erreur lors de l'approbation de la mCard.",
+    en: "Error approving mCard."
+  },
+  mCardApprovedSuccessTitle: {
+    fr: "Paiement validé !",
+    en: "Payment Validated!"
+  },
+  mCardApprovedSuccessDescription: {
+    fr: "L'abonnement de la mCard a été activé avec succès.",
+    en: "The mCard subscription has been activated successfully."
+  },
+  plan: {
+    fr: "Plan",
+    en: "Plan"
+  },
+  error: {
+    fr: "Erreur",
+    en: "Error"
   }
 };

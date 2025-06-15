@@ -483,6 +483,13 @@ export type Database = {
         Args: { promo_code_text: string }
         Returns: boolean
       }
+      admin_approve_mcard_subscription: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          success: boolean
+          message: string
+        }[]
+      }
       admin_get_all_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -510,6 +517,18 @@ export type Database = {
           last_name: string
           phone: string
           country: string
+        }[]
+      }
+      admin_get_pending_mcards: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          full_name: string
+          plan: string
+          created_at: string
+          user_email: string
+          user_phone: string
         }[]
       }
       can_activate_promo_codes: {

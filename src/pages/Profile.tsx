@@ -43,7 +43,7 @@ const Profile = () => {
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
-  const { mcards, loading: mcardsLoading, getMCards, createMCard, updateMCard, deleteMCard } = useMCards();
+  const { mcards, loading: mcardsLoading, createMCard, updateMCard, deleteMCard } = useMCards();
 
   useEffect(() => {
     const getSession = async () => {
@@ -52,7 +52,6 @@ const Profile = () => {
       if (session) {
         await getProfile(session);
         await fetchBadgeStatus(session.user);
-        await getMCards();
       }
       setLoading(false);
     };
@@ -64,14 +63,13 @@ const Profile = () => {
       if (session) {
         getProfile(session);
         fetchBadgeStatus(session.user);
-        getMCards();
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [getProfile, fetchBadgeStatus, getMCards]);
+  }, [getProfile, fetchBadgeStatus]);
 
   const handleUpdateProfile = () => {
     if (session) {

@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+
+import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
@@ -8,15 +9,17 @@ export type MCard = Tables<'mcards'>;
 
 export const useMCards = () => {
   const [mcards, setMCards] = useState<MCard[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { t } = useTranslation();
 
   const getMCards = useCallback(async () => {
     try {
-      setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setMCards([]);
+        return;
+      };
 
       const { data, error } = await supabase
         .from('mcards')
@@ -28,10 +31,32 @@ export const useMCards = () => {
       setMCards(data || []);
     } catch (error: any) {
       toast({ variant: "destructive", title: t('mCardError'), description: error.message });
-    } finally {
-      setLoading(false);
     }
   }, [t, toast]);
+
+  useEffect(() => {
+    getMCards().finally(() => setLoading(false));
+
+    const channel = supabase
+      .channel('mcards-realtime')
+      .on<MCard>(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcards',
+        },
+        (payload) => {
+          console.log('mCard change received!', payload);
+          getMCards();
+        }
+      )
+      .subscribe();
+    
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [getMCards]);
 
   const createMCard = useCallback(async (mcardData: TablesInsert<'mcards'>) => {
     try {
