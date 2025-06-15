@@ -153,7 +153,6 @@ const MCards = () => {
             <MCardsList
                 mcards={mcards}
                 loading={loading}
-                updateMCard={updateMCard}
                 deleteMCard={deleteMCard}
                 onStartUpgradeFlow={handleInitiateUpgrade}
                 onEdit={handleOpenEdit}

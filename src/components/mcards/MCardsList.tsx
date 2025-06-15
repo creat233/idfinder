@@ -1,4 +1,3 @@
-
 import { MCard } from "@/hooks/useMCards";
 import { MCardItem } from "./MCardItem";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -7,7 +6,6 @@ import { TablesUpdate } from "@/integrations/supabase/types";
 interface MCardsListProps {
   mcards: MCard[];
   loading: boolean;
-  updateMCard: (id: string, data: TablesUpdate<'mcards'>, options?: { silent?: boolean }) => Promise<MCard | null>;
   deleteMCard: (id: string) => Promise<void>;
   onStartUpgradeFlow: (cardId: string) => void;
   onEdit: (mcard: MCard) => void;
