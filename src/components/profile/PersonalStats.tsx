@@ -1,6 +1,5 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 import { CreditCard, Wallet } from "lucide-react";
 
 interface PersonalStatsProps {

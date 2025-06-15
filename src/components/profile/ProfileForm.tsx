@@ -1,9 +1,8 @@
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LanguageSelect } from "./LanguageSelect";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 
 interface ProfileFormProps {
   firstName: string;

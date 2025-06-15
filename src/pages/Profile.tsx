@@ -9,7 +9,7 @@ import { SupportSection } from "@/components/profile/SupportSection";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { CountryInfo } from "@/components/profile/CountryInfo";
 import { useProfile } from "@/hooks/useProfile";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslation } from "@/providers/TranslationProvider";
 import { useUserCards } from "@/hooks/useUserCards";
 import { PersonalStats } from "@/components/profile/PersonalStats";
 import { PasswordChangeForm } from "@/components/profile/PasswordChangeForm";
