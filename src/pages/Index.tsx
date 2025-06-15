@@ -5,14 +5,12 @@ import { PublicFeatures } from "@/components/public/PublicFeatures";
 import { PublicPricing } from "@/components/public/PublicPricing";
 import { PublicCTA } from "@/components/public/PublicCTA";
 import { Footer } from "@/components/Footer";
-import { Suggestions } from "@/components/Suggestions";
 
 const Index = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <PublicHeader />
       <main className="flex-grow pt-16">
-        <Suggestions />
         <PublicHero />
         <PublicFeatures />
         <PublicPricing />
