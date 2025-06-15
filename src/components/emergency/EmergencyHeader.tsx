@@ -1,7 +1,6 @@
-
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getCountryInfo } from "@/utils/countryDetection";
+import { getCountryInfo } from "@/utils/countryUtils";
 
 export const EmergencyHeader = () => {
   const { t, currentCountry, currentLanguage, user } = useTranslation();

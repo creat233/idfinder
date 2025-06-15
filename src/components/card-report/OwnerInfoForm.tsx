@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { PromoCodeInput } from "@/components/promo/PromoCodeInput";
 import { supabase } from "@/integrations/supabase/client";
-import { getCountryInfo } from "@/utils/countryDetection";
+import { getCountryInfo } from "@/utils/countryUtils";
 
 interface OwnerInfoFormProps {
   ownerName: string;

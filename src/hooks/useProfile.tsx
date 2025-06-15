@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
-import { detectCountryFromPhone } from "@/utils/countryDetection";
+import { detectCountryFromPhone } from "@/utils/countryUtils";
 
 export const useProfile = () => {
   const { showSuccess, showError } = useToast();
