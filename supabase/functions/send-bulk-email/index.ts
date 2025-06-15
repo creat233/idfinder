@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "npm:resend@2.0.0";
+import { generatePromoEmailHtml } from "./promo-email-template.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const corsHeaders = {
@@ -71,12 +72,14 @@ serve(async (req: Request) => {
 
     console.log(`Sending email to ${recipientEmails.length} users.`);
 
+    const finalHtml = generatePromoEmailHtml({ subject, userHtmlContent: htmlContent });
+
     const { data, error: sendError } = await resend.emails.send({
       from: "FinderID <notifications@resend.dev>",
       to: "notifications@resend.dev", // Champ 'to' requis, mais les vrais destinataires sont en Cci.
       bcc: recipientEmails,
       subject: subject,
-      html: htmlContent,
+      html: finalHtml,
     });
 
     if (sendError) {
