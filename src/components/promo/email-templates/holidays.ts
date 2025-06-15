@@ -1,4 +1,3 @@
-
 export const holidayWishesTemplate = {
   subject: "🎉 L'équipe FinderID vous souhaite de joyeuses fêtes !",
   message: `<h1>Joyeuses Fêtes !</h1>
@@ -105,6 +104,76 @@ export const independenceDayWishesTemplate = {
 <p>Bonjour,</p>
 <p>En ce jour de fête nationale, toute l'équipe de FinderID souhaite une excellente Fête de l'Indépendance à toute la communauté sénégalaise.</p>
 <p>Ensemble, continuons de construire un avenir sûr et serein.</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const christmasWishesTemplate = {
+  subject: "Joyeux Noël de la part de l'équipe FinderID ! 🎄",
+  message: `<h1>Joyeux Noël !</h1>
+<p>Bonjour,</p>
+<p>Toute l'équipe de FinderID vous souhaite un très joyeux Noël rempli de joie, de paix et de moments chaleureux avec vos proches.</p>
+<p>Que la magie de Noël illumine votre foyer.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const koriteWishesTemplate = {
+  subject: "Korité Mubarak ! Excellente fête de l'Aïd el-Fitr ! 🌙",
+  message: `<h1>Aïd Moubarak !</h1>
+<p>Bonjour,</p>
+<p>Après un mois de dévotion, l'équipe de FinderID vous souhaite une excellente fête de Korité.</p>
+<p>Que l'Aïd el-Fitr vous apporte joie, bonheur et prospérité à vous et à vos proches.</p>
+<p>Dewenati !</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const magalDeToubaWishesTemplate = {
+  subject: "Excellent Magal de Touba - FinderID",
+  message: `<h1>Bon Magal de Touba</h1>
+<p>Bonjour,</p>
+<p>L'équipe de FinderID souhaite un excellent Magal à toute la communauté mouride et à tous les pèlerins.</p>
+<p>Que ce grand rassemblement soit source de paix et de bénédictions.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const mawlidWishesTemplate = {
+  subject: "Gamou Moubarak de la part de l'équipe FinderID ! 🙏",
+  message: `<h1>Gamou Moubarak !</h1>
+<p>Bonjour,</p>
+<p>À l'occasion du Mawlid al-Nabi, l'équipe de FinderID vous souhaite un excellent Gamou.</p>
+<p>Que cette journée de célébration de la naissance du Prophète (PSL) vous apporte paix et bénédictions.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const assumptionDayWishesTemplate = {
+  subject: "Bonne fête de l'Assomption ! - FinderID",
+  message: `<h1>Bonne Fête de l'Assomption !</h1>
+<p>Bonjour,</p>
+<p>L'équipe de FinderID souhaite une très belle fête de l'Assomption à toute la communauté chrétienne.</p>
+<p>Que cette journée vous soit douce et sereine.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const allSaintsDayWishesTemplate = {
+  subject: "En cette fête de la Toussaint - FinderID",
+  message: `<h1>Fête de la Toussaint</h1>
+<p>Bonjour,</p>
+<p>En ce jour de la Toussaint, l'équipe de FinderID vous accompagne de ses pensées.</p>
+<p>Nous souhaitons une journée de recueillement et de paix à tous ceux qui célèbrent.</p>
+<p>Cordialement,</p>
+<p>L'équipe FinderID</p>`
+};
+
+export const peaceDayWishesTemplate = {
+  subject: "🕊️ Célébrons la Journée Internationale de la Paix avec FinderID",
+  message: `<h1>Journée Internationale de la Paix</h1>
+<p>Bonjour,</p>
+<p>En cette Journée Internationale de la Paix, unissons nos voix pour un monde plus sûr et plus serein.</p>
+<p>FinderID s'engage pour la sécurité de vos biens, une petite contribution à la tranquillité d'esprit.</p>
+<p>Ensemble, cultivons la paix.</p>
 <p>L'équipe FinderID</p>`
 };
 

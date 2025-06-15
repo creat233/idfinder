@@ -1,4 +1,3 @@
-
 import {
   cardRegistrationAnnouncementTemplate,
   promoCodeAnnouncementTemplate,
@@ -33,6 +32,13 @@ import {
   valentinesDayWishesTemplate,
   womensDayWishesTemplate,
   independenceDayWishesTemplate,
+  christmasWishesTemplate,
+  koriteWishesTemplate,
+  magalDeToubaWishesTemplate,
+  mawlidWishesTemplate,
+  assumptionDayWishesTemplate,
+  allSaintsDayWishesTemplate,
+  peaceDayWishesTemplate,
 } from "./";
 
 export interface EmailTemplate {
@@ -81,15 +87,22 @@ export const templateCategories: TemplateCategory[] = [
     templates: [
       { id: "holidayWishes", template: holidayWishesTemplate, label: "Vœux", contexts: ['bulk'] },
       { id: "newYearWishes", template: newYearWishesTemplate, label: "Nouvel An", contexts: ['bulk'] },
+      { id: "christmasWishes", template: christmasWishesTemplate, label: "Noël", contexts: ['bulk'] },
       { id: "easterWishes", template: easterWishesTemplate, label: "Pâques", contexts: ['bulk'] },
-      { id: "tabaskiWishes", template: tabaskiWishesTemplate, label: "Tabaski", contexts: ['bulk'] },
+      { id: "assumptionDayWishes", template: assumptionDayWishesTemplate, label: "Assomption", contexts: ['bulk'] },
+      { id: "allSaintsDayWishes", template: allSaintsDayWishesTemplate, label: "Toussaint", contexts: ['bulk'] },
       { id: "ramadanWishes", template: ramadanWishesTemplate, label: "Ramadan", contexts: ['bulk'] },
+      { id: "koriteWishes", template: koriteWishesTemplate, label: "Korité", contexts: ['bulk'] },
+      { id: "tabaskiWishes", template: tabaskiWishesTemplate, label: "Tabaski", contexts: ['bulk'] },
+      { id: "mawlidWishes", template: mawlidWishesTemplate, label: "Mawlid (Gamou)", contexts: ['bulk'] },
+      { id: "magalDeToubaWishes", template: magalDeToubaWishesTemplate, label: "Magal de Touba", contexts: ['bulk'] },
       { id: "fathersDayWishes", template: fathersDayWishesTemplate, label: "Fête des Pères", contexts: ['bulk'] },
       { id: "mothersDayWishes", template: mothersDayWishesTemplate, label: "Fête des Mères", contexts: ['bulk'] },
       { id: "laborDayWishes", template: laborDayWishesTemplate, label: "Fête du Travail", contexts: ['bulk'] },
       { id: "valentinesDayWishes", template: valentinesDayWishesTemplate, label: "Saint-Valentin", contexts: ['bulk'] },
       { id: "womensDayWishes", template: womensDayWishesTemplate, label: "Journée de la Femme", contexts: ['bulk'] },
       { id: "independenceDayWishes", template: independenceDayWishesTemplate, label: "Fête Indépendance", contexts: ['bulk'] },
+      { id: "peaceDayWishes", template: peaceDayWishesTemplate, label: "Journée de la Paix", contexts: ['bulk'] },
     ]
   },
   {
