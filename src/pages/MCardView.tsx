@@ -2,28 +2,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  ArrowLeft, 
-  Share2, 
-  Copy, 
-  Download, 
-  Edit,
-  ExternalLink,
-  Phone,
-  Mail,
-  Globe,
-  MapPin,
-  Briefcase,
-  User,
-  QrCode
-} from 'lucide-react';
 import { MCard } from '@/types/mcard';
-import { MCardSocialLinks } from '@/components/mcards/MCardSocialLinks';
 import { MCardShareDialog } from '@/components/mcards/MCardShareDialog';
+import { MCardViewHeader } from '@/components/mcards/view/MCardViewHeader';
+import { MCardViewQRSection } from '@/components/mcards/view/MCardViewQRSection';
+import { MCardViewProfile } from '@/components/mcards/view/MCardViewProfile';
 
 const MCardView = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -84,25 +68,6 @@ const MCardView = () => {
     navigate('/mcards', { state: { editMCardId: mcard?.id } });
   };
 
-  const generateQRCode = () => {
-    const cardUrl = window.location.href;
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(cardUrl)}`;
-  };
-
-  const downloadQRCode = () => {
-    const qrUrl = generateQRCode();
-    const link = document.createElement('a');
-    link.href = qrUrl;
-    link.download = `qr-code-${mcard?.full_name || 'mcard'}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast({
-      title: "QR Code téléchargé !",
-      description: "Le QR Code a été téléchargé avec succès"
-    });
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -119,10 +84,9 @@ const MCardView = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Carte non trouvée</h1>
-          <Button onClick={() => navigate('/mcards')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+          <button onClick={() => navigate('/mcards')}>
             Retour
-          </Button>
+          </button>
         </div>
       </div>
     );
@@ -131,159 +95,31 @@ const MCardView = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={() => navigate('/mcards')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour
-            </Button>
-            <div className="flex items-center gap-2">
-              {isOwner && (
-                <Button variant="outline" onClick={handleEdit}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Modifier
-                </Button>
-              )}
-              <Button variant="outline" onClick={() => setShowQRCode(!showQRCode)}>
-                <QrCode className="h-4 w-4 mr-2" />
-                QR Code
-              </Button>
-              <Button onClick={() => setIsShareDialogOpen(true)}>
-                <Share2 className="h-4 w-4 mr-2" />
-                Partager
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MCardViewHeader
+        isOwner={isOwner}
+        showQRCode={showQRCode}
+        onEdit={handleEdit}
+        onToggleQRCode={() => setShowQRCode(!showQRCode)}
+        onShare={() => setIsShareDialogOpen(true)}
+      />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           {/* QR Code Section */}
-          {showQRCode && (
-            <Card className="mb-6 text-center">
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-semibold mb-4">Code QR de la carte</h3>
-                <div className="flex justify-center mb-4">
-                  <img 
-                    src={generateQRCode()} 
-                    alt="QR Code de la carte"
-                    className="border rounded-lg shadow-md"
-                  />
-                </div>
-                <div className="flex gap-2 justify-center">
-                  <Button variant="outline" onClick={downloadQRCode}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Télécharger
-                  </Button>
-                  <Button variant="outline" onClick={() => setShowQRCode(false)}>
-                    Masquer
-                  </Button>
-                </div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Scannez ce code pour accéder directement à cette carte
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          <MCardViewQRSection
+            showQRCode={showQRCode}
+            url={window.location.href}
+            cardName={mcard.full_name}
+            onClose={() => setShowQRCode(false)}
+          />
 
           {/* Profile Card */}
-          <Card className="mb-6 overflow-hidden shadow-lg">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-32"></div>
-            <CardContent className="relative pt-0 pb-8">
-              {/* Profile Picture */}
-              <div className="flex justify-center -mt-16 mb-6">
-                <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-100">
-                  {mcard.profile_picture_url ? (
-                    <img 
-                      src={mcard.profile_picture_url} 
-                      alt={mcard.full_name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <User className="h-16 w-16 text-gray-400" />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Basic Info */}
-              <div className="text-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{mcard.full_name}</h1>
-                {mcard.job_title && (
-                  <p className="text-lg text-gray-600 mb-1">{mcard.job_title}</p>
-                )}
-                {mcard.company && (
-                  <p className="text-gray-500 flex items-center justify-center gap-1">
-                    <Briefcase className="h-4 w-4" />
-                    {mcard.company}
-                  </p>
-                )}
-                <Badge variant="secondary" className="mt-3">
-                  Plan {mcard.plan}
-                </Badge>
-              </div>
-
-              {/* Description */}
-              {mcard.description && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                  <p className="text-gray-700 text-center">{mcard.description}</p>
-                </div>
-              )}
-
-              {/* Contact Info */}
-              <div className="space-y-3 mb-6">
-                {mcard.phone_number && (
-                  <a 
-                    href={`tel:${mcard.phone_number}`}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-                  >
-                    <Phone className="h-5 w-5 text-blue-600" />
-                    <span className="text-gray-900 font-medium">{mcard.phone_number}</span>
-                  </a>
-                )}
-                {mcard.email && (
-                  <a 
-                    href={`mailto:${mcard.email}`}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-                  >
-                    <Mail className="h-5 w-5 text-blue-600" />
-                    <span className="text-gray-900 font-medium">{mcard.email}</span>
-                  </a>
-                )}
-                {mcard.website_url && (
-                  <a 
-                    href={mcard.website_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-                  >
-                    <Globe className="h-5 w-5 text-blue-600" />
-                    <span className="text-gray-900 font-medium">Site web</span>
-                    <ExternalLink className="h-4 w-4 ml-auto text-gray-400 group-hover:text-gray-600" />
-                  </a>
-                )}
-              </div>
-
-              {/* Social Links */}
-              <MCardSocialLinks mcard={mcard} />
-
-              {/* Quick Actions */}
-              <div className="flex gap-2 mt-6">
-                <Button variant="outline" className="flex-1" onClick={handleCopyLink}>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copier le lien
-                </Button>
-                <Button variant="outline" className="flex-1" onClick={() => setIsShareDialogOpen(true)}>
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Partager
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <MCardViewProfile
+            mcard={mcard}
+            onCopyLink={handleCopyLink}
+            onShare={() => setIsShareDialogOpen(true)}
+          />
         </div>
       </div>
 
