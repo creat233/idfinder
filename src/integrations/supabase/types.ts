@@ -146,6 +146,7 @@ export type Database = {
           plan: string
           profile_picture_url: string | null
           slug: string
+          snapchat_url: string | null
           social_links: Json | null
           subscription_expires_at: string
           subscription_status: string
@@ -172,6 +173,7 @@ export type Database = {
           plan?: string
           profile_picture_url?: string | null
           slug: string
+          snapchat_url?: string | null
           social_links?: Json | null
           subscription_expires_at?: string
           subscription_status?: string
@@ -198,6 +200,7 @@ export type Database = {
           plan?: string
           profile_picture_url?: string | null
           slug?: string
+          snapchat_url?: string | null
           social_links?: Json | null
           subscription_expires_at?: string
           subscription_status?: string
