@@ -54,20 +54,34 @@ export const useMCardsFormHandler = ({
   };
 
   const handleFormSubmit = async (data: MCardCreateData | MCardUpdateData, profilePictureFile: File | null): Promise<MCard | null> => {
+    console.log('=== handleFormSubmit appelé ===');
+    console.log('Data:', data);
+    console.log('Profile picture file:', profilePictureFile);
+    console.log('Editing mCard:', editingMCard);
+    console.log('Plan for new card:', planForNewCard);
+    
     try {
-      console.log('handleFormSubmit appelé avec:', { data, profilePictureFile, editingMCard, planForNewCard });
-      
       if (editingMCard) {
-        console.log('Mode édition');
+        console.log('=== MODE ÉDITION ===');
+        console.log('ID de la carte à modifier:', editingMCard.id);
+        
         const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
+        console.log('Résultat de updateMCard:', result);
+        
         if (result) {
+          console.log('Mise à jour réussie');
           setIsFormOpen(false);
           setEditingMCard(null);
-          console.log('Carte mise à jour avec succès:', result);
+        } else {
+          console.error('updateMCard a retourné null');
+          throw new Error('Échec de la mise à jour de la carte');
         }
+        
         return result;
       } else if (planForNewCard) {
-        console.log('Mode création avec plan:', planForNewCard);
+        console.log('=== MODE CRÉATION ===');
+        console.log('Plan sélectionné:', planForNewCard);
+        
         setIsCreating(true);
         
         const newCardData: MCardCreateData = {
@@ -98,6 +112,7 @@ export const useMCardsFormHandler = ({
           console.log('Création terminée avec succès');
         } else {
           console.error('createMCard a retourné null');
+          throw new Error('Échec de la création de la carte');
         }
         
         setIsCreating(false);
@@ -105,11 +120,12 @@ export const useMCardsFormHandler = ({
       }
       
       console.warn('Ni editingMCard ni planForNewCard défini');
-      return null;
+      throw new Error('Configuration invalide pour la soumission');
     } catch (error) {
-      console.error('Erreur dans handleFormSubmit:', error);
+      console.error('=== ERREUR DANS handleFormSubmit ===');
+      console.error('Erreur:', error);
       setIsCreating(false);
-      throw error;
+      throw error; // Re-lancer l'erreur pour que le composant form puisse la gérer
     }
   };
 

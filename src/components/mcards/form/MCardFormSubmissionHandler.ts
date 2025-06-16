@@ -43,32 +43,30 @@ export const useMCardFormSubmission = (
     console.log('mcard existante:', mcard);
     console.log('preview:', preview);
     
+    // Validation immédiate
+    if (!values.full_name || values.full_name.trim() === '') {
+      console.log('ERREUR: Nom complet manquant');
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Le nom complet est requis"
+      });
+      return;
+    }
+
+    if (!values.phone_number || values.phone_number.trim() === '') {
+      console.log('ERREUR: Numéro de téléphone manquant');
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Le numéro de téléphone est requis"
+      });
+      return;
+    }
+    
     try {
       setIsSubmitting(true);
       console.log('setIsSubmitting(true) appelé');
-      
-      // Vérifier que le nom complet et le numéro de téléphone sont présents
-      if (!values.full_name || values.full_name.trim() === '') {
-        console.log('ERREUR: Nom complet manquant');
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Le nom complet est requis"
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (!values.phone_number || values.phone_number.trim() === '') {
-        console.log('ERREUR: Numéro de téléphone manquant');
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Le numéro de téléphone est requis"
-        });
-        setIsSubmitting(false);
-        return;
-      }
       
       // Pour la mise à jour, on garde le slug existant
       const slug = mcard ? mcard.slug : generateSlug(values.full_name);
@@ -93,46 +91,44 @@ export const useMCardFormSubmission = (
       if (result) {
         console.log('SUCCÈS: Résultat obtenu');
         
-        // Fermer le dialog en premier
+        // Toast de succès selon le mode
+        if (mcard) {
+          console.log('Mode mise à jour - toast de succès');
+          toast({
+            title: "Succès",
+            description: "Votre carte a été mise à jour avec succès"
+          });
+        } else {
+          console.log('Mode création - toast de succès');
+          toast({
+            title: "Succès", 
+            description: "Votre carte a été créée avec succès"
+          });
+        }
+        
+        // Fermer le dialog
         if (onOpenChange) {
           console.log('Fermeture du dialog');
           onOpenChange(false);
         }
         
-        // Toast de succès
-        const successMessage = mcard ? "Votre carte a été mise à jour avec succès" : "Redirection vers votre carte...";
-        console.log('Affichage du toast:', successMessage);
-        toast({
-          title: mcard ? t('mCardUpdatedSuccess') : t('mCardCreatedSuccess'),
-          description: successMessage
-        });
+        // Navigation vers la carte
+        console.log('Navigation vers:', `/mcard/${result.slug}`);
+        navigate(`/mcard/${result.slug}`);
         
-        // Navigation
-        if (mcard) {
-          console.log('Mode mise à jour - navigation avec délai vers:', `/mcard/${result.slug}`);
-          setTimeout(() => {
-            navigate(`/mcard/${result.slug}`);
-          }, 500);
-        } else {
-          console.log('Mode création - navigation immédiate vers:', `/mcard/${result.slug}`);
-          navigate(`/mcard/${result.slug}`);
-        }
       } else {
         console.error('ERREUR: Aucun résultat retourné par onSubmit');
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de la sauvegarde de la carte"
-        });
+        throw new Error("Aucun résultat retourné lors de la sauvegarde");
       }
     } catch (error) {
       console.error('=== ERREUR DANS handleFormSubmit ===');
       console.error('Erreur complète:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'Pas de stack trace');
+      
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error instanceof Error ? error.message : "Une erreur est survenue"
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de la sauvegarde"
       });
     } finally {
       console.log('=== FIN SOUMISSION - setIsSubmitting(false) ===');
