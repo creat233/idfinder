@@ -37,27 +37,36 @@ export const useMCardFormSubmission = (
     profilePictureFile: File | null,
     setIsSubmitting: (submitting: boolean) => void
   ) => {
+    console.log('=== DÉBUT SOUMISSION FORMULAIRE ===');
+    console.log('Values reçues:', values);
+    console.log('ProfilePictureFile:', profilePictureFile);
+    console.log('mcard existante:', mcard);
+    console.log('preview:', preview);
+    
     try {
       setIsSubmitting(true);
-      
-      console.log('Début de la soumission du formulaire', values);
+      console.log('setIsSubmitting(true) appelé');
       
       // Vérifier que le nom complet et le numéro de téléphone sont présents
       if (!values.full_name || values.full_name.trim() === '') {
+        console.log('ERREUR: Nom complet manquant');
         toast({
           variant: "destructive",
           title: "Erreur",
           description: "Le nom complet est requis"
         });
+        setIsSubmitting(false);
         return;
       }
 
       if (!values.phone_number || values.phone_number.trim() === '') {
+        console.log('ERREUR: Numéro de téléphone manquant');
         toast({
           variant: "destructive",
           title: "Erreur",
           description: "Le numéro de téléphone est requis"
         });
+        setIsSubmitting(false);
         return;
       }
       
@@ -75,31 +84,41 @@ export const useMCardFormSubmission = (
       }
       
       console.log('Données à soumettre:', data);
+      console.log('=== APPEL DE onSubmit ===');
       
       const result = await onSubmit(data, profilePictureFile);
-      console.log('Résultat de la soumission:', result);
+      console.log('=== RÉSULTAT DE onSubmit ===');
+      console.log('Résultat:', result);
       
       if (result) {
+        console.log('SUCCÈS: Résultat obtenu');
+        
         // Fermer le dialog en premier
-        onOpenChange?.(false);
+        if (onOpenChange) {
+          console.log('Fermeture du dialog');
+          onOpenChange(false);
+        }
         
         // Toast de succès
+        const successMessage = mcard ? "Votre carte a été mise à jour avec succès" : "Redirection vers votre carte...";
+        console.log('Affichage du toast:', successMessage);
         toast({
           title: mcard ? t('mCardUpdatedSuccess') : t('mCardCreatedSuccess'),
-          description: mcard ? "Votre carte a été mise à jour avec succès" : "Redirection vers votre carte..."
+          description: successMessage
         });
         
-        // Pour la mise à jour, on navigue vers la carte après un petit délai
+        // Navigation
         if (mcard) {
+          console.log('Mode mise à jour - navigation avec délai vers:', `/mcard/${result.slug}`);
           setTimeout(() => {
             navigate(`/mcard/${result.slug}`);
           }, 500);
         } else {
-          // Redirection immédiate pour une nouvelle carte
+          console.log('Mode création - navigation immédiate vers:', `/mcard/${result.slug}`);
           navigate(`/mcard/${result.slug}`);
         }
       } else {
-        console.error('Aucun résultat retourné par onSubmit');
+        console.error('ERREUR: Aucun résultat retourné par onSubmit');
         toast({
           variant: "destructive",
           title: "Erreur",
@@ -107,13 +126,16 @@ export const useMCardFormSubmission = (
         });
       }
     } catch (error) {
-      console.error('Erreur lors de la soumission:', error);
+      console.error('=== ERREUR DANS handleFormSubmit ===');
+      console.error('Erreur complète:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'Pas de stack trace');
       toast({
         variant: "destructive",
         title: "Erreur",
         description: error instanceof Error ? error.message : "Une erreur est survenue"
       });
     } finally {
+      console.log('=== FIN SOUMISSION - setIsSubmitting(false) ===');
       setIsSubmitting(false);
     }
   };

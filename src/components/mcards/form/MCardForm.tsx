@@ -61,10 +61,20 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
   const { handleFormSubmit } = useMCardFormSubmission(onSubmit, mcard, preview, onOpenChange);
 
   const onFormSubmit = (values: MCardFormData) => {
+    console.log('=== onFormSubmit appelé ===');
+    console.log('Values du formulaire:', values);
+    console.log('isSubmitting avant:', isSubmitting);
+    
+    if (isSubmitting) {
+      console.log('PROTECTION: Soumission déjà en cours, abandon');
+      return;
+    }
+    
     handleFormSubmit(values, profilePictureFile, setIsSubmitting);
   };
 
   const handleClose = () => {
+    console.log('handleClose appelé, isSubmitting:', isSubmitting);
     if (!isSubmitting) {
       onOpenChange(false);
     }
@@ -72,6 +82,13 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
 
   // Le bouton est actif si le nom complet et le numéro de téléphone sont remplis et qu'on n'est pas en train de soumettre
   const isSubmitDisabled = loading || isSubmitting || !watchedValues.full_name?.trim() || !watchedValues.phone_number?.trim();
+
+  console.log('=== État du formulaire ===');
+  console.log('loading:', loading);
+  console.log('isSubmitting:', isSubmitting);
+  console.log('full_name:', watchedValues.full_name);
+  console.log('phone_number:', watchedValues.phone_number);
+  console.log('isSubmitDisabled:', isSubmitDisabled);
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 p-2">
