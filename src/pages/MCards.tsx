@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
@@ -84,13 +85,14 @@ const MCards = () => {
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = async (data: MCardCreateData | MCardUpdateData, profilePictureFile: File | null) => {
+  const handleFormSubmit = async (data: MCardCreateData | MCardUpdateData, profilePictureFile: File | null): Promise<MCard | null> => {
     if (editingMCard) {
       const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
       if (result) {
         setIsFormOpen(false);
         setEditingMCard(null);
       }
+      return result;
     } else if (planForNewCard) {
       const newCardData: MCardCreateData = {
         ...(data as MCardCreateData),
@@ -113,7 +115,9 @@ const MCards = () => {
         setIsFormOpen(false);
         setPlanForNewCard(null);
       }
+      return result;
     }
+    return null;
   };
 
   const handleRequestUpgrade = async (mcardId: string, plan: 'essential' | 'premium') => {
