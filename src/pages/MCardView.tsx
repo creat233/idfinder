@@ -18,7 +18,8 @@ import {
   Globe,
   MapPin,
   Briefcase,
-  User
+  User,
+  QrCode
 } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { MCardSocialLinks } from '@/components/mcards/MCardSocialLinks';
@@ -32,6 +33,7 @@ const MCardView = () => {
   const [loading, setLoading] = useState(true);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
 
   useEffect(() => {
     const fetchMCard = async () => {
@@ -82,6 +84,25 @@ const MCardView = () => {
     navigate('/mcards', { state: { editMCardId: mcard?.id } });
   };
 
+  const generateQRCode = () => {
+    const cardUrl = window.location.href;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(cardUrl)}`;
+  };
+
+  const downloadQRCode = () => {
+    const qrUrl = generateQRCode();
+    const link = document.createElement('a');
+    link.href = qrUrl;
+    link.download = `qr-code-${mcard?.full_name || 'mcard'}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({
+      title: "QR Code téléchargé !",
+      description: "Le QR Code a été téléchargé avec succès"
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -124,6 +145,10 @@ const MCardView = () => {
                   Modifier
                 </Button>
               )}
+              <Button variant="outline" onClick={() => setShowQRCode(!showQRCode)}>
+                <QrCode className="h-4 w-4 mr-2" />
+                QR Code
+              </Button>
               <Button onClick={() => setIsShareDialogOpen(true)}>
                 <Share2 className="h-4 w-4 mr-2" />
                 Partager
@@ -136,6 +161,34 @@ const MCardView = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
+          {/* QR Code Section */}
+          {showQRCode && (
+            <Card className="mb-6 text-center">
+              <CardContent className="pt-6">
+                <h3 className="text-lg font-semibold mb-4">Code QR de la carte</h3>
+                <div className="flex justify-center mb-4">
+                  <img 
+                    src={generateQRCode()} 
+                    alt="QR Code de la carte"
+                    className="border rounded-lg shadow-md"
+                  />
+                </div>
+                <div className="flex gap-2 justify-center">
+                  <Button variant="outline" onClick={downloadQRCode}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Télécharger
+                  </Button>
+                  <Button variant="outline" onClick={() => setShowQRCode(false)}>
+                    Masquer
+                  </Button>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Scannez ce code pour accéder directement à cette carte
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Profile Card */}
           <Card className="mb-6 overflow-hidden shadow-lg">
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-32"></div>
@@ -186,19 +239,19 @@ const MCardView = () => {
                 {mcard.phone_number && (
                   <a 
                     href={`tel:${mcard.phone_number}`}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
                   >
                     <Phone className="h-5 w-5 text-blue-600" />
-                    <span className="text-gray-900">{mcard.phone_number}</span>
+                    <span className="text-gray-900 font-medium">{mcard.phone_number}</span>
                   </a>
                 )}
                 {mcard.email && (
                   <a 
                     href={`mailto:${mcard.email}`}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
                   >
                     <Mail className="h-5 w-5 text-blue-600" />
-                    <span className="text-gray-900">{mcard.email}</span>
+                    <span className="text-gray-900 font-medium">{mcard.email}</span>
                   </a>
                 )}
                 {mcard.website_url && (
@@ -206,11 +259,11 @@ const MCardView = () => {
                     href={mcard.website_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
                   >
                     <Globe className="h-5 w-5 text-blue-600" />
-                    <span className="text-gray-900">Site web</span>
-                    <ExternalLink className="h-4 w-4 ml-auto text-gray-400" />
+                    <span className="text-gray-900 font-medium">Site web</span>
+                    <ExternalLink className="h-4 w-4 ml-auto text-gray-400 group-hover:text-gray-600" />
                   </a>
                 )}
               </div>
