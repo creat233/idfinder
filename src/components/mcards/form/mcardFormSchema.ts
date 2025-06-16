@@ -3,7 +3,6 @@ import * as z from "zod";
 
 export const formSchema = z.object({
   full_name: z.string().min(2, "Le nom complet est requis"),
-  slug: z.string().min(3, "Le slug est requis").regex(/^[a-z0-9-]+$/, "Slug invalide (lettres minuscules, chiffres et tirets)"),
   job_title: z.string().optional(),
   company: z.string().optional(),
   description: z.string().optional(),

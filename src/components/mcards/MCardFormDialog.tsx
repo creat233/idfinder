@@ -29,6 +29,18 @@ interface MCardFormDialogProps {
   loading: boolean;
 }
 
+// Fonction pour générer un slug à partir du nom complet
+const generateSlug = (fullName: string): string => {
+  return fullName
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
+    .replace(/[^a-z0-9\s-]/g, '') // Supprime les caractères spéciaux
+    .trim()
+    .replace(/\s+/g, '-') // Remplace les espaces par des tirets
+    .replace(/-+/g, '-'); // Supprime les tirets multiples
+};
+
 export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading }: MCardFormDialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -36,7 +48,6 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
     resolver: zodResolver(formSchema),
     defaultValues: {
       full_name: "",
-      slug: "",
       job_title: "",
       company: "",
       description: "",
@@ -62,7 +73,6 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
     if (isOpen) {
       const defaultValues = {
         full_name: mcard?.full_name || "",
-        slug: mcard?.slug || "",
         job_title: mcard?.job_title || "",
         company: mcard?.company || "",
         description: mcard?.description || "",
@@ -87,7 +97,15 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
   const handleFormSubmit = async (values: MCardFormData) => {
     try {
       setIsSubmitting(true);
-      const data: TablesInsert<'mcards'> | TablesUpdate<'mcards'> = { ...values };
+      
+      // Générer automatiquement le slug si c'est une nouvelle carte
+      const slug = mcard ? mcard.slug : generateSlug(values.full_name);
+      
+      const data: TablesInsert<'mcards'> | TablesUpdate<'mcards'> = { 
+        ...values,
+        slug 
+      };
+      
       if (!preview) {
         data.profile_picture_url = null;
       }
