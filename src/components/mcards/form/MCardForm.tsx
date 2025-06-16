@@ -70,6 +70,9 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
     }
   };
 
+  // Le bouton est actif si le nom complet est rempli et qu'on n'est pas en train de soumettre
+  const isSubmitDisabled = loading || isSubmitting || !watchedValues.full_name?.trim();
+
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 p-2">
       <MCardProfilePictureUpload 
@@ -108,9 +111,9 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
         </Button>
         <Button 
           type="submit" 
-          disabled={loading || isSubmitting || !watchedValues.full_name?.trim()}
+          disabled={isSubmitDisabled}
         >
-          {(loading || isSubmitting) ? t('loading') : t('save')}
+          {isSubmitting ? t('loading') : (mcard ? 'Mettre à jour' : 'Créer ma carte')}
         </Button>
       </DialogFooter>
     </form>

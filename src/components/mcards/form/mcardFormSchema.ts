@@ -2,7 +2,7 @@
 import * as z from "zod";
 
 export const formSchema = z.object({
-  full_name: z.string().min(2, "Le nom complet est requis"),
+  full_name: z.string().min(1, "Le nom complet est requis").trim(),
   job_title: z.string().optional(),
   company: z.string().optional(),
   description: z.string().optional(),
