@@ -53,6 +53,14 @@ export const MCardSocialMediaSection = ({ register, errors }: MCardSocialMediaSe
           {errors.tiktok_url && <p className="text-sm text-red-500">{errors.tiktok_url.message}</p>}
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="snapchat_url">Snapchat</Label>
+          <Input id="snapchat_url" {...register("snapchat_url")} placeholder="https://snapchat.com/add/votrecompte" />
+          {errors.snapchat_url && <p className="text-sm text-red-500">{errors.snapchat_url.message}</p>}
+        </div>
+      </div>
     </>
   );
 };

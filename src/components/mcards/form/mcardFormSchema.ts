@@ -16,6 +16,7 @@ export const formSchema = z.object({
   instagram_url: z.string().url("URL Instagram invalide").optional().or(z.literal('')),
   youtube_url: z.string().url("URL YouTube invalide").optional().or(z.literal('')),
   tiktok_url: z.string().url("URL TikTok invalide").optional().or(z.literal('')),
+  snapchat_url: z.string().url("URL Snapchat invalide").optional().or(z.literal('')),
   is_published: z.boolean().default(false),
 });
 

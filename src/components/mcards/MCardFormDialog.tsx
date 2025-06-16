@@ -47,6 +47,7 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
       instagram_url: "",
       youtube_url: "",
       tiktok_url: "",
+      snapchat_url: "",
       is_published: false,
     },
   });
@@ -71,6 +72,7 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
         instagram_url: mcard?.instagram_url || "",
         youtube_url: mcard?.youtube_url || "",
         tiktok_url: mcard?.tiktok_url || "",
+        snapchat_url: mcard?.snapchat_url || "",
         is_published: mcard?.is_published || false,
       };
       reset(defaultValues);
