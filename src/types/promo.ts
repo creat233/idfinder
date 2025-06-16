@@ -9,9 +9,9 @@ export interface PromoCodeData {
   total_earnings: number;
   usage_count: number;
   user_id: string;
-  user_email?: string;
-  user_name?: string;
-  user_phone?: string;
+  user_email: string;
+  user_name: string;
+  user_phone: string;
 }
 
 export interface PromoCodeStats {

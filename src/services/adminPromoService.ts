@@ -1,7 +1,22 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { PromoCodeData } from "@/types/promo";
-import { AdminPromoDataResponse } from "@/types/adminPromo";
+
+// Interface pour les données brutes retournées par la RPC
+interface AdminPromoRPCResponse {
+  id: string;
+  user_id: string;
+  code: string;
+  is_active: boolean;
+  is_paid: boolean;
+  created_at: string;
+  expires_at: string;
+  total_earnings: number;
+  usage_count: number;
+  user_email: string;
+  user_name: string;
+  user_phone: string;
+}
 
 export class AdminPromoService {
   static async checkUserPermissions(): Promise<boolean> {
@@ -53,9 +68,7 @@ export class AdminPromoService {
     }
 
     console.log("📊 Données brutes reçues de la RPC:", codesData);
-    console.log("📊 Type des données:", typeof codesData);
-    console.log("📊 Est un tableau?:", Array.isArray(codesData));
-    console.log("📊 Longueur:", codesData?.length);
+    console.log("📊 Premier élément:", codesData[0]);
 
     return this.transformRPCData(codesData || []);
   }
@@ -69,7 +82,6 @@ export class AdminPromoService {
       .order("created_at", { ascending: false });
 
     console.log("📊 Codes bruts récupérés (fallback):", codesData?.length);
-    console.log("📊 Données fallback:", codesData);
 
     if (codesError) {
       console.error("❌ Erreur récupération codes (fallback):", codesError);
@@ -99,7 +111,7 @@ export class AdminPromoService {
     return this.transformFallbackData(codesData || [], profilesMap);
   }
 
-  private static transformRPCData(codesData: AdminPromoDataResponse[]): PromoCodeData[] {
+  private static transformRPCData(codesData: AdminPromoRPCResponse[]): PromoCodeData[] {
     console.log("🔄 Transformation des données RPC...");
     return codesData.map(code => {
       console.log("🔄 Traitement code:", code);
