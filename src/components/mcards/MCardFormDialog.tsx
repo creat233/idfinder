@@ -115,9 +115,7 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
       if (result) {
         onOpenChange(false);
         // Rediriger vers la page de visualisation de la carte
-        setTimeout(() => {
-          navigate(`/mcard/${result.slug}`);
-        }, 1000);
+        navigate(`/mcard/${result.slug}`);
       }
     } catch (error) {
       console.error('Erreur lors de la soumission:', error);
