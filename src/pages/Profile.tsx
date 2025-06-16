@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -48,9 +49,13 @@ const Profile = () => {
 
   useEffect(() => {
     const getSession = async () => {
+      console.log('🔍 Récupération de la session...');
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('Session obtenue:', session);
+      
       setSession(session);
       if (session) {
+        console.log('👤 Chargement du profil pour l\'utilisateur:', session.user.id);
         await getProfile(session);
         await fetchBadgeStatus(session.user);
       }
@@ -60,6 +65,7 @@ const Profile = () => {
     getSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('🔄 Changement d\'état d\'authentification:', _event, session?.user?.id);
       setSession(session);
       if (session) {
         getProfile(session);
@@ -74,6 +80,7 @@ const Profile = () => {
 
   const handleUpdateProfile = () => {
     if (session) {
+      console.log('💾 Mise à jour du profil...');
       updateProfile(session);
     }
   };
@@ -97,6 +104,15 @@ const Profile = () => {
   const handleUpgradeFromProfile = () => {
     navigate('/mcards');
   };
+
+  console.log('📊 État du profil:', {
+    loading,
+    profileLoading,
+    firstName,
+    lastName,
+    phone,
+    session: session?.user?.id
+  });
 
   if (loading || profileLoading || cardsLoading || badgesLoading || mcardsLoading) {
     return (
