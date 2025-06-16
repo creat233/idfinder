@@ -28,8 +28,10 @@ const MCards = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMCard, setEditingMCard] = useState<MCard | null>(null);
   const [planForNewCard, setPlanForNewCard] = useState<'free' | 'essential' | 'premium' | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   const handleOpenEdit = (mcard: MCard) => {
+    console.log('Ouverture de l\'édition pour la carte:', mcard);
     setPlanForNewCard(null);
     setEditingMCard(mcard);
     setIsFormOpen(true);
@@ -80,44 +82,70 @@ const MCards = () => {
   };
 
   const handleStartCreationFlow = (plan: 'free' | 'essential' | 'premium') => {
+    console.log('Démarrage du flux de création pour le plan:', plan);
     setEditingMCard(null);
     setPlanForNewCard(plan);
     setIsFormOpen(true);
   };
 
   const handleFormSubmit = async (data: MCardCreateData | MCardUpdateData, profilePictureFile: File | null): Promise<MCard | null> => {
-    if (editingMCard) {
-      const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
-      if (result) {
-        setIsFormOpen(false);
-        setEditingMCard(null);
-      }
-      return result;
-    } else if (planForNewCard) {
-      const newCardData: MCardCreateData = {
-        ...(data as MCardCreateData),
-        plan: planForNewCard,
-        subscription_status: planForNewCard === 'free' ? 'trial' : 'pending_payment',
-      };
+    try {
+      console.log('handleFormSubmit appelé avec:', { data, profilePictureFile, editingMCard, planForNewCard });
       
-      const result = await createMCard(newCardData, profilePictureFile, { silent: true });
-
-      if (result) {
-        if (planForNewCard === 'free') {
-          toast({ title: t('mCardCreatedSuccess'), description: t('mCardFreePlanActive') });
-        } else {
-          const planName = planForNewCard === 'essential' ? t('planEssential') : t('planPremium');
-          toast({ 
-            title: t('planUpgradeRequestSent'),
-            description: t('planUpgradeRequestSentDescription').replace('{planName}', planName)
-          });
+      if (editingMCard) {
+        console.log('Mode édition');
+        const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
+        if (result) {
+          setIsFormOpen(false);
+          setEditingMCard(null);
+          console.log('Carte mise à jour avec succès:', result);
         }
-        setIsFormOpen(false);
-        setPlanForNewCard(null);
+        return result;
+      } else if (planForNewCard) {
+        console.log('Mode création avec plan:', planForNewCard);
+        setIsCreating(true);
+        
+        const newCardData: MCardCreateData = {
+          ...(data as MCardCreateData),
+          plan: planForNewCard,
+          subscription_status: planForNewCard === 'free' ? 'trial' : 'pending_payment',
+        };
+        
+        console.log('Données de création:', newCardData);
+        
+        const result = await createMCard(newCardData, profilePictureFile, { silent: true });
+        console.log('Résultat de createMCard:', result);
+
+        if (result) {
+          if (planForNewCard === 'free') {
+            console.log('Plan gratuit - toast de succès');
+            toast({ title: t('mCardCreatedSuccess'), description: t('mCardFreePlanActive') });
+          } else {
+            const planName = planForNewCard === 'essential' ? t('planEssential') : t('planPremium');
+            console.log('Plan payant - toast de demande de mise à niveau');
+            toast({ 
+              title: t('planUpgradeRequestSent'),
+              description: t('planUpgradeRequestSentDescription').replace('{planName}', planName)
+            });
+          }
+          setIsFormOpen(false);
+          setPlanForNewCard(null);
+          console.log('Création terminée avec succès');
+        } else {
+          console.error('createMCard a retourné null');
+        }
+        
+        setIsCreating(false);
+        return result;
       }
-      return result;
+      
+      console.warn('Ni editingMCard ni planForNewCard défini');
+      return null;
+    } catch (error) {
+      console.error('Erreur dans handleFormSubmit:', error);
+      setIsCreating(false);
+      throw error;
     }
-    return null;
   };
 
   const handleRequestUpgrade = async (mcardId: string, plan: 'essential' | 'premium') => {
@@ -166,14 +194,16 @@ const MCards = () => {
       <MCardFormDialog
         isOpen={isFormOpen}
         onOpenChange={(isOpen) => {
+            console.log('Dialog onOpenChange:', isOpen);
             if (!isOpen) {
                 setEditingMCard(null);
+                setPlanForNewCard(null);
             }
             setIsFormOpen(isOpen);
         }}
         onSubmit={handleFormSubmit}
         mcard={editingMCard}
-        loading={loading}
+        loading={loading || isCreating}
       />
     </div>
   );
