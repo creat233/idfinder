@@ -22,6 +22,7 @@ import Demo from "./pages/Demo";
 import About from "./pages/About";
 import Notifications from "./pages/Notifications";
 import MCards from "./pages/MCards";
+import MCardView from "./pages/MCardView";
 import { TranslationProvider } from "@/providers/TranslationProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -46,6 +47,9 @@ function App() {
               <Route path="/numeros-urgence" element={<NumeroUrgence />} />
               <Route path="/support" element={<Support />} />
               <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
+              
+              {/* Route publique pour visualiser les mCards */}
+              <Route path="/mcard/:slug" element={<MCardView />} />
               
               {/* Routes protégées pour utilisateurs normaux */}
               <Route path="/dashboard" element={
