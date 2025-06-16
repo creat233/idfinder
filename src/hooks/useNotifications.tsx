@@ -16,8 +16,9 @@ export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+
+  // On mémorise l'utilisateur courant pour les souscriptions realtime
   const [userId, setUserId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchNotifications = async () => {
     try {
@@ -30,25 +31,11 @@ export const useNotifications = () => {
       }
       setUserId(user.id);
 
-      // Check if user is admin
-      const { data: adminStatus } = await supabase.rpc('is_admin');
-      setIsAdmin(adminStatus || false);
-
-      let query = supabase
+      const { data, error } = await supabase
         .from("notifications")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-
-      // If admin, get notifications for important system events
-      if (adminStatus) {
-        // Admins see their own notifications + system-wide important notifications
-        query = query.or(`user_id.eq.${user.id},type.in.("system_alert","promo_payment_received","recovery_confirmed","card_found")`);
-      } else {
-        // Regular users see only their own notifications
-        query = query.eq("user_id", user.id);
-      }
-
-      const { data, error } = await query;
 
       if (error) throw error;
       
@@ -80,19 +67,12 @@ export const useNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      let query = supabase
+      const { error } = await supabase
         .from("notifications")
         .update({ is_read: true })
+        .eq("user_id", user.id)
         .eq("is_read", false);
 
-      // Update notifications based on admin status
-      if (isAdmin) {
-        query = query.or(`user_id.eq.${user.id},type.in.("system_alert","promo_payment_received","recovery_confirmed","card_found")`);
-      } else {
-        query = query.eq("user_id", user.id);
-      }
-
-      const { error } = await query;
       if (error) throw error;
       fetchNotifications();
     } catch (error) {
@@ -104,10 +84,11 @@ export const useNotifications = () => {
     fetchNotifications();
   }, []);
 
-  // Realtime subscriptions for notifications
+  // --- Ajout du mode realtime pour notifications de l'utilisateur connecté
   useEffect(() => {
     if (!userId) return;
 
+    // On écoute INSERT et UPDATE sur notifications pour ce user
     const channel = supabase
       .channel("user-notifications-realtime")
       .on(
@@ -116,11 +97,10 @@ export const useNotifications = () => {
           event: "*",
           schema: "public",
           table: "notifications",
-          filter: isAdmin 
-            ? undefined // Admins listen to all notifications
-            : `user_id=eq.${userId}` // Users listen only to their notifications
+          filter: `user_id=eq.${userId}`
         },
         (payload) => {
+          // Dès qu'une notif du user est ajoutée/modifiée, on recharge
           fetchNotifications();
         }
       )
@@ -129,7 +109,7 @@ export const useNotifications = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, isAdmin]);
+  }, [userId]);
 
   return {
     notifications,
@@ -140,3 +120,4 @@ export const useNotifications = () => {
     refetch: fetchNotifications,
   };
 };
+

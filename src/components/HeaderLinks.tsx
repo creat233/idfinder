@@ -18,7 +18,7 @@ export const HeaderLinks = ({
 
   if (user) {
     if (isAdmin) {
-      // ADMIN NAV - Only admin pages, profile, and notifications
+      // ADMIN NAV
       return (
         <>
           <Link
@@ -44,7 +44,7 @@ export const HeaderLinks = ({
         </>
       );
     } else {
-      // USER NAV - Standard user navigation
+      // USER NAV
       return (
         <>
           <Link
@@ -64,12 +64,6 @@ export const HeaderLinks = ({
             className="text-gray-700 hover:text-primary"
           >
             Codes promo
-          </Link>
-          <Link
-            to="/mcards"
-            className="text-gray-700 hover:text-primary"
-          >
-            mCards
           </Link>
           <NotificationsNavIcon />
           <Link

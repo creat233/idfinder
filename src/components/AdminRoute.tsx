@@ -11,29 +11,25 @@ interface AdminRouteProps {
 export const AdminRoute = ({ children }: AdminRouteProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkAccess = async () => {
-      const { data: adminStatus, error } = await supabase.rpc('is_admin');
+      const { data: isAdmin, error } = await supabase.rpc('is_admin');
 
       if (error) {
         console.error('Error checking admin status:', error);
-        navigate("/login");
+        if (window.location.pathname.startsWith("/admin")) {
+          navigate("/");
+        }
         return;
       }
 
-      setIsAdmin(adminStatus);
-
-      if (adminStatus) {
-        // Admin can access admin routes, profile, and notifications
-        const currentPath = window.location.pathname;
-        if (currentPath === "/") {
+      if (isAdmin) {
+        if (window.location.pathname === "/") {
           navigate("/admin/codes-promo");
         }
       } else {
-        // Non-admin should be redirected away from admin routes
         if (window.location.pathname.startsWith("/admin")) {
           navigate("/");
         }
@@ -49,7 +45,6 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
         setLoading(false);
         return;
       }
-      
       await checkAccess();
       setLoading(false);
     };
@@ -67,7 +62,7 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
         }
 
         if (event === 'SIGNED_IN') {
-          await checkAccess();
+            await checkAccess();
         }
       }
     );
@@ -83,6 +78,5 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
     );
   }
 
-  // Only allow access if user is authenticated and is admin
-  return user && isAdmin ? <>{children}</> : null;
+  return user ? <>{children}</> : null;
 };

@@ -1,5 +1,4 @@
-
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { detectCountryFromPhone } from "@/utils/countryUtils";
@@ -16,14 +15,11 @@ export const useProfile = () => {
   const [isOnVacation, setIsOnVacation] = useState(false);
   const [enableSecurityNotifications, setEnableSecurityNotifications] = useState(true);
 
-  const getProfile = useCallback(async (session: any) => {
+  const getProfile = async (session: any) => {
     try {
       setLoading(true);
-      console.log('🔍 Récupération du profil pour:', session.user.id);
 
       const userData = session.user.user_metadata;
-      console.log('📊 Métadonnées utilisateur:', userData);
-      
       let profileData: any = {
         first_name: userData?.first_name || "",
         last_name: userData?.last_name || "",
@@ -31,16 +27,11 @@ export const useProfile = () => {
         country: userData?.country || "SN"
       };
 
-      console.log('📊 Données initiales du profil:', profileData);
-
-      // Récupérer les données du profil depuis la table profiles
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('first_name, last_name, phone, country, is_on_vacation, enable_security_notifications')
         .eq('id', session.user.id)
         .single();
-
-      console.log('📊 Profil depuis la DB:', profile, 'Erreur:', profileError);
 
       if (!profileError && profile) {
         profileData = {
@@ -51,30 +42,7 @@ export const useProfile = () => {
           is_on_vacation: profile.is_on_vacation,
           enable_security_notifications: profile.enable_security_notifications
         };
-      } else if (profileError && profileError.code === 'PGRST116') {
-        // Aucun profil trouvé, créer un nouveau profil avec les métadonnées
-        console.log('⚠️ Aucun profil trouvé, création avec les métadonnées');
-        
-        const { error: insertError } = await supabase
-          .from('profiles')
-          .insert({
-            id: session.user.id,
-            first_name: profileData.first_name,
-            last_name: profileData.last_name,
-            phone: profileData.phone,
-            country: profileData.country,
-            is_on_vacation: false,
-            enable_security_notifications: true
-          });
-
-        if (insertError) {
-          console.error('❌ Erreur lors de la création du profil:', insertError);
-        } else {
-          console.log('✅ Profil créé avec succès');
-        }
       }
-
-      console.log('📊 Données finales du profil:', profileData);
 
       setFirstName(profileData.first_name);
       setLastName(profileData.last_name);
@@ -108,21 +76,15 @@ export const useProfile = () => {
       } else {
         setCountry(profileData.country);
       }
-
-      console.log('✅ Profil chargé avec succès:', {
-        firstName: profileData.first_name,
-        lastName: profileData.last_name,
-        phone: profileData.phone
-      });
     } catch (error) {
-      console.error('❌ Erreur lors du chargement du profil:', error);
+      console.error('Error loading profile:', error);
       showError("Erreur", "Impossible de charger le profil");
     } finally {
       setLoading(false);
     }
-  }, [showError]);
+  };
 
-  const updateProfile = useCallback(async (session: any) => {
+  const updateProfile = async (session: any) => {
     try {
       setLoading(true);
 
@@ -148,9 +110,9 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, [phone, country, showError, showSuccess]);
+  };
 
-  const updateNotificationSettings = useCallback(async (settings: { isOnVacation?: boolean; enableSecurityNotifications?: boolean }) => {
+  const updateNotificationSettings = async (settings: { isOnVacation?: boolean; enableSecurityNotifications?: boolean }) => {
     try {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
@@ -182,7 +144,7 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, [showError, showSuccess]);
+  };
 
   return {
     loading,

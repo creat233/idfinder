@@ -79,24 +79,18 @@ export const useUserCards = () => {
     }
   };
 
-  const toggleCardStatus = async (cardId: string) => {
+  const toggleCardStatus = async (cardId: string, isActive: boolean) => {
     try {
-      // First, get the current status of the card
-      const currentCard = cards.find(card => card.id === cardId);
-      if (!currentCard) return;
-
-      const newStatus = !currentCard.is_active;
-
       const { error } = await supabase
         .from("user_cards")
-        .update({ is_active: newStatus })
+        .update({ is_active: isActive })
         .eq("id", cardId);
 
       if (error) throw error;
       
       showSuccess(
-        newStatus ? "Carte activée" : "Carte désactivée",
-        newStatus ? "Votre carte est maintenant surveillée" : "Votre carte n'est plus surveillée"
+        isActive ? "Carte activée" : "Carte désactivée",
+        isActive ? "Votre carte est maintenant surveillée" : "Votre carte n'est plus surveillée"
       );
       fetchCards();
     } catch (error) {

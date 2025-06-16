@@ -33,18 +33,15 @@ export const ProfileForm = ({
     }
   });
 
-  console.log('📋 ProfileForm rendu avec:', { firstName, lastName, phone, isEditing, loading });
-
   return (
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium mb-1">{t('firstName')}</label>
         <Input
           type="text"
-          value={firstName || ""}
+          value={firstName}
           disabled={true}
           className="bg-gray-100"
-          placeholder={firstName ? "" : "Prénom non renseigné"}
         />
       </div>
 
@@ -52,10 +49,9 @@ export const ProfileForm = ({
         <label className="block text-sm font-medium mb-1">{t('lastName')}</label>
         <Input
           type="text"
-          value={lastName || ""}
+          value={lastName}
           disabled={true}
           className="bg-gray-100"
-          placeholder={lastName ? "" : "Nom non renseigné"}
         />
       </div>
 
@@ -63,10 +59,9 @@ export const ProfileForm = ({
         <label className="block text-sm font-medium mb-1">{t('phone')}</label>
         <Input
           type="tel"
-          value={phone || ""}
+          value={phone}
           onChange={(e) => setPhone(e.target.value)}
           disabled={!isEditing}
-          placeholder={phone ? "" : "Téléphone non renseigné"}
         />
       </div>
 

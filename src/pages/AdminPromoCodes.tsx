@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { AdminPromoActivation } from "@/components/promo/AdminPromoActivation";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
@@ -19,7 +20,6 @@ import { AdminAuditLogsList } from "@/components/promo/AdminAuditLogsList";
 import { AdminSettings } from "@/components/promo/AdminSettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "@/hooks/useTranslation";
-import { AdminPendingMCards } from "@/components/promo/AdminPendingMCards";
 
 const AdminPromoCodes = () => {
   const { t } = useTranslation();
@@ -82,7 +82,6 @@ const AdminPromoCodes = () => {
             </TabsList>
 
             <TabsContent value="codes" className="mt-6 space-y-6">
-              <AdminPendingMCards />
               <AdminPendingCodes />
               <AdminPromoActivation />
               <AdminPromoCodesList />
