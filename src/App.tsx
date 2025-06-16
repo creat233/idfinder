@@ -62,11 +62,6 @@ function App() {
                   <SignalerCarte />
                 </ProtectedRoute>
               } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } />
               <Route path="/mes-cartes" element={
                 <ProtectedRoute>
                   <MyCards />
@@ -77,22 +72,29 @@ function App() {
                   <PromoCodes />
                 </ProtectedRoute>
               } />
-               <Route path="/mcards" element={
+              <Route path="/mcards" element={
                 <ProtectedRoute>
                   <MCards />
                 </ProtectedRoute>
               } />
               
-              {/* Routes d'administration */}
-              <Route path="/admin/codes-promo" element={
-                <AdminRoute>
-                  <AdminPromoCodes />
-                </AdminRoute>
+              {/* Routes accessibles aux admins ET utilisateurs normaux */}
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
               } />
               <Route path="/notifications" element={
                 <ProtectedRoute>
                   <Notifications />
                 </ProtectedRoute>
+              } />
+              
+              {/* Routes d'administration - STRICTEMENT pour admins */}
+              <Route path="/admin/codes-promo" element={
+                <AdminRoute>
+                  <AdminPromoCodes />
+                </AdminRoute>
               } />
             </Routes>
           </TooltipProvider>
