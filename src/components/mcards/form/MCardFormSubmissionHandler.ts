@@ -42,7 +42,7 @@ export const useMCardFormSubmission = (
       
       console.log('Début de la soumission du formulaire', values);
       
-      // Vérifier que le nom complet est présent
+      // Vérifier que le nom complet et le numéro de téléphone sont présents
       if (!values.full_name || values.full_name.trim() === '') {
         toast({
           variant: "destructive",
@@ -51,10 +51,19 @@ export const useMCardFormSubmission = (
         });
         return;
       }
+
+      if (!values.phone_number || values.phone_number.trim() === '') {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Le numéro de téléphone est requis"
+        });
+        return;
+      }
       
-      // Générer automatiquement le slug si c'est une nouvelle carte
+      // Pour la mise à jour, on garde le slug existant
       const slug = mcard ? mcard.slug : generateSlug(values.full_name);
-      console.log('Slug généré:', slug);
+      console.log('Slug utilisé:', slug);
       
       const data: TablesInsert<'mcards'> | TablesUpdate<'mcards'> = { 
         ...values,
@@ -71,23 +80,30 @@ export const useMCardFormSubmission = (
       console.log('Résultat de la soumission:', result);
       
       if (result) {
-        console.log('Création réussie, fermeture du dialog et navigation vers:', `/mcard/${result.slug}`);
+        // Fermer le dialog en premier
         onOpenChange?.(false);
         
         // Toast de succès
         toast({
           title: mcard ? t('mCardUpdatedSuccess') : t('mCardCreatedSuccess'),
-          description: "Redirection vers votre carte..."
+          description: mcard ? "Votre carte a été mise à jour avec succès" : "Redirection vers votre carte..."
         });
         
-        // Redirection immédiate
-        navigate(`/mcard/${result.slug}`);
+        // Pour la mise à jour, on navigue vers la carte après un petit délai
+        if (mcard) {
+          setTimeout(() => {
+            navigate(`/mcard/${result.slug}`);
+          }, 500);
+        } else {
+          // Redirection immédiate pour une nouvelle carte
+          navigate(`/mcard/${result.slug}`);
+        }
       } else {
         console.error('Aucun résultat retourné par onSubmit');
         toast({
           variant: "destructive",
           title: "Erreur",
-          description: "Une erreur est survenue lors de la création de la carte"
+          description: "Une erreur est survenue lors de la sauvegarde de la carte"
         });
       }
     } catch (error) {
