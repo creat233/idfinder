@@ -21,6 +21,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Image as ImageIcon, X } from 'lucide-react';
+import { Separator } from "@/components/ui/separator";
 
 interface MCardFormDialogProps {
   isOpen: boolean;
@@ -39,6 +40,12 @@ const formSchema = z.object({
   phone_number: z.string().optional(),
   email: z.string().email("Email invalide").optional().or(z.literal('')),
   website_url: z.string().url("URL invalide").optional().or(z.literal('')),
+  linkedin_url: z.string().url("URL LinkedIn invalide").optional().or(z.literal('')),
+  twitter_url: z.string().url("URL Twitter invalide").optional().or(z.literal('')),
+  facebook_url: z.string().url("URL Facebook invalide").optional().or(z.literal('')),
+  instagram_url: z.string().url("URL Instagram invalide").optional().or(z.literal('')),
+  youtube_url: z.string().url("URL YouTube invalide").optional().or(z.literal('')),
+  tiktok_url: z.string().url("URL TikTok invalide").optional().or(z.literal('')),
   is_published: z.boolean().default(false),
 });
 
@@ -55,6 +62,12 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
       phone_number: "",
       email: "",
       website_url: "",
+      linkedin_url: "",
+      twitter_url: "",
+      facebook_url: "",
+      instagram_url: "",
+      youtube_url: "",
+      tiktok_url: "",
       is_published: false,
     },
   });
@@ -73,6 +86,12 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
         phone_number: mcard?.phone_number || "",
         email: mcard?.email || "",
         website_url: mcard?.website_url || "",
+        linkedin_url: mcard?.linkedin_url || "",
+        twitter_url: mcard?.twitter_url || "",
+        facebook_url: mcard?.facebook_url || "",
+        instagram_url: mcard?.instagram_url || "",
+        youtube_url: mcard?.youtube_url || "",
+        tiktok_url: mcard?.tiktok_url || "",
         is_published: mcard?.is_published || false,
       };
       reset(defaultValues);
@@ -87,7 +106,6 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
         setProfilePictureFile(file);
         const objectUrl = URL.createObjectURL(file);
         setPreview(objectUrl);
-        // Clean up the object URL when component unmounts
         return () => URL.revokeObjectURL(objectUrl);
     }
   }, []);
@@ -114,11 +132,12 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{mcard ? t('editMCard') : t('createMCard')}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4 max-h-[80vh] overflow-y-auto p-2">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 p-2">
+          {/* Photo de profil */}
           <div className="space-y-2">
             <Label>{t('profilePhoto')}</Label>
             <div {...getRootProps()} className="relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary transition-colors">
@@ -146,43 +165,103 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
               )}
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="full_name">{t('fullName')}</Label>
-            <Input id="full_name" {...register("full_name")} />
-            {errors.full_name && <p className="text-sm text-red-500">{errors.full_name.message}</p>}
+
+          {/* Informations de base */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="full_name">{t('fullName')}</Label>
+              <Input id="full_name" {...register("full_name")} />
+              {errors.full_name && <p className="text-sm text-red-500">{errors.full_name.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="slug">{t('slug')}</Label>
+              <Input id="slug" {...register("slug")} />
+              <DialogDescription>{t('slugDescription')}</DialogDescription>
+              {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="slug">{t('slug')}</Label>
-            <Input id="slug" {...register("slug")} />
-            <DialogDescription>{t('slugDescription')}</DialogDescription>
-            {errors.slug && <p className="text-sm text-red-500">{errors.slug.message}</p>}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="job_title">{t('jobTitle')}</Label>
+              <Input id="job_title" {...register("job_title")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="company">{t('company')}</Label>
+              <Input id="company" {...register("company")} />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="job_title">{t('jobTitle')}</Label>
-            <Input id="job_title" {...register("job_title")} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="company">{t('company')}</Label>
-            <Input id="company" {...register("company")} />
-          </div>
+
           <div className="space-y-2">
             <Label htmlFor="description">{t('description')}</Label>
             <Textarea id="description" {...register("description")} placeholder={t('mcardDescriptionPlaceholder')} />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone_number">{t('phoneNumber')}</Label>
-            <Input id="phone_number" {...register("phone_number")} />
+
+          {/* Contact */}
+          <Separator />
+          <h3 className="text-lg font-semibold">Contact</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone_number">{t('phoneNumber')}</Label>
+              <Input id="phone_number" {...register("phone_number")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">{t('email')}</Label>
+              <Input id="email" type="email" {...register("email")} />
+              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">{t('email')}</Label>
-            <Input id="email" type="email" {...register("email")} />
-            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
-          </div>
+
           <div className="space-y-2">
             <Label htmlFor="website_url">{t('websiteUrl')}</Label>
-            <Input id="website_url" {...register("website_url")} />
+            <Input id="website_url" {...register("website_url")} placeholder="https://monsite.com" />
             {errors.website_url && <p className="text-sm text-red-500">{errors.website_url.message}</p>}
           </div>
+
+          {/* Réseaux sociaux */}
+          <Separator />
+          <h3 className="text-lg font-semibold">Réseaux sociaux</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="linkedin_url">LinkedIn</Label>
+              <Input id="linkedin_url" {...register("linkedin_url")} placeholder="https://linkedin.com/in/votreprofil" />
+              {errors.linkedin_url && <p className="text-sm text-red-500">{errors.linkedin_url.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="twitter_url">Twitter / X</Label>
+              <Input id="twitter_url" {...register("twitter_url")} placeholder="https://twitter.com/votrecompte" />
+              {errors.twitter_url && <p className="text-sm text-red-500">{errors.twitter_url.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="facebook_url">Facebook</Label>
+              <Input id="facebook_url" {...register("facebook_url")} placeholder="https://facebook.com/votreprofil" />
+              {errors.facebook_url && <p className="text-sm text-red-500">{errors.facebook_url.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="instagram_url">Instagram</Label>
+              <Input id="instagram_url" {...register("instagram_url")} placeholder="https://instagram.com/votrecompte" />
+              {errors.instagram_url && <p className="text-sm text-red-500">{errors.instagram_url.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="youtube_url">YouTube</Label>
+              <Input id="youtube_url" {...register("youtube_url")} placeholder="https://youtube.com/@votreschaine" />
+              {errors.youtube_url && <p className="text-sm text-red-500">{errors.youtube_url.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tiktok_url">TikTok</Label>
+              <Input id="tiktok_url" {...register("tiktok_url")} placeholder="https://tiktok.com/@votrecompte" />
+              {errors.tiktok_url && <p className="text-sm text-red-500">{errors.tiktok_url.message}</p>}
+            </div>
+          </div>
+
+          {/* Publication */}
+          <Separator />
           <div className="flex items-center space-x-2">
             <Controller
               name="is_published"
@@ -200,6 +279,7 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
                 <p className="text-sm text-muted-foreground">{t('isPublishedDescription')}</p>
             </div>
           </div>
+          
           <DialogFooter>
             <Button type="submit" disabled={loading}>{loading ? t('loading') : t('save')}</Button>
           </DialogFooter>
