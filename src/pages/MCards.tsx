@@ -35,6 +35,7 @@ const MCards = () => {
     isFormOpen,
     editingMCard,
     isCreating,
+    formLoading,
     handleOpenEdit,
     handleStartCreationFlow,
     handleFormSubmit,
@@ -83,7 +84,7 @@ const MCards = () => {
         onOpenChange={handleFormOpenChange}
         onSubmit={handleFormSubmit}
         mcard={editingMCard}
-        loading={loading || isCreating}
+        loading={formLoading || isCreating}
       />
     </div>
   );

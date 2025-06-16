@@ -122,11 +122,15 @@ export const useMCardsFormHandler = ({
     setIsFormOpen(isOpen);
   };
 
+  // Pour l'édition, on ne passe pas l'état loading global car il peut bloquer le formulaire
+  const formLoading = editingMCard ? false : loading;
+
   return {
     isFormOpen,
     editingMCard,
     planForNewCard,
     isCreating,
+    formLoading,
     handleOpenEdit,
     handleStartCreationFlow,
     handleFormSubmit,
