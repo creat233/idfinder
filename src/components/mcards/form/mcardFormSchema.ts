@@ -6,7 +6,7 @@ export const formSchema = z.object({
   job_title: z.string().optional(),
   company: z.string().optional(),
   description: z.string().optional(),
-  phone_number: z.string().optional(),
+  phone_number: z.string().min(1, "Le numéro de téléphone est requis").trim(),
   email: z.string().email("Email invalide").optional().or(z.literal('')),
   website_url: z.string().url("URL invalide").optional().or(z.literal('')),
   linkedin_url: z.string().url("URL LinkedIn invalide").optional().or(z.literal('')),

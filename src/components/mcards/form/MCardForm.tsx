@@ -70,8 +70,8 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
     }
   };
 
-  // Le bouton est actif si le nom complet est rempli et qu'on n'est pas en train de soumettre
-  const isSubmitDisabled = loading || isSubmitting || !watchedValues.full_name?.trim();
+  // Le bouton est actif si le nom complet et le numéro de téléphone sont remplis et qu'on n'est pas en train de soumettre
+  const isSubmitDisabled = loading || isSubmitting || !watchedValues.full_name?.trim() || !watchedValues.phone_number?.trim();
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 p-2">
