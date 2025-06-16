@@ -1,9 +1,8 @@
 
-
 import { supabase } from "@/integrations/supabase/client";
 import { PromoCodeData } from "@/types/promo";
 
-// Interface pour les données brutes retournées par la RPC (maintenant avec des types text)
+// Interface pour les données retournées par la RPC (maintenant avec des types text)
 interface AdminPromoRPCResponse {
   id: string;
   user_id: string;
@@ -93,4 +92,3 @@ export class AdminPromoService {
     return transformedData;
   }
 }
-
