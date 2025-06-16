@@ -13,6 +13,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { MCard } from "@/types/mcard";
 import { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { formSchema, MCardFormData } from "./form/mcardFormSchema";
 import { MCardProfilePictureUpload } from "./form/MCardProfilePictureUpload";
 import { MCardBasicInfoSection } from "./form/MCardBasicInfoSection";
@@ -23,13 +24,14 @@ import { MCardPublicationSection } from "./form/MCardPublicationSection";
 interface MCardFormDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSubmit: (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => void;
+  onSubmit: (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => Promise<MCard | null>;
   mcard?: MCard | null;
   loading: boolean;
 }
 
 export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading }: MCardFormDialogProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { register, handleSubmit, control, formState: { errors }, reset } = useForm<MCardFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,6 +56,7 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
   
   const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -81,12 +84,28 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
     }
   }, [isOpen, mcard, reset]);
 
-  const handleFormSubmit = (values: MCardFormData) => {
-    const data: TablesInsert<'mcards'> | TablesUpdate<'mcards'> = { ...values };
-    if (!preview) {
-      data.profile_picture_url = null;
+  const handleFormSubmit = async (values: MCardFormData) => {
+    try {
+      setIsSubmitting(true);
+      const data: TablesInsert<'mcards'> | TablesUpdate<'mcards'> = { ...values };
+      if (!preview) {
+        data.profile_picture_url = null;
+      }
+      
+      const result = await onSubmit(data, profilePictureFile);
+      
+      if (result) {
+        onOpenChange(false);
+        // Rediriger vers la page de visualisation de la carte
+        setTimeout(() => {
+          navigate(`/mcard/${result.slug}`);
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-    onSubmit(data, profilePictureFile);
   };
 
   return (
@@ -122,8 +141,8 @@ export const MCardFormDialog = ({ isOpen, onOpenChange, onSubmit, mcard, loading
           />
           
           <DialogFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? t('loading') : t('save')}
+            <Button type="submit" disabled={loading || isSubmitting}>
+              {(loading || isSubmitting) ? t('loading') : t('save')}
             </Button>
           </DialogFooter>
         </form>
