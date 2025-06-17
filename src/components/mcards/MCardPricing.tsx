@@ -37,8 +37,8 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
     {
       id: 'essential',
       name: t('planEssential'),
-      price: 2000,
-      monthlyPrice: 200,
+      price: 5000,
+      monthlyPrice: 417,
       description: t('planEssentialDescription'),
       features: [
         t('mCardFeature1Title'), // Partage Facile
@@ -49,8 +49,8 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
     {
       id: 'premium',
       name: t('planPremium'),
-      price: 5000,
-      monthlyPrice: 500,
+      price: 10000,
+      monthlyPrice: 833,
       description: t('planPremiumDescription'),
       features: [
         t('mCardFeature1Title'), // Partage Facile
