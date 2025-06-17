@@ -10,24 +10,50 @@ export const useAdminPermissionsManager = () => {
   const { showError } = useToast();
 
   const fetchPermissions = useCallback(async () => {
+    console.log('🔄 Chargement des permissions admin...');
     setLoading(true);
+    
     try {
+      // Vérifier d'abord si l'utilisateur est admin
+      const { data: isAdminData, error: adminError } = await supabase.rpc('is_admin');
+      
+      if (adminError) {
+        console.error('❌ Erreur vérification admin:', adminError);
+        throw adminError;
+      }
+      
+      if (!isAdminData) {
+        console.warn('⚠️ Utilisateur non-admin essayant d\'accéder aux permissions');
+        setPermissions([]);
+        setLoading(false);
+        return;
+      }
+      
+      console.log('✅ Utilisateur admin confirmé, récupération des permissions...');
+      
       const { data, error } = await supabase
         .from('admin_permissions')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erreur récupération permissions:', error);
+        throw error;
+      }
+      
+      console.log('✅ Permissions récupérées:', data?.length || 0, 'éléments');
       setPermissions(data || []);
+      
     } catch (error: any) {
+      console.error('❌ Erreur dans fetchPermissions:', error);
       showError("Erreur", "Impossible de charger les permissions administrateur.");
-      console.error("Error fetching permissions:", error);
     } finally {
       setLoading(false);
     }
   }, [showError]);
 
   useEffect(() => {
+    console.log('🚀 Initialisation useAdminPermissionsManager');
     fetchPermissions();
   }, [fetchPermissions]);
 

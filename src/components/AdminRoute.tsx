@@ -27,13 +27,19 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
       setIsAdmin(adminStatus);
 
       if (adminStatus) {
-        // Admin can access admin routes, profile, and notifications
+        // Admin: redirection automatique vers l'administration
         const currentPath = window.location.pathname;
-        if (currentPath === "/") {
+        console.log('Admin connecté, path actuel:', currentPath);
+        
+        // Si l'admin est sur une page non-admin (sauf profile et notifications), le rediriger
+        if (!currentPath.startsWith("/admin") && 
+            currentPath !== "/profile" && 
+            currentPath !== "/notifications") {
+          console.log('Redirection admin vers /admin/codes-promo');
           navigate("/admin/codes-promo");
         }
       } else {
-        // Non-admin should be redirected away from admin routes
+        // Non-admin ne peut pas accéder aux routes admin
         if (window.location.pathname.startsWith("/admin")) {
           navigate("/");
         }

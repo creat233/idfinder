@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -23,6 +24,17 @@ export const Header = () => {
         setIsAdmin(false);
       } else {
         setIsAdmin(data);
+        
+        // Si c'est un admin et qu'on vient de se connecter, le rediriger
+        if (data && user) {
+          const currentPath = window.location.pathname;
+          if (!currentPath.startsWith("/admin") && 
+              currentPath !== "/profile" && 
+              currentPath !== "/notifications") {
+            console.log('Admin détecté dans Header, redirection vers admin');
+            navigate("/admin/codes-promo");
+          }
+        }
       }
     };
 
@@ -39,8 +51,10 @@ export const Header = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null);
-        if (session?.user) {
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        
+        if (currentUser) {
           await checkIsAdmin();
         } else {
           setIsAdmin(false);
@@ -49,7 +63,7 @@ export const Header = () => {
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate, user]);
 
   const handleSignOut = async () => {
     try {
