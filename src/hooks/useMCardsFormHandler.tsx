@@ -72,12 +72,11 @@ export const useMCardsFormHandler = ({
           console.log('Mise à jour réussie');
           setIsFormOpen(false);
           setEditingMCard(null);
+          return result;
         } else {
           console.error('updateMCard a retourné null');
           throw new Error('Échec de la mise à jour de la carte');
         }
-        
-        return result;
       } else if (planForNewCard) {
         console.log('=== MODE CRÉATION ===');
         console.log('Plan sélectionné:', planForNewCard);
@@ -92,31 +91,24 @@ export const useMCardsFormHandler = ({
         
         console.log('Données de création:', newCardData);
         
-        const result = await createMCard(newCardData, profilePictureFile, { silent: true });
+        // Utiliser silent: false pour avoir le toast par défaut
+        const result = await createMCard(newCardData, profilePictureFile, { silent: false });
         console.log('Résultat de createMCard:', result);
 
         if (result) {
-          if (planForNewCard === 'free') {
-            console.log('Plan gratuit - toast de succès');
-            toast({ title: t('mCardCreatedSuccess'), description: t('mCardFreePlanActive') });
-          } else {
-            const planName = planForNewCard === 'essential' ? t('planEssential') : t('planPremium');
-            console.log('Plan payant - toast de demande de mise à niveau');
-            toast({ 
-              title: t('planUpgradeRequestSent'),
-              description: t('planUpgradeRequestSentDescription').replace('{planName}', planName)
-            });
-          }
+          console.log('Création réussie, fermeture du formulaire');
           setIsFormOpen(false);
           setPlanForNewCard(null);
-          console.log('Création terminée avec succès');
+          setIsCreating(false);
+          
+          // Le toast est géré par createMCard lui-même
+          console.log('Carte créée avec succès:', result.id);
+          
+          return result;
         } else {
           console.error('createMCard a retourné null');
           throw new Error('Échec de la création de la carte');
         }
-        
-        setIsCreating(false);
-        return result;
       }
       
       console.warn('Ni editingMCard ni planForNewCard défini');
@@ -134,6 +126,7 @@ export const useMCardsFormHandler = ({
     if (!isOpen) {
         setEditingMCard(null);
         setPlanForNewCard(null);
+        setIsCreating(false);
     }
     setIsFormOpen(isOpen);
   };

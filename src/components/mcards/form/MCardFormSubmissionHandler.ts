@@ -89,32 +89,19 @@ export const useMCardFormSubmission = (
       console.log('Résultat:', result);
       
       if (result) {
-        console.log('SUCCÈS: Résultat obtenu');
+        console.log('SUCCÈS: Résultat obtenu, carte créée avec ID:', result.id);
         
-        // Toast de succès selon le mode
-        if (mcard) {
-          console.log('Mode mise à jour - toast de succès');
-          toast({
-            title: "Succès",
-            description: "Votre carte a été mise à jour avec succès"
-          });
-        } else {
-          console.log('Mode création - toast de succès');
-          toast({
-            title: "Succès", 
-            description: "Votre carte a été créée avec succès"
-          });
-        }
-        
-        // Fermer le dialog
+        // Fermer le dialog d'abord
         if (onOpenChange) {
           console.log('Fermeture du dialog');
           onOpenChange(false);
         }
         
-        // Navigation vers la carte
-        console.log('Navigation vers:', `/mcard/${result.slug}`);
-        navigate(`/mcard/${result.slug}`);
+        // Attendre un peu avant la navigation pour s'assurer que l'état est mis à jour
+        setTimeout(() => {
+          console.log('Navigation vers:', `/mcard/${result.slug}`);
+          navigate(`/mcard/${result.slug}`);
+        }, 500);
         
       } else {
         console.error('ERREUR: Aucun résultat retourné par onSubmit');
