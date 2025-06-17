@@ -129,6 +129,90 @@ export type Database = {
         }
         Relationships: []
       }
+      mcards: {
+        Row: {
+          company: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          facebook_url: string | null
+          full_name: string
+          id: string
+          instagram_url: string | null
+          is_published: boolean
+          job_title: string | null
+          linkedin_url: string | null
+          phone_number: string | null
+          plan: string
+          profile_picture_url: string | null
+          slug: string
+          snapchat_url: string | null
+          social_links: Json | null
+          subscription_expires_at: string
+          subscription_status: string
+          tiktok_url: string | null
+          twitter_url: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          facebook_url?: string | null
+          full_name: string
+          id?: string
+          instagram_url?: string | null
+          is_published?: boolean
+          job_title?: string | null
+          linkedin_url?: string | null
+          phone_number?: string | null
+          plan?: string
+          profile_picture_url?: string | null
+          slug: string
+          snapchat_url?: string | null
+          social_links?: Json | null
+          subscription_expires_at?: string
+          subscription_status?: string
+          tiktok_url?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          facebook_url?: string | null
+          full_name?: string
+          id?: string
+          instagram_url?: string | null
+          is_published?: boolean
+          job_title?: string | null
+          linkedin_url?: string | null
+          phone_number?: string | null
+          plan?: string
+          profile_picture_url?: string | null
+          slug?: string
+          snapchat_url?: string | null
+          social_links?: Json | null
+          subscription_expires_at?: string
+          subscription_status?: string
+          tiktok_url?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           card_id: string | null
@@ -420,6 +504,13 @@ export type Database = {
         Args: { promo_code_text: string }
         Returns: boolean
       }
+      admin_approve_mcard_subscription: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          success: boolean
+          message: string
+        }[]
+      }
       admin_get_all_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -447,6 +538,18 @@ export type Database = {
           last_name: string
           phone: string
           country: string
+        }[]
+      }
+      admin_get_pending_mcards: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          full_name: string
+          plan: string
+          created_at: string
+          user_email: string
+          user_phone: string
         }[]
       }
       can_activate_promo_codes: {

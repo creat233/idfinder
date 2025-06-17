@@ -21,6 +21,8 @@ import Support from "./pages/Support";
 import Demo from "./pages/Demo";
 import About from "./pages/About";
 import Notifications from "./pages/Notifications";
+import MCards from "./pages/MCards";
+import MCardView from "./pages/MCardView";
 import { TranslationProvider } from "@/providers/TranslationProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -30,10 +32,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+        <BrowserRouter>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
@@ -46,6 +48,9 @@ function App() {
               <Route path="/support" element={<Support />} />
               <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
               
+              {/* Route publique pour visualiser les mCards */}
+              <Route path="/mcard/:slug" element={<MCardView />} />
+              
               {/* Routes protégées pour utilisateurs normaux */}
               <Route path="/dashboard" element={
                 <ProtectedRoute>
@@ -55,11 +60,6 @@ function App() {
               <Route path="/signaler" element={
                 <ProtectedRoute>
                   <SignalerCarte />
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
                 </ProtectedRoute>
               } />
               <Route path="/mes-cartes" element={
@@ -72,21 +72,33 @@ function App() {
                   <PromoCodes />
                 </ProtectedRoute>
               } />
+              <Route path="/mcards" element={
+                <ProtectedRoute>
+                  <MCards />
+                </ProtectedRoute>
+              } />
               
-              {/* Routes d'administration */}
-              <Route path="/admin/codes-promo" element={
-                <AdminRoute>
-                  <AdminPromoCodes />
-                </AdminRoute>
+              {/* Routes accessibles aux admins ET utilisateurs normaux */}
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
               } />
               <Route path="/notifications" element={
                 <ProtectedRoute>
                   <Notifications />
                 </ProtectedRoute>
               } />
+              
+              {/* Routes d'administration - STRICTEMENT pour admins */}
+              <Route path="/admin/codes-promo" element={
+                <AdminRoute>
+                  <AdminPromoCodes />
+                </AdminRoute>
+              } />
             </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+          </TooltipProvider>
+        </BrowserRouter>
       </TranslationProvider>
     </QueryClientProvider>
   );

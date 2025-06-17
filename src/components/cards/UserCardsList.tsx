@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,7 @@ interface UserCard {
 
 interface UserCardsListProps {
   cards: UserCard[];
-  onToggleStatus: (cardId: string, isActive: boolean) => void;
+  onToggleStatus: (cardId: string) => void;
   onDeleteCard: (cardId: string) => void;
 }
 
@@ -85,7 +86,7 @@ export const UserCardsList = ({ cards, onToggleStatus, onDeleteCard }: UserCards
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={card.is_active}
-                    onCheckedChange={(checked) => onToggleStatus(card.id, checked)}
+                    onCheckedChange={() => onToggleStatus(card.id)}
                   />
                   <span className="text-sm">
                     {t("receiveNotifications") || "Recevoir des notifications"}

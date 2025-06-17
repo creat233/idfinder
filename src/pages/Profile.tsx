@@ -18,6 +18,9 @@ import { Separator } from "@/components/ui/separator";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { useUserBadges } from "@/hooks/useUserBadges";
 import { NotificationSettings } from "@/components/profile/NotificationSettings";
+import { useMCards } from "@/hooks/useMCards";
+import { MCardsList } from "@/components/mcards/MCardsList";
+import { MCard } from "@/types/mcard";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -42,12 +45,17 @@ const Profile = () => {
   } = useProfile();
   const { cards, loading: cardsLoading } = useUserCards();
   const { loading: badgesLoading, topReporterEarned, premiumMemberEarned, fetchBadgeStatus } = useUserBadges();
+  const { mcards, loading: mcardsLoading, deleteMCard } = useMCards();
 
   useEffect(() => {
     const getSession = async () => {
+      console.log('🔍 Récupération de la session...');
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('Session obtenue:', session);
+      
       setSession(session);
       if (session) {
+        console.log('👤 Chargement du profil pour l\'utilisateur:', session.user.id);
         await getProfile(session);
         await fetchBadgeStatus(session.user);
       }
@@ -57,6 +65,7 @@ const Profile = () => {
     getSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('🔄 Changement d\'état d\'authentification:', _event, session?.user?.id);
       setSession(session);
       if (session) {
         getProfile(session);
@@ -67,14 +76,15 @@ const Profile = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [getProfile, fetchBadgeStatus]);
 
   const handleUpdateProfile = () => {
     if (session) {
+      console.log('💾 Mise à jour du profil...');
       updateProfile(session);
     }
   };
-
+  
   const handleContactSupport = () => {
     window.location.href = "mailto:idfinder06@gmail.com";
   };
@@ -87,8 +97,24 @@ const Profile = () => {
     updateNotificationSettings({ enableSecurityNotifications: checked });
   };
 
+  const handleEditMCard = (mcard: MCard) => {
+    navigate('/mcards', { state: { editMCardId: mcard.id } });
+  };
 
-  if (loading || profileLoading || cardsLoading || badgesLoading) {
+  const handleUpgradeFromProfile = () => {
+    navigate('/mcards');
+  };
+
+  console.log('📊 État du profil:', {
+    loading,
+    profileLoading,
+    firstName,
+    lastName,
+    phone,
+    session: session?.user?.id
+  });
+
+  if (loading || profileLoading || cardsLoading || badgesLoading || mcardsLoading) {
     return (
       <>
         <Header />
@@ -135,6 +161,16 @@ const Profile = () => {
             enableSecurityNotifications={enableSecurityNotifications}
             onSecurityNotificationsChange={handleSecurityNotificationsChange}
             loading={profileLoading}
+          />
+
+          <Separator />
+          
+          <MCardsList
+            mcards={mcards}
+            loading={mcardsLoading}
+            deleteMCard={deleteMCard}
+            onStartUpgradeFlow={handleUpgradeFromProfile}
+            onEdit={handleEditMCard}
           />
 
           <Separator />
