@@ -6,9 +6,10 @@ import { AdminPermissionsTableRow } from "./AdminPermissionsTableRow";
 
 interface AdminPermissionsTableProps {
   permissions: AdminPermission[];
+  onRefresh: () => Promise<void>;
 }
 
-export const AdminPermissionsTable = ({ permissions }: AdminPermissionsTableProps) => {
+export const AdminPermissionsTable = ({ permissions, onRefresh }: AdminPermissionsTableProps) => {
   return (
     <div className="rounded-md border">
       <Table>
@@ -17,7 +18,11 @@ export const AdminPermissionsTable = ({ permissions }: AdminPermissionsTableProp
         </TableHeader>
         <TableBody>
           {permissions.map((permission) => (
-            <AdminPermissionsTableRow key={permission.id} permission={permission} />
+            <AdminPermissionsTableRow 
+              key={permission.id} 
+              permission={permission} 
+              onRefresh={onRefresh}
+            />
           ))}
         </TableBody>
       </Table>
