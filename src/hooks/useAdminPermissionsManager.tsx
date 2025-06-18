@@ -7,7 +7,7 @@ import { AdminPermission } from "@/types/adminPermission";
 export const useAdminPermissionsManager = () => {
   const [permissions, setPermissions] = useState<AdminPermission[]>([]);
   const [loading, setLoading] = useState(true);
-  const { showError } = useToast();
+  const { toast } = useToast();
 
   const fetchPermissions = useCallback(async () => {
     console.log('🔄 Chargement des permissions admin...');
@@ -46,11 +46,15 @@ export const useAdminPermissionsManager = () => {
       
     } catch (error: any) {
       console.error('❌ Erreur dans fetchPermissions:', error);
-      showError("Erreur", "Impossible de charger les permissions administrateur.");
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger les permissions administrateur.",
+      });
     } finally {
       setLoading(false);
     }
-  }, [showError]);
+  }, [toast]);
 
   useEffect(() => {
     console.log('🚀 Initialisation useAdminPermissionsManager');
