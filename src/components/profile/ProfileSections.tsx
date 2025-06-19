@@ -6,6 +6,7 @@ import { NotificationSettings } from "./NotificationSettings";
 import { MCardsList } from "@/components/mcards/MCardsList";
 import { PasswordChangeForm } from "./PasswordChangeForm";
 import { SupportSection } from "./SupportSection";
+import { TermsOfServiceSection } from "./TermsOfServiceSection";
 import { MCard } from "@/types/mcard";
 
 interface ProfileSectionsProps {
@@ -91,6 +92,10 @@ export const ProfileSections = ({
       <Separator />
 
       <PasswordChangeForm />
+
+      <Separator />
+
+      <TermsOfServiceSection />
 
       <Separator />
 

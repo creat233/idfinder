@@ -37,37 +37,51 @@ export const ProfileForm = ({
 
   return (
     <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium mb-1">{t('firstName')}</label>
-        <Input
-          type="text"
-          value={firstName || ""}
-          disabled={true}
-          className="bg-gray-100"
-          placeholder={firstName ? "" : "Prénom non renseigné"}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">{t('firstName')}</label>
+          <Input
+            type="text"
+            value={firstName || ""}
+            disabled={true}
+            className="bg-gray-50"
+            placeholder={firstName ? "" : "Prénom non renseigné"}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Le prénom ne peut pas être modifié ici
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">{t('lastName')}</label>
+          <Input
+            type="text"
+            value={lastName || ""}
+            disabled={true}
+            className="bg-gray-50"
+            placeholder={lastName ? "" : "Nom non renseigné"}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Le nom ne peut pas être modifié ici
+          </p>
+        </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">{t('lastName')}</label>
-        <Input
-          type="text"
-          value={lastName || ""}
-          disabled={true}
-          className="bg-gray-100"
-          placeholder={lastName ? "" : "Nom non renseigné"}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1">{t('phone')}</label>
+        <label className="block text-sm font-medium mb-2">{t('phone')}</label>
         <Input
           type="tel"
           value={phone || ""}
           onChange={(e) => setPhone(e.target.value)}
           disabled={!isEditing}
           placeholder={phone ? "" : "Téléphone non renseigné"}
+          className={isEditing ? "" : "bg-gray-50"}
         />
+        {isEditing && (
+          <p className="text-xs text-gray-500 mt-1">
+            Le pays sera automatiquement détecté à partir du numéro
+          </p>
+        )}
       </div>
 
       <LanguageSelect
@@ -91,7 +105,7 @@ export const ProfileForm = ({
               onClick={updateProfile}
               disabled={loading}
             >
-              {t('save')}
+              {loading ? "Sauvegarde..." : t('save')}
             </Button>
           </>
         ) : (
