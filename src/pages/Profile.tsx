@@ -114,7 +114,13 @@ const Profile = () => {
     session: session?.user?.id
   });
 
-  if (loading || profileLoading || cardsLoading || badgesLoading || mcardsLoading) {
+  // Condition de chargement simplifiée - si l'un des chargements critiques est en cours
+  const isLoadingCritical = loading || profileLoading;
+  
+  // Pour les données non critiques, on peut afficher le contenu même si elles chargent encore
+  const isLoadingSecondary = cardsLoading || badgesLoading || mcardsLoading;
+
+  if (isLoadingCritical) {
     return (
       <>
         <Header />
@@ -130,12 +136,24 @@ const Profile = () => {
         <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6 space-y-8">
           <h1 className="text-2xl font-bold mb-2">{t("myProfile")}</h1>
           
-          <PersonalStats cardCount={cards.length} totalEarnings={totalEarnings} />
+          {!isLoadingSecondary ? (
+            <PersonalStats cardCount={cards.length} totalEarnings={totalEarnings} />
+          ) : (
+            <div className="animate-pulse">
+              <div className="h-20 bg-gray-200 rounded-lg"></div>
+            </div>
+          )}
 
-          <ProfileBadges 
-            topReporterEarned={topReporterEarned}
-            premiumMemberEarned={premiumMemberEarned}
-          />
+          {!isLoadingSecondary ? (
+            <ProfileBadges 
+              topReporterEarned={topReporterEarned}
+              premiumMemberEarned={premiumMemberEarned}
+            />
+          ) : (
+            <div className="animate-pulse">
+              <div className="h-16 bg-gray-200 rounded-lg"></div>
+            </div>
+          )}
           
           <Separator />
           
@@ -165,13 +183,19 @@ const Profile = () => {
 
           <Separator />
           
-          <MCardsList
-            mcards={mcards}
-            loading={mcardsLoading}
-            deleteMCard={deleteMCard}
-            onStartUpgradeFlow={handleUpgradeFromProfile}
-            onEdit={handleEditMCard}
-          />
+          {!mcardsLoading ? (
+            <MCardsList
+              mcards={mcards}
+              loading={false}
+              deleteMCard={deleteMCard}
+              onStartUpgradeFlow={handleUpgradeFromProfile}
+              onEdit={handleEditMCard}
+            />
+          ) : (
+            <div className="animate-pulse">
+              <div className="h-24 bg-gray-200 rounded-lg"></div>
+            </div>
+          )}
 
           <Separator />
 
