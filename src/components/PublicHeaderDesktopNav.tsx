@@ -15,6 +15,8 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  console.log('🔍 PublicHeaderDesktopNav - État utilisateur:', { user: !!user, userEmail: user?.email });
+
   return (
     <>
       <nav className="hidden md:flex items-center space-x-8">

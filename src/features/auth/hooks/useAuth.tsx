@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,11 +123,12 @@ export const useAuth = () => {
       }
       
       if (data.user) {
-        // Déclencher la notification de sécurité
         await supabase.rpc('log_login_event');
+        console.log("✅ Connexion réussie, redirection vers l'accueil");
+        // Redirection immédiate après connexion réussie
+        window.location.href = "/";
       }
 
-      navigate("/");
       return true;
     } catch (err) {
       console.error("Login error:", err);
@@ -172,6 +172,7 @@ export const useAuth = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && mounted.current) {
+        console.log("✅ Utilisateur déjà connecté, redirection vers l'accueil");
         navigate("/");
       }
     };
@@ -179,6 +180,8 @@ export const useAuth = () => {
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("🔄 Changement d'état d'authentification:", event, "Session:", !!session);
+      
       if (event === 'SIGNED_IN' && session?.user.created_at === session?.user.last_sign_in_at) {
         toast({
           title: t('auth_hook_account_created_toast_title'),
@@ -186,6 +189,7 @@ export const useAuth = () => {
         });
       } else if (event === 'SIGNED_IN') {
         if (mounted.current) {
+          console.log("✅ Connexion détectée, redirection vers l'accueil");
           navigate("/");
         }
       } else if (event === 'USER_UPDATED') {
@@ -217,4 +221,3 @@ export const useAuth = () => {
     setError
   };
 };
-
