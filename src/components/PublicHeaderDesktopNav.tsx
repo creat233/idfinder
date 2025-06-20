@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Props = {
   user: SupabaseUser | null;
@@ -12,40 +13,41 @@ type Props = {
 
 export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <>
       <nav className="hidden md:flex items-center space-x-8">
         <a href="/#fonctionnalites" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
-          Fonctionnalités
+          {t('features')}
         </a>
         <a href="/#tarifs" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
-          Tarifs
+          {t('pricing')}
         </a>
         <button 
           onClick={() => navigate("/demo")}
           className="text-gray-600 hover:text-[#7E69AB] transition-colors"
         >
-          Démo
+          {t('demo')}
         </button>
         <button 
           onClick={() => navigate("/urgence")}
           className="text-gray-600 hover:text-[#7E69AB] transition-colors"
         >
-          Numéros d'urgence
+          {t('emergencyNumbersLink')}
         </button>
         <button 
           onClick={() => navigate("/about")}
           className="text-gray-600 hover:text-[#7E69AB] transition-colors"
         >
-          À propos
+          {t('about')}
         </button>
         {user && (
           <button 
             onClick={() => navigate("/mes-cartes")}
             className="text-gray-600 hover:text-[#7E69AB] transition-colors"
           >
-            Mes cartes
+            {t('myCards')}
           </button>
         )}
         {user && (
@@ -53,7 +55,7 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
             onClick={() => navigate("/notifications")}
             className="text-gray-600 hover:text-[#7E69AB] transition-colors"
           >
-            Notifications
+            {t('notifications')}
           </button>
         )}
       </nav>
@@ -66,7 +68,7 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
               className="text-gray-600 hover:text-[#7E69AB]"
             >
               <User className="mr-2 h-4 w-4" />
-              Mon profil
+              {t('profile')}
             </Button>
             <Button 
               variant="ghost" 
@@ -74,7 +76,7 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
               className="text-gray-600 hover:text-red-600"
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Déconnexion
+              {t('logout')}
             </Button>
           </>
         ) : (
@@ -84,13 +86,13 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
               onClick={() => navigate("/login")}
               className="text-gray-600 hover:text-[#7E69AB]"
             >
-              Se connecter
+              {t('login')}
             </Button>
             <Button 
               onClick={onGetStarted}
               className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:opacity-90"
             >
-              Commencer
+              {t('getStartedNow')}
             </Button>
           </>
         )}
