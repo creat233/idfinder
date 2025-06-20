@@ -36,16 +36,16 @@ export const ProfileForm = ({
   console.log('📋 ProfileForm rendu avec:', { firstName, lastName, phone, isEditing, loading });
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-6">
         <div>
-          <label className="block text-sm font-medium mb-2">{t('firstName')}</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">{t('firstName')}</label>
           <Input
             type="text"
             value={firstName || ""}
             disabled={true}
-            className="bg-gray-50"
-            placeholder={firstName ? "" : "Prénom non renseigné"}
+            className="bg-gray-50 text-gray-900"
+            placeholder={!firstName ? "Prénom non renseigné" : ""}
           />
           <p className="text-xs text-gray-500 mt-1">
             Le prénom ne peut pas être modifié ici
@@ -53,69 +53,72 @@ export const ProfileForm = ({
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">{t('lastName')}</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">{t('lastName')}</label>
           <Input
             type="text"
             value={lastName || ""}
             disabled={true}
-            className="bg-gray-50"
-            placeholder={lastName ? "" : "Nom non renseigné"}
+            className="bg-gray-50 text-gray-900"
+            placeholder={!lastName ? "Nom non renseigné" : ""}
           />
           <p className="text-xs text-gray-500 mt-1">
             Le nom ne peut pas être modifié ici
           </p>
         </div>
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-2">{t('phone')}</label>
-        <Input
-          type="tel"
-          value={phone || ""}
-          onChange={(e) => setPhone(e.target.value)}
-          disabled={!isEditing}
-          placeholder={phone ? "" : "Téléphone non renseigné"}
-          className={isEditing ? "" : "bg-gray-50"}
+        <div>
+          <label className="block text-sm font-medium mb-2 text-gray-700">{t('phone')}</label>
+          <Input
+            type="tel"
+            value={phone || ""}
+            onChange={(e) => setPhone(e.target.value)}
+            disabled={!isEditing}
+            placeholder={!phone ? "Téléphone non renseigné" : ""}
+            className={isEditing ? "border-blue-300 focus:border-blue-500" : "bg-gray-50 text-gray-900"}
+          />
+          {isEditing && (
+            <p className="text-xs text-gray-500 mt-1">
+              Le pays sera automatiquement détecté à partir du numéro
+            </p>
+          )}
+        </div>
+
+        <LanguageSelect
+          control={form.control}
+          name="language"
+          currentLanguage={currentLanguage}
+          onLanguageChange={changeLanguage}
         />
-        {isEditing && (
-          <p className="text-xs text-gray-500 mt-1">
-            Le pays sera automatiquement détecté à partir du numéro
-          </p>
-        )}
-      </div>
 
-      <LanguageSelect
-        control={form.control}
-        name="language"
-        currentLanguage={currentLanguage}
-        onLanguageChange={changeLanguage}
-      />
-
-      <div className="flex justify-end space-x-4 mt-6">
-        {isEditing ? (
-          <>
+        <div className="flex justify-end space-x-4 mt-6">
+          {isEditing ? (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setIsEditing(false)}
+                disabled={loading}
+                className="px-6"
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                onClick={updateProfile}
+                disabled={loading}
+                className="px-6"
+              >
+                {loading ? "Sauvegarde..." : t('save')}
+              </Button>
+            </>
+          ) : (
             <Button
-              variant="outline"
-              onClick={() => setIsEditing(false)}
+              onClick={() => setIsEditing(true)}
               disabled={loading}
+              className="px-6"
             >
-              {t('cancel')}
+              {t('editPhone')}
             </Button>
-            <Button
-              onClick={updateProfile}
-              disabled={loading}
-            >
-              {loading ? "Sauvegarde..." : t('save')}
-            </Button>
-          </>
-        ) : (
-          <Button
-            onClick={() => setIsEditing(true)}
-            disabled={loading}
-          >
-            {t('editPhone')}
-          </Button>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

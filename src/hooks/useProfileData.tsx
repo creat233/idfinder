@@ -21,6 +21,7 @@ export const useProfileData = () => {
       const userData = session.user.user_metadata;
       console.log('📊 Métadonnées utilisateur:', userData);
       
+      // Initialiser avec les métadonnées utilisateur
       let profileData: any = {
         first_name: userData?.first_name || "",
         last_name: userData?.last_name || "",
@@ -40,6 +41,7 @@ export const useProfileData = () => {
       console.log('📊 Profil depuis la DB:', profile, 'Erreur:', profileError);
 
       if (!profileError && profile) {
+        // Priorité aux données de la DB
         profileData = {
           first_name: profile.first_name || profileData.first_name,
           last_name: profile.last_name || profileData.last_name,
@@ -71,9 +73,10 @@ export const useProfileData = () => {
 
       console.log('📊 Données finales du profil:', profileData);
 
-      setFirstName(profileData.first_name);
-      setLastName(profileData.last_name);
-      setPhone(profileData.phone);
+      // Mettre à jour l'état avec les données récupérées
+      setFirstName(profileData.first_name || "");
+      setLastName(profileData.last_name || "");
+      setPhone(profileData.phone || "");
       
       // Fetch total earnings from promo codes
       const { data: promoData, error: promoError } = await supabase
@@ -132,6 +135,7 @@ export const useProfileData = () => {
 
       if (error) throw error;
 
+      setPhone(phone);
       setCountry(detectedCountry);
       showSuccess("Succès", "Profil mis à jour avec succès");
     } catch (error) {
