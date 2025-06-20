@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
@@ -12,6 +12,7 @@ import { useMCards } from "@/hooks/useMCards";
 export const ProfileContainer = () => {
   const [session, setSession] = useState<any>(null);
   const [initialLoading, setInitialLoading] = useState(true);
+  const initializationRef = useRef(false);
   
   const {
     loading: profileLoading,
@@ -37,25 +38,23 @@ export const ProfileContainer = () => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('🔍 Initialisation de l\'authentification...');
+      if (initializationRef.current) return;
+      
+      console.log('🔍 Initialisation unique de l\'authentification...');
+      initializationRef.current = true;
       
       try {
-        // Récupérer la session actuelle
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('❌ Erreur lors de la récupération de la session:', error);
-          setInitialLoading(false);
           return;
         }
 
-        console.log('📊 Session récupérée:', session ? 'Connecté' : 'Non connecté');
-        
         if (session) {
           setSession(session);
           console.log('👤 Chargement des données utilisateur...');
           
-          // Charger les données en parallèle
           await Promise.all([
             getProfile(session),
             fetchBadgeStatus(session.user)
@@ -70,13 +69,16 @@ export const ProfileContainer = () => {
 
     initializeAuth();
 
-    // Écouter les changements d'état d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔄 Changement d\'état d\'authentification:', event);
       
-      setSession(session);
-      
-      if (session && event === 'SIGNED_IN') {
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+        initializationRef.current = false;
+      } else if (session && event === 'SIGNED_IN' && !initializationRef.current) {
+        setSession(session);
+        initializationRef.current = true;
+        
         await Promise.all([
           getProfile(session),
           fetchBadgeStatus(session.user)
@@ -89,8 +91,7 @@ export const ProfileContainer = () => {
     };
   }, [getProfile, fetchBadgeStatus]);
 
-  // Afficher le skeleton pendant le chargement initial
-  if (initialLoading || profileLoading) {
+  if (initialLoading) {
     return (
       <>
         <Header />
@@ -99,7 +100,6 @@ export const ProfileContainer = () => {
     );
   }
 
-  // Rediriger vers la page de connexion si pas de session
   if (!session) {
     window.location.href = '/login';
     return null;

@@ -5,6 +5,7 @@ import { useProfileSettings } from "./useProfileSettings";
 
 export const useProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   
   const {
     loading: profileLoading,
@@ -29,17 +30,23 @@ export const useProfile = () => {
   const loading = profileLoading || settingsLoading;
 
   const getProfile = useCallback(async (session: any) => {
-    if (!session?.user?.id) {
-      console.warn('❌ Aucune session utilisateur valide');
+    if (!session?.user?.id || initialized) {
       return;
     }
     
-    console.log('🔄 Chargement du profil et des paramètres...');
-    await Promise.all([
-      getProfileData(session),
-      getProfileSettings(session)
-    ]);
-  }, [getProfileData, getProfileSettings]);
+    console.log('🔄 Chargement unique du profil et des paramètres...');
+    setInitialized(true);
+    
+    try {
+      await Promise.all([
+        getProfileData(session),
+        getProfileSettings(session)
+      ]);
+    } catch (error) {
+      console.error('❌ Erreur lors du chargement du profil:', error);
+      setInitialized(false);
+    }
+  }, [getProfileData, getProfileSettings, initialized]);
 
   const updateProfile = useCallback(async (session: any) => {
     if (!session?.user?.id) {

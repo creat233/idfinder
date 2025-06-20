@@ -53,9 +53,7 @@ export const ProfileSections = ({
   handleContactSupport
 }: ProfileSectionsProps) => {
   return (
-    <>
-      <Separator />
-      
+    <div className="space-y-6">
       <CountryInfo countryCode={country} />
       
       <ProfileForm
@@ -68,8 +66,6 @@ export const ProfileSections = ({
         setIsEditing={setIsEditing}
         updateProfile={updateProfile}
       />
-      
-      <Separator />
 
       <NotificationSettings
         isOnVacation={isOnVacation}
@@ -78,8 +74,6 @@ export const ProfileSections = ({
         onSecurityNotificationsChange={onSecurityNotificationsChange}
         loading={profileLoading}
       />
-
-      <Separator />
       
       <MCardsList
         mcards={mcards}
@@ -89,17 +83,11 @@ export const ProfileSections = ({
         onEdit={onEditMCard}
       />
 
-      <Separator />
-
       <PasswordChangeForm />
-
-      <Separator />
 
       <TermsOfServiceSection />
 
-      <Separator />
-
       <SupportSection handleContactSupport={handleContactSupport} />
-    </>
+    </div>
   );
 };

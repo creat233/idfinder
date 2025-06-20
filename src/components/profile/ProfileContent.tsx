@@ -4,6 +4,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { ProfileHeader } from "./ProfileHeader";
 import { ProfileSections } from "./ProfileSections";
 import { MCard } from "@/types/mcard";
+import { Card } from "@/components/ui/card";
 
 interface ProfileContentProps {
   session: any;
@@ -81,16 +82,18 @@ export const ProfileContent = ({
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto bg-card rounded-lg shadow-lg p-6 space-y-8">
-          <ProfileHeader
-            title={t("myProfile")}
-            cardCount={cardsLoading ? 0 : cards.length}
-            totalEarnings={totalEarnings}
-            topReporterEarned={badgesLoading ? false : topReporterEarned}
-            premiumMemberEarned={badgesLoading ? false : premiumMemberEarned}
-          />
+        <div className="max-w-4xl mx-auto space-y-6">
+          <Card className="p-6">
+            <ProfileHeader
+              title={t("myProfile")}
+              cardCount={cardsLoading ? 0 : cards.length}
+              totalEarnings={totalEarnings}
+              topReporterEarned={badgesLoading ? false : topReporterEarned}
+              premiumMemberEarned={badgesLoading ? false : premiumMemberEarned}
+            />
+          </Card>
           
           <ProfileSections
             firstName={firstName}
