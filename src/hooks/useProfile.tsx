@@ -29,6 +29,12 @@ export const useProfile = () => {
   const loading = profileLoading || settingsLoading;
 
   const getProfile = useCallback(async (session: any) => {
+    if (!session?.user?.id) {
+      console.warn('❌ Aucune session utilisateur valide');
+      return;
+    }
+    
+    console.log('🔄 Chargement du profil et des paramètres...');
     await Promise.all([
       getProfileData(session),
       getProfileSettings(session)
@@ -36,9 +42,22 @@ export const useProfile = () => {
   }, [getProfileData, getProfileSettings]);
 
   const updateProfile = useCallback(async (session: any) => {
+    if (!session?.user?.id) {
+      console.warn('❌ Aucune session utilisateur valide pour la mise à jour');
+      return;
+    }
+    
     await updateProfileData(session, phone, country);
     setIsEditing(false);
   }, [updateProfileData, phone, country]);
+
+  const onVacationModeChange = useCallback((checked: boolean) => {
+    updateNotificationSettings({ isOnVacation: checked });
+  }, [updateNotificationSettings]);
+
+  const onSecurityNotificationsChange = useCallback((checked: boolean) => {
+    updateNotificationSettings({ enableSecurityNotifications: checked });
+  }, [updateNotificationSettings]);
 
   return {
     loading,
@@ -54,6 +73,7 @@ export const useProfile = () => {
     setIsEditing,
     getProfile,
     updateProfile,
-    updateNotificationSettings
+    onVacationModeChange,
+    onSecurityNotificationsChange
   };
 };

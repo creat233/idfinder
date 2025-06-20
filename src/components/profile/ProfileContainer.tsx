@@ -11,7 +11,7 @@ import { useMCards } from "@/hooks/useMCards";
 
 export const ProfileContainer = () => {
   const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   
   const {
     loading: profileLoading,
@@ -27,7 +27,8 @@ export const ProfileContainer = () => {
     setIsEditing,
     getProfile,
     updateProfile,
-    updateNotificationSettings
+    onVacationModeChange,
+    onSecurityNotificationsChange
   } = useProfile();
   
   const { cards, loading: cardsLoading } = useUserCards();
@@ -35,28 +36,51 @@ export const ProfileContainer = () => {
   const { mcards, loading: mcardsLoading, deleteMCard } = useMCards();
 
   useEffect(() => {
-    const getSession = async () => {
-      console.log('🔍 Récupération de la session...');
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Session obtenue:', session);
+    const initializeAuth = async () => {
+      console.log('🔍 Initialisation de l\'authentification...');
       
-      setSession(session);
-      if (session) {
-        console.log('👤 Chargement du profil pour l\'utilisateur:', session.user.id);
-        await getProfile(session);
-        await fetchBadgeStatus(session.user);
+      try {
+        // Récupérer la session actuelle
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('❌ Erreur lors de la récupération de la session:', error);
+          setInitialLoading(false);
+          return;
+        }
+
+        console.log('📊 Session récupérée:', session ? 'Connecté' : 'Non connecté');
+        
+        if (session) {
+          setSession(session);
+          console.log('👤 Chargement des données utilisateur...');
+          
+          // Charger les données en parallèle
+          await Promise.all([
+            getProfile(session),
+            fetchBadgeStatus(session.user)
+          ]);
+        }
+      } catch (error) {
+        console.error('❌ Erreur lors de l\'initialisation:', error);
+      } finally {
+        setInitialLoading(false);
       }
-      setLoading(false);
     };
 
-    getSession();
+    initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('🔄 Changement d\'état d\'authentification:', _event, session?.user?.id);
+    // Écouter les changements d'état d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔄 Changement d\'état d\'authentification:', event);
+      
       setSession(session);
-      if (session) {
-        getProfile(session);
-        fetchBadgeStatus(session.user);
+      
+      if (session && event === 'SIGNED_IN') {
+        await Promise.all([
+          getProfile(session),
+          fetchBadgeStatus(session.user)
+        ]);
       }
     });
 
@@ -65,22 +89,20 @@ export const ProfileContainer = () => {
     };
   }, [getProfile, fetchBadgeStatus]);
 
-  console.log('📊 État du profil:', {
-    loading,
-    profileLoading,
-    firstName,
-    lastName,
-    phone,
-    session: session?.user?.id
-  });
-
-  if (loading || profileLoading) {
+  // Afficher le skeleton pendant le chargement initial
+  if (initialLoading || profileLoading) {
     return (
       <>
         <Header />
         <ProfileSkeleton />
       </>
     );
+  }
+
+  // Rediriger vers la page de connexion si pas de session
+  if (!session) {
+    window.location.href = '/login';
+    return null;
   }
 
   return (
@@ -107,7 +129,8 @@ export const ProfileContainer = () => {
         setPhone={setPhone}
         setIsEditing={setIsEditing}
         updateProfile={() => updateProfile(session)}
-        updateNotificationSettings={updateNotificationSettings}
+        onVacationModeChange={onVacationModeChange}
+        onSecurityNotificationsChange={onSecurityNotificationsChange}
         deleteMCard={deleteMCard}
       />
     </>

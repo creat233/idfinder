@@ -26,7 +26,8 @@ interface ProfileContentProps {
   setPhone: (phone: string) => void;
   setIsEditing: (isEditing: boolean) => void;
   updateProfile: () => void;
-  updateNotificationSettings: (settings: { isOnVacation?: boolean; enableSecurityNotifications?: boolean }) => void;
+  onVacationModeChange: (checked: boolean) => void;
+  onSecurityNotificationsChange: (checked: boolean) => void;
   deleteMCard: (id: string) => Promise<void>;
 }
 
@@ -51,19 +52,12 @@ export const ProfileContent = ({
   setPhone,
   setIsEditing,
   updateProfile,
-  updateNotificationSettings,
+  onVacationModeChange,
+  onSecurityNotificationsChange,
   deleteMCard
 }: ProfileContentProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const handleVacationModeChange = (checked: boolean) => {
-    updateNotificationSettings({ isOnVacation: checked });
-  };
-
-  const handleSecurityNotificationsChange = (checked: boolean) => {
-    updateNotificationSettings({ enableSecurityNotifications: checked });
-  };
 
   const handleEditMCard = (mcard: MCard) => {
     navigate('/mcards', { state: { editMCardId: mcard.id } });
@@ -76,6 +70,15 @@ export const ProfileContent = ({
   const handleContactSupport = () => {
     window.location.href = "mailto:idfinder06@gmail.com";
   };
+
+  console.log('📊 Rendu ProfileContent avec:', {
+    firstName,
+    lastName,
+    phone,
+    country,
+    isEditing,
+    profileLoading
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -103,8 +106,8 @@ export const ProfileContent = ({
             setPhone={setPhone}
             setIsEditing={setIsEditing}
             updateProfile={updateProfile}
-            onVacationModeChange={handleVacationModeChange}
-            onSecurityNotificationsChange={handleSecurityNotificationsChange}
+            onVacationModeChange={onVacationModeChange}
+            onSecurityNotificationsChange={onSecurityNotificationsChange}
             deleteMCard={deleteMCard}
             onStartUpgradeFlow={handleUpgradeFromProfile}
             onEditMCard={handleEditMCard}
