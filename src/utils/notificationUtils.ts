@@ -97,6 +97,94 @@ export const createMissingCardNotification = async (cardNumber: string) => {
   }
 };
 
+// Fonction pour vérifier et créer automatiquement une notification après signalement
+export const checkAndNotifyCardOwner = async (cardNumber: string) => {
+  try {
+    console.log("🔔 Vérification automatique pour notification du propriétaire de la carte:", cardNumber);
+    
+    // Chercher si quelqu'un a enregistré cette carte
+    const { data: userCard, error: userCardError } = await supabase
+      .from("user_cards")
+      .select("*")
+      .eq("card_number", cardNumber)
+      .eq("is_active", true)
+      .limit(1)
+      .single();
+
+    if (userCardError || !userCard) {
+      console.log("ℹ️ Aucun propriétaire enregistré pour cette carte");
+      return { success: false, message: "Aucun propriétaire enregistré" };
+    }
+
+    // Vérifier le mode vacances
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("is_on_vacation")
+      .eq("id", userCard.user_id)
+      .single();
+
+    if (profile?.is_on_vacation) {
+      console.log("⚠️ Utilisateur en mode vacances, pas de notification");
+      return { success: false, message: "Utilisateur en mode vacances" };
+    }
+
+    // Chercher la carte signalée récemment
+    const { data: reportedCard, error: reportedError } = await supabase
+      .from("reported_cards")
+      .select("*")
+      .eq("card_number", cardNumber)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (reportedError || !reportedCard) {
+      console.log("❌ Carte signalée non trouvée");
+      return { success: false, message: "Carte signalée non trouvée" };
+    }
+
+    // Vérifier si notification existe déjà
+    const { data: existingNotification } = await supabase
+      .from("notifications")
+      .select("id")
+      .eq("user_id", userCard.user_id)
+      .eq("reported_card_id", reportedCard.id)
+      .eq("type", "card_found")
+      .limit(1)
+      .single();
+
+    if (existingNotification) {
+      console.log("ℹ️ Notification déjà existante");
+      return { success: false, message: "Notification déjà existante" };
+    }
+
+    // Créer la notification
+    const { data: notification, error: notificationError } = await supabase
+      .from("notifications")
+      .insert({
+        user_id: userCard.user_id,
+        reported_card_id: reportedCard.id,
+        type: "card_found",
+        title: "🔍 Votre carte a été signalée !",
+        message: `Excellente nouvelle ! Votre carte ${reportedCard.document_type} avec le numéro ${reportedCard.card_number} a été signalée comme trouvée sur FinderID. Recherchez ce numéro dans la barre de recherche pour voir les détails et confirmer la récupération.`,
+        is_read: false
+      })
+      .select()
+      .single();
+
+    if (notificationError) {
+      console.error("❌ Erreur création notification:", notificationError);
+      return { success: false, message: "Erreur lors de la création" };
+    }
+
+    console.log("✅ Notification automatique créée:", notification);
+    return { success: true, notification };
+
+  } catch (error) {
+    console.error("❌ Erreur vérification automatique:", error);
+    return { success: false, message: "Erreur générale" };
+  }
+};
+
 export const debugCardNotificationSystem = async (cardNumber: string) => {
   try {
     console.log("🔍 Diagnostic du système de notifications pour la carte:", cardNumber);

@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { FormField } from "@/components/card-report/FormField";
 import { useTranslation } from "@/hooks/useTranslation";
+import { checkAndNotifyCardOwner } from "@/utils/notificationUtils";
 
 interface FormValues {
   cardNumber?: string;
@@ -75,6 +76,7 @@ const SignalerCarte = () => {
       // Pour les cartes étudiantes et cartes de santé, on définit un statut spécial
       const status = (data.documentType === "student_card" || data.documentType === "health_card") ? "public_contact" : "pending";
 
+      // Insérer la carte signalée
       const { error } = await supabase.from("reported_cards").insert({
         card_number: data.cardNumber,
         location: data.location,
@@ -83,11 +85,28 @@ const SignalerCarte = () => {
         document_type: data.documentType,
         photo_url: data.photoUrl,
         reporter_id: user.id,
-        reporter_phone: userPhone, // Utiliser le numéro de téléphone du profil
+        reporter_phone: userPhone,
         status: status,
       });
 
       if (error) throw error;
+
+      console.log("✅ Carte signalée avec succès, vérification du propriétaire...");
+
+      // NOUVELLE FONCTION : Vérifier automatiquement s'il faut notifier le propriétaire
+      if (data.cardNumber) {
+        try {
+          const notificationResult = await checkAndNotifyCardOwner(data.cardNumber);
+          if (notificationResult.success) {
+            console.log("✅ Notification automatique envoyée au propriétaire");
+          } else {
+            console.log("ℹ️ Pas de notification automatique:", notificationResult.message);
+          }
+        } catch (notificationError) {
+          console.error("⚠️ Erreur lors de la notification automatique:", notificationError);
+          // On continue même si la notification échoue
+        }
+      }
 
       if (data.documentType === "student_card") {
         showSuccess(
