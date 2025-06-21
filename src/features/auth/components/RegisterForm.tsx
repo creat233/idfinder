@@ -30,9 +30,10 @@ const registerSchema = z.object({
 type RegisterFormProps = {
   onSubmit: (values: z.infer<typeof registerSchema>) => void;
   loading: boolean;
+  onSwitchToLogin: () => void;
 };
 
-const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
+const RegisterForm = ({ onSubmit, loading, onSwitchToLogin }: RegisterFormProps) => {
   const { t } = useTranslation();
   // Initialize registration form with validation
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -164,6 +165,17 @@ const RegisterForm = ({ onSubmit, loading }: RegisterFormProps) => {
         >
           {loading ? t('register_loading_button') : t('register_button')}
         </Button>
+
+        <div className="text-center text-sm text-gray-600">
+          {t('alreadyHaveAccount')}{' '}
+          <button
+            type="button"
+            onClick={onSwitchToLogin}
+            className="text-[#7E69AB] hover:underline font-medium"
+          >
+            {t('signIn')}
+          </button>
+        </div>
       </form>
     </Form>
   );

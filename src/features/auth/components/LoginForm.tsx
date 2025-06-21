@@ -23,9 +23,11 @@ const loginSchema = z.object({
 type LoginFormProps = {
   onSubmit: (values: z.infer<typeof loginSchema>) => void;
   loading: boolean;
+  onSwitchToRegister: () => void;
+  onSwitchToReset: () => void;
 };
 
-const LoginForm = ({ onSubmit, loading }: LoginFormProps) => {
+const LoginForm = ({ onSubmit, loading, onSwitchToRegister, onSwitchToReset }: LoginFormProps) => {
   const { t } = useTranslation();
   // Initialize login form with validation
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -81,6 +83,26 @@ const LoginForm = ({ onSubmit, loading }: LoginFormProps) => {
         >
           {loading ? t('login_loading_button') : t('login_button')}
         </Button>
+
+        <div className="flex flex-col space-y-2 text-center text-sm">
+          <button
+            type="button"
+            onClick={onSwitchToReset}
+            className="text-[#7E69AB] hover:underline"
+          >
+            {t('forgotPassword')}
+          </button>
+          <div className="text-gray-600">
+            {t('noAccount')}{' '}
+            <button
+              type="button"
+              onClick={onSwitchToRegister}
+              className="text-[#7E69AB] hover:underline font-medium"
+            >
+              {t('signUp')}
+            </button>
+          </div>
+        </div>
       </form>
     </Form>
   );

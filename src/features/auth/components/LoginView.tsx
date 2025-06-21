@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { PublicHeader } from "@/components/PublicHeader";
-import { LoginForm } from "./LoginForm";
-import { RegisterForm } from "./RegisterForm";
-import { ResetPasswordForm } from "./ResetPasswordForm";
+import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
 

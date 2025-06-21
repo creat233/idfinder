@@ -22,10 +22,10 @@ const resetPasswordSchema = z.object({
 type ResetPasswordFormProps = {
   onSubmit: (values: z.infer<typeof resetPasswordSchema>) => void;
   loading: boolean;
-  onCancel: () => void;
+  onSwitchToLogin: () => void;
 };
 
-const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormProps) => {
+const ResetPasswordForm = ({ onSubmit, loading, onSwitchToLogin }: ResetPasswordFormProps) => {
   const { t } = useTranslation();
   // Initialize form with validation
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
@@ -57,23 +57,22 @@ const ResetPasswordForm = ({ onSubmit, loading, onCancel }: ResetPasswordFormPro
           )}
         />
         
-        <div className="flex gap-2">
-          <Button 
-            type="submit" 
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
-            disabled={loading}
+        <Button 
+          type="submit" 
+          className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
+          disabled={loading}
+        >
+          {loading ? t('reset_password_loading_button') : t('reset_password_button')}
+        </Button>
+        
+        <div className="text-center text-sm text-gray-600">
+          <button
+            type="button"
+            onClick={onSwitchToLogin}
+            className="text-[#7E69AB] hover:underline font-medium"
           >
-            {loading ? t('reset_password_loading_button') : t('reset_password_button')}
-          </Button>
-          
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={onCancel}
-            className="px-4 py-3"
-          >
-            {t('reset_password_cancel_button')}
-          </Button>
+            {t('backToLogin')}
+          </button>
         </div>
       </form>
     </Form>
