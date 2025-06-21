@@ -1,22 +1,43 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { UserCardsList } from "./UserCardsList";
 import { NotificationsList } from "@/components/notifications/NotificationsList";
 import { MyCardsExplanation } from "./MyCardsExplanation";
+import { NotificationDebugButton } from "./NotificationDebugButton";
 import { useTranslation } from "@/hooks/useTranslation";
+
+interface UserCard {
+  id: string;
+  card_number: string;
+  document_type: string;
+  card_holder_name?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+interface Notification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  reported_card_id?: string;
+}
 
 interface MyCardsTabsContentProps {
   activeTab: "cards" | "notifications";
   onTabChange: (tab: "cards" | "notifications") => void;
-  cards: any[];
+  cards: UserCard[];
   cardsLoading: boolean;
-  notifications: any[];
+  notifications: Notification[];
   notificationsLoading: boolean;
   unreadCount: number;
-  onToggleCardStatus: (id: string) => Promise<void>;
-  onDeleteCard: (id: string) => Promise<void>;
-  onMarkAsRead: (id: string) => Promise<void>;
-  onMarkAllAsRead: () => Promise<void>;
+  onToggleCardStatus: (cardId: string) => void;
+  onDeleteCard: (cardId: string) => void;
+  onMarkAsRead: (notificationId: string) => void;
+  onMarkAllAsRead: () => void;
 }
 
 export const MyCardsTabsContent = ({
@@ -34,46 +55,48 @@ export const MyCardsTabsContent = ({
 }: MyCardsTabsContentProps) => {
   const { t } = useTranslation();
 
+  // Check if user has the specific card number 1234567890
+  const hasCard1234567890 = cards.some(card => card.card_number === "1234567890");
+
   return (
-    <Tabs
-      value={activeTab}
-      onValueChange={(v) => onTabChange(v as "cards" | "notifications")}
-      className="space-y-6"
-    >
-      <TabsList>
+    <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as "cards" | "notifications")}>
+      <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="cards">
           {t("myCards") || "Mes cartes"} ({cards.length})
         </TabsTrigger>
-        <TabsTrigger value="notifications">
+        <TabsTrigger value="notifications" className="relative">
           {t("notifications") || "Notifications"}
           {unreadCount > 0 && (
-            <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+            <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 text-xs">
               {unreadCount}
-            </span>
+            </Badge>
           )}
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="cards">
-        <div className="space-y-6">
-          <MyCardsExplanation />
-
-          {cardsLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="mt-2 text-gray-600">{t("loading") || "Chargement..."}</p>
-            </div>
-          ) : (
-            <UserCardsList
-              cards={cards}
-              onToggleStatus={onToggleCardStatus}
-              onDeleteCard={onDeleteCard}
-            />
-          )}
-        </div>
+      <TabsContent value="cards" className="space-y-6">
+        <MyCardsExplanation />
+        
+        {/* Show debug tools if user has the specific card */}
+        {hasCard1234567890 && (
+          <NotificationDebugButton cardNumber="1234567890" />
+        )}
+        
+        {cardsLoading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-2 text-gray-600">{t("loading") || "Chargement..."}</p>
+          </div>
+        ) : (
+          <UserCardsList
+            cards={cards}
+            onToggleStatus={onToggleCardStatus}
+            onDeleteCard={onDeleteCard}
+          />
+        )}
       </TabsContent>
 
-      <TabsContent value="notifications">
+      <TabsContent value="notifications" className="space-y-6">
         {notificationsLoading ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
