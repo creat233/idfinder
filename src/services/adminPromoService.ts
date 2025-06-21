@@ -2,7 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { PromoCodeData } from "@/types/promo";
 
-// Interface pour les données retournées par la RPC (maintenant avec les vrais types UUID)
+// Interface pour les données retournées par la RPC (avec les types string pour éviter les conflits)
 interface AdminPromoRPCResponse {
   id: string;
   user_id: string;
@@ -73,7 +73,6 @@ export class AdminPromoService {
     console.log("📊 Premier élément:", codesData[0]);
 
     // Transformer les données pour correspondre à l'interface PromoCodeData
-    // Plus besoin de conversion ::text car la fonction retourne maintenant les vrais types
     const transformedData: PromoCodeData[] = codesData.map((code: AdminPromoRPCResponse) => ({
       id: code.id,
       code: code.code,
