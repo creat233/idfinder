@@ -24,14 +24,7 @@ export const createMissingCardNotification = async (cardNumber: string) => {
     // Trouver le propriétaire de la carte
     const { data: userCard, error: userCardError } = await supabase
       .from("user_cards")
-      .select(`
-        *,
-        profiles:user_id (
-          first_name,
-          last_name,
-          is_on_vacation
-        )
-      `)
+      .select("*")
       .eq("card_number", cardNumber)
       .eq("is_active", true)
       .limit(1)
@@ -44,8 +37,18 @@ export const createMissingCardNotification = async (cardNumber: string) => {
 
     console.log("✅ Propriétaire trouvé:", userCard);
 
+    // Récupérer le profil de l'utilisateur séparément
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("first_name, last_name, is_on_vacation")
+      .eq("id", userCard.user_id)
+      .single();
+
+    if (profileError) {
+      console.log("⚠️ Profil non trouvé, on continue sans vérification du mode vacances");
+    }
+
     // Vérifier si l'utilisateur est en mode vacances
-    const profile = userCard.profiles as any;
     if (profile?.is_on_vacation) {
       console.log("⚠️ L'utilisateur est en mode vacances, pas de notification");
       return { success: false, message: "Utilisateur en mode vacances" };
@@ -101,18 +104,23 @@ export const debugCardNotificationSystem = async (cardNumber: string) => {
     // Vérifier les cartes utilisateur
     const { data: userCards } = await supabase
       .from("user_cards")
-      .select(`
-        *,
-        profiles:user_id (
-          first_name,
-          last_name,
-          is_on_vacation,
-          enable_security_notifications
-        )
-      `)
+      .select("*")
       .eq("card_number", cardNumber);
 
     console.log("👤 Cartes utilisateur trouvées:", userCards);
+
+    // Vérifier les profils si des cartes utilisateur existent
+    let profilesData = null;
+    if (userCards && userCards.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name, is_on_vacation, enable_security_notifications")
+        .in("id", userCards.map(card => card.user_id));
+      
+      profilesData = profiles;
+    }
+
+    console.log("👤 Profils trouvés:", profilesData);
 
     // Vérifier les cartes signalées
     const { data: reportedCards } = await supabase
@@ -132,13 +140,14 @@ export const debugCardNotificationSystem = async (cardNumber: string) => {
 
     return {
       userCards,
+      profiles: profilesData,
       reportedCards,
       notifications,
       summary: {
         hasUserCard: (userCards?.length || 0) > 0,
         hasReportedCard: (reportedCards?.length || 0) > 0,
         hasNotification: (notifications?.length || 0) > 0,
-        userInVacationMode: userCards?.[0]?.profiles?.is_on_vacation || false
+        userInVacationMode: profilesData?.[0]?.is_on_vacation || false
       }
     };
   } catch (error) {
