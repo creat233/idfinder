@@ -8,6 +8,7 @@ import { MCardShareDialog } from '@/components/mcards/MCardShareDialog';
 import { MCardViewHeader } from '@/components/mcards/view/MCardViewHeader';
 import { MCardViewQRSection } from '@/components/mcards/view/MCardViewQRSection';
 import { MCardViewProfile } from '@/components/mcards/view/MCardViewProfile';
+import { MCardViewProducts } from '@/components/mcards/view/MCardViewProducts';
 
 const MCardView = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -18,6 +19,7 @@ const MCardView = () => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [viewCount, setViewCount] = useState(0);
 
   // Créer une carte par défaut pour les tests
   const createDefaultCard = (): MCard => ({
@@ -38,6 +40,7 @@ const MCardView = () => {
     subscription_expires_at: new Date().toISOString(),
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
+    view_count: 1247,
     social_links: {
       linkedin: 'https://linkedin.com/in/jeandupont',
       twitter: 'https://twitter.com/jeandupont',
@@ -54,14 +57,15 @@ const MCardView = () => {
 
   useEffect(() => {
     const fetchMCard = async () => {
-      // Si pas de slug, utiliser la carte par défaut
-      if (!slug) {
-        setMCard(createDefaultCard());
-        setLoading(false);
-        return;
-      }
-
       try {
+        if (!slug || slug === 'demo') {
+          const defaultCard = createDefaultCard();
+          setMCard(defaultCard);
+          setViewCount(defaultCard.view_count || 0);
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from('mcards')
           .select('*')
@@ -70,11 +74,17 @@ const MCardView = () => {
           .single();
 
         if (error) {
-          // Si la carte n'est pas trouvée, utiliser la carte par défaut
           console.log('Carte non trouvée, utilisation de la carte par défaut');
-          setMCard(createDefaultCard());
+          const defaultCard = createDefaultCard();
+          setMCard(defaultCard);
+          setViewCount(defaultCard.view_count || 0);
         } else {
           setMCard(data);
+          setViewCount(data.view_count || 0);
+          
+          // Incrémenter le compteur de vues
+          await supabase.rpc('increment_mcard_view', { card_slug: slug });
+          setViewCount(prev => prev + 1);
           
           // Vérifier si l'utilisateur est le propriétaire
           const { data: { user } } = await supabase.auth.getUser();
@@ -84,8 +94,9 @@ const MCardView = () => {
         }
       } catch (error: any) {
         console.error('Erreur lors de la récupération de la carte:', error);
-        // En cas d'erreur, utiliser la carte par défaut
-        setMCard(createDefaultCard());
+        const defaultCard = createDefaultCard();
+        setMCard(defaultCard);
+        setViewCount(defaultCard.view_count || 0);
       } finally {
         setLoading(false);
       }
@@ -137,14 +148,15 @@ const MCardView = () => {
       <MCardViewHeader
         isOwner={isOwner}
         showQRCode={showQRCode}
-        onEdit={handleEdit}
+        viewCount={viewCount}
+        onEdit={() => navigate('/mcards', { state: { editMCardId: mcard?.id } })}
         onToggleQRCode={() => setShowQRCode(!showQRCode)}
         onShare={() => setIsShareDialogOpen(true)}
       />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto space-y-6">
           {/* QR Code Section */}
           <MCardViewQRSection
             showQRCode={showQRCode}
@@ -156,9 +168,19 @@ const MCardView = () => {
           {/* Profile Card */}
           <MCardViewProfile
             mcard={mcard}
-            onCopyLink={handleCopyLink}
+            onCopyLink={() => {
+              const url = window.location.href;
+              navigator.clipboard.writeText(url);
+              toast({
+                title: "Lien copié !",
+                description: "Le lien de votre mCard a été copié dans le presse-papiers"
+              });
+            }}
             onShare={() => setIsShareDialogOpen(true)}
           />
+
+          {/* Products Section */}
+          <MCardViewProducts phoneNumber={mcard.phone_number} />
         </div>
       </div>
 
