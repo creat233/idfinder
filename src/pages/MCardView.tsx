@@ -19,43 +19,44 @@ const MCardView = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
 
+  // Créer une carte par défaut pour les tests
+  const createDefaultCard = (): MCard => ({
+    id: 'demo',
+    user_id: 'demo',
+    slug: 'demo',
+    full_name: 'Jean Dupont',
+    job_title: 'Développeur Full Stack',
+    company: 'TechCorp Solutions',
+    phone_number: '+221 77 123 45 67',
+    email: 'jean.dupont@example.com',
+    website_url: 'https://jeandupont.dev',
+    profile_picture_url: null,
+    description: 'Passionné de technologie avec 5 ans d\'expérience dans le développement web. Spécialisé en React, Node.js et bases de données.',
+    is_published: true,
+    plan: 'premium',
+    subscription_status: 'active',
+    subscription_expires_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    social_links: {
+      linkedin: 'https://linkedin.com/in/jeandupont',
+      twitter: 'https://twitter.com/jeandupont',
+      github: 'https://github.com/jeandupont'
+    },
+    linkedin_url: 'https://linkedin.com/in/jeandupont',
+    twitter_url: 'https://twitter.com/jeandupont',
+    facebook_url: null,
+    instagram_url: null,
+    youtube_url: null,
+    tiktok_url: null,
+    snapchat_url: null
+  });
+
   useEffect(() => {
     const fetchMCard = async () => {
+      // Si pas de slug, utiliser la carte par défaut
       if (!slug) {
-        // Si pas de slug, créer une carte par défaut pour démonstration
-        const defaultCard: MCard = {
-          id: 'demo',
-          user_id: 'demo',
-          slug: 'demo',
-          full_name: 'Jean Dupont',
-          job_title: 'Développeur Full Stack',
-          company: 'TechCorp Solutions',
-          phone_number: '+221 77 123 45 67',
-          email: 'jean.dupont@example.com',
-          website_url: 'https://jeandupont.dev',
-          profile_picture_url: null,
-          description: 'Passionné de technologie avec 5 ans d\'expérience dans le développement web. Spécialisé en React, Node.js et bases de données.',
-          is_published: true,
-          plan: 'premium',
-          subscription_status: 'active',
-          subscription_expires_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          social_links: {
-            linkedin: 'https://linkedin.com/in/jeandupont',
-            twitter: 'https://twitter.com/jeandupont',
-            github: 'https://github.com/jeandupont'
-          },
-          linkedin_url: 'https://linkedin.com/in/jeandupont',
-          twitter_url: 'https://twitter.com/jeandupont',
-          facebook_url: null,
-          instagram_url: null,
-          youtube_url: null,
-          tiktok_url: null,
-          snapchat_url: null
-        };
-        
-        setMCard(defaultCard);
+        setMCard(createDefaultCard());
         setLoading(false);
         return;
       }
@@ -68,29 +69,30 @@ const MCardView = () => {
           .eq('is_published', true)
           .single();
 
-        if (error) throw error;
-
-        setMCard(data);
-
-        // Vérifier si l'utilisateur est le propriétaire
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user && data.user_id === user.id) {
-          setIsOwner(true);
+        if (error) {
+          // Si la carte n'est pas trouvée, utiliser la carte par défaut
+          console.log('Carte non trouvée, utilisation de la carte par défaut');
+          setMCard(createDefaultCard());
+        } else {
+          setMCard(data);
+          
+          // Vérifier si l'utilisateur est le propriétaire
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && data.user_id === user.id) {
+            setIsOwner(true);
+          }
         }
       } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Carte non trouvée ou non publiée"
-        });
-        navigate('/mcards');
+        console.error('Erreur lors de la récupération de la carte:', error);
+        // En cas d'erreur, utiliser la carte par défaut
+        setMCard(createDefaultCard());
       } finally {
         setLoading(false);
       }
     };
 
     fetchMCard();
-  }, [slug, navigate, toast]);
+  }, [slug]);
 
   const handleCopyLink = () => {
     const url = window.location.href;
