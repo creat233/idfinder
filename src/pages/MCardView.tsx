@@ -83,8 +83,11 @@ const MCardView = () => {
           setViewCount(data.view_count || 0);
           
           // Incrémenter le compteur de vues pour les vraies cartes
-          if (data.view_count !== undefined) {
-            setViewCount(data.view_count + 1);
+          try {
+            await supabase.rpc('increment_mcard_view_count', { mcard_slug: slug });
+            setViewCount(prev => prev + 1);
+          } catch (error) {
+            console.error('Erreur lors de l\'incrémentation du compteur de vues:', error);
           }
           
           // Vérifier si l'utilisateur est le propriétaire
