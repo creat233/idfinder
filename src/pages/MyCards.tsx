@@ -25,6 +25,7 @@ const MyCards = () => {
     unreadCount,
     markAsRead,
     markAllAsRead,
+    deleteAllNotifications,
   } = useNotifications();
 
   const [activeTab, setActiveTab] = useState<"cards" | "notifications">("cards");
@@ -52,6 +53,7 @@ const MyCards = () => {
           <MyCardsHeader
             cardCount={cards.length}
             onAddCard={addCard}
+            showBackButton={false}
           />
 
           <MyCardsTabsContent
@@ -66,6 +68,7 @@ const MyCards = () => {
             onDeleteCard={deleteCard}
             onMarkAsRead={markAsRead}
             onMarkAllAsRead={markAllAsRead}
+            onDeleteAllNotifications={deleteAllNotifications}
           />
         </div>
       </main>

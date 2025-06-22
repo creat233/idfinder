@@ -38,6 +38,7 @@ interface MyCardsTabsContentProps {
   onDeleteCard: (cardId: string) => void;
   onMarkAsRead: (notificationId: string) => void;
   onMarkAllAsRead: () => void;
+  onDeleteAllNotifications?: () => void;
 }
 
 export const MyCardsTabsContent = ({
@@ -52,6 +53,7 @@ export const MyCardsTabsContent = ({
   onDeleteCard,
   onMarkAsRead,
   onMarkAllAsRead,
+  onDeleteAllNotifications,
 }: MyCardsTabsContentProps) => {
   const { t } = useTranslation();
 
@@ -107,6 +109,7 @@ export const MyCardsTabsContent = ({
             notifications={notifications}
             onMarkAsRead={onMarkAsRead}
             onMarkAllAsRead={onMarkAllAsRead}
+            onDeleteAllNotifications={onDeleteAllNotifications}
           />
         )}
       </TabsContent>

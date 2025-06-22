@@ -1,5 +1,5 @@
 
-import { Bell, BellOff, CheckCircle } from "lucide-react";
+import { Bell, BellOff, CheckCircle, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,9 +20,15 @@ interface NotificationsListProps {
   notifications: Notification[];
   onMarkAsRead: (id: string) => void;
   onMarkAllAsRead: () => void;
+  onDeleteAllNotifications?: () => void;
 }
 
-export const NotificationsList = ({ notifications, onMarkAsRead, onMarkAllAsRead }: NotificationsListProps) => {
+export const NotificationsList = ({ 
+  notifications, 
+  onMarkAsRead, 
+  onMarkAllAsRead, 
+  onDeleteAllNotifications 
+}: NotificationsListProps) => {
   const { t } = useTranslation();
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
@@ -53,12 +59,24 @@ export const NotificationsList = ({ notifications, onMarkAsRead, onMarkAllAsRead
           )}
         </div>
         
-        {unreadCount > 0 && (
-          <Button variant="outline" size="sm" onClick={onMarkAllAsRead}>
-            <CheckCircle className="h-4 w-4 mr-2" />
-            {t("markAllAsRead") || "Tout marquer comme lu"}
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {unreadCount > 0 && (
+            <Button variant="outline" size="sm" onClick={onMarkAllAsRead}>
+              <CheckCircle className="h-4 w-4 mr-2" />
+              {t("markAllAsRead") || "Tout marquer comme lu"}
+            </Button>
+          )}
+          {notifications.length > 0 && onDeleteAllNotifications && (
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              onClick={onDeleteAllNotifications}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Supprimer tout
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3">

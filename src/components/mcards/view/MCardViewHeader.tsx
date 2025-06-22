@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, QrCode, Share2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Edit, QrCode, Share2 } from "lucide-react";
 
 interface MCardViewHeaderProps {
   isOwner: boolean;
@@ -18,16 +17,10 @@ export const MCardViewHeader = ({
   onToggleQRCode, 
   onShare 
 }: MCardViewHeaderProps) => {
-  const navigate = useNavigate();
-
   return (
     <div className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate('/mcards')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour
-          </Button>
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             {isOwner && (
               <Button variant="outline" onClick={onEdit}>

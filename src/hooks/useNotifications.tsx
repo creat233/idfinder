@@ -100,6 +100,30 @@ export const useNotifications = () => {
     }
   };
 
+  const deleteAllNotifications = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      let query = supabase
+        .from("notifications")
+        .delete();
+
+      // Delete notifications based on admin status
+      if (isAdmin) {
+        query = query.or(`user_id.eq.${user.id},type.in.("system_alert","promo_payment_received","recovery_confirmed","card_found")`);
+      } else {
+        query = query.eq("user_id", user.id);
+      }
+
+      const { error } = await query;
+      if (error) throw error;
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error deleting all notifications:", error);
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -137,6 +161,7 @@ export const useNotifications = () => {
     unreadCount,
     markAsRead,
     markAllAsRead,
+    deleteAllNotifications,
     refetch: fetchNotifications,
   };
 };
