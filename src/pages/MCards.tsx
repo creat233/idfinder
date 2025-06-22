@@ -1,7 +1,4 @@
 
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
 import { MCardsList } from "@/components/mcards/MCardsList";
@@ -17,7 +14,6 @@ import { useTranslation } from "@/hooks/useTranslation";
 const MCards = () => {
   const { mcards, loading, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   // Handle notifications for expiring cards
   useMCardsNotificationHandler(mcards);
@@ -46,15 +42,6 @@ const MCards = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          className="mb-6"
-          onClick={() => navigate('/dashboard')}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t("back") || "Retour"}
-        </Button>
-
         <MCardsHeader />
         
         <MCardFeatures />
