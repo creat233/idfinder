@@ -82,9 +82,10 @@ const MCardView = () => {
           setMCard(data);
           setViewCount(data.view_count || 0);
           
-          // Incrémenter le compteur de vues
-          await supabase.rpc('increment_mcard_view', { card_slug: slug });
-          setViewCount(prev => prev + 1);
+          // Incrémenter le compteur de vues pour les vraies cartes
+          if (data.view_count !== undefined) {
+            setViewCount(data.view_count + 1);
+          }
           
           // Vérifier si l'utilisateur est le propriétaire
           const { data: { user } } = await supabase.auth.getUser();
