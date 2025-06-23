@@ -129,6 +129,94 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_products: {
+        Row: {
+          category: string
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          mcard_id: string
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          mcard_id: string
+          name: string
+          price?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          mcard_id?: string
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_products_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_statuses: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          mcard_id: string
+          status_color: string
+          status_text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          mcard_id: string
+          status_color?: string
+          status_text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          mcard_id?: string
+          status_color?: string
+          status_text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_statuses_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcards: {
         Row: {
           company: string | null
@@ -154,6 +242,7 @@ export type Database = {
           twitter_url: string | null
           updated_at: string
           user_id: string
+          view_count: number
           website_url: string | null
           youtube_url: string | null
         }
@@ -181,6 +270,7 @@ export type Database = {
           twitter_url?: string | null
           updated_at?: string
           user_id: string
+          view_count?: number
           website_url?: string | null
           youtube_url?: string | null
         }
@@ -208,6 +298,7 @@ export type Database = {
           twitter_url?: string | null
           updated_at?: string
           user_id?: string
+          view_count?: number
           website_url?: string | null
           youtube_url?: string | null
         }
@@ -592,6 +683,10 @@ export type Database = {
           title: string
           updated_at: string
         }[]
+      }
+      increment_mcard_view_count: {
+        Args: { mcard_slug: string }
+        Returns: undefined
       }
       is_admin: {
         Args: Record<PropertyKey, never>

@@ -42,7 +42,7 @@ const MCards = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <MCardsHeader onCreateCard={() => handleStartCreationFlow()} />
+        <MCardsHeader onCreateCard={handleStartCreationFlow} />
         
         <MCardFeatures />
         
@@ -51,7 +51,7 @@ const MCards = () => {
             mcards={mcards}
             onRequestUpgrade={(mcardId, plan) => handleRequestUpgrade(mcardId, plan, requestPlanUpgrade)}
             upgradingCardId={upgradingCardId}
-            onStartCreationFlow={() => handleStartCreationFlow()}
+            onStartCreationFlow={handleStartCreationFlow}
           />
         </section>
 

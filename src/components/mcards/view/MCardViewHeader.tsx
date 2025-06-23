@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { Edit, QrCode, Share2, Eye } from "lucide-react";
+import { Edit, QrCode, Share2, Eye, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface MCardViewHeaderProps {
   isOwner: boolean;
@@ -19,18 +20,31 @@ export const MCardViewHeader = ({
   onToggleQRCode, 
   onShare 
 }: MCardViewHeaderProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white shadow-sm border-b">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo FinderID */}
-          <div className="flex items-center space-x-2">
-            <img 
-              src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
-              alt="FinderID Logo" 
-              className="w-8 h-8"
-            />
-            <span className="text-xl font-bold text-gray-900">FinderID</span>
+          {/* Logo FinderID avec bouton retour */}
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Retour
+            </Button>
+            <div className="flex items-center space-x-2">
+              <img 
+                src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
+                alt="FinderID Logo" 
+                className="w-8 h-8"
+              />
+              <span className="text-xl font-bold text-gray-900">FinderID</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
