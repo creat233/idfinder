@@ -49,7 +49,7 @@ const MCards = () => {
         <section ref={pricingRef} className="scroll-mt-20">
           <MCardPricing 
             mcards={mcards}
-            onRequestUpgrade={(mcardId, plan) => handleRequestUpgrade(mcardId, plan, requestPlanUpgrade)}
+            onRequestUpgrade={handleRequestUpgrade}
             upgradingCardId={upgradingCardId}
             onStartCreationFlow={handleStartCreationFlow}
           />
