@@ -38,6 +38,11 @@ const MCards = () => {
     handleFormOpenChange,
   } = useMCardsFormHandler({ mcards, createMCard, updateMCard, loading });
 
+  // Wrapper function to handle the upgrade request with the correct signature
+  const handleUpgradeRequest = async (mcardId: string, plan: 'essential' | 'premium') => {
+    await handleRequestUpgrade(mcardId, plan, requestPlanUpgrade);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -49,7 +54,7 @@ const MCards = () => {
         <section ref={pricingRef} className="scroll-mt-20">
           <MCardPricing 
             mcards={mcards}
-            onRequestUpgrade={handleRequestUpgrade}
+            onRequestUpgrade={handleUpgradeRequest}
             upgradingCardId={upgradingCardId}
             onStartCreationFlow={handleStartCreationFlow}
           />
