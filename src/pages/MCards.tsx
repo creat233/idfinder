@@ -43,11 +43,16 @@ const MCards = () => {
     await handleRequestUpgrade(mcardId, plan, requestPlanUpgrade);
   };
 
+  // Wrapper function for creation flow - defaults to free plan
+  const handleCreateCard = () => {
+    handleStartCreationFlow('free');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <MCardsHeader onCreateCard={handleStartCreationFlow} />
+        <MCardsHeader onCreateCard={handleCreateCard} />
         
         <MCardFeatures />
         
