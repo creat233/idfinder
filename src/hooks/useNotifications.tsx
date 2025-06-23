@@ -1,6 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Notification {
   id: string;
@@ -18,6 +18,7 @@ export const useNotifications = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { toast } = useToast();
 
   const fetchNotifications = async () => {
     try {
@@ -118,9 +119,20 @@ export const useNotifications = () => {
 
       const { error } = await query;
       if (error) throw error;
+      
+      toast({
+        title: "Notifications supprimées",
+        description: "Toutes vos notifications ont été supprimées avec succès."
+      });
+      
       fetchNotifications();
     } catch (error) {
       console.error("Error deleting all notifications:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de supprimer les notifications."
+      });
     }
   };
 

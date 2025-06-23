@@ -40,26 +40,32 @@ export const createDefaultStatuses = (): MCardStatus[] => [
     mcard_id: 'demo',
     status_text: 'Disponible pour projets',
     status_color: '#10B981',
+    status_image: '/lovable-uploads/8f0a3646-98f9-4f52-9495-ca5134a34d85.png',
     is_active: true,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24h from now
   },
   {
     id: '2',
     mcard_id: 'demo',
-    status_text: 'Formation React',
+    status_text: 'Service d\'impression',
     status_color: '#3B82F6',
+    status_image: '/lovable-uploads/73f8ab5a-99fe-43bd-b052-89e74cb7f3b0.png',
     is_active: true,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   },
   {
     id: '3',
     mcard_id: 'demo',
-    status_text: 'Consultation technique',
+    status_text: 'Design graphique',
     status_color: '#8B5CF6',
+    status_image: '/lovable-uploads/dc5b2de0-4f1d-4cba-a0e6-5fc341218843.png',
     is_active: true,
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   }
 ];

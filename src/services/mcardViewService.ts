@@ -33,7 +33,15 @@ export const fetchMCardStatuses = async (mcardId: string): Promise<MCardStatus[]
     .eq('is_active', true)
     .order('created_at', { ascending: false });
   
-  return data || [];
+  // Filter out expired statuses (older than 24h)
+  const now = new Date();
+  const validStatuses = (data || []).filter(status => {
+    if (!status.expires_at) return true; // Keep statuses without expiration
+    const expirationDate = new Date(status.expires_at);
+    return expirationDate > now;
+  });
+  
+  return validStatuses;
 };
 
 export const fetchMCardProducts = async (mcardId: string): Promise<MCardProduct[]> => {

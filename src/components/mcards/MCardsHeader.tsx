@@ -1,15 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExternalLink, Plus } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Link } from "react-router-dom";
 
-interface MCardsHeaderProps {
-  onCreateCard?: () => void;
-}
-
-export const MCardsHeader = ({ onCreateCard }: MCardsHeaderProps) => {
+export const MCardsHeader = () => {
   const { t } = useTranslation();
 
   return (
@@ -20,16 +16,6 @@ export const MCardsHeader = ({ onCreateCard }: MCardsHeaderProps) => {
       <p className="text-xl text-gray-600 mb-8">
         {t('createShareConnect')}
       </p>
-      
-      {/* Bouton de création */}
-      {onCreateCard && (
-        <div className="mb-8">
-          <Button onClick={onCreateCard} size="lg" className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="h-5 w-5 mr-2" />
-            Créer ma mCard
-          </Button>
-        </div>
-      )}
       
       {/* Carte de démonstration */}
       <Card className="max-w-md mx-auto mb-8 border-2 border-blue-200 bg-blue-50">

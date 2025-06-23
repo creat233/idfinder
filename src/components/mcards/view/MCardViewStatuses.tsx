@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Plus } from "lucide-react";
+import { MessageCircle, Plus, Clock } from "lucide-react";
 import { MCardStatus } from "@/types/mcard";
 
 interface MCardViewStatusesProps {
@@ -24,6 +24,19 @@ export const MCardViewStatuses = ({
     const message = `Bonjour ! Je suis intéressé(e) par votre statut "${status.status_text}". Pourriez-vous me donner plus d'informations ?`;
     const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^\d]/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const getTimeRemaining = (expiresAt?: string) => {
+    if (!expiresAt) return null;
+    
+    const now = new Date();
+    const expiration = new Date(expiresAt);
+    const diffMs = expiration.getTime() - now.getTime();
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    
+    if (hours <= 0) return "Expiré";
+    if (hours < 24) return `${hours}h restantes`;
+    return "24h";
   };
 
   if (statuses.length === 0 && !isOwner) {
@@ -60,6 +73,17 @@ export const MCardViewStatuses = ({
                 key={status.id} 
                 className="border rounded-lg p-4 space-y-3 hover:shadow-md transition-shadow"
               >
+                {/* Image du statut */}
+                {status.status_image && (
+                  <div className="w-full h-32 rounded-lg overflow-hidden bg-gray-100">
+                    <img 
+                      src={status.status_image} 
+                      alt={status.status_text}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                
                 <div className="flex items-center justify-between">
                   <Badge 
                     style={{ backgroundColor: status.status_color, color: 'white' }}
@@ -68,6 +92,14 @@ export const MCardViewStatuses = ({
                     {status.status_text}
                   </Badge>
                 </div>
+                
+                {/* Temps restant */}
+                {status.expires_at && (
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Clock className="h-3 w-3" />
+                    {getTimeRemaining(status.expires_at)}
+                  </div>
+                )}
                 
                 {!isOwner && phoneNumber && (
                   <Button

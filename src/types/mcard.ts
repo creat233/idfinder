@@ -13,9 +13,11 @@ export type MCardStatus = {
   mcard_id: string;
   status_text: string;
   status_color: string;
+  status_image?: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  expires_at?: string;
 };
 
 export type MCardProduct = {
