@@ -4,7 +4,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { getPriceInfoForCountry } from "@/utils/pricing";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Gift, Zap, Crown, Star, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MCard } from "@/types/mcard";
 import { SelectMCardDialog } from "./SelectMCardDialog";
@@ -25,42 +25,63 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
   const plans = [
     {
       id: 'free',
-      name: t('planFree'),
+      name: 'Gratuit',
       price: 0,
       monthlyPrice: 0,
-      description: t('planFreeDescription'),
+      description: 'Parfait pour commencer',
       features: [
-        t('mCardFeature1Title'), // Partage Facile
+        'Carte de visite digitale',
+        'Partage illimité par QR code',
+        'Photo de profil',
+        'Informations de contact de base',
+        'Hébergement gratuit à vie'
       ],
       isPopular: false,
+      icon: <Gift className="h-6 w-6" />,
+      gradient: 'from-gray-100 to-gray-200',
+      buttonColor: 'bg-gray-600 hover:bg-gray-700',
+      badge: null
     },
     {
       id: 'essential',
-      name: t('planEssential'),
+      name: 'Essentiel',
       price: 2000,
       monthlyPrice: 2000,
-      description: t('planEssentialDescription'),
+      description: 'Pour les professionnels actifs',
       features: [
-        t('mCardFeature1Title'), // Partage Facile
-        t('mCardFeature4Title'), // Écologique
+        'Tout du plan Gratuit',
+        'Réseaux sociaux professionnels',
+        'Statistiques de consultation',
+        'Mise à jour en temps réel',
+        'Support par email'
       ],
-      isPopular: false,
+      isPopular: true,
+      icon: <Zap className="h-6 w-6" />,
+      gradient: 'from-blue-100 to-blue-200',
+      buttonColor: 'bg-blue-600 hover:bg-blue-700',
       period: 'mois',
+      badge: 'POPULAIRE'
     },
     {
       id: 'premium',
-      name: t('planPremium'),
+      name: 'Premium',
       price: 10000,
       monthlyPrice: 833,
-      description: t('planPremiumDescription'),
+      description: 'Solution complète pour entrepreneurs',
       features: [
-        t('mCardFeature1Title'), // Partage Facile
-        t('mCardFeature2Title'), // Toujours à Jour
-        t('mCardFeature3Title'), // Image Professionnelle
-        t('mCardFeature4Title'), // Écologique
+        'Tout du plan Essentiel',
+        'Statuts personnalisés en temps réel',
+        'Catalogue produits/services',
+        'Analytics avancées',
+        'Support prioritaire',
+        'Personnalisation avancée'
       ],
-      isPopular: true,
+      isPopular: false,
+      icon: <Crown className="h-6 w-6" />,
+      gradient: 'from-purple-100 to-purple-200',
+      buttonColor: 'bg-purple-600 hover:bg-purple-700',
       period: 'an',
+      badge: 'COMPLET'
     },
   ];
 
@@ -92,64 +113,122 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
   return (
     <>
       <div>
-        <section className="py-16 bg-muted/40 rounded-lg">
-          <div className="container mx-auto px-4 flex flex-col items-center">
-            <h2 className="text-3xl font-bold text-center mb-4">{t('mCardPricingTitle')}</h2>
-            <p className="text-center text-muted-foreground mb-12 max-w-2xl">{t('mCardPriceDescription')}</p>
+        <section className="py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+          {/* Background decorations */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNLTEwIDMwaDYwdjJoLTYweiIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==')] opacity-30"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-white mb-6">
+                Choisissez Votre Plan
+              </h2>
+              <p className="text-xl text-blue-200 max-w-3xl mx-auto leading-relaxed">
+                Créez votre carte de visite digitale professionnelle et ne perdez plus jamais un contact
+              </p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {plans.map((plan, index) => (
-                <Card key={index} className={cn("flex flex-col", plan.isPopular && "border-primary border-2 relative", upgradingCardId && "ring-2 ring-offset-2 ring-primary/50 transition-all duration-300")}>
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    <CardDescription>{plan.description}</CardDescription>
+                <Card 
+                  key={index} 
+                  className={cn(
+                    "relative flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-2xl border-2",
+                    plan.isPopular ? "border-yellow-400 shadow-yellow-400/20 shadow-xl scale-105" : "border-gray-200 hover:border-blue-300",
+                    upgradingCardId && "ring-2 ring-offset-2 ring-blue-500/50"
+                  )}
+                >
+                  {plan.badge && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                        <Star className="h-4 w-4" />
+                        {plan.badge}
+                      </div>
+                    </div>
+                  )}
+
+                  <CardHeader className={`text-center bg-gradient-to-br ${plan.gradient} rounded-t-lg`}>
+                    <div className="flex items-center justify-center mb-4">
+                      <div className="p-3 bg-white rounded-full shadow-lg">
+                        {plan.icon}
+                      </div>
+                    </div>
+                    <CardTitle className="text-2xl font-bold text-gray-800">{plan.name}</CardTitle>
+                    <CardDescription className="text-gray-600 font-medium">{plan.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex flex-col flex-grow">
-                    <div className="my-4 text-center">
-                      <span className="text-5xl font-bold">{new Intl.NumberFormat().format(plan.price)}</span>
-                      <span className="text-xl font-medium text-muted-foreground ml-1">{priceInfo.currency}</span>
-                      {plan.price > 0 && <span className="text-muted-foreground">/{plan.period || 'an'}</span>}
-                      {plan.period === 'an' && plan.monthlyPrice > 0 && (
-                        <p className="text-muted-foreground text-sm mt-1">
-                          soit {new Intl.NumberFormat().format(plan.monthlyPrice)} {priceInfo.currency}/mois
+
+                  <CardContent className="flex flex-col flex-grow p-8">
+                    <div className="text-center mb-8">
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className="text-5xl font-bold text-gray-900">
+                          {new Intl.NumberFormat().format(plan.price)}
+                        </span>
+                        <span className="text-xl font-medium text-gray-600">{priceInfo.currency}</span>
+                      </div>
+                      {plan.period && (
+                        <p className="text-gray-500 mt-2">
+                          /{plan.period}
+                          {plan.period === 'an' && plan.monthlyPrice > 0 && (
+                            <span className="block text-sm mt-1">
+                              soit {new Intl.NumberFormat().format(plan.monthlyPrice)} {priceInfo.currency}/mois
+                            </span>
+                          )}
                         </p>
                       )}
                     </div>
                     
-                    <div className="space-y-3 flex-grow">
-                      <h4 className="font-semibold">{t('includedFeatures')}</h4>
-                      <ul className="space-y-2 text-sm text-muted-foreground">
-                        {plan.features.map(feature => (
-                          <li key={feature} className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-green-500" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="space-y-4 flex-grow mb-8">
+                      {plan.features.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-start gap-3">
+                          <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-700">{feature}</span>
+                        </div>
+                      ))}
                     </div>
                     
-                    <div className="w-full mt-6">
-                      <Button 
-                        size="lg" 
-                        className="w-full"
-                        disabled={upgradingCardId && plan.id === 'free'}
-                        variant={plan.isPopular ? 'default' : 'outline'}
-                        onClick={() => handleSelectPlan(plan.id as 'free' | 'essential' | 'premium')}
-                      >
-                        {upgradingCardId && plan.id !== 'free' ? t('upgradeNow') : (plan.id === 'free' ? t('createForFree') : t('selectPlan'))}
-                      </Button>
-                    </div>
+                    <Button 
+                      size="lg" 
+                      className={cn(
+                        "w-full text-white font-semibold py-4 transition-all duration-300 group",
+                        plan.buttonColor,
+                        plan.isPopular && "shadow-lg hover:shadow-xl"
+                      )}
+                      disabled={upgradingCardId && plan.id === 'free'}
+                      onClick={() => handleSelectPlan(plan.id as 'free' | 'essential' | 'premium')}
+                    >
+                      {upgradingCardId && plan.id !== 'free' ? (
+                        <>
+                          Passer au plan {plan.name}
+                          <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      ) : (
+                        <>
+                          {plan.id === 'free' ? 'Commencer gratuitement' : `Choisir ${plan.name}`}
+                          <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </Button>
 
-                    <p className="text-xs text-muted-foreground mt-2 text-center">
-                      {plan.id !== 'free' ? 'Le paiement se fait après la sélection.' : ' '}
+                    <p className="text-xs text-gray-500 mt-4 text-center">
+                      {plan.id === 'free' 
+                        ? 'Aucun engagement, gratuit à vie' 
+                        : 'Paiement sécurisé • Activation immédiate après confirmation'
+                      }
                     </p>
                   </CardContent>
                 </Card>
               ))}
             </div>
+
+            <div className="mt-16 text-center">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-white">
+                <Check className="h-5 w-5 text-green-400" />
+                <span>Hébergement gratuit • Mises à jour automatiques • Support inclus</span>
+              </div>
+            </div>
           </div>
         </section>
       </div>
+      
       <SelectMCardDialog 
         isOpen={isSelectCardDialogOpen}
         onOpenChange={setIsSelectCardDialogOpen}

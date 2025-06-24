@@ -58,16 +58,17 @@ export const createMCard = async (
 
   // Déterminer le prix basé sur le plan
   let price = 0;
+  let subscriptionStatus = 'active';
+  let isPublished = true;
+
   if (mcardData.plan === 'essential') {
     price = 2000;
+    subscriptionStatus = 'pending_payment';
+    isPublished = false; // Inactive jusqu'à confirmation de paiement
   } else if (mcardData.plan === 'premium') {
     price = 10000;
-  }
-
-  // Déterminer le statut de souscription basé sur le plan
-  let subscriptionStatus = 'active';
-  if (mcardData.plan !== 'free') {
     subscriptionStatus = 'pending_payment';
+    isPublished = false; // Inactive jusqu'à confirmation de paiement
   }
 
   const { data, error } = await supabase
@@ -78,7 +79,7 @@ export const createMCard = async (
       profile_picture_url: profilePictureUrl,
       price: price,
       subscription_status: subscriptionStatus,
-      is_published: mcardData.plan === 'free' ? true : false, // Les cartes payantes sont inactives jusqu'à confirmation
+      is_published: isPublished,
     })
     .select()
     .single();

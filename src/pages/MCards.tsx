@@ -3,6 +3,8 @@ import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
 import { MCardsList } from "@/components/mcards/MCardsList";
 import { MCardFeatures } from '@/components/mcards/MCardFeatures';
+import { MCardFeaturesDetailed } from '@/components/mcards/MCardFeaturesDetailed';
+import { MCardShowcase } from '@/components/mcards/MCardShowcase';
 import { MCardPricing } from '@/components/mcards/MCardPricing';
 import { MCardFormDialog } from '@/components/mcards/MCardFormDialog';
 import { MCardsHeader } from '@/components/mcards/MCardsHeader';
@@ -46,8 +48,10 @@ const MCards = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8">
+      <main className="w-full">
         <MCardsHeader />
+        
+        <MCardShowcase />
         
         <MCardFeatures />
         
@@ -60,7 +64,9 @@ const MCards = () => {
           />
         </section>
 
-        <div className="max-w-7xl mx-auto mt-16">
+        <MCardFeaturesDetailed />
+
+        <div className="container mx-auto px-4 py-16">
           <MCardsList
             mcards={mcards}
             loading={loading}
