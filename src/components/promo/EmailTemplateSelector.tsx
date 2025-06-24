@@ -6,15 +6,14 @@ import { templateCategories } from "./email-templates/template-list";
 import { useState } from "react";
 
 interface EmailTemplateSelectorProps {
-  useTemplate: (template: { subject: string; message: string }) => void;
-  context: 'bulk' | 'single';
+  onTemplateSelect: (templateId: string) => void;
 }
 
-export const EmailTemplateSelector = ({ useTemplate, context }: EmailTemplateSelectorProps) => {
+export const EmailTemplateSelector = ({ onTemplateSelect }: EmailTemplateSelectorProps) => {
   const [open, setOpen] = useState(false);
 
-  const handleUseTemplate = (template: { subject: string; message: string }) => {
-    useTemplate(template);
+  const handleTemplateSelect = (templateId: string) => {
+    onTemplateSelect(templateId);
     setOpen(false);
   };
 
@@ -22,6 +21,7 @@ export const EmailTemplateSelector = ({ useTemplate, context }: EmailTemplateSel
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline">
+          <FileText className="h-4 w-4 mr-2" />
           Choisir un modèle
           <ChevronDown className="h-4 w-4 ml-2" />
         </Button>
@@ -29,19 +29,19 @@ export const EmailTemplateSelector = ({ useTemplate, context }: EmailTemplateSel
       <PopoverContent className="w-80 max-h-96 overflow-y-auto p-2">
         <div className="grid gap-4">
           {templateCategories.map((category) => {
-            const filteredTemplates = category.templates.filter(t => t.contexts.includes(context));
+            const filteredTemplates = category.templates.filter(t => t.contexts.includes('bulk'));
             if (filteredTemplates.length === 0) return null;
 
             return (
               <div key={category.name}>
                 <h4 className="font-medium text-sm text-muted-foreground mb-2 px-2">{category.name}</h4>
                 <div className="grid gap-1">
-                  {filteredTemplates.map(({ id, template, label }) => (
+                  {filteredTemplates.map(({ id, label }) => (
                     <Button
                       key={id}
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleUseTemplate(template)}
+                      onClick={() => handleTemplateSelect(id)}
                       className="w-full justify-start"
                     >
                       <FileText className="h-4 w-4 mr-2 flex-shrink-0" />

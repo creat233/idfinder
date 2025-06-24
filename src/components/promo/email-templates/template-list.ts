@@ -132,3 +132,6 @@ export const templateCategories: TemplateCategory[] = [
     ]
   },
 ];
+
+// Export flattened template list for backwards compatibility
+export const templateList = templateCategories.flatMap(category => category.templates);
