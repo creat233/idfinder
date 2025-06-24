@@ -136,6 +136,35 @@ export const useNotifications = () => {
     }
   };
 
+  const deleteAllNotifications = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Update local state immediately for better UX
+      setNotifications([]);
+
+      toast({
+        title: "Toutes les notifications supprimées",
+        description: "Toutes vos notifications ont été supprimées avec succès."
+      });
+    } catch (error: any) {
+      console.error('Error deleting all notifications:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error.message || "Impossible de supprimer toutes les notifications"
+      });
+    }
+  };
+
   const refetch = useCallback(() => {
     return fetchNotifications();
   }, [fetchNotifications]);
@@ -148,6 +177,7 @@ export const useNotifications = () => {
     unreadCount,
     markAsRead,
     markAllAsRead,
+    deleteAllNotifications,
     refetch,
   };
 };

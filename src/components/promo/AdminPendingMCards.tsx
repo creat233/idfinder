@@ -34,7 +34,19 @@ export const AdminPendingMCards = () => {
         throw error;
       }
 
-      setPendingMCards(data || []);
+      // S'assurer que tous les champs requis sont présents
+      const formattedData = (data || []).map((item: any) => ({
+        id: item.id,
+        user_id: item.user_id,
+        full_name: item.full_name,
+        plan: item.plan,
+        price: item.price || 0, // Valeur par défaut si price est null
+        created_at: item.created_at,
+        user_email: item.user_email,
+        user_phone: item.user_phone
+      }));
+
+      setPendingMCards(formattedData);
     } catch (error: any) {
       console.error('Error fetching pending mCards:', error);
       toast({

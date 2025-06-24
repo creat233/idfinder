@@ -60,6 +60,12 @@ export const MyCardsTabsContent = ({
   // Check if user has the specific card number 1234567890
   const hasCard1234567890 = cards.some(card => card.card_number === "1234567890");
 
+  const handleRefresh = () => {
+    // Cette fonction peut être utilisée pour rafraîchir la liste des cartes
+    // Pour l'instant, elle ne fait rien car la logique de rafraîchissement
+    // est gérée au niveau parent
+  };
+
   return (
     <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as "cards" | "notifications")}>
       <TabsList className="grid w-full grid-cols-2">
@@ -92,8 +98,7 @@ export const MyCardsTabsContent = ({
         ) : (
           <UserCardsList
             cards={cards}
-            onToggleStatus={onToggleCardStatus}
-            onDeleteCard={onDeleteCard}
+            onRefresh={handleRefresh}
           />
         )}
       </TabsContent>
@@ -105,12 +110,7 @@ export const MyCardsTabsContent = ({
             <p className="mt-2 text-gray-600">{t("loading") || "Chargement..."}</p>
           </div>
         ) : (
-          <NotificationsList
-            notifications={notifications}
-            onMarkAsRead={onMarkAsRead}
-            onMarkAllAsRead={onMarkAllAsRead}
-            onDeleteAllNotifications={onDeleteAllNotifications}
-          />
+          <NotificationsList />
         )}
       </TabsContent>
     </Tabs>

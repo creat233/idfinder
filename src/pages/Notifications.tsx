@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield } from "lucide-react";
 
 const Notifications = () => {
-  const { notifications, loading, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, loading } = useNotifications();
   const { t } = useTranslation();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -43,11 +43,7 @@ const Notifications = () => {
               <p className="mt-2 text-gray-600">{t("loading") || "Chargement..."}</p>
             </div>
           ) : (
-            <NotificationsList
-              notifications={notifications}
-              onMarkAsRead={markAsRead}
-              onMarkAllAsRead={markAllAsRead}
-            />
+            <NotificationsList />
           )}
         </div>
       </main>
