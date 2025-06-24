@@ -5,6 +5,7 @@ import { MCardsList } from "@/components/mcards/MCardsList";
 import { MCardFeatures } from '@/components/mcards/MCardFeatures';
 import { MCardFeaturesDetailed } from '@/components/mcards/MCardFeaturesDetailed';
 import { MCardShowcase } from '@/components/mcards/MCardShowcase';
+import { MCardDemo } from '@/components/mcards/MCardDemo';
 import { MCardPricing } from '@/components/mcards/MCardPricing';
 import { MCardFormDialog } from '@/components/mcards/MCardFormDialog';
 import { MCardsHeader } from '@/components/mcards/MCardsHeader';
@@ -49,13 +50,28 @@ const MCards = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="w-full">
-        <MCardsHeader />
+        {/* Hero Section - Responsive */}
+        <div className="px-4 sm:px-6 lg:px-8">
+          <MCardsHeader />
+        </div>
         
-        <MCardShowcase />
+        {/* Showcase Section - Responsive */}
+        <div className="w-full">
+          <MCardShowcase />
+        </div>
         
-        <MCardFeatures />
+        {/* Démonstration Interactive - Responsive */}
+        <div className="w-full">
+          <MCardDemo />
+        </div>
         
-        <section ref={pricingRef} className="scroll-mt-20">
+        {/* Features Section - Responsive */}
+        <div className="w-full">
+          <MCardFeatures />
+        </div>
+        
+        {/* Pricing Section - Responsive */}
+        <section ref={pricingRef} className="scroll-mt-20 w-full">
           <MCardPricing 
             mcards={mcards}
             onRequestUpgrade={handleUpgradeRequest}
@@ -64,16 +80,22 @@ const MCards = () => {
           />
         </section>
 
-        <MCardFeaturesDetailed />
+        {/* Detailed Features Section - Responsive */}
+        <div className="w-full">
+          <MCardFeaturesDetailed />
+        </div>
 
-        <div className="container mx-auto px-4 py-16">
-          <MCardsList
-            mcards={mcards}
-            loading={loading}
-            deleteMCard={deleteMCard}
-            onStartUpgradeFlow={handleInitiateUpgrade}
-            onEdit={handleOpenEdit}
-          />
+        {/* My Cards Section - Responsive */}
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="container mx-auto py-16">
+            <MCardsList
+              mcards={mcards}
+              loading={loading}
+              deleteMCard={deleteMCard}
+              onStartUpgradeFlow={handleInitiateUpgrade}
+              onEdit={handleOpenEdit}
+            />
+          </div>
         </div>
       </main>
       

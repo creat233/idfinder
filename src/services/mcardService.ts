@@ -56,12 +56,20 @@ export const createMCard = async (
     profilePictureUrl = await uploadProfilePicture(profilePictureFile, userId);
   }
 
-  // Déterminer le prix basé sur le plan
+  // Déterminer le prix et la date d'expiration basés sur le plan
   let price = 0;
   let subscriptionStatus = 'active';
   let isPublished = true;
+  let subscriptionExpiresAt = null;
 
-  if (mcardData.plan === 'essential') {
+  if (mcardData.plan === 'free') {
+    // Carte gratuite valide 1 mois
+    price = 0;
+    subscriptionStatus = 'trial';
+    isPublished = true;
+    subscriptionExpiresAt = new Date();
+    subscriptionExpiresAt.setMonth(subscriptionExpiresAt.getMonth() + 1);
+  } else if (mcardData.plan === 'essential') {
     price = 2000;
     subscriptionStatus = 'pending_payment';
     isPublished = false; // Inactive jusqu'à confirmation de paiement
@@ -80,6 +88,7 @@ export const createMCard = async (
       price: price,
       subscription_status: subscriptionStatus,
       is_published: isPublished,
+      subscription_expires_at: subscriptionExpiresAt?.toISOString(),
     })
     .select()
     .single();
