@@ -3,6 +3,7 @@ import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/type
 
 export type MCard = Tables<'mcards'> & {
   view_count?: number;
+  price?: number;
 };
 
 export type MCardCreateData = TablesInsert<'mcards'>;

@@ -37,14 +37,15 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
     {
       id: 'essential',
       name: t('planEssential'),
-      price: 5000,
-      monthlyPrice: 417,
+      price: 2000,
+      monthlyPrice: 2000,
       description: t('planEssentialDescription'),
       features: [
         t('mCardFeature1Title'), // Partage Facile
         t('mCardFeature4Title'), // Écologique
       ],
       isPopular: false,
+      period: 'mois',
     },
     {
       id: 'premium',
@@ -59,6 +60,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
         t('mCardFeature4Title'), // Écologique
       ],
       isPopular: true,
+      period: 'an',
     },
   ];
 
@@ -106,10 +108,10 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
                     <div className="my-4 text-center">
                       <span className="text-5xl font-bold">{new Intl.NumberFormat().format(plan.price)}</span>
                       <span className="text-xl font-medium text-muted-foreground ml-1">{priceInfo.currency}</span>
-                      {plan.price > 0 && <span className="text-muted-foreground">{t('perYear')}</span>}
-                      {plan.monthlyPrice > 0 && (
+                      {plan.price > 0 && <span className="text-muted-foreground">/{plan.period || 'an'}</span>}
+                      {plan.period === 'an' && plan.monthlyPrice > 0 && (
                         <p className="text-muted-foreground text-sm mt-1">
-                          soit {new Intl.NumberFormat().format(plan.monthlyPrice)} {priceInfo.currency}{t('perMonth')}
+                          soit {new Intl.NumberFormat().format(plan.monthlyPrice)} {priceInfo.currency}/mois
                         </p>
                       )}
                     </div>

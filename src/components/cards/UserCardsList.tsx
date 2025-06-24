@@ -1,10 +1,12 @@
 
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Trash2, CreditCard } from "lucide-react";
-import { useTranslation } from "@/hooks/useTranslation";
+import { Trash2, Shield, Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface UserCard {
   id: string;
@@ -17,37 +19,95 @@ interface UserCard {
 
 interface UserCardsListProps {
   cards: UserCard[];
-  onToggleStatus: (cardId: string) => void;
-  onDeleteCard: (cardId: string) => void;
+  onRefresh: () => void;
 }
 
-export const UserCardsList = ({ cards, onToggleStatus, onDeleteCard }: UserCardsListProps) => {
-  const { t } = useTranslation();
+export const UserCardsList = ({ cards, onRefresh }: UserCardsListProps) => {
+  const { toast } = useToast();
+  const [deletingCardId, setDeletingCardId] = useState<string | null>(null);
 
-  const getDocumentTypeLabel = (type: string, card_holder_name?: string) => {
-    // Si type="id" et pas de nom titulaire => carte ajoutée automatiquement, donc "Ma carte"
-    if (type === "id" && !card_holder_name) {
-      return t("myCard") || "Ma carte";
+  const getDocumentTypeDisplay = (type: string) => {
+    const types: { [key: string]: string } = {
+      'id': 'Carte d\'identité',
+      'passport': 'Passeport',
+      'driver_license': 'Permis de conduire',
+      'student_card': 'Carte étudiante',
+      'health_card': 'Carte de santé',
+      'residence_permit': 'Carte de séjour',
+      'vehicle_registration': 'Carte grise',
+      'motorcycle_registration': 'Carte grise moto'
+    };
+    return types[type] || type;
+  };
+
+  const handleDeleteCard = async (cardId: string) => {
+    try {
+      setDeletingCardId(cardId);
+      
+      const { error } = await supabase
+        .from('user_cards')
+        .delete()
+        .eq('id', cardId);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Carte supprimée",
+        description: "La carte a été supprimée de votre liste de surveillance."
+      });
+
+      onRefresh();
+    } catch (error: any) {
+      console.error('Error deleting card:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error.message || "Impossible de supprimer la carte"
+      });
+    } finally {
+      setDeletingCardId(null);
     }
-    switch (type) {
-      case "id": return t("idCard") || "Carte d'identité";
-      case "passport": return t("passport") || "Passeport";
-      case "driver_license": return t("driverLicense") || "Permis de conduire";
-      case "student_card": return t("studentCard") || "Carte d'étudiant";
-      default: return type;
+  };
+
+  const handleToggleVisibility = async (cardId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('user_cards')
+        .update({ is_active: !currentStatus })
+        .eq('id', cardId);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: currentStatus ? "Carte masquée" : "Carte visible",
+        description: currentStatus 
+          ? "La carte ne recevra plus de notifications de récupération"
+          : "La carte recevra de nouveau des notifications de récupération"
+      });
+
+      onRefresh();
+    } catch (error: any) {
+      console.error('Error toggling card visibility:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error.message || "Impossible de modifier la visibilité de la carte"
+      });
     }
   };
 
   if (cards.length === 0) {
     return (
       <Card>
-        <CardContent className="py-8 text-center">
-          <CreditCard className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-600">
-            {t("noCardsAdded") || "Aucune carte ajoutée pour le moment"}
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            {t("addCardsToReceiveNotifications") || "Ajoutez vos cartes pour recevoir des notifications si elles sont signalées"}
+        <CardContent className="p-6 text-center">
+          <Shield className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-500">Aucune carte ajoutée</p>
+          <p className="text-sm text-gray-400 mt-2">
+            Ajoutez vos cartes pour être notifié si elles sont retrouvées
           </p>
         </CardContent>
       </Card>
@@ -57,51 +117,93 @@ export const UserCardsList = ({ cards, onToggleStatus, onDeleteCard }: UserCards
   return (
     <div className="space-y-4">
       {cards.map((card) => (
-        <Card key={card.id}>
-          <CardHeader className="pb-3">
+        <Card key={card.id} className={`transition-all ${!card.is_active ? 'opacity-60 border-gray-300' : ''}`}>
+          <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">
-                {getDocumentTypeLabel(card.document_type, card.card_holder_name)}
+                {getDocumentTypeDisplay(card.document_type)}
               </CardTitle>
-              <Badge variant={card.is_active ? "default" : "secondary"}>
-                {card.is_active ? (t("active") || "Actif") : (t("inactive") || "Inactif")}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant={card.is_active ? "default" : "secondary"}>
+                  {card.is_active ? "Active" : "Masquée"}
+                </Badge>
+                {!card.is_active && (
+                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                )}
+              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-gray-600">{t("cardNumber") || "Numéro"}</p>
-                <p className="font-medium">{card.card_number}</p>
-              </div>
-              
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600">
+                <strong>Numéro:</strong> {card.card_number}
+              </p>
               {card.card_holder_name && (
-                <div>
-                  <p className="text-sm text-gray-600">{t("cardHolderName") || "Titulaire"}</p>
-                  <p className="font-medium">{card.card_holder_name}</p>
+                <p className="text-sm text-gray-600">
+                  <strong>Nom:</strong> {card.card_holder_name}
+                </p>
+              )}
+              <p className="text-sm text-gray-500">
+                Ajoutée le {new Date(card.created_at).toLocaleDateString('fr-FR')}
+              </p>
+              {!card.is_active && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 mt-2">
+                  <p className="text-xs text-yellow-700">
+                    Cette carte est masquée. Vous ne recevrez pas de notifications si elle est retrouvée.
+                  </p>
                 </div>
               )}
-
-              <div className="flex items-center justify-between pt-2 border-t">
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={card.is_active}
-                    onCheckedChange={() => onToggleStatus(card.id)}
-                  />
-                  <span className="text-sm">
-                    {t("receiveNotifications") || "Recevoir des notifications"}
-                  </span>
-                </div>
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDeleteCard(card.id)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+            </div>
+            
+            <div className="flex gap-2 mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleToggleVisibility(card.id, card.is_active)}
+                className="flex-1"
+              >
+                {card.is_active ? (
+                  <>
+                    <EyeOff className="h-4 w-4 mr-2" />
+                    Masquer
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Activer
+                  </>
+                )}
+              </Button>
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={deletingCardId === card.id}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Supprimer la carte ?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Êtes-vous sûr de vouloir supprimer cette carte ({card.card_number}) de votre liste de surveillance ? 
+                      Cette action est irréversible et vous ne recevrez plus de notifications si cette carte est retrouvée.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDeleteCard(card.id)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Supprimer définitivement
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardContent>
         </Card>
