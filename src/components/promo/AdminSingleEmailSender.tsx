@@ -9,6 +9,7 @@ import { Mail, Send } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailTemplateSelector } from "./EmailTemplateSelector";
+import { templateList } from "./email-templates/template-list";
 
 export const AdminSingleEmailSender = () => {
   const [recipientEmail, setRecipientEmail] = useState("");
@@ -50,10 +51,13 @@ export const AdminSingleEmailSender = () => {
     }
   };
 
-  const useTemplate = (template: { subject: string, message: string }) => {
-    setSubject(template.subject);
-    setMessage(template.message);
-    showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+  const handleTemplateSelect = (templateId: string) => {
+    const template = templateList.find(t => t.id === templateId);
+    if (template) {
+      setSubject(template.template.subject);
+      setMessage(template.template.message);
+      showSuccess("Modèle chargé", "Le contenu de l'e-mail a été pré-rempli.");
+    }
   };
 
   return (
@@ -64,7 +68,7 @@ export const AdminSingleEmailSender = () => {
             <Mail className="h-5 w-5" />
             Envoyer un e-mail à un utilisateur spécifique
           </div>
-          <EmailTemplateSelector useTemplate={useTemplate} context="single" />
+          <EmailTemplateSelector onTemplateSelect={handleTemplateSelect} />
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

@@ -21,8 +21,8 @@ export const AdminBulkEmailSender = () => {
   const handleTemplateSelect = (templateId: string) => {
     const template = templateList.find(t => t.id === templateId);
     if (template) {
-      setSubject(template.subject);
-      setMessage(template.content);
+      setSubject(template.template.subject);
+      setMessage(template.template.message);
       setSelectedTemplate(templateId);
     }
   };
