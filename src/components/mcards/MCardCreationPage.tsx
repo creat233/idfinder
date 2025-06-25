@@ -7,11 +7,23 @@ import { Check, Zap, Crown, CreditCard, Users, TrendingUp, Star } from "lucide-r
 import { cn } from "@/lib/utils";
 import { MCardFormDialog } from "./MCardFormDialog";
 import { useMCards } from "@/hooks/useMCards";
+import { useMCardsFormHandler } from "@/hooks/useMCardsFormHandler";
 
 export const MCardCreationPage = () => {
   const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium'>('essential');
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const { createMCard, loading } = useMCards();
+  const { mcards, createMCard, updateMCard, loading } = useMCards();
+
+  const {
+    isFormOpen,
+    editingMCard,
+    planForNewCard,
+    isCreating,
+    formLoading,
+    handleOpenEdit,
+    handleStartCreationFlow,
+    handleFormSubmit,
+    handleFormOpenChange,
+  } = useMCardsFormHandler({ mcards, createMCard, updateMCard, loading });
 
   const plans = [
     {
@@ -38,8 +50,8 @@ export const MCardCreationPage = () => {
     {
       id: 'premium',
       name: 'Premium',
-      price: 10000,
-      period: 'an',
+      price: 3900,
+      period: 'mois',
       description: 'Solution complète pour entrepreneurs',
       features: [
         'Tout du plan Essentiel',
@@ -62,20 +74,7 @@ export const MCardCreationPage = () => {
   const currentPlan = plans.find(plan => plan.id === selectedPlan)!;
 
   const handleCreateCard = () => {
-    setIsFormOpen(true);
-  };
-
-  const handleFormSubmit = async (data: any, profilePictureFile: File | null) => {
-    const mcardData = {
-      ...data,
-      plan: selectedPlan
-    };
-    
-    const result = await createMCard(mcardData, profilePictureFile);
-    if (result) {
-      setIsFormOpen(false);
-    }
-    return result;
+    handleStartCreationFlow(selectedPlan);
   };
 
   return (
@@ -189,9 +188,9 @@ export const MCardCreationPage = () => {
                 size="lg" 
                 className={cn("w-full text-white font-semibold py-4 text-lg", currentPlan.gradient.replace('from-', 'bg-').replace('to-purple-700', '').replace('to-blue-700', ''))}
                 onClick={handleCreateCard}
-                disabled={loading}
+                disabled={loading || isCreating}
               >
-                Créer Ma Carte - {new Intl.NumberFormat().format(currentPlan.price)} FCFA
+                {isCreating ? 'Création en cours...' : `Créer Ma Carte - ${new Intl.NumberFormat().format(currentPlan.price)} FCFA`}
               </Button>
 
               <div className="text-center text-sm text-gray-500">
@@ -229,9 +228,10 @@ export const MCardCreationPage = () => {
 
       <MCardFormDialog
         isOpen={isFormOpen}
-        onOpenChange={setIsFormOpen}
+        onOpenChange={handleFormOpenChange}
         onSubmit={handleFormSubmit}
-        loading={loading}
+        loading={formLoading}
+        mcard={editingMCard}
       />
     </div>
   );

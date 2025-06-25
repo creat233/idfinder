@@ -27,8 +27,8 @@ export const pricingPlans = [
   {
     id: 'premium',
     name: 'Premium',
-    price: 10000,
-    monthlyPrice: 833,
+    price: 3900,
+    monthlyPrice: 3900,
     description: 'Solution complète pour entrepreneurs',
     features: [
       'Tout du plan Essentiel',
@@ -43,8 +43,8 @@ export const pricingPlans = [
     icon: <Crown className="h-5 w-5 sm:h-6 sm:w-6" />,
     gradient: 'from-purple-100 to-purple-200',
     buttonColor: 'bg-purple-600 hover:bg-purple-700',
-    period: 'an',
+    period: 'mois',
     badge: 'COMPLET',
-    paymentInfo: 'Économisez 2 mois avec le paiement annuel'
+    paymentInfo: 'Support prioritaire et fonctionnalités avancées'
   },
 ];
