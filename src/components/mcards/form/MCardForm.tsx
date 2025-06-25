@@ -15,6 +15,8 @@ import { MCardSocialMediaSection } from "./MCardSocialMediaSection";
 import { MCardPublicationSection } from "./MCardPublicationSection";
 import { useMCardFormSubmission } from "./MCardFormSubmissionHandler";
 import { useMCardFormInitializer } from "./MCardFormInitializer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface MCardFormProps {
   isOpen: boolean;
@@ -103,48 +105,129 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
   console.log('isSubmitDisabled:', isSubmitDisabled);
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6 p-2">
-      <MCardProfilePictureUpload 
-        preview={preview}
-        onFileChange={setProfilePictureFile}
-        onPreviewChange={setPreview}
-      />
+    <div className="max-h-[90vh] overflow-y-auto">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+        {/* Photo de profil - Section mise en avant */}
+        <Card className="border-2 border-dashed border-gray-200 bg-gradient-to-br from-blue-50 to-purple-50">
+          <CardContent className="p-6">
+            <MCardProfilePictureUpload 
+              preview={preview}
+              onFileChange={setProfilePictureFile}
+              onPreviewChange={setPreview}
+            />
+          </CardContent>
+        </Card>
 
-      <MCardBasicInfoSection 
-        register={register}
-        errors={errors}
-      />
+        {/* Informations de base */}
+        <Card className="shadow-sm border-l-4 border-l-blue-500">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">1</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800">Informations personnelles</h3>
+            </div>
+            <MCardBasicInfoSection 
+              register={register}
+              errors={errors}
+            />
+          </CardContent>
+        </Card>
 
-      <MCardContactSection 
-        register={register}
-        errors={errors}
-      />
+        {/* Informations de contact */}
+        <Card className="shadow-sm border-l-4 border-l-green-500">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">2</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800">Contact</h3>
+            </div>
+            <MCardContactSection 
+              register={register}
+              errors={errors}
+            />
+          </CardContent>
+        </Card>
 
-      <MCardSocialMediaSection 
-        register={register}
-        errors={errors}
-      />
+        {/* Réseaux sociaux */}
+        <Card className="shadow-sm border-l-4 border-l-purple-500">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">3</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800">Réseaux sociaux</h3>
+              <span className="text-sm text-gray-500">(Optionnel)</span>
+            </div>
+            <MCardSocialMediaSection 
+              register={register}
+              errors={errors}
+            />
+          </CardContent>
+        </Card>
 
-      <MCardPublicationSection 
-        control={control}
-      />
-      
-      <DialogFooter>
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={handleClose}
-          disabled={isSubmitting}
-        >
-          Annuler
-        </Button>
-        <Button 
-          type="submit" 
-          disabled={isSubmitDisabled}
-        >
-          {isSubmitting ? 'Création en cours...' : (mcard ? 'Mettre à jour' : 'Créer ma carte')}
-        </Button>
-      </DialogFooter>
-    </form>
+        {/* Publication */}
+        <Card className="shadow-sm border-l-4 border-l-orange-500">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">4</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800">Publication</h3>
+            </div>
+            <MCardPublicationSection 
+              control={control}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Boutons d'action */}
+        <Card className="bg-gray-50 border-2">
+          <CardContent className="p-6">
+            <DialogFooter className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="w-full sm:w-auto"
+              >
+                Annuler
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={isSubmitDisabled}
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transform transition-all duration-200 hover:scale-105 disabled:transform-none disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Création en cours...
+                  </div>
+                ) : (
+                  mcard ? 'Mettre à jour ma carte' : 'Créer ma carte'
+                )}
+              </Button>
+            </DialogFooter>
+
+            {/* Informations d'aide */}
+            {!watchedValues.full_name?.trim() || !watchedValues.phone_number?.trim() ? (
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800">
+                  <span className="font-medium">Champs requis :</span> Le nom complet et le numéro de téléphone sont obligatoires pour créer votre carte.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800">
+                  <span className="font-medium">Prêt à créer !</span> Votre carte sera créée avec les informations saisies.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </form>
+    </div>
   );
 };
