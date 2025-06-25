@@ -4,7 +4,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { getPriceInfoForCountry } from "@/utils/pricing";
 import { Button } from "@/components/ui/button";
-import { Check, Zap, Crown, Star, ArrowRight, Clock } from "lucide-react";
+import { Check, Zap, Crown, Star, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MCard } from "@/types/mcard";
 import { SelectMCardDialog } from "./SelectMCardDialog";
@@ -12,7 +12,7 @@ import { SelectMCardDialog } from "./SelectMCardDialog";
 interface MCardPricingProps {
   mcards: MCard[];
   onRequestUpgrade: (mcardId: string, plan: 'essential' | 'premium') => void;
-  onStartCreationFlow: (plan: 'free' | 'essential' | 'premium') => void;
+  onStartCreationFlow: (plan: 'essential' | 'premium') => void;
   upgradingCardId?: string | null;
 }
 
@@ -43,7 +43,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
       buttonColor: 'bg-blue-600 hover:bg-blue-700',
       period: 'mois',
       badge: 'POPULAIRE',
-      trialInfo: 'Essai gratuit 1 mois inclus'
+      paymentInfo: 'Activation sous 24h après paiement'
     },
     {
       id: 'premium',
@@ -66,7 +66,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
       buttonColor: 'bg-purple-600 hover:bg-purple-700',
       period: 'an',
       badge: 'COMPLET',
-      trialInfo: 'Essai gratuit 1 mois inclus'
+      paymentInfo: 'Économisez 2 mois avec le paiement annuel'
     },
   ];
 
@@ -103,15 +103,11 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-12 sm:mb-16">
               <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 sm:mb-6">
-                Choisissez Votre Plan
+                Plans Professionnels
               </h2>
               <p className="text-lg sm:text-xl text-blue-200 max-w-3xl mx-auto leading-relaxed">
-                Créez votre carte de visite digitale professionnelle et ne perdez plus jamais un contact
+                Choisissez le plan qui correspond à vos besoins professionnels
               </p>
-              <div className="mt-4 inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm font-medium">
-                <Clock className="h-4 w-4" />
-                Essai gratuit de 1 mois pour tous les plans
-              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
@@ -159,8 +155,8 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
                           </span>
                         )}
                       </p>
-                      <p className="text-green-600 text-xs sm:text-sm mt-2 font-medium">
-                        {plan.trialInfo}
+                      <p className="text-blue-600 text-xs sm:text-sm mt-2 font-medium">
+                        {plan.paymentInfo}
                       </p>
                     </div>
                     

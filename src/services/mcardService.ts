@@ -56,25 +56,13 @@ export const createMCard = async (
     profilePictureUrl = await uploadProfilePicture(profilePictureFile, userId);
   }
 
-  // Déterminer le prix et la date d'expiration basés sur le plan
-  let price = 0;
-  let subscriptionStatus = 'active';
-  let isPublished = true;
+  // Logique pour les plans payants uniquement
+  let subscriptionStatus = 'pending_payment';
+  let isPublished = false;
   let subscriptionExpiresAt = null;
 
-  if (mcardData.plan === 'free') {
-    // Carte gratuite valide 1 mois
-    price = 0;
-    subscriptionStatus = 'trial';
-    isPublished = true;
-    subscriptionExpiresAt = new Date();
-    subscriptionExpiresAt.setMonth(subscriptionExpiresAt.getMonth() + 1);
-  } else if (mcardData.plan === 'essential') {
-    price = 2000;
-    subscriptionStatus = 'pending_payment';
-    isPublished = false; // Inactive jusqu'à confirmation de paiement
-  } else if (mcardData.plan === 'premium') {
-    price = 10000;
+  // Toutes les cartes sont maintenant payantes et en attente de paiement
+  if (mcardData.plan === 'essential' || mcardData.plan === 'premium') {
     subscriptionStatus = 'pending_payment';
     isPublished = false; // Inactive jusqu'à confirmation de paiement
   }
@@ -85,7 +73,6 @@ export const createMCard = async (
       ...mcardData,
       user_id: userId,
       profile_picture_url: profilePictureUrl,
-      price: price,
       subscription_status: subscriptionStatus,
       is_published: isPublished,
       subscription_expires_at: subscriptionExpiresAt?.toISOString(),
@@ -142,19 +129,10 @@ export const deleteMCard = async (id: string, profilePictureUrl?: string | null)
 };
 
 export const requestPlanUpgrade = async (id: string, plan: 'essential' | 'premium'): Promise<MCard> => {
-  // Déterminer le nouveau prix
-  let price = 0;
-  if (plan === 'essential') {
-    price = 2000;
-  } else if (plan === 'premium') {
-    price = 10000;
-  }
-
   const { data, error } = await supabase
     .from('mcards')
     .update({ 
       plan: plan,
-      price: price,
       subscription_status: 'pending_payment',
       is_published: false, // Désactiver la carte jusqu'à confirmation de paiement
     })
