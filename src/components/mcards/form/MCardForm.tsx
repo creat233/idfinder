@@ -1,7 +1,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -54,6 +54,13 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
   // Watch for form changes to provide feedback
   const watchedValues = watch();
 
+  // Reset submitting state when dialog opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setIsSubmitting(false);
+    }
+  }, [isOpen]);
+
   // Initialize form when dialog opens
   useMCardFormInitializer(isOpen, mcard, reset, setPreview, setProfilePictureFile);
 
@@ -76,13 +83,16 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
   const handleClose = () => {
     console.log('handleClose appelé, isSubmitting:', isSubmitting);
     if (!isSubmitting) {
+      // Reset form state when closing
+      setIsSubmitting(false);
+      setProfilePictureFile(null);
+      setPreview(null);
       onOpenChange(false);
     }
   };
 
   // Le bouton est actif si le nom complet et le numéro de téléphone sont remplis et qu'on n'est pas en train de soumettre
-  // Pour l'édition, on ignore l'état loading global et on ne considère que isSubmitting
-  const isSubmitDisabled = isSubmitting || !watchedValues.full_name?.trim() || !watchedValues.phone_number?.trim() || (loading && !mcard);
+  const isSubmitDisabled = isSubmitting || !watchedValues.full_name?.trim() || !watchedValues.phone_number?.trim();
 
   console.log('=== État du formulaire ===');
   console.log('loading:', loading);
@@ -132,7 +142,7 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
           type="submit" 
           disabled={isSubmitDisabled}
         >
-          {isSubmitting ? 'Mise à jour...' : (mcard ? 'Mettre à jour' : 'Créer ma carte')}
+          {isSubmitting ? 'Création en cours...' : (mcard ? 'Mettre à jour' : 'Créer ma carte')}
         </Button>
       </DialogFooter>
     </form>

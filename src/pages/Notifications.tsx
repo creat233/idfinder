@@ -6,7 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield } from "lucide-react";
+import { Shield, Clock } from "lucide-react";
 
 const Notifications = () => {
   const { notifications, loading } = useNotifications();
@@ -36,6 +36,13 @@ const Notifications = () => {
               </AlertDescription>
             </Alert>
           )}
+
+          <Alert className="border-blue-200 bg-blue-50">
+            <Clock className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              <strong>Gestion automatique :</strong> Les notifications sont automatiquement supprimées après 24 heures pour garder votre liste propre.
+            </AlertDescription>
+          </Alert>
 
           {loading ? (
             <div className="text-center py-8">

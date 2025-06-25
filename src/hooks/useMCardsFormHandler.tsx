@@ -32,6 +32,7 @@ export const useMCardsFormHandler = ({
     console.log('Ouverture de l\'édition pour la carte:', mcard);
     setPlanForNewCard(null);
     setEditingMCard(mcard);
+    setIsCreating(false); // Reset creating state
     setIsFormOpen(true);
   };
 
@@ -50,6 +51,7 @@ export const useMCardsFormHandler = ({
     console.log('Démarrage du flux de création pour le plan:', plan);
     setEditingMCard(null);
     setPlanForNewCard(plan);
+    setIsCreating(false); // Reset creating state
     setIsFormOpen(true);
   };
 
@@ -72,6 +74,7 @@ export const useMCardsFormHandler = ({
           console.log('Mise à jour réussie');
           setIsFormOpen(false);
           setEditingMCard(null);
+          setIsCreating(false);
           return result;
         } else {
           console.error('updateMCard a retourné null');
@@ -91,7 +94,6 @@ export const useMCardsFormHandler = ({
         
         console.log('Données de création:', newCardData);
         
-        // Utiliser silent: false pour avoir le toast par défaut
         const result = await createMCard(newCardData, profilePictureFile, { silent: false });
         console.log('Résultat de createMCard:', result);
 
@@ -101,12 +103,12 @@ export const useMCardsFormHandler = ({
           setPlanForNewCard(null);
           setIsCreating(false);
           
-          // Le toast est géré par createMCard lui-même
           console.log('Carte créée avec succès:', result.id);
           
           return result;
         } else {
           console.error('createMCard a retourné null');
+          setIsCreating(false);
           throw new Error('Échec de la création de la carte');
         }
       }
@@ -117,7 +119,7 @@ export const useMCardsFormHandler = ({
       console.error('=== ERREUR DANS handleFormSubmit ===');
       console.error('Erreur:', error);
       setIsCreating(false);
-      throw error; // Re-lancer l'erreur pour que le composant form puisse la gérer
+      throw error;
     }
   };
 
@@ -131,7 +133,6 @@ export const useMCardsFormHandler = ({
     setIsFormOpen(isOpen);
   };
 
-  // Pour l'édition, on ne passe pas l'état loading global car il peut bloquer le formulaire
   const formLoading = editingMCard ? false : loading;
 
   return {

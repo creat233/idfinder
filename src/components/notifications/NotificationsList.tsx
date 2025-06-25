@@ -1,5 +1,6 @@
 
 import { useNotifications } from "@/hooks/useNotifications";
+import { useNotificationCleanup } from "@/hooks/useNotificationCleanup";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +15,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 export const NotificationsList = () => {
   const { notifications, loading, markAsRead, markAllAsRead, refetch } = useNotifications();
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
   const { toast } = useToast();
+
+  // Utiliser le nettoyage automatique
+  useNotificationCleanup();
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -99,6 +104,7 @@ export const NotificationsList = () => {
 
   const handleDeleteAllNotifications = async () => {
     try {
+      setIsDeletingAll(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -125,6 +131,8 @@ export const NotificationsList = () => {
         title: "Erreur",
         description: error.message || "Impossible de supprimer toutes les notifications"
       });
+    } finally {
+      setIsDeletingAll(false);
     }
   };
 
@@ -154,6 +162,9 @@ export const NotificationsList = () => {
           <p className="text-gray-500">
             Vous n'avez aucune notification pour le moment.
           </p>
+          <p className="text-xs text-gray-400 mt-2">
+            Les notifications sont automatiquement supprimées après 24 heures.
+          </p>
         </CardContent>
       </Card>
     );
@@ -164,6 +175,9 @@ export const NotificationsList = () => {
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-600">
           {notifications.length} notification{notifications.length > 1 ? 's' : ''}
+          <span className="text-xs text-gray-400 ml-2">
+            (Suppression automatique après 24h)
+          </span>
         </p>
         <div className="flex gap-2">
           <Button
@@ -177,9 +191,13 @@ export const NotificationsList = () => {
           
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm">
+              <Button 
+                variant="destructive" 
+                size="sm"
+                disabled={isDeletingAll}
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Supprimer tout
+                {isDeletingAll ? 'Suppression...' : 'Supprimer tout'}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
