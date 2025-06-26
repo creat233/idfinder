@@ -22,7 +22,8 @@ const MCardView = () => {
     setShowQRCode,
     viewCount,
     handleCopyLink,
-    handleEdit
+    handleEdit,
+    refreshData
   } = useMCardView();
 
   if (loading) {
@@ -68,10 +69,9 @@ const MCardView = () => {
             statuses={statuses}
             phoneNumber={mcard.phone_number}
             isOwner={isOwner}
-            onAddStatus={() => {
-              // TODO: Ouvrir dialog pour ajouter un statut
-              console.log('Ajouter un statut');
-            }}
+            mcardId={mcard.id}
+            mcardPlan={mcard.plan}
+            onStatusesChange={refreshData}
           />
 
           {/* Products Section */}
@@ -79,10 +79,9 @@ const MCardView = () => {
             products={products}
             phoneNumber={mcard.phone_number}
             isOwner={isOwner}
-            onAddProduct={() => {
-              // TODO: Ouvrir dialog pour ajouter un produit
-              console.log('Ajouter un produit');
-            }}
+            mcardId={mcard.id}
+            mcardPlan={mcard.plan}
+            onProductsChange={refreshData}
           />
         </div>
       </div>

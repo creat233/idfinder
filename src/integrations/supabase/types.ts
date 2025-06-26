@@ -182,28 +182,34 @@ export type Database = {
       mcard_statuses: {
         Row: {
           created_at: string
+          expires_at: string | null
           id: string
           is_active: boolean
           mcard_id: string
           status_color: string
+          status_image: string | null
           status_text: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          expires_at?: string | null
           id?: string
           is_active?: boolean
           mcard_id: string
           status_color?: string
+          status_image?: string | null
           status_text: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          expires_at?: string | null
           id?: string
           is_active?: boolean
           mcard_id?: string
           status_color?: string
+          status_image?: string | null
           status_text?: string
           updated_at?: string
         }

@@ -1,8 +1,9 @@
+
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash2, Copy, Eye } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Copy, Eye, ExternalLink } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -19,6 +20,7 @@ import {
 import { format } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MCard } from "@/types/mcard";
+import { useNavigate } from "react-router-dom";
 
 interface MCardItemProps {
   mcard: MCard;
@@ -37,12 +39,16 @@ const getInitials = (name: string): string => {
 export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCardItemProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleCopyLink = () => {
-    // Note: This link won't work until routing for public mCards is set up.
     const url = `${window.location.origin}/m/${mcard.slug}`;
     navigator.clipboard.writeText(url);
     toast({ title: t('linkCopied') });
+  };
+
+  const handleViewCard = () => {
+    navigate(`/m/${mcard.slug}`);
   };
 
   const getStatusVariant = (status: string | null): "default" | "secondary" | "destructive" => {
@@ -69,7 +75,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
   }
 
   return (
-    <Card>
+    <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleViewCard}>
       <CardHeader>
         <div className="flex justify-between items-start">
             <div className="flex items-center gap-4 flex-1">
@@ -86,24 +92,45 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
                 <Badge variant={mcard.is_published ? "default" : "secondary"}>
                     {mcard.is_published ? t('isPublished') : t('draft')}
                 </Badge>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewCard();
+                  }}
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Voir la carte
+                </Button>
                 <AlertDialog>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                                 <MoreHorizontal className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                            <DropdownMenuItem onSelect={() => onEdit(mcard)}>
+                            <DropdownMenuItem onSelect={(e) => {
+                              e.preventDefault();
+                              onEdit(mcard);
+                            }}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 {t('edit')}
                             </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={handleCopyLink}>
+                            <DropdownMenuItem onSelect={(e) => {
+                              e.preventDefault();
+                              handleCopyLink();
+                            }}>
                                 <Copy className="mr-2 h-4 w-4" />
                                 {t('copyLink')}
                             </DropdownMenuItem>
                             <AlertDialogTrigger asChild>
-                                <DropdownMenuItem className="text-red-500">
+                                <DropdownMenuItem className="text-red-500" onSelect={(e) => e.preventDefault()}>
                                     <Trash2 className="mr-2 h-4 w-4" />
                                     {t('delete')}
                                 </DropdownMenuItem>
@@ -147,7 +174,16 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
             </div>
         </div>
         {(mcard.subscription_status === 'trial' || mcard.subscription_status === 'expired') && (
-            <Button variant="outline" size="sm" onClick={() => onStartUpgradeFlow(mcard.id)}>{t('upgradeSubscription')}</Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={(e) => {
+                e.stopPropagation();
+                onStartUpgradeFlow(mcard.id);
+              }}
+            >
+              {t('upgradeSubscription')}
+            </Button>
         )}
       </CardFooter>
     </Card>

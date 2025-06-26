@@ -1,147 +1,79 @@
 
-import { useState, useEffect } from "react";
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, X, CreditCard, User, Calendar, DollarSign } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/useToast";
-import { formatDistanceToNow } from "date-fns";
-import { fr } from "date-fns/locale";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle, XCircle, CreditCard, User, Mail, Phone } from "lucide-react";
 
 interface PendingMCard {
   id: string;
   user_id: string;
   full_name: string;
   plan: string;
-  price: number;
   created_at: string;
   user_email: string;
   user_phone: string;
 }
 
 export const AdminPendingMCards = () => {
-  const [pendingMCards, setPendingMCards] = useState<PendingMCard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState<string | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const fetchPendingMCards = async () => {
-    try {
+  const { data: pendingMCards = [], isLoading } = useQuery({
+    queryKey: ['admin-pending-mcards'],
+    queryFn: async () => {
       const { data, error } = await supabase.rpc('admin_get_pending_mcards');
-      
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
+      return data as PendingMCard[];
+    },
+  });
 
-      // S'assurer que tous les champs requis sont présents
-      const formattedData = (data || []).map((item: any) => ({
-        id: item.id,
-        user_id: item.user_id,
-        full_name: item.full_name,
-        plan: item.plan,
-        price: item.price || 0, // Valeur par défaut si price est null
-        created_at: item.created_at,
-        user_email: item.user_email,
-        user_phone: item.user_phone
-      }));
-
-      setPendingMCards(formattedData);
-    } catch (error: any) {
-      console.error('Error fetching pending mCards:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de charger les cartes en attente"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPendingMCards();
-  }, []);
-
-  const handleApprovePayment = async (mcardId: string) => {
+  const handleApproveSubscription = async (mcardId: string) => {
+    setLoading(mcardId);
     try {
-      setProcessingIds(prev => new Set(prev).add(mcardId));
-      
       const { data, error } = await supabase.rpc('admin_approve_mcard_subscription', {
         p_mcard_id: mcardId
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       if (data && data[0]?.success) {
         toast({
-          title: "Paiement approuvé",
-          description: "L'abonnement mCard a été activé avec succès"
+          title: "Abonnement approuvé !",
+          description: data[0].message,
         });
-        
-        // Actualiser la liste
-        await fetchPendingMCards();
+        queryClient.invalidateQueries({ queryKey: ['admin-pending-mcards'] });
       } else {
-        throw new Error(data?.[0]?.message || "Erreur lors de l'approbation");
+        throw new Error(data?.[0]?.message || "Erreur inconnue");
       }
     } catch (error: any) {
-      console.error('Error approving mCard payment:', error);
+      console.error('Erreur lors de l\'approbation:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message || "Impossible d'approuver le paiement"
+        description: error.message || "Impossible d'approuver l'abonnement",
       });
     } finally {
-      setProcessingIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(mcardId);
-        return newSet;
-      });
+      setLoading(null);
     }
   };
 
-  const getPlanDisplay = (plan: string) => {
-    switch (plan) {
-      case 'essential':
-        return 'Essentiel';
-      case 'premium':
-        return 'Premium';
-      case 'free':
-        return 'Gratuit';
-      default:
-        return plan;
-    }
-  };
-
-  const getPlanColor = (plan: string) => {
-    switch (plan) {
-      case 'essential':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'premium':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'free':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
-            Cartes mCard en attente de paiement
+            mCards en attente de validation
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="animate-pulse space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-gray-200 rounded"></div>
-            ))}
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         </CardContent>
       </Card>
@@ -153,67 +85,69 @@ export const AdminPendingMCards = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
-          Cartes mCard en attente de paiement
-          <Badge variant="secondary">{pendingMCards.length}</Badge>
+          mCards en attente de validation ({pendingMCards.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
         {pendingMCards.length === 0 ? (
-          <div className="text-center py-8">
-            <CreditCard className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500">Aucune carte en attente de paiement</p>
+          <div className="text-center py-8 text-gray-500">
+            <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>Aucune mCard en attente de validation</p>
           </div>
         ) : (
           <div className="space-y-4">
             {pendingMCards.map((mcard) => (
-              <div key={mcard.id} className="border rounded-lg p-4 bg-gray-50">
-                <div className="flex items-center justify-between mb-3">
+              <div key={mcard.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
+                    <div className="bg-blue-100 p-2 rounded-full">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
                     <div>
-                      <h4 className="font-semibold">{mcard.full_name}</h4>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <User className="h-4 w-4" />
-                        {mcard.user_email}
+                      <h3 className="font-semibold text-lg">{mcard.full_name}</h3>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <Mail className="h-4 w-4" />
+                          {mcard.user_email}
+                        </div>
                         {mcard.user_phone && (
-                          <>
-                            <span>•</span>
-                            <span>{mcard.user_phone}</span>
-                          </>
+                          <div className="flex items-center gap-1">
+                            <Phone className="h-4 w-4" />
+                            {mcard.user_phone}
+                          </div>
                         )}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <Badge className={getPlanColor(mcard.plan)}>
-                      {getPlanDisplay(mcard.plan)}
+                  <div className="text-right">
+                    <Badge variant="secondary" className="mb-2">
+                      Plan {mcard.plan}
                     </Badge>
-                    <Badge variant="outline" className="flex items-center gap-1">
-                      <DollarSign className="h-3 w-3" />
-                      {mcard.price} FCFA
-                    </Badge>
+                    <p className="text-xs text-gray-500">
+                      Créée le {new Date(mcard.created_at).toLocaleDateString('fr-FR')}
+                    </p>
                   </div>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Calendar className="h-4 w-4" />
-                    Demandé {formatDistanceToNow(new Date(mcard.created_at), {
-                      addSuffix: true,
-                      locale: fr
-                    })}
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => handleApprovePayment(mcard.id)}
-                      disabled={processingIds.has(mcard.id)}
-                    >
-                      <Check className="h-4 w-4 mr-2" />
-                      {processingIds.has(mcard.id) ? "Traitement..." : "Approuver le paiement"}
-                    </Button>
-                  </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    onClick={() => handleApproveSubscription(mcard.id)}
+                    disabled={loading === mcard.id}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    {loading === mcard.id ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Activation...
+                      </div>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Approuver l'abonnement
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             ))}
