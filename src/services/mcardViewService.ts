@@ -10,6 +10,8 @@ export interface MCardData {
 }
 
 export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
+  console.log('Fetching mCard by slug:', slug);
+  
   const { data, error } = await supabase
     .from('mcards')
     .select('*')
@@ -18,20 +20,28 @@ export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
     .single();
 
   if (error) {
-    console.log('Carte non trouvée, utilisation de la carte par défaut');
+    console.error('Error fetching mCard:', error);
     return null;
   }
 
+  console.log('MCard data retrieved:', data);
   return data;
 };
 
 export const fetchMCardStatuses = async (mcardId: string): Promise<MCardStatus[]> => {
-  const { data } = await supabase
+  console.log('Fetching statuses for mCard:', mcardId);
+  
+  const { data, error } = await supabase
     .from('mcard_statuses')
     .select('*')
     .eq('mcard_id', mcardId)
     .eq('is_active', true)
     .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching statuses:', error);
+    return [];
+  }
   
   // Filter out expired statuses (older than 24h)
   const now = new Date();
@@ -43,22 +53,33 @@ export const fetchMCardStatuses = async (mcardId: string): Promise<MCardStatus[]
     return expirationDate > now;
   });
   
+  console.log('Valid statuses:', validStatuses);
   return validStatuses as MCardStatus[];
 };
 
 export const fetchMCardProducts = async (mcardId: string): Promise<MCardProduct[]> => {
-  const { data } = await supabase
+  console.log('Fetching products for mCard:', mcardId);
+  
+  const { data, error } = await supabase
     .from('mcard_products')
     .select('*')
     .eq('mcard_id', mcardId)
     .eq('is_active', true)
     .order('created_at', { ascending: false });
   
+  if (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+  
+  console.log('Products retrieved:', data);
   return data || [];
 };
 
 export const incrementViewCount = async (slug: string, currentCount: number): Promise<number> => {
   try {
+    console.log('Incrementing view count for slug:', slug, 'current count:', currentCount);
+    
     const { error } = await supabase
       .from('mcards')
       .update({ view_count: currentCount + 1 })
@@ -66,7 +87,10 @@ export const incrementViewCount = async (slug: string, currentCount: number): Pr
       .eq('is_published', true);
     
     if (!error) {
+      console.log('View count incremented successfully');
       return currentCount + 1;
+    } else {
+      console.error('Error incrementing view count:', error);
     }
   } catch (error) {
     console.error('Erreur lors de l\'incrémentation du compteur de vues:', error);
@@ -76,6 +100,13 @@ export const incrementViewCount = async (slug: string, currentCount: number): Pr
 };
 
 export const checkMCardOwnership = async (userId: string): Promise<boolean> => {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user?.id === userId;
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    const isOwner = user?.id === userId;
+    console.log('Checking ownership - user ID:', user?.id, 'mCard user ID:', userId, 'is owner:', isOwner);
+    return isOwner;
+  } catch (error) {
+    console.error('Error checking ownership:', error);
+    return false;
+  }
 };

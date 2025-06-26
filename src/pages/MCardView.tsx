@@ -8,6 +8,8 @@ import { MCardViewStatuses } from '@/components/mcards/view/MCardViewStatuses';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { useMCardView } from '@/hooks/useMCardView';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
 const MCardView = () => {
   const {
@@ -15,6 +17,7 @@ const MCardView = () => {
     statuses,
     products,
     loading,
+    error,
     isShareDialogOpen,
     setIsShareDialogOpen,
     isOwner,
@@ -49,6 +52,14 @@ const MCardView = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto space-y-6">
+          {/* Error Alert */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
           {/* QR Code Section */}
           <MCardViewQRSection
             showQRCode={showQRCode}

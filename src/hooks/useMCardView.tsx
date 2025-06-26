@@ -25,10 +25,14 @@ export const useMCardView = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [viewCount, setViewCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchMCard = async () => {
     try {
-      if (!slug || slug === 'demo') {
+      console.log('Fetching mCard for slug:', slug);
+      
+      if (!slug) {
+        console.log('No slug provided, using default card');
         const defaultCard = createDefaultCard();
         setMCard(defaultCard);
         setStatuses(createDefaultStatuses());
@@ -37,36 +41,73 @@ export const useMCardView = () => {
         return;
       }
 
+      if (slug === 'demo') {
+        console.log('Demo mode, using default card');
+        const defaultCard = createDefaultCard();
+        setMCard(defaultCard);
+        setStatuses(createDefaultStatuses());
+        setViewCount(defaultCard.view_count || 0);
+        setLoading(false);
+        return;
+      }
+
+      console.log('Fetching real mCard data...');
       const mcardData = await fetchMCardBySlug(slug);
       
       if (!mcardData) {
+        console.log('No mCard found for slug:', slug);
+        setError(`Carte non trouvée pour le slug: ${slug}`);
         const defaultCard = createDefaultCard();
         setMCard(defaultCard);
         setStatuses(createDefaultStatuses());
         setViewCount(defaultCard.view_count || 0);
       } else {
+        console.log('MCard found:', mcardData);
         setMCard(mcardData);
         setViewCount(mcardData.view_count || 0);
+        setError(null);
         
         // Charger les statuts et produits en parallèle
-        const [statusesData, productsData] = await Promise.all([
-          fetchMCardStatuses(mcardData.id),
-          fetchMCardProducts(mcardData.id)
-        ]);
-        
-        setStatuses(statusesData);
-        setProducts(productsData);
+        try {
+          const [statusesData, productsData] = await Promise.all([
+            fetchMCardStatuses(mcardData.id),
+            fetchMCardProducts(mcardData.id)
+          ]);
+          
+          console.log('Statuses loaded:', statusesData);
+          console.log('Products loaded:', productsData);
+          
+          setStatuses(statusesData);
+          setProducts(productsData);
+        } catch (statusError) {
+          console.error('Error loading statuses/products:', statusError);
+          setStatuses([]);
+          setProducts([]);
+        }
         
         // Incrémenter le compteur de vues
-        const newViewCount = await incrementViewCount(slug, mcardData.view_count || 0);
-        setViewCount(newViewCount);
+        try {
+          const newViewCount = await incrementViewCount(slug, mcardData.view_count || 0);
+          setViewCount(newViewCount);
+        } catch (viewError) {
+          console.error('Error incrementing view count:', viewError);
+        }
         
         // Vérifier si l'utilisateur est le propriétaire
-        const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
-        setIsOwner(ownershipStatus);
+        try {
+          const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
+          setIsOwner(ownershipStatus);
+          console.log('Is owner:', ownershipStatus);
+        } catch (ownerError) {
+          console.error('Error checking ownership:', ownerError);
+          setIsOwner(false);
+        }
       }
     } catch (error: any) {
       console.error('Erreur lors de la récupération de la carte:', error);
+      setError(`Erreur lors du chargement: ${error.message}`);
+      
+      // Fallback vers une carte par défaut
       const defaultCard = createDefaultCard();
       setMCard(defaultCard);
       setStatuses(createDefaultStatuses());
@@ -148,6 +189,7 @@ export const useMCardView = () => {
     statuses,
     products,
     loading,
+    error,
     isShareDialogOpen,
     setIsShareDialogOpen,
     isOwner,
