@@ -62,6 +62,7 @@ const MCardView = () => {
             mcard={mcard}
             onCopyLink={handleCopyLink}
             onShare={() => setIsShareDialogOpen(true)}
+            isOwner={isOwner}
           />
 
           {/* Statuses Section */}

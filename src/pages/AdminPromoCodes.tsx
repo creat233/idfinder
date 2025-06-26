@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
 import { AdminPendingCodes } from "@/components/promo/AdminPendingCodes";
 import { AdminPendingMCards } from "@/components/promo/AdminPendingMCards";
+import { AdminMCardRenewals } from "@/components/promo/AdminMCardRenewals";
 import { AdminAllRecoveries } from "@/components/promo/AdminAllRecoveries";
 import { AdminUsersList } from "@/components/promo/AdminUsersList";
 import { AdminRevenueDashboard } from "@/components/promo/AdminRevenueDashboard";
@@ -26,6 +27,7 @@ const AdminPromoCodes = () => {
           <Tabs defaultValue="mcards" className="w-full">
             <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 mb-8">
               <TabsTrigger value="mcards">mCards</TabsTrigger>
+              <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
               <TabsTrigger value="codes-promo">Codes</TabsTrigger>
               <TabsTrigger value="recuperations">Récupérations</TabsTrigger>
               <TabsTrigger value="revenus">Revenus</TabsTrigger>
@@ -38,6 +40,10 @@ const AdminPromoCodes = () => {
 
             <TabsContent value="mcards">
               <AdminPendingMCards />
+            </TabsContent>
+
+            <TabsContent value="renewals">
+              <AdminMCardRenewals />
             </TabsContent>
 
             <TabsContent value="codes-promo">
