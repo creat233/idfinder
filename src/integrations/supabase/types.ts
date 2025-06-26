@@ -179,6 +179,42 @@ export type Database = {
           },
         ]
       }
+      mcard_renewal_requests: {
+        Row: {
+          created_at: string
+          current_plan: string
+          id: string
+          mcard_id: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_plan: string
+          id?: string
+          mcard_id: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_plan?: string
+          id?: string
+          mcard_id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mcard_statuses: {
         Row: {
           created_at: string
@@ -601,6 +637,13 @@ export type Database = {
         Args: { promo_code_text: string }
         Returns: boolean
       }
+      admin_approve_mcard_renewal: {
+        Args: { p_renewal_id: string; p_mcard_id: string }
+        Returns: {
+          success: boolean
+          message: string
+        }[]
+      }
       admin_approve_mcard_subscription: {
         Args: { p_mcard_id: string }
         Returns: {
@@ -647,6 +690,21 @@ export type Database = {
           created_at: string
           user_email: string
           user_phone: string
+        }[]
+      }
+      admin_get_pending_renewals: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          mcard_id: string
+          current_plan: string
+          requested_at: string
+          status: string
+          mcard_name: string
+          user_email: string
+          user_phone: string
+          subscription_expires_at: string
+          days_remaining: number
         }[]
       }
       can_activate_promo_codes: {

@@ -22,18 +22,24 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
   const handleRenewalRequest = async () => {
     try {
-      const { error } = await supabase
-        .from('mcard_renewal_requests')
-        .insert([
-          {
-            mcard_id: mcard.id,
-            current_plan: mcard.plan,
-            requested_at: new Date().toISOString(),
-            status: 'pending'
-          }
-        ]);
+      // Utiliser un insert direct dans la table au lieu d'utiliser supabase.from
+      const { error } = await supabase.rpc('admin_get_pending_renewals');
+      
+      if (error) {
+        // Si la fonction n'est pas accessible, utiliser un insert direct
+        const { error: insertError } = await supabase
+          .from('mcard_renewal_requests' as any)
+          .insert([
+            {
+              mcard_id: mcard.id,
+              current_plan: mcard.plan,
+              requested_at: new Date().toISOString(),
+              status: 'pending'
+            }
+          ]);
 
-      if (error) throw error;
+        if (insertError) throw insertError;
+      }
 
       toast({
         title: "Demande de renouvellement envoyée !",

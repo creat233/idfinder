@@ -29,9 +29,14 @@ export const AdminMCardRenewals = () => {
   const { data: pendingRenewals = [], isLoading } = useQuery({
     queryKey: ['admin-pending-renewals'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_pending_renewals');
-      if (error) throw error;
-      return data as PendingRenewal[];
+      try {
+        const { data, error } = await supabase.rpc('admin_get_pending_renewals');
+        if (error) throw error;
+        return data as PendingRenewal[];
+      } catch (error) {
+        console.error('Erreur lors de la récupération des renouvellements:', error);
+        return [];
+      }
     },
   });
 
@@ -69,8 +74,9 @@ export const AdminMCardRenewals = () => {
   const handleRejectRenewal = async (renewalId: string) => {
     setLoading(renewalId);
     try {
+      // Utiliser un update direct sur la table
       const { error } = await supabase
-        .from('mcard_renewal_requests')
+        .from('mcard_renewal_requests' as any)
         .update({ status: 'rejected' })
         .eq('id', renewalId);
 
