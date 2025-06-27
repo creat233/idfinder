@@ -1,34 +1,34 @@
 
-import { MCard, MCardStatus } from '@/types/mcard';
+import { MCard, MCardStatus, MCardProduct } from '@/types/mcard';
 
 export const createDefaultCard = (): MCard => ({
-  id: 'demo',
-  user_id: 'demo',
+  id: 'demo-card-123',
+  user_id: 'demo-user-456',
   slug: 'demo',
-  full_name: 'Jean Dupont',
-  job_title: 'Développeur Full Stack',
-  company: 'TechCorp Solutions',
+  full_name: 'Marie Diallo',
+  job_title: 'Consultante Marketing Digital',
+  company: 'Digital Solutions SARL',
   phone_number: '+221 77 123 45 67',
-  email: 'jean.dupont@example.com',
-  website_url: 'https://jeandupont.dev',
+  email: 'marie.diallo@example.com',
+  website_url: 'https://mariediallo.com',
   profile_picture_url: null,
-  description: 'Passionné de technologie avec 5 ans d\'expérience dans le développement web. Spécialisé en React, Node.js et bases de données.',
-  is_published: true,
-  plan: 'premium',
-  subscription_status: 'active',
-  subscription_expires_at: new Date().toISOString(),
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-  view_count: 1247,
+  description: 'Experte en marketing digital avec plus de 5 ans d\'expérience. Je vous accompagne dans votre transformation digitale.',
   social_links: {
-    linkedin: 'https://linkedin.com/in/jeandupont',
-    twitter: 'https://twitter.com/jeandupont',
-    github: 'https://github.com/jeandupont'
+    linkedin: 'https://linkedin.com/in/mariediallo',
+    twitter: 'https://twitter.com/mariediallo',
+    facebook: 'https://facebook.com/mariediallo'
   },
-  linkedin_url: 'https://linkedin.com/in/jeandupont',
-  twitter_url: 'https://twitter.com/jeandupont',
-  facebook_url: null,
-  instagram_url: null,
+  is_published: true,
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
+  subscription_expires_at: '2025-01-01T00:00:00Z',
+  subscription_status: 'active',
+  plan: 'premium',
+  view_count: 127,
+  linkedin_url: 'https://linkedin.com/in/mariediallo',
+  twitter_url: 'https://twitter.com/mariediallo',
+  facebook_url: 'https://facebook.com/mariediallo',
+  instagram_url: 'https://instagram.com/mariediallo',
   youtube_url: null,
   tiktok_url: null,
   snapchat_url: null,
@@ -38,36 +38,80 @@ export const createDefaultCard = (): MCard => ({
 
 export const createDefaultStatuses = (): MCardStatus[] => [
   {
-    id: '1',
-    mcard_id: 'demo',
-    status_text: 'Disponible pour projets',
-    status_color: '#10B981',
-    status_image: '/lovable-uploads/8f0a3646-98f9-4f52-9495-ca5134a34d85.png',
+    id: 'status-1',
+    mcard_id: 'demo-card-123',
+    status_text: '🟢 Disponible pour nouveaux projets',
+    status_color: '#22C55E',
+    status_image: null,
     is_active: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24h from now
+    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
   },
   {
-    id: '2',
-    mcard_id: 'demo',
-    status_text: 'Service d\'impression',
-    status_color: '#3B82F6',
-    status_image: '/lovable-uploads/73f8ab5a-99fe-43bd-b052-89e74cb7f3b0.png',
+    id: 'status-2',
+    mcard_id: 'demo-card-123',
+    status_text: '💼 En réunion client',
+    status_color: '#F59E0B',
+    status_image: null,
     is_active: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
+  }
+];
+
+export const createDefaultProducts = (): MCardProduct[] => [
+  {
+    id: 'product-1',
+    mcard_id: 'demo-card-123',
+    name: 'Audit Marketing Digital',
+    description: 'Analyse complète de votre présence digitale avec recommandations personnalisées',
+    price: 75000,
+    currency: 'FCFA',
+    category: 'Consultation',
+    image_url: '/lovable-uploads/8f3481ca-fab7-44c7-af85-2491f0990db7.png',
+    is_active: true,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
   },
   {
-    id: '3',
-    mcard_id: 'demo',
-    status_text: 'Design graphique',
-    status_color: '#8B5CF6',
-    status_image: '/lovable-uploads/dc5b2de0-4f1d-4cba-a0e6-5fc341218843.png',
+    id: 'product-2',
+    mcard_id: 'demo-card-123',
+    name: 'Stratégie Réseaux Sociaux',
+    description: 'Développement d\'une stratégie complète pour vos réseaux sociaux avec planning de contenu',
+    price: 150000,
+    currency: 'FCFA',
+    category: 'Stratégie',
+    image_url: '/lovable-uploads/73f8ab5a-99fe-43bd-b052-89e74cb7f3b0.png',
     is_active: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
+  },
+  {
+    id: 'product-3',
+    mcard_id: 'demo-card-123',
+    name: 'Formation Marketing Digital',
+    description: 'Formation personnalisée pour votre équipe sur les outils et techniques du marketing digital',
+    price: 200000,
+    currency: 'FCFA',
+    category: 'Formation',
+    image_url: '/lovable-uploads/97b184f7-279f-465b-8abd-60d4499bb242.png',
+    is_active: true,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
+  },
+  {
+    id: 'product-4',
+    mcard_id: 'demo-card-123',
+    name: 'Gestion Publicité Facebook/Instagram',
+    description: 'Création et gestion de vos campagnes publicitaires sur Facebook et Instagram pendant 1 mois',
+    price: 125000,
+    currency: 'FCFA',
+    category: 'Publicité',
+    image_url: '/lovable-uploads/a3fb0001-eef8-494f-bf56-206c25f7c391.png',
+    is_active: true,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z'
   }
 ];

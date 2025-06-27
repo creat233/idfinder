@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
-import { createDefaultCard, createDefaultStatuses } from '@/utils/mcardDefaults';
+import { createDefaultCard, createDefaultStatuses, createDefaultProducts } from '@/utils/mcardDefaults';
 import { 
   fetchMCardBySlug, 
   fetchMCardStatuses, 
@@ -38,17 +38,24 @@ export const useMCardView = () => {
         const defaultCard = createDefaultCard();
         setMCard(defaultCard);
         setStatuses(createDefaultStatuses());
+        setProducts(createDefaultProducts());
         setViewCount(defaultCard.view_count || 0);
         setLoading(false);
         return;
       }
 
       if (slug === 'demo') {
-        console.log('Demo mode, using default card');
+        console.log('Demo mode, using default card and products');
         const defaultCard = createDefaultCard();
+        const defaultStatuses = createDefaultStatuses();
+        const defaultProducts = createDefaultProducts();
+        
         setMCard(defaultCard);
-        setStatuses(createDefaultStatuses());
+        setStatuses(defaultStatuses);
+        setProducts(defaultProducts);
         setViewCount(defaultCard.view_count || 0);
+        setReviews([]);
+        console.log('Demo products loaded:', defaultProducts);
         setLoading(false);
         return;
       }
@@ -62,6 +69,7 @@ export const useMCardView = () => {
         const defaultCard = createDefaultCard();
         setMCard(defaultCard);
         setStatuses(createDefaultStatuses());
+        setProducts(createDefaultProducts());
         setViewCount(defaultCard.view_count || 0);
       } else {
         console.log('MCard found:', mcardData);
@@ -112,6 +120,7 @@ export const useMCardView = () => {
       const defaultCard = createDefaultCard();
       setMCard(defaultCard);
       setStatuses(createDefaultStatuses());
+      setProducts(createDefaultProducts());
       setViewCount(defaultCard.view_count || 0);
     } finally {
       setLoading(false);
