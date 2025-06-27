@@ -31,7 +31,9 @@ export const createDefaultCard = (): MCard => ({
   instagram_url: null,
   youtube_url: null,
   tiktok_url: null,
-  snapchat_url: null
+  snapchat_url: null,
+  telegram_url: null,
+  google_business_url: null
 });
 
 export const createDefaultStatuses = (): MCardStatus[] => [
