@@ -13,6 +13,8 @@ import { AdminAnalyticsDashboard } from "@/components/promo/AdminAnalyticsDashbo
 import { AdminAuditLogsList } from "@/components/promo/AdminAuditLogsList";
 import { AdminSettings } from "@/components/promo/AdminSettings";
 import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
+import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
+import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 
 const AdminPromoCodes = () => {
   return (
@@ -25,7 +27,7 @@ const AdminPromoCodes = () => {
           </h1>
           
           <Tabs defaultValue="mcards" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 mb-8">
+            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-11 mb-8">
               <TabsTrigger value="mcards">mCards</TabsTrigger>
               <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
               <TabsTrigger value="codes-promo">Codes</TabsTrigger>
@@ -33,6 +35,7 @@ const AdminPromoCodes = () => {
               <TabsTrigger value="revenus">Revenus</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="utilisateurs">Utilisateurs</TabsTrigger>
+              <TabsTrigger value="emails">Emails</TabsTrigger>
               <TabsTrigger value="audit">Audit</TabsTrigger>
               <TabsTrigger value="publicites">Publicités</TabsTrigger>
               <TabsTrigger value="parametres">Paramètres</TabsTrigger>
@@ -67,6 +70,13 @@ const AdminPromoCodes = () => {
 
             <TabsContent value="utilisateurs">
               <AdminUsersList />
+            </TabsContent>
+
+            <TabsContent value="emails">
+              <div className="space-y-8">
+                <AdminBulkEmailSender />
+                <AdminSingleEmailSender />
+              </div>
             </TabsContent>
 
             <TabsContent value="audit">

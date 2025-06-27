@@ -1,152 +1,104 @@
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { MessageCircle, Send, ShoppingCart } from 'lucide-react';
+import { MCardProduct } from '@/types/mcard';
 
 interface MCardViewProductDialogProps {
+  product: MCardProduct | null;
   isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  mcardId: string;
-  onProductAdded: () => void;
+  onClose: () => void;
+  phoneNumber?: string;
 }
 
-export const MCardViewProductDialog = ({ isOpen, onOpenChange, mcardId, onProductAdded }: MCardViewProductDialogProps) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("Service");
-  const [currency, setCurrency] = useState("FCFA");
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+export const MCardViewProductDialog = ({ 
+  product, 
+  isOpen, 
+  onClose, 
+  phoneNumber 
+}: MCardViewProductDialogProps) => {
+  if (!product) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !price) return;
+  const handleWhatsAppContact = () => {
+    if (phoneNumber) {
+      const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${product.name}" au prix de ${product.price} ${product.currency}.`);
+      const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  };
 
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from('mcard_products')
-        .insert({
-          mcard_id: mcardId,
-          name: name.trim(),
-          description: description.trim() || null,
-          price: parseFloat(price),
-          category,
-          currency
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Produit ajouté !",
-        description: "Votre produit a été ajouté avec succès."
-      });
-
-      setName("");
-      setDescription("");
-      setPrice("");
-      setCategory("Service");
-      setCurrency("FCFA");
-      onProductAdded();
-      onOpenChange(false);
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout du produit:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible d'ajouter le produit. Vérifiez que vous avez un plan Premium."
-      });
-    } finally {
-      setLoading(false);
+  const handleTelegramContact = () => {
+    if (phoneNumber) {
+      const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${product.name}" au prix de ${product.price} ${product.currency}.`);
+      const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+      window.open(telegramUrl, '_blank');
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Ajouter un produit/service</DialogTitle>
+          <DialogTitle className="text-center">Détails du Produit</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="product-name">Nom du produit/service</Label>
-            <Input
-              id="product-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Ex: Consultation, Formation, Produit..."
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="product-description">Description (optionnel)</Label>
-            <Textarea
-              id="product-description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Décrivez votre produit ou service..."
-              rows={3}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="product-price">Prix</Label>
-              <Input
-                id="product-price"
-                type="number"
-                min="0"
-                step="0.01"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="0"
-                required
+        
+        <div className="space-y-4">
+          {/* Image en grand */}
+          {product.image_url && (
+            <div className="text-center">
+              <img 
+                src={product.image_url} 
+                alt={product.name}
+                className="w-full h-48 object-cover rounded-lg shadow-lg"
               />
             </div>
-            <div>
-              <Label htmlFor="product-currency">Devise</Label>
-              <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="FCFA">FCFA</SelectItem>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                  <SelectItem value="USD">USD</SelectItem>
-                </SelectContent>
-              </Select>
+          )}
+          
+          {/* Informations du produit */}
+          <div className="space-y-3">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold text-gray-900">{product.name}</h3>
+              <Badge variant="secondary" className="mt-1">
+                {product.category}
+              </Badge>
             </div>
+            
+            <div className="text-center">
+              <span className="text-2xl font-bold text-green-600">
+                {product.price.toLocaleString()} {product.currency}
+              </span>
+            </div>
+
+            {product.description && (
+              <div className="text-center">
+                <p className="text-gray-600 text-sm">{product.description}</p>
+              </div>
+            )}
           </div>
-          <div>
-            <Label htmlFor="product-category">Catégorie</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Service">Service</SelectItem>
-                <SelectItem value="Produit">Produit</SelectItem>
-                <SelectItem value="Formation">Formation</SelectItem>
-                <SelectItem value="Consultation">Consultation</SelectItem>
-                <SelectItem value="Autre">Autre</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={loading || !name.trim() || !price}>
-              {loading ? "Ajout..." : "Ajouter"}
-            </Button>
-          </DialogFooter>
-        </form>
+
+          {/* Boutons de contact */}
+          {phoneNumber && (
+            <div className="space-y-2">
+              <Button 
+                onClick={handleWhatsAppContact}
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Commander via WhatsApp
+              </Button>
+              
+              <Button 
+                onClick={handleTelegramContact}
+                variant="outline"
+                className="w-full border-blue-500 text-blue-500 hover:bg-blue-50"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Commander via Telegram
+              </Button>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

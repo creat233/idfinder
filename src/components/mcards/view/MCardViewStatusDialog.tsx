@@ -1,112 +1,109 @@
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Clock, MessageCircle, Send, ExternalLink } from 'lucide-react';
+import { MCardStatus } from '@/types/mcard';
 
 interface MCardViewStatusDialogProps {
+  status: MCardStatus | null;
   isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  mcardId: string;
-  onStatusAdded: () => void;
+  onClose: () => void;
+  phoneNumber?: string;
 }
 
-export const MCardViewStatusDialog = ({ isOpen, onOpenChange, mcardId, onStatusAdded }: MCardViewStatusDialogProps) => {
-  const [statusText, setStatusText] = useState("");
-  const [statusColor, setStatusColor] = useState("#3B82F6");
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+export const MCardViewStatusDialog = ({ 
+  status, 
+  isOpen, 
+  onClose, 
+  phoneNumber 
+}: MCardViewStatusDialogProps) => {
+  if (!status) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!statusText.trim()) return;
-
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from('mcard_statuses')
-        .insert({
-          mcard_id: mcardId,
-          status_text: statusText.trim(),
-          status_color: statusColor,
-          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Statut ajouté !",
-        description: "Votre statut a été ajouté avec succès."
-      });
-
-      setStatusText("");
-      setStatusColor("#3B82F6");
-      onStatusAdded();
-      onOpenChange(false);
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout du statut:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible d'ajouter le statut. Vérifiez que vous avez un plan Premium."
-      });
-    } finally {
-      setLoading(false);
+  const handleWhatsAppContact = () => {
+    if (phoneNumber) {
+      const message = encodeURIComponent(`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`);
+      const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+      window.open(whatsappUrl, '_blank');
     }
   };
 
+  const handleTelegramContact = () => {
+    if (phoneNumber) {
+      const message = encodeURIComponent(`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`);
+      const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+      window.open(telegramUrl, '_blank');
+    }
+  };
+
+  const timeRemaining = status.expires_at ? 
+    Math.max(0, Math.floor((new Date(status.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60))) : 
+    null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Ajouter un statut</DialogTitle>
+          <DialogTitle className="text-center">Détails du Statut</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="status-text">Texte du statut</Label>
-            <Input
-              id="status-text"
-              value={statusText}
-              onChange={(e) => setStatusText(e.target.value)}
-              placeholder="Ex: Disponible, En réunion, Absent..."
-              maxLength={50}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="status-color">Couleur</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="status-color"
-                type="color"
-                value={statusColor}
-                onChange={(e) => setStatusColor(e.target.value)}
-                className="w-16 h-10"
-              />
-              <Input
-                value={statusColor}
-                onChange={(e) => setStatusColor(e.target.value)}
-                placeholder="#3B82F6"
-                className="flex-1"
+        
+        <div className="space-y-4">
+          {/* Image en grand */}
+          {status.status_image && (
+            <div className="text-center">
+              <img 
+                src={status.status_image} 
+                alt={status.status_text}
+                className="w-full h-48 object-cover rounded-lg shadow-lg"
               />
             </div>
+          )}
+          
+          {/* Statut */}
+          <div className="text-center">
+            <Badge 
+              className="text-white font-medium px-4 py-2"
+              style={{ backgroundColor: status.status_color }}
+            >
+              {status.status_text}
+            </Badge>
           </div>
-          <p className="text-sm text-gray-500">
-            Le statut sera automatiquement supprimé après 24 heures.
-          </p>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={loading || !statusText.trim()}>
-              {loading ? "Ajout..." : "Ajouter"}
-            </Button>
-          </DialogFooter>
-        </form>
+
+          {/* Temps restant */}
+          {timeRemaining !== null && (
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+              <Clock className="h-4 w-4" />
+              <span>
+                {timeRemaining > 0 
+                  ? `Expire dans ${timeRemaining}h`
+                  : 'Expiré'
+                }
+              </span>
+            </div>
+          )}
+
+          {/* Boutons de contact */}
+          {phoneNumber && (
+            <div className="space-y-2">
+              <Button 
+                onClick={handleWhatsAppContact}
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Contacter via WhatsApp
+              </Button>
+              
+              <Button 
+                onClick={handleTelegramContact}
+                variant="outline"
+                className="w-full border-blue-500 text-blue-500 hover:bg-blue-50"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Contacter via Telegram
+              </Button>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

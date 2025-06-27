@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -30,6 +29,7 @@ export const useMCards = () => {
   useEffect(() => {
     getMCards().finally(() => setLoading(false));
 
+    // Écouter les changements en temps réel pour actualiser automatiquement l'admin
     const channel = supabase
       .channel('mcards-realtime')
       .on<MCard>(
@@ -42,6 +42,11 @@ export const useMCards = () => {
         (payload) => {
           console.log('mCard change received!', payload);
           getMCards();
+          
+          // Notifier l'admin si une nouvelle carte est créée
+          if (payload.eventType === 'INSERT') {
+            console.log('Nouvelle mCard créée - notification admin');
+          }
         }
       )
       .subscribe();
@@ -61,7 +66,10 @@ export const useMCards = () => {
       
       setMCards(prev => [data, ...prev]);
       if (!options?.silent) {
-        toast({ title: t('mCardCreatedSuccess') });
+        toast({ 
+          title: t('mCardCreatedSuccess'),
+          description: "Votre carte est en attente de validation par l'administration"
+        });
       }
       return data;
     } catch (error: any) {
