@@ -5,6 +5,7 @@ import { MCardViewQRSection } from '@/components/mcards/view/MCardViewQRSection'
 import { MCardViewProfile } from '@/components/mcards/view/MCardViewProfile';
 import { MCardViewProducts } from '@/components/mcards/view/MCardViewProducts';
 import { MCardViewStatuses } from '@/components/mcards/view/MCardViewStatuses';
+import { MCardViewReviews } from '@/components/mcards/view/MCardViewReviews';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { useMCardView } from '@/hooks/useMCardView';
@@ -16,6 +17,7 @@ const MCardView = () => {
     mcard,
     statuses,
     products,
+    reviews,
     loading,
     error,
     isShareDialogOpen,
@@ -94,6 +96,14 @@ const MCardView = () => {
             mcardId={mcard.id}
             mcardPlan={mcard.plan}
             onProductsChange={refreshData}
+          />
+
+          {/* Reviews Section */}
+          <MCardViewReviews
+            reviews={reviews}
+            mcardId={mcard.id}
+            isOwner={isOwner}
+            onReviewsChange={refreshData}
           />
         </div>
       </div>

@@ -14,7 +14,7 @@ export const MCardSocialMediaSection = ({ register, errors }: MCardSocialMediaSe
   return (
     <>
       <Separator />
-      <h3 className="text-lg font-semibold">Réseaux sociaux</h3>
+      <h3 className="text-lg font-semibold">Réseaux sociaux & Business</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="linkedin_url">LinkedIn</Label>
@@ -59,6 +59,19 @@ export const MCardSocialMediaSection = ({ register, errors }: MCardSocialMediaSe
           <Label htmlFor="snapchat_url">Snapchat</Label>
           <Input id="snapchat_url" {...register("snapchat_url")} placeholder="https://snapchat.com/add/votrecompte" />
           {errors.snapchat_url && <p className="text-sm text-red-500">{errors.snapchat_url.message}</p>}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="telegram_url">Telegram</Label>
+          <Input id="telegram_url" {...register("telegram_url")} placeholder="https://t.me/votrecompte" />
+          {errors.telegram_url && <p className="text-sm text-red-500">{errors.telegram_url.message}</p>}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="google_business_url">Google Business (Lien pour les avis)</Label>
+          <Input id="google_business_url" {...register("google_business_url")} placeholder="https://g.page/votreentreprise/review" />
+          {errors.google_business_url && <p className="text-sm text-red-500">{errors.google_business_url.message}</p>}
         </div>
       </div>
     </>

@@ -35,6 +35,18 @@ export type MCardProduct = {
   updated_at: string;
 };
 
+export type MCardReview = {
+  id: string;
+  mcard_id: string;
+  visitor_name: string;
+  visitor_email?: string;
+  rating: number;
+  comment?: string;
+  is_approved: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export interface MCardFormOptions {
   silent?: boolean;
 }

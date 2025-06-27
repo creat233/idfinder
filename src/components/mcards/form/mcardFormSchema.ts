@@ -16,6 +16,8 @@ export const formSchema = z.object({
   youtube_url: z.string().url("URL YouTube invalide").optional().or(z.literal('')),
   tiktok_url: z.string().url("URL TikTok invalide").optional().or(z.literal('')),
   snapchat_url: z.string().url("URL Snapchat invalide").optional().or(z.literal('')),
+  telegram_url: z.string().url("URL Telegram invalide").optional().or(z.literal('')),
+  google_business_url: z.string().url("URL Google Business invalide").optional().or(z.literal('')),
   is_published: z.boolean().default(false),
 });
 

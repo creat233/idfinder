@@ -215,6 +215,42 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          is_approved: boolean
+          mcard_id: string
+          rating: number
+          updated_at: string
+          visitor_email: string | null
+          visitor_name: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          mcard_id: string
+          rating: number
+          updated_at?: string
+          visitor_email?: string | null
+          visitor_name: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          mcard_id?: string
+          rating?: number
+          updated_at?: string
+          visitor_email?: string | null
+          visitor_name?: string
+        }
+        Relationships: []
+      }
       mcard_statuses: {
         Row: {
           created_at: string
@@ -267,6 +303,7 @@ export type Database = {
           email: string | null
           facebook_url: string | null
           full_name: string
+          google_business_url: string | null
           id: string
           instagram_url: string | null
           is_published: boolean
@@ -280,6 +317,7 @@ export type Database = {
           social_links: Json | null
           subscription_expires_at: string
           subscription_status: string
+          telegram_url: string | null
           tiktok_url: string | null
           twitter_url: string | null
           updated_at: string
@@ -295,6 +333,7 @@ export type Database = {
           email?: string | null
           facebook_url?: string | null
           full_name: string
+          google_business_url?: string | null
           id?: string
           instagram_url?: string | null
           is_published?: boolean
@@ -308,6 +347,7 @@ export type Database = {
           social_links?: Json | null
           subscription_expires_at?: string
           subscription_status?: string
+          telegram_url?: string | null
           tiktok_url?: string | null
           twitter_url?: string | null
           updated_at?: string
@@ -323,6 +363,7 @@ export type Database = {
           email?: string | null
           facebook_url?: string | null
           full_name?: string
+          google_business_url?: string | null
           id?: string
           instagram_url?: string | null
           is_published?: boolean
@@ -336,6 +377,7 @@ export type Database = {
           social_links?: Json | null
           subscription_expires_at?: string
           subscription_status?: string
+          telegram_url?: string | null
           tiktok_url?: string | null
           twitter_url?: string | null
           updated_at?: string

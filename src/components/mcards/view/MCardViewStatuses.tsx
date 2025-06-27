@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Plus, Clock, X, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
+import { MessageCircle, Plus, Clock, X, Share2, Facebook, Twitter, Linkedin, Send } from "lucide-react";
 import { MCardStatus } from "@/types/mcard";
 import { MCardViewStatusDialog } from "./MCardViewStatusDialog";
 import { useToast } from "@/hooks/use-toast";
@@ -56,6 +55,9 @@ export const MCardViewStatuses = ({
         break;
       case 'whatsapp':
         shareUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText} ${cardUrl}`)}`;
+        break;
+      case 'telegram':
+        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(cardUrl)}&text=${encodeURIComponent(shareText)}`;
         break;
       default:
         if (navigator.share) {
@@ -235,6 +237,15 @@ export const MCardViewStatuses = ({
                           title="Partager sur WhatsApp"
                         >
                           <MessageCircle className="h-3 w-3 text-green-600" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleShareStatus(status, 'telegram')}
+                          className="h-8 w-8 p-0 bg-blue-50 hover:bg-blue-100 border-blue-200"
+                          title="Partager sur Telegram"
+                        >
+                          <Send className="h-3 w-3 text-blue-600" />
                         </Button>
                         <Button
                           variant="outline"

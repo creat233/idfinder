@@ -5,7 +5,9 @@ import {
   Facebook, 
   Instagram, 
   Youtube, 
-  Twitter 
+  Twitter,
+  MessageCircle,
+  Star
 } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 
@@ -22,6 +24,8 @@ export const MCardSocialLinks = ({ mcard }: MCardSocialLinksProps) => {
     { key: 'youtube_url', icon: Youtube, label: 'YouTube', color: 'text-red-600', bgColor: 'bg-red-50 hover:bg-red-100' },
     { key: 'tiktok_url', icon: null, label: 'TikTok', color: 'text-gray-900', bgColor: 'bg-gray-50 hover:bg-gray-100' },
     { key: 'snapchat_url', icon: null, label: 'Snapchat', color: 'text-yellow-500', bgColor: 'bg-yellow-50 hover:bg-yellow-100' },
+    { key: 'telegram_url', icon: MessageCircle, label: 'Telegram', color: 'text-blue-500', bgColor: 'bg-blue-50 hover:bg-blue-100' },
+    { key: 'google_business_url', icon: Star, label: 'Laisser un avis Google', color: 'text-orange-600', bgColor: 'bg-orange-50 hover:bg-orange-100' },
   ];
 
   const activeSocialLinks = socialLinks.filter(link => 
@@ -32,7 +36,7 @@ export const MCardSocialLinks = ({ mcard }: MCardSocialLinksProps) => {
 
   return (
     <div className="mb-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Réseaux sociaux</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Réseaux sociaux & Avis</h3>
       <div className="grid grid-cols-2 gap-3">
         {activeSocialLinks.map((link) => {
           const url = mcard[link.key as keyof MCard] as string;

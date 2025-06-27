@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { MCard, MCardStatus, MCardProduct } from '@/types/mcard';
+import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
 import { createDefaultCard, createDefaultStatuses } from '@/utils/mcardDefaults';
 import { 
   fetchMCardBySlug, 
@@ -11,6 +11,7 @@ import {
   incrementViewCount, 
   checkMCardOwnership 
 } from '@/services/mcardViewService';
+import { fetchAllMCardReviews } from '@/services/mcardReviewService';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useMCardView = () => {
@@ -20,6 +21,7 @@ export const useMCardView = () => {
   const [mcard, setMCard] = useState<MCard | null>(null);
   const [statuses, setStatuses] = useState<MCardStatus[]>([]);
   const [products, setProducts] = useState<MCardProduct[]>([]);
+  const [reviews, setReviews] = useState<MCardReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
@@ -67,22 +69,31 @@ export const useMCardView = () => {
         setViewCount(mcardData.view_count || 0);
         setError(null);
         
-        // Charger les statuts et produits en parallèle
+        // Vérifier si l'utilisateur est le propriétaire
+        const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
+        setIsOwner(ownershipStatus);
+        console.log('Is owner:', ownershipStatus);
+        
+        // Charger les statuts, produits et avis en parallèle
         try {
-          const [statusesData, productsData] = await Promise.all([
+          const [statusesData, productsData, reviewsData] = await Promise.all([
             fetchMCardStatuses(mcardData.id),
-            fetchMCardProducts(mcardData.id)
+            fetchMCardProducts(mcardData.id),
+            fetchAllMCardReviews(mcardData.id, ownershipStatus)
           ]);
           
           console.log('Statuses loaded:', statusesData);
           console.log('Products loaded:', productsData);
+          console.log('Reviews loaded:', reviewsData);
           
           setStatuses(statusesData);
           setProducts(productsData);
-        } catch (statusError) {
-          console.error('Error loading statuses/products:', statusError);
+          setReviews(reviewsData);
+        } catch (dataError) {
+          console.error('Error loading data:', dataError);
           setStatuses([]);
           setProducts([]);
+          setReviews([]);
         }
         
         // Incrémenter le compteur de vues
@@ -91,16 +102,6 @@ export const useMCardView = () => {
           setViewCount(newViewCount);
         } catch (viewError) {
           console.error('Error incrementing view count:', viewError);
-        }
-        
-        // Vérifier si l'utilisateur est le propriétaire
-        try {
-          const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
-          setIsOwner(ownershipStatus);
-          console.log('Is owner:', ownershipStatus);
-        } catch (ownerError) {
-          console.error('Error checking ownership:', ownerError);
-          setIsOwner(false);
         }
       }
     } catch (error: any) {
@@ -121,13 +122,15 @@ export const useMCardView = () => {
     if (!mcard || !slug || slug === 'demo') return;
     
     try {
-      const [statusesData, productsData] = await Promise.all([
+      const [statusesData, productsData, reviewsData] = await Promise.all([
         fetchMCardStatuses(mcard.id),
-        fetchMCardProducts(mcard.id)
+        fetchMCardProducts(mcard.id),
+        fetchAllMCardReviews(mcard.id, isOwner)
       ]);
       
       setStatuses(statusesData);
       setProducts(productsData);
+      setReviews(reviewsData);
     } catch (error) {
       console.error('Erreur lors du rafraîchissement:', error);
     }
@@ -165,9 +168,22 @@ export const useMCardView = () => {
       })
       .subscribe();
 
+    const reviewsChannel = supabase
+      .channel('mcard-reviews-realtime')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'mcard_reviews',
+        filter: `mcard_id=eq.${mcard.id}`
+      }, () => {
+        refreshData();
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(statusesChannel);
       supabase.removeChannel(productsChannel);
+      supabase.removeChannel(reviewsChannel);
     };
   }, [mcard]);
 
@@ -188,6 +204,7 @@ export const useMCardView = () => {
     mcard,
     statuses,
     products,
+    reviews,
     loading,
     error,
     isShareDialogOpen,
