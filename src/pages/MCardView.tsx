@@ -38,7 +38,7 @@ const MCardView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
       <MCardViewHeader
         isOwner={isOwner}
@@ -51,10 +51,10 @@ const MCardView = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-8">
           {/* Error Alert */}
           {error && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" className="shadow-lg">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
