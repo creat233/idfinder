@@ -28,6 +28,17 @@ export const useNotifications = () => {
         return;
       }
 
+      // Supprimer automatiquement les notifications de plus de 24h
+      const twentyFourHoursAgo = new Date();
+      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+      await supabase
+        .from('notifications')
+        .delete()
+        .eq('user_id', user.id)
+        .lt('created_at', twentyFourHoursAgo.toISOString());
+
+      // Récupérer les notifications restantes
       const { data, error } = await supabase
         .from('notifications')
         .select('*')

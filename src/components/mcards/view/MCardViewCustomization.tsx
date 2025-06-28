@@ -3,8 +3,13 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Palette, Sparkles, Crown, Lock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Palette, Sparkles, Crown, Lock, Save, Eye, Volume2, Type, Zap } from 'lucide-react';
 import { MCard } from '@/types/mcard';
+import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewCustomizationProps {
   mcard: MCard;
@@ -16,6 +21,23 @@ export const MCardViewCustomization = ({
   isOwner 
 }: MCardViewCustomizationProps) => {
   const [selectedTheme, setSelectedTheme] = useState('default');
+  const [animations, setAnimations] = useState({
+    enabled: false,
+    speed: 50,
+    type: 'fade'
+  });
+  const [visualEffects, setVisualEffects] = useState({
+    particles: false,
+    gradients: true,
+    shadows: true
+  });
+  const [backgroundMusic, setBackgroundMusic] = useState({
+    enabled: false,
+    volume: 30,
+    track: 'ambient'
+  });
+  const [customFont, setCustomFont] = useState('Inter');
+  const { toast } = useToast();
 
   const themes = [
     { id: 'default', name: 'Classique', color: 'bg-gradient-to-r from-blue-500 to-purple-500' },
@@ -26,7 +48,37 @@ export const MCardViewCustomization = ({
     { id: 'nature', name: 'Nature', color: 'bg-gradient-to-r from-green-500 to-emerald-500' },
   ];
 
+  const fontOptions = [
+    'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 
+    'Playfair Display', 'Merriweather', 'Dancing Script', 'Pacifico'
+  ];
+
+  const musicTracks = [
+    { id: 'ambient', name: 'Ambiance Zen' },
+    { id: 'corporate', name: 'Professionnel' },
+    { id: 'upbeat', name: 'Dynamique' },
+    { id: 'classical', name: 'Classique' }
+  ];
+
   const isPremium = mcard.plan === 'premium';
+
+  const handleSaveChanges = () => {
+    // Simuler la sauvegarde des paramètres
+    toast({
+      title: "Paramètres sauvegardés !",
+      description: "Vos modifications ont été appliquées avec succès."
+    });
+  };
+
+  const handlePreview = () => {
+    // Simuler l'aperçu
+    toast({
+      title: "Aperçu généré",
+      description: "Un nouvel onglet va s'ouvrir avec l'aperçu de votre carte."
+    });
+    // Ouvrir l'aperçu dans un nouvel onglet
+    window.open(`/mcard/${mcard.slug}?preview=true`, '_blank');
+  };
 
   if (!isOwner && !isPremium) return null;
 
@@ -89,42 +141,149 @@ export const MCardViewCustomization = ({
               </div>
             </div>
 
-            {/* Options avancées */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Options avancées</h3>
+            {/* Animations personnalisées */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-blue-600" />
+                  <h4 className="font-medium text-gray-900">Animations personnalisées</h4>
+                </div>
+                <Switch 
+                  checked={animations.enabled}
+                  onCheckedChange={(checked) => setAnimations(prev => ({ ...prev, enabled: checked }))}
+                />
+              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Animations personnalisées</h4>
-                  <p className="text-sm text-gray-600 mb-3">Ajoutez des animations fluides à votre carte</p>
-                  <Button size="sm" variant="outline">Configurer</Button>
+              {animations.enabled && (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Vitesse d'animation</Label>
+                    <Slider
+                      value={[animations.speed]}
+                      onValueChange={(value) => setAnimations(prev => ({ ...prev, speed: value[0] }))}
+                      max={100}
+                      step={10}
+                      className="mt-2"
+                    />
+                    <div className="text-xs text-gray-500 mt-1">Vitesse: {animations.speed}%</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Effets visuels */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-green-600" />
+                Effets visuels
+              </h4>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label>Particules flottantes</Label>
+                  <Switch 
+                    checked={visualEffects.particles}
+                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, particles: checked }))}
+                  />
                 </div>
                 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Effets visuels</h4>
-                  <p className="text-sm text-gray-600 mb-3">Particules, dégradés et effets spéciaux</p>
-                  <Button size="sm" variant="outline">Configurer</Button>
+                <div className="flex items-center justify-between">
+                  <Label>Dégradés avancés</Label>
+                  <Switch 
+                    checked={visualEffects.gradients}
+                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, gradients: checked }))}
+                  />
                 </div>
                 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Musique d'ambiance</h4>
-                  <p className="text-sm text-gray-600 mb-3">Ajoutez une bande sonore à votre carte</p>
-                  <Button size="sm" variant="outline">Configurer</Button>
-                </div>
-                
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Polices personnalisées</h4>
-                  <p className="text-sm text-gray-600 mb-3">Choisissez parmi plus de 200 polices</p>
-                  <Button size="sm" variant="outline">Configurer</Button>
+                <div className="flex items-center justify-between">
+                  <Label>Ombres dynamiques</Label>
+                  <Switch 
+                    checked={visualEffects.shadows}
+                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, shadows: checked }))}
+                  />
                 </div>
               </div>
             </div>
 
+            {/* Musique d'ambiance */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Volume2 className="h-5 w-5 text-red-600" />
+                  <h4 className="font-medium text-gray-900">Musique d'ambiance</h4>
+                </div>
+                <Switch 
+                  checked={backgroundMusic.enabled}
+                  onCheckedChange={(checked) => setBackgroundMusic(prev => ({ ...prev, enabled: checked }))}
+                />
+              </div>
+              
+              {backgroundMusic.enabled && (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Piste audio</Label>
+                    <select 
+                      className="w-full mt-1 p-2 border rounded-md"
+                      value={backgroundMusic.track}
+                      onChange={(e) => setBackgroundMusic(prev => ({ ...prev, track: e.target.value }))}
+                    >
+                      {musicTracks.map(track => (
+                        <option key={track.id} value={track.id}>{track.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <Label>Volume</Label>
+                    <Slider
+                      value={[backgroundMusic.volume]}
+                      onValueChange={(value) => setBackgroundMusic(prev => ({ ...prev, volume: value[0] }))}
+                      max={100}
+                      step={5}
+                      className="mt-2"
+                    />
+                    <div className="text-xs text-gray-500 mt-1">Volume: {backgroundMusic.volume}%</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Police personnalisée */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                <Type className="h-5 w-5 text-indigo-600" />
+                Police personnalisée
+              </h4>
+              
+              <div>
+                <Label>Famille de police</Label>
+                <select 
+                  className="w-full mt-1 p-2 border rounded-md"
+                  value={customFont}
+                  onChange={(e) => setCustomFont(e.target.value)}
+                >
+                  {fontOptions.map(font => (
+                    <option key={font} value={font} style={{ fontFamily: font }}>
+                      {font}
+                    </option>
+                  ))}
+                </select>
+                <div className="text-xs text-gray-500 mt-1">Aperçu avec la police sélectionnée</div>
+              </div>
+            </div>
+
             {isOwner && (
-              <div className="flex justify-end gap-2">
-                <Button variant="outline">Aperçu</Button>
-                <Button className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                  Sauvegarder les modifications
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={handlePreview}>
+                  <Eye className="h-4 w-4 mr-2" />
+                  Aperçu
+                </Button>
+                <Button 
+                  className="bg-gradient-to-r from-purple-500 to-blue-500 text-white"
+                  onClick={handleSaveChanges}
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Sauvegarder
                 </Button>
               </div>
             )}

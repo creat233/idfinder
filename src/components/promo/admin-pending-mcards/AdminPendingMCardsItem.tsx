@@ -50,6 +50,9 @@ export const AdminPendingMCardsItem = ({
                 </div>
               )}
             </div>
+            <div className="text-sm text-blue-600 font-mono mt-1">
+               /mcard/{mcard.slug}
+            </div>
           </div>
         </div>
         
