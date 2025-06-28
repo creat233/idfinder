@@ -6,7 +6,6 @@ import { MCardViewProfile } from '@/components/mcards/view/MCardViewProfile';
 import { MCardViewProducts } from '@/components/mcards/view/MCardViewProducts';
 import { MCardViewStatuses } from '@/components/mcards/view/MCardViewStatuses';
 import { MCardViewReviews } from '@/components/mcards/view/MCardViewReviews';
-import { MCardViewCustomization } from '@/components/mcards/view/MCardViewCustomization';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { useMCardView } from '@/hooks/useMCardView';
@@ -97,12 +96,6 @@ const MCardView = () => {
             mcardId={mcard.id}
             mcardPlan={mcard.plan}
             onProductsChange={refreshData}
-          />
-
-          {/* Customization Section */}
-          <MCardViewCustomization
-            mcard={mcard}
-            isOwner={isOwner}
           />
 
           {/* Reviews Section */}
