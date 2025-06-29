@@ -1,13 +1,12 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Palette, Sparkles, Crown, Lock, Save, Eye, Volume2, Type, Zap } from 'lucide-react';
+import { Palette, Sparkles, Crown, Lock, Save, Eye, Type, Zap } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { useToast } from '@/hooks/use-toast';
 
@@ -31,11 +30,6 @@ export const MCardViewCustomization = ({
     gradients: true,
     shadows: true
   });
-  const [backgroundMusic, setBackgroundMusic] = useState({
-    enabled: false,
-    volume: 30,
-    track: 'ambient'
-  });
   const [customFont, setCustomFont] = useState('Inter');
   const { toast } = useToast();
 
@@ -53,14 +47,67 @@ export const MCardViewCustomization = ({
     'Playfair Display', 'Merriweather', 'Dancing Script', 'Pacifico'
   ];
 
-  const musicTracks = [
-    { id: 'ambient', name: 'Ambiance Zen' },
-    { id: 'corporate', name: 'Professionnel' },
-    { id: 'upbeat', name: 'Dynamique' },
-    { id: 'classical', name: 'Classique' }
-  ];
-
   const isPremium = mcard.plan === 'premium';
+
+  // Appliquer le thème sélectionné au body
+  useEffect(() => {
+    if (selectedTheme && isPremium) {
+      const themeData = themes.find(t => t.id === selectedTheme);
+      if (themeData) {
+        document.body.className = `theme-${selectedTheme}`;
+        document.documentElement.style.setProperty('--theme-gradient', themeData.color.replace('bg-gradient-to-r ', ''));
+      }
+    }
+  }, [selectedTheme, isPremium]);
+
+  // Appliquer la police sélectionnée
+  useEffect(() => {
+    if (customFont && isPremium) {
+      document.documentElement.style.setProperty('--custom-font', customFont);
+      document.body.style.fontFamily = `${customFont}, sans-serif`;
+    }
+  }, [customFont, isPremium]);
+
+  // Appliquer les effets visuels
+  useEffect(() => {
+    if (isPremium) {
+      const rootEl = document.documentElement;
+      
+      if (visualEffects.particles) {
+        rootEl.classList.add('particles-enabled');
+      } else {
+        rootEl.classList.remove('particles-enabled');
+      }
+      
+      if (visualEffects.gradients) {
+        rootEl.classList.add('gradients-enabled');
+      } else {
+        rootEl.classList.remove('gradients-enabled');
+      }
+      
+      if (visualEffects.shadows) {
+        rootEl.classList.add('shadows-enabled');
+      } else {
+        rootEl.classList.remove('shadows-enabled');
+      }
+    }
+  }, [visualEffects, isPremium]);
+
+  const handleThemeChange = (themeId: string) => {
+    setSelectedTheme(themeId);
+    toast({
+      title: "Thème appliqué !",
+      description: `Le thème ${themes.find(t => t.id === themeId)?.name} a été activé.`
+    });
+  };
+
+  const handleFontChange = (font: string) => {
+    setCustomFont(font);
+    toast({
+      title: "Police changée !",
+      description: `La police ${font} a été appliquée.`
+    });
+  };
 
   const handleSaveChanges = () => {
     // Simuler la sauvegarde des paramètres
@@ -132,7 +179,7 @@ export const MCardViewCustomization = ({
                         ? 'border-purple-500 shadow-lg scale-105' 
                         : 'border-gray-200 hover:border-purple-300'
                     }`}
-                    onClick={() => setSelectedTheme(theme.id)}
+                    onClick={() => handleThemeChange(theme.id)}
                   >
                     <div className={`w-full h-20 rounded-lg mb-3 ${theme.color}`}></div>
                     <p className="text-sm font-medium text-center">{theme.name}</p>
@@ -183,7 +230,13 @@ export const MCardViewCustomization = ({
                   <Label>Particules flottantes</Label>
                   <Switch 
                     checked={visualEffects.particles}
-                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, particles: checked }))}
+                    onCheckedChange={(checked) => {
+                      setVisualEffects(prev => ({ ...prev, particles: checked }));
+                      toast({
+                        title: checked ? "Particules activées" : "Particules désactivées",
+                        description: "L'effet a été appliqué à votre carte."
+                      });
+                    }}
                   />
                 </div>
                 
@@ -191,7 +244,13 @@ export const MCardViewCustomization = ({
                   <Label>Dégradés avancés</Label>
                   <Switch 
                     checked={visualEffects.gradients}
-                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, gradients: checked }))}
+                    onCheckedChange={(checked) => {
+                      setVisualEffects(prev => ({ ...prev, gradients: checked }));
+                      toast({
+                        title: checked ? "Dégradés activés" : "Dégradés désactivés",
+                        description: "L'effet a été appliqué à votre carte."
+                      });
+                    }}
                   />
                 </div>
                 
@@ -199,53 +258,16 @@ export const MCardViewCustomization = ({
                   <Label>Ombres dynamiques</Label>
                   <Switch 
                     checked={visualEffects.shadows}
-                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, shadows: checked }))}
+                    onCheckedChange={(checked) => {
+                      setVisualEffects(prev => ({ ...prev, shadows: checked }));
+                      toast({
+                        title: checked ? "Ombres activées" : "Ombres désactivées",
+                        description: "L'effet a été appliqué à votre carte."
+                      });
+                    }}
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Musique d'ambiance */}
-            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Volume2 className="h-5 w-5 text-red-600" />
-                  <h4 className="font-medium text-gray-900">Musique d'ambiance</h4>
-                </div>
-                <Switch 
-                  checked={backgroundMusic.enabled}
-                  onCheckedChange={(checked) => setBackgroundMusic(prev => ({ ...prev, enabled: checked }))}
-                />
-              </div>
-              
-              {backgroundMusic.enabled && (
-                <div className="space-y-3">
-                  <div>
-                    <Label>Piste audio</Label>
-                    <select 
-                      className="w-full mt-1 p-2 border rounded-md"
-                      value={backgroundMusic.track}
-                      onChange={(e) => setBackgroundMusic(prev => ({ ...prev, track: e.target.value }))}
-                    >
-                      {musicTracks.map(track => (
-                        <option key={track.id} value={track.id}>{track.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <Label>Volume</Label>
-                    <Slider
-                      value={[backgroundMusic.volume]}
-                      onValueChange={(value) => setBackgroundMusic(prev => ({ ...prev, volume: value[0] }))}
-                      max={100}
-                      step={5}
-                      className="mt-2"
-                    />
-                    <div className="text-xs text-gray-500 mt-1">Volume: {backgroundMusic.volume}%</div>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Police personnalisée */}
@@ -260,7 +282,7 @@ export const MCardViewCustomization = ({
                 <select 
                   className="w-full mt-1 p-2 border rounded-md"
                   value={customFont}
-                  onChange={(e) => setCustomFont(e.target.value)}
+                  onChange={(e) => handleFontChange(e.target.value)}
                 >
                   {fontOptions.map(font => (
                     <option key={font} value={font} style={{ fontFamily: font }}>
@@ -268,7 +290,9 @@ export const MCardViewCustomization = ({
                     </option>
                   ))}
                 </select>
-                <div className="text-xs text-gray-500 mt-1">Aperçu avec la police sélectionnée</div>
+                <div className="text-xs text-gray-500 mt-1" style={{ fontFamily: customFont }}>
+                  Aperçu avec la police {customFont}
+                </div>
               </div>
             </div>
 

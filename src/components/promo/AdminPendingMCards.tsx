@@ -31,15 +31,72 @@ export const AdminPendingMCards = () => {
   const { data: pendingMCards = [], isLoading } = useQuery({
     queryKey: ['admin-pending-mcards'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_pending_mcards');
-      if (error) throw error;
-      return data as PendingMCard[];
+      console.log('🔍 Récupération des mCards en attente...');
+      
+      // Récupérer directement depuis la table mcards avec les critères
+      const { data, error } = await supabase
+        .from('mcards')
+        .select(`
+          id,
+          user_id,
+          full_name,
+          plan,
+          created_at,
+          slug,
+          subscription_status,
+          profiles!inner(
+            first_name,
+            last_name,
+            phone
+          )
+        `)
+        .eq('subscription_status', 'trial')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('❌ Erreur lors de la récupération:', error);
+        throw error;
+      }
+
+      console.log('✅ mCards trouvées:', data);
+
+      // Récupérer les emails des utilisateurs
+      const userIds = data?.map(card => card.user_id) || [];
+      let userEmails: Record<string, string> = {};
+      
+      if (userIds.length > 0) {
+        const { data: authData } = await supabase.auth.admin.listUsers();
+        if (authData?.users) {
+          userEmails = authData.users.reduce((acc, user) => {
+            acc[user.id] = user.email || '';
+            return acc;
+          }, {} as Record<string, string>);
+        }
+      }
+
+      // Transformer les données
+      const transformedData = data?.map(card => ({
+        id: card.id,
+        user_id: card.user_id,
+        full_name: card.full_name,
+        plan: card.plan,
+        created_at: card.created_at,
+        slug: card.slug,
+        user_email: userEmails[card.user_id] || 'Email non disponible',
+        user_phone: card.profiles?.phone || 'Téléphone non disponible'
+      })) || [];
+
+      console.log('🔄 Données transformées:', transformedData);
+      return transformedData as PendingMCard[];
     },
+    refetchInterval: 30000, // Actualiser toutes les 30 secondes
   });
 
   const handleApproveSubscription = async (mcardId: string) => {
     setLoading(mcardId);
     try {
+      console.log('🔄 Approbation de la mCard:', mcardId);
+      
       const { data, error } = await supabase.rpc('admin_approve_mcard_subscription', {
         p_mcard_id: mcardId
       });
@@ -48,16 +105,17 @@ export const AdminPendingMCards = () => {
 
       if (data && data[0]?.success) {
         toast({
-          title: "Abonnement approuvé !",
+          title: "mCard approuvée !",
           description: data[0].message,
         });
         queryClient.invalidateQueries({ queryKey: ['admin-pending-mcards'] });
         queryClient.invalidateQueries({ queryKey: ['admin-revenue-stats'] });
+        console.log('✅ mCard approuvée avec succès');
       } else {
         throw new Error(data?.[0]?.message || "Erreur inconnue");
       }
     } catch (error: any) {
-      console.error('Erreur lors de l\'approbation:', error);
+      console.error('❌ Erreur lors de l\'approbation:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -90,6 +148,12 @@ export const AdminPendingMCards = () => {
     const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
     return total + (planInfo?.price || 0);
   }, 0);
+
+  console.log('📊 Affichage final:', {
+    pendingCount: pendingMCards.length,
+    totalPotentialRevenue,
+    cards: pendingMCards
+  });
 
   return (
     <Card>

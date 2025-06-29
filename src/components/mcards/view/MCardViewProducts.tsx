@@ -41,11 +41,11 @@ export const MCardViewProducts = ({
   };
 
   const handleShareProduct = (product: MCardProduct) => {
-    const shareText = `Produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency} - ${window.location.href}`;
+    const shareText = `🛍️ Produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency}\n\n📱 Voir ma mCard: ${window.location.href}`;
     
     if (navigator.share) {
       navigator.share({
-        title: 'Produit partagé',
+        title: 'Mon Produit - FinderID',
         text: shareText,
         url: window.location.href
       });
@@ -59,9 +59,30 @@ export const MCardViewProducts = ({
   };
 
   const handleWhatsAppShare = (product: MCardProduct) => {
-    const message = encodeURIComponent(`Produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency} - ${window.location.href}`);
+    const message = encodeURIComponent(`🛍️ Découvrez mon produit: ${product.name}\n💰 Prix: ${product.price.toLocaleString()} ${product.currency}\n📋 Catégorie: ${product.category}\n\n📱 Voir ma mCard complète: ${window.location.href}\n\n#FinderID`);
     const whatsappUrl = `https://wa.me/?text=${message}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleFacebookShare = (product: MCardProduct) => {
+    const shareUrl = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`🛍️ Découvrez mon produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency}`);
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${text}`;
+    window.open(facebookUrl, '_blank');
+  };
+
+  const handleTwitterShare = (product: MCardProduct) => {
+    const text = encodeURIComponent(`🛍️ Découvrez mon produit: ${product.name}\n💰 ${product.price.toLocaleString()} ${product.currency}\n\n📱 Ma mCard: ${window.location.href}\n\n#FinderID #Commerce`);
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${text}`;
+    window.open(twitterUrl, '_blank');
+  };
+
+  const handleLinkedInShare = (product: MCardProduct) => {
+    const shareUrl = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(`${product.name} - ${product.price.toLocaleString()} ${product.currency}`);
+    const summary = encodeURIComponent(`Découvrez mon produit: ${product.name}. Catégorie: ${product.category}`);
+    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}&title=${title}&summary=${summary}`;
+    window.open(linkedinUrl, '_blank');
   };
 
   if (activeProducts.length === 0 && !isOwner) return null;
@@ -136,27 +157,58 @@ export const MCardViewProducts = ({
                     <ShoppingCart className="h-4 w-4 text-gray-400" />
                   </div>
 
-                  {/* Boutons de partage */}
-                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleShareProduct(product)}
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50 flex-1"
-                    >
-                      <Share2 className="h-4 w-4 mr-1" />
-                      Partager
-                    </Button>
+                  {/* Boutons de partage sur les réseaux sociaux */}
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleShareProduct(product)}
+                        className="text-blue-600 border-blue-600 hover:bg-blue-50 flex-1 min-w-0"
+                      >
+                        <Share2 className="h-4 w-4 mr-1" />
+                        Partager
+                      </Button>
+                      
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleWhatsAppShare(product)}
+                        className="text-green-600 border-green-600 hover:bg-green-50 flex-1 min-w-0"
+                      >
+                        <MessageCircle className="h-4 w-4 mr-1" />
+                        WhatsApp
+                      </Button>
+                    </div>
                     
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleWhatsAppShare(product)}
-                      className="text-green-600 border-green-600 hover:bg-green-50 flex-1"
-                    >
-                      <MessageCircle className="h-4 w-4 mr-1" />
-                      WhatsApp
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleFacebookShare(product)}
+                        className="text-blue-800 border-blue-800 hover:bg-blue-50 flex-1 min-w-0"
+                      >
+                        📘 Facebook
+                      </Button>
+                      
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleTwitterShare(product)}
+                        className="text-black border-gray-800 hover:bg-gray-50 flex-1 min-w-0"
+                      >
+                        🐦 Twitter
+                      </Button>
+                      
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleLinkedInShare(product)}
+                        className="text-blue-700 border-blue-700 hover:bg-blue-50 flex-1 min-w-0"
+                      >
+                        💼 LinkedIn
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
