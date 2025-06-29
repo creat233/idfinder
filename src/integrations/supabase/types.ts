@@ -732,6 +732,7 @@ export type Database = {
           created_at: string
           user_email: string
           user_phone: string
+          slug: string
         }[]
       }
       admin_get_pending_renewals: {
