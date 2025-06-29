@@ -13,27 +13,23 @@ export const useNotificationCleanup = () => {
         const twentyFourHoursAgo = new Date();
         twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
-        const { error } = await supabase
+        await supabase
           .from('notifications')
           .delete()
           .eq('user_id', user.id)
           .lt('created_at', twentyFourHoursAgo.toISOString());
 
-        if (error) {
-          console.error('Erreur lors du nettoyage des notifications:', error);
-        } else {
-          console.log('✅ Notifications anciennes supprimées automatiquement');
-        }
+        console.log('Notifications anciennes supprimées automatiquement');
       } catch (error) {
         console.error('Erreur lors du nettoyage automatique des notifications:', error);
       }
     };
 
-    // Nettoyer immédiatement au chargement
+    // Nettoyer immédiatement
     cleanupOldNotifications();
 
-    // Puis nettoyer toutes les 30 minutes
-    const interval = setInterval(cleanupOldNotifications, 30 * 60 * 1000);
+    // Puis nettoyer toutes les heures
+    const interval = setInterval(cleanupOldNotifications, 60 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
