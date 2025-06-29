@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, ShoppingCart, Share2, MessageCircle } from 'lucide-react';
+import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Eye } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { useToast } from '@/hooks/use-toast';
@@ -26,6 +26,7 @@ export const MCardViewProducts = ({
 }: MCardViewProductsProps) => {
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
 
   const activeProducts = products.filter(product => product.is_active);
@@ -35,12 +36,22 @@ export const MCardViewProducts = ({
     setIsDialogOpen(true);
   };
 
+  const handleImagePreview = (imageUrl: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setImagePreview(imageUrl);
+  };
+
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setSelectedProduct(null);
   };
 
-  const handleShareProduct = (product: MCardProduct) => {
+  const handleCloseImagePreview = () => {
+    setImagePreview(null);
+  };
+
+  const handleShareProduct = (product: MCardProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
     const shareText = `🛍️ Produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency}\n\n📱 Voir ma mCard: ${window.location.href}`;
     
     if (navigator.share) {
@@ -58,26 +69,30 @@ export const MCardViewProducts = ({
     }
   };
 
-  const handleWhatsAppShare = (product: MCardProduct) => {
+  const handleWhatsAppShare = (product: MCardProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
     const message = encodeURIComponent(`🛍️ Découvrez mon produit: ${product.name}\n💰 Prix: ${product.price.toLocaleString()} ${product.currency}\n📋 Catégorie: ${product.category}\n\n📱 Voir ma mCard complète: ${window.location.href}\n\n#FinderID`);
     const whatsappUrl = `https://wa.me/?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  const handleFacebookShare = (product: MCardProduct) => {
+  const handleFacebookShare = (product: MCardProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
     const shareUrl = encodeURIComponent(window.location.href);
     const text = encodeURIComponent(`🛍️ Découvrez mon produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency}`);
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${text}`;
     window.open(facebookUrl, '_blank');
   };
 
-  const handleTwitterShare = (product: MCardProduct) => {
+  const handleTwitterShare = (product: MCardProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
     const text = encodeURIComponent(`🛍️ Découvrez mon produit: ${product.name}\n💰 ${product.price.toLocaleString()} ${product.currency}\n\n📱 Ma mCard: ${window.location.href}\n\n#FinderID #Commerce`);
     const twitterUrl = `https://twitter.com/intent/tweet?text=${text}`;
     window.open(twitterUrl, '_blank');
   };
 
-  const handleLinkedInShare = (product: MCardProduct) => {
+  const handleLinkedInShare = (product: MCardProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
     const shareUrl = encodeURIComponent(window.location.href);
     const title = encodeURIComponent(`${product.name} - ${product.price.toLocaleString()} ${product.currency}`);
     const summary = encodeURIComponent(`Découvrez mon produit: ${product.name}. Catégorie: ${product.category}`);
@@ -89,7 +104,7 @@ export const MCardViewProducts = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
+      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-4 md:p-6 card-enhanced">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <h3 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🛍️ Produits & Services
@@ -98,7 +113,7 @@ export const MCardViewProducts = ({
             <Button 
               size="sm" 
               variant="outline"
-              className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+              className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto btn-enhanced"
             >
               <Plus className="h-4 w-4 mr-1" />
               Ajouter
@@ -115,26 +130,35 @@ export const MCardViewProducts = ({
             {activeProducts.map((product) => (
               <div 
                 key={product.id} 
-                className="border rounded-lg p-4 hover:shadow-md transition-all"
+                className="border rounded-lg p-4 hover:shadow-md transition-all bg-white/80 backdrop-blur-sm cursor-pointer"
+                onClick={() => handleProductClick(product)}
               >
                 {product.image_url && (
-                  <div className="relative">
+                  <div className="relative group mb-3">
                     <img 
                       src={product.image_url} 
                       alt={product.name}
-                      className="w-full h-32 md:h-40 object-cover rounded-lg mb-3 cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => handleProductClick(product)}
+                      className="w-full h-32 md:h-40 object-cover rounded-lg transition-all duration-300 group-hover:scale-105"
+                      onClick={(e) => handleImagePreview(product.image_url!, e)}
                     />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                      <Eye className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 )}
                 
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <h4 className="font-medium text-gray-900 cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleProductClick(product)}>
+                    <h4 className="font-medium text-gray-900 hover:text-blue-600 transition-colors">
                       {product.name}
                     </h4>
                     {isOwner && (
-                      <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={(e) => e.stopPropagation()}
+                        className="btn-enhanced"
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                     )}
@@ -163,8 +187,8 @@ export const MCardViewProducts = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleShareProduct(product)}
-                        className="text-blue-600 border-blue-600 hover:bg-blue-50 flex-1 min-w-0"
+                        onClick={(e) => handleShareProduct(product, e)}
+                        className="text-blue-600 border-blue-600 hover:bg-blue-50 flex-1 min-w-0 btn-enhanced"
                       >
                         <Share2 className="h-4 w-4 mr-1" />
                         Partager
@@ -173,8 +197,8 @@ export const MCardViewProducts = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleWhatsAppShare(product)}
-                        className="text-green-600 border-green-600 hover:bg-green-50 flex-1 min-w-0"
+                        onClick={(e) => handleWhatsAppShare(product, e)}
+                        className="text-green-600 border-green-600 hover:bg-green-50 flex-1 min-w-0 btn-enhanced"
                       >
                         <MessageCircle className="h-4 w-4 mr-1" />
                         WhatsApp
@@ -185,8 +209,8 @@ export const MCardViewProducts = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleFacebookShare(product)}
-                        className="text-blue-800 border-blue-800 hover:bg-blue-50 flex-1 min-w-0"
+                        onClick={(e) => handleFacebookShare(product, e)}
+                        className="text-blue-800 border-blue-800 hover:bg-blue-50 flex-1 min-w-0 btn-enhanced"
                       >
                         📘 Facebook
                       </Button>
@@ -194,8 +218,8 @@ export const MCardViewProducts = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleTwitterShare(product)}
-                        className="text-black border-gray-800 hover:bg-gray-50 flex-1 min-w-0"
+                        onClick={(e) => handleTwitterShare(product, e)}
+                        className="text-black border-gray-800 hover:bg-gray-50 flex-1 min-w-0 btn-enhanced"
                       >
                         🐦 Twitter
                       </Button>
@@ -203,8 +227,8 @@ export const MCardViewProducts = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleLinkedInShare(product)}
-                        className="text-blue-700 border-blue-700 hover:bg-blue-50 flex-1 min-w-0"
+                        onClick={(e) => handleLinkedInShare(product, e)}
+                        className="text-blue-700 border-blue-700 hover:bg-blue-50 flex-1 min-w-0 btn-enhanced"
                       >
                         💼 LinkedIn
                       </Button>
@@ -216,6 +240,30 @@ export const MCardViewProducts = ({
           </div>
         )}
       </div>
+
+      {/* Prévisualisation d'image */}
+      {imagePreview && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={handleCloseImagePreview}
+        >
+          <div className="relative max-w-4xl max-h-[90vh]">
+            <img 
+              src={imagePreview} 
+              alt="Aperçu" 
+              className="max-w-full max-h-full object-contain rounded-lg"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              className="absolute top-4 right-4 bg-white/90 hover:bg-white"
+              onClick={handleCloseImagePreview}
+            >
+              ✕
+            </Button>
+          </div>
+        </div>
+      )}
 
       <MCardViewProductDialog
         product={selectedProduct}

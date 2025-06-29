@@ -7,74 +7,106 @@
 
 /* Variables CSS pour les thèmes */
 :root {
-  --theme-gradient: linear-gradient(to right, #3b82f6, #8b5cf6);
+  --theme-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
   --custom-font: 'Inter', sans-serif;
 }
 
-/* Thèmes personnalisés */
-.theme-default {
-  --theme-gradient: linear-gradient(to right, #3b82f6, #8b5cf6);
+/* Thèmes personnalisés avec application immédiate */
+body.theme-default {
+  --theme-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-.theme-modern {
-  --theme-gradient: linear-gradient(to right, #374151, #111827);
+body.theme-modern {
+  --theme-gradient: linear-gradient(135deg, #374151, #111827);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-.theme-elegant {
-  --theme-gradient: linear-gradient(to right, #9333ea, #ec4899);
+body.theme-elegant {
+  --theme-gradient: linear-gradient(135deg, #9333ea, #ec4899);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-.theme-professional {
-  --theme-gradient: linear-gradient(to right, #2563eb, #4f46e5);
+body.theme-professional {
+  --theme-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-.theme-creative {
-  --theme-gradient: linear-gradient(to right, #f97316, #ef4444);
+body.theme-creative {
+  --theme-gradient: linear-gradient(135deg, #f97316, #ef4444);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-.theme-nature {
-  --theme-gradient: linear-gradient(to right, #10b981, #059669);
+body.theme-nature {
+  --theme-gradient: linear-gradient(135deg, #10b981, #059669);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-/* Effets visuels */
-.particles-enabled::before {
+/* Effets visuels fonctionnels */
+body.particles-enabled::before {
   content: '';
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  animation: float 20s infinite linear;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: float 15s infinite linear;
   pointer-events: none;
-  z-index: -1;
+  z-index: 1;
 }
 
-.gradients-enabled {
-  background: var(--theme-gradient);
-  background-attachment: fixed;
+body.gradients-enabled {
+  background: var(--theme-gradient) !important;
+  background-attachment: fixed !important;
 }
 
-.shadows-enabled .shadow-lg {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+body.shadows-enabled .shadow-lg {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
 }
 
-.shadows-enabled .hover\:shadow-md:hover {
-  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+body.shadows-enabled .hover\:shadow-md:hover {
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Animations */
+/* Animation des particules */
 @keyframes float {
-  0% { transform: translateY(0px) translateX(0px); }
-  33% { transform: translateY(-10px) translateX(5px); }
-  66% { transform: translateY(5px) translateX(-5px); }
-  100% { transform: translateY(0px) translateX(0px); }
+  0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+  25% { transform: translateY(-10px) translateX(5px) rotate(90deg); }
+  50% { transform: translateY(0px) translateX(10px) rotate(180deg); }
+  75% { transform: translateY(10px) translateX(5px) rotate(270deg); }
+  100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
 }
 
 /* Applications des polices personnalisées */
 body {
-  font-family: var(--custom-font, 'Inter', sans-serif);
+  font-family: var(--custom-font) !important;
+  transition: all 0.3s ease;
+}
+
+/* Cartes avec effets */
+.card-enhanced {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Boutons avec effets */
+.btn-enhanced {
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Amélioration de l'affichage des images */
@@ -86,52 +118,14 @@ body {
   object-fit: cover;
 }
 
-/* Styles pour les boutons de partage */
-.share-button {
-  transition: all 0.2s ease-in-out;
+/* Animation pour les changements de thème */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.share-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive design pour les grilles */
+/* Responsive */
 @media (max-width: 640px) {
   .grid-cols-2 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
-}
-
-/* Animations pour les thèmes */
-.theme-transition {
-  transition: all 0.3s ease-in-out;
-}
-
-/* Styles pour les cartes mCard */
-.mcard-gradient {
-  background: var(--theme-gradient);
-}
-
-/* Amélioration de l'affichage des statuts */
-.status-card {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.9);
-}
-
-/* Styles pour les produits */
-.product-card:hover {
-  transform: translateY(-2px);
-  transition: transform 0.2s ease-in-out;
-}
-
-/* Styles pour les notifications */
-.notification-cleanup {
-  opacity: 0;
-  animation: fadeOut 0.5s ease-in-out;
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
 }
