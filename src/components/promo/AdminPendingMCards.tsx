@@ -1,12 +1,10 @@
-
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle, XCircle, CreditCard, User, Mail, Phone, Eye } from "lucide-react";
+import { AdminPendingMCardsHeader } from "./admin-pending-mcards/AdminPendingMCardsHeader";
+import { AdminPendingMCardsTable } from "./admin-pending-mcards/AdminPendingMCardsTable";
 
 interface PendingMCard {
   id: string;
@@ -32,15 +30,88 @@ export const AdminPendingMCards = () => {
   const { data: pendingMCards = [], isLoading } = useQuery({
     queryKey: ['admin-pending-mcards'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_pending_mcards');
-      if (error) throw error;
-      return data as PendingMCard[];
+      console.log('🔍 Récupération des mCards en attente...');
+      
+      // Récupérer directement depuis la table mcards avec les critères
+      const { data, error } = await supabase
+        .from('mcards')
+        .select(`
+          id,
+          user_id,
+          full_name,
+          plan,
+          created_at,
+          slug,
+          subscription_status
+        `)
+        .eq('subscription_status', 'trial')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('❌ Erreur lors de la récupération:', error);
+        throw error;
+      }
+
+      console.log('✅ mCards trouvées:', data);
+
+      // Récupérer les emails des utilisateurs de façon sécurisée
+      const userIds = data?.map(card => card.user_id) || [];
+      const userEmails: Record<string, string> = {};
+      const userPhones: Record<string, string> = {};
+      
+      if (userIds.length > 0) {
+        try {
+          // Récupérer les emails via l'API auth admin
+          const { data: authData } = await supabase.auth.admin.listUsers();
+          if (authData?.users) {
+            authData.users.forEach((user: any) => {
+              if (user.email) {
+                userEmails[user.id] = user.email;
+              }
+            });
+          }
+
+          // Récupérer les téléphones depuis la table profiles
+          const { data: profilesData } = await supabase
+            .from('profiles')
+            .select('id, phone')
+            .in('id', userIds);
+
+          if (profilesData) {
+            profilesData.forEach(profile => {
+              if (profile.phone) {
+                userPhones[profile.id] = profile.phone;
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération des données utilisateur:', error);
+        }
+      }
+
+      // Transformer les données
+      const transformedData = data?.map(card => ({
+        id: card.id,
+        user_id: card.user_id,
+        full_name: card.full_name,
+        plan: card.plan,
+        created_at: card.created_at,
+        slug: card.slug,
+        user_email: userEmails[card.user_id] || 'Email non disponible',
+        user_phone: userPhones[card.user_id] || 'Téléphone non disponible'
+      })) || [];
+
+      console.log('🔄 Données transformées:', transformedData);
+      return transformedData as PendingMCard[];
     },
+    refetchInterval: 30000, // Actualiser toutes les 30 secondes
   });
 
   const handleApproveSubscription = async (mcardId: string) => {
     setLoading(mcardId);
     try {
+      console.log('🔄 Approbation de la mCard:', mcardId);
+      
       const { data, error } = await supabase.rpc('admin_approve_mcard_subscription', {
         p_mcard_id: mcardId
       });
@@ -49,16 +120,17 @@ export const AdminPendingMCards = () => {
 
       if (data && data[0]?.success) {
         toast({
-          title: "Abonnement approuvé !",
+          title: "mCard approuvée !",
           description: data[0].message,
         });
         queryClient.invalidateQueries({ queryKey: ['admin-pending-mcards'] });
         queryClient.invalidateQueries({ queryKey: ['admin-revenue-stats'] });
+        console.log('✅ mCard approuvée avec succès');
       } else {
         throw new Error(data?.[0]?.message || "Erreur inconnue");
       }
     } catch (error: any) {
-      console.error('Erreur lors de l\'approbation:', error);
+      console.error('❌ Erreur lors de l\'approbation:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -76,12 +148,7 @@ export const AdminPendingMCards = () => {
   if (isLoading) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            mCards en attente de validation
-          </CardTitle>
-        </CardHeader>
+        <AdminPendingMCardsHeader pendingCount={0} totalPotentialRevenue={0} />
         <CardContent>
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -97,104 +164,25 @@ export const AdminPendingMCards = () => {
     return total + (planInfo?.price || 0);
   }, 0);
 
+  console.log('📊 Affichage final:', {
+    pendingCount: pendingMCards.length,
+    totalPotentialRevenue,
+    cards: pendingMCards
+  });
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            mCards en attente de validation ({pendingMCards.length})
-          </div>
-          {totalPotentialRevenue > 0 && (
-            <Badge variant="secondary" className="text-lg px-3 py-1">
-              Revenus potentiels: {totalPotentialRevenue.toLocaleString()} FCFA
-            </Badge>
-          )}
-        </CardTitle>
-      </CardHeader>
+      <AdminPendingMCardsHeader 
+        pendingCount={pendingMCards.length}
+        totalPotentialRevenue={totalPotentialRevenue}
+      />
       <CardContent>
-        {pendingMCards.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <CreditCard className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Aucune mCard en attente de validation</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {pendingMCards.map((mcard) => {
-              const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
-              return (
-                <div key={mcard.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-blue-100 p-2 rounded-full">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">{mcard.full_name}</h3>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <Mail className="h-4 w-4" />
-                            {mcard.user_email}
-                          </div>
-                          {mcard.user_phone && (
-                            <div className="flex items-center gap-1">
-                              <Phone className="h-4 w-4" />
-                              {mcard.user_phone}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary">
-                          Plan {planInfo?.name || mcard.plan}
-                        </Badge>
-                        {planInfo && (
-                          <Badge variant="outline" className="text-green-600 border-green-600">
-                            {planInfo.price.toLocaleString()} FCFA
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        Créée le {new Date(mcard.created_at).toLocaleDateString('fr-FR')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => handlePreviewCard(mcard.slug)}
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Prévisualiser
-                    </Button>
-                    <Button
-                      onClick={() => handleApproveSubscription(mcard.id)}
-                      disabled={loading === mcard.id}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      {loading === mcard.id ? (
-                        <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          Activation...
-                        </div>
-                      ) : (
-                        <>
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          Approuver ({planInfo?.price.toLocaleString()} FCFA)
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        <AdminPendingMCardsTable
+          pendingMCards={pendingMCards}
+          loading={loading}
+          onApprove={handleApproveSubscription}
+          onPreview={handlePreviewCard}
+        />
       </CardContent>
     </Card>
   );

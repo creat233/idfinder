@@ -1,128 +1,131 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300..800&family=Lato:wght@100;300;400;700;900&family=Montserrat:wght@100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:wght@400..900&family=Merriweather:wght@300;400;700;900&family=Dancing+Script:wght@400..700&family=Pacifico&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-    
-    /* Emergency category colors */
-    --police-color: 221.2 83.2% 53.3%;
-    --medical-color: 0 84.2% 60.2%;
-    --fire-color: 24.6 95% 53.1%;
-    --other-color: 262.1 83.3% 57.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+/* Variables CSS pour les thèmes */
+:root {
+  --theme-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  --custom-font: 'Inter', sans-serif;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Thèmes personnalisés avec application immédiate */
+body.theme-default {
+  --theme-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
 }
 
-/* Custom styles for mapbox map markers */
-.mapboxgl-popup {
+body.theme-modern {
+  --theme-gradient: linear-gradient(135deg, #374151, #111827);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
+}
+
+body.theme-elegant {
+  --theme-gradient: linear-gradient(135deg, #9333ea, #ec4899);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
+}
+
+body.theme-professional {
+  --theme-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
+}
+
+body.theme-creative {
+  --theme-gradient: linear-gradient(135deg, #f97316, #ef4444);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
+}
+
+body.theme-nature {
+  --theme-gradient: linear-gradient(135deg, #10b981, #059669);
+  background: var(--theme-gradient) !important;
+  min-height: 100vh;
+}
+
+/* Effets visuels fonctionnels */
+body.particles-enabled::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: float 15s infinite linear;
+  pointer-events: none;
   z-index: 1;
 }
 
-.mapboxgl-popup-content {
-  padding: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+body.gradients-enabled {
+  background: var(--theme-gradient) !important;
+  background-attachment: fixed !important;
 }
 
-.marker-police, .marker-medical, .marker-fire, .marker-other {
-  transition: transform 0.2s ease;
+body.shadows-enabled .shadow-lg {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
 }
 
-.marker-police:hover, .marker-medical:hover, .marker-fire:hover, .marker-other:hover {
-  transform: scale(1.1);
+body.shadows-enabled .hover\:shadow-md:hover {
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Animation des particules */
+@keyframes float {
+  0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+  25% { transform: translateY(-10px) translateX(5px) rotate(90deg); }
+  50% { transform: translateY(0px) translateX(10px) rotate(180deg); }
+  75% { transform: translateY(10px) translateX(5px) rotate(270deg); }
+  100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
+}
+
+/* Applications des polices personnalisées */
+body {
+  font-family: var(--custom-font) !important;
+  transition: all 0.3s ease;
+}
+
+/* Cartes avec effets */
+.card-enhanced {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Boutons avec effets */
+.btn-enhanced {
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.btn-enhanced:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Amélioration de l'affichage des images */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+/* Animation pour les changements de thème */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }

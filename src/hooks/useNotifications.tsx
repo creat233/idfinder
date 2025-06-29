@@ -1,32 +1,30 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-interface Notification {
+export interface Notification {
   id: string;
+  user_id: string;
+  type: string;
   title: string;
   message: string;
-  type: string;
   is_read: boolean;
   created_at: string;
-  user_id: string;
-  card_id?: string;
   reported_card_id?: string;
+  card_id?: string;
 }
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchNotifications = useCallback(async () => {
+  const fetchNotifications = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setNotifications([]);
-        return;
-      }
+      if (!user) return;
 
       const { data, error } = await supabase
         .from('notifications')
@@ -34,48 +32,20 @@ export const useNotifications = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching notifications:', error);
-        throw error;
-      }
+      if (error) throw error;
 
+      console.log('📧 Notifications récupérées:', data?.length || 0);
+      
       setNotifications(data || []);
-    } catch (error: any) {
-      console.error('Error in fetchNotifications:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de charger les notifications"
-      });
+      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
+    } catch (error) {
+      console.error('Erreur lors du chargement des notifications:', error);
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  };
 
-  useEffect(() => {
-    fetchNotifications();
-
-    // Subscribe to real-time changes
-    const channel = supabase
-      .channel('notifications-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'notifications',
-        },
-        () => {
-          console.log('Notification change detected, refetching...');
-          fetchNotifications();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [fetchNotifications]);
+  const refetch = fetchNotifications; // Ajouter la fonction refetch
 
   const markAsRead = async (notificationId: string) => {
     try {
@@ -86,21 +56,12 @@ export const useNotifications = () => {
 
       if (error) throw error;
 
-      // Update local state immediately for better UX
       setNotifications(prev => 
-        prev.map(notif => 
-          notif.id === notificationId 
-            ? { ...notif, is_read: true }
-            : notif
-        )
+        prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
       );
-    } catch (error: any) {
-      console.error('Error marking notification as read:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de marquer la notification comme lue"
-      });
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Erreur lors du marquage comme lu:', error);
     }
   };
 
@@ -117,21 +78,49 @@ export const useNotifications = () => {
 
       if (error) throw error;
 
-      // Update local state immediately for better UX
-      setNotifications(prev => 
-        prev.map(notif => ({ ...notif, is_read: true }))
-      );
-
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+      
       toast({
         title: "Notifications marquées comme lues",
-        description: "Toutes vos notifications ont été marquées comme lues"
+        description: "Toutes vos notifications ont été marquées comme lues.",
       });
-    } catch (error: any) {
-      console.error('Error marking all notifications as read:', error);
+    } catch (error) {
+      console.error('Erreur lors du marquage de toutes comme lues:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message || "Impossible de marquer toutes les notifications comme lues"
+        description: "Impossible de marquer les notifications comme lues.",
+      });
+    }
+  };
+
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
+      const notification = notifications.find(n => n.id === notificationId);
+      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+      
+      if (notification && !notification.is_read) {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+
+      toast({
+        title: "Notification supprimée",
+        description: "La notification a été supprimée avec succès.",
+      });
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de supprimer la notification.",
       });
     }
   };
@@ -141,6 +130,8 @@ export const useNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      console.log('🗑️ Suppression de toutes les notifications pour l\'utilisateur:', user.id);
+
       const { error } = await supabase
         .from('notifications')
         .delete()
@@ -148,36 +139,59 @@ export const useNotifications = () => {
 
       if (error) throw error;
 
-      // Update local state immediately for better UX
+      console.log('✅ Toutes les notifications supprimées');
+      
       setNotifications([]);
-
+      setUnreadCount(0);
+      
       toast({
         title: "Toutes les notifications supprimées",
-        description: "Toutes vos notifications ont été supprimées avec succès."
+        description: "Toutes vos notifications ont été supprimées avec succès.",
       });
-    } catch (error: any) {
-      console.error('Error deleting all notifications:', error);
+    } catch (error) {
+      console.error('❌ Erreur lors de la suppression de toutes les notifications:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message || "Impossible de supprimer toutes les notifications"
+        description: "Impossible de supprimer toutes les notifications.",
       });
     }
   };
 
-  const refetch = useCallback(() => {
-    return fetchNotifications();
-  }, [fetchNotifications]);
+  useEffect(() => {
+    fetchNotifications();
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+    // Écouter les nouvelles notifications en temps réel
+    const channel = supabase
+      .channel('notifications-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notifications'
+        },
+        (payload) => {
+          console.log('🔄 Changement de notification détecté:', payload);
+          fetchNotifications();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return {
     notifications,
-    loading,
     unreadCount,
+    loading,
+    fetchNotifications,
+    refetch, // Exporter la fonction refetch
     markAsRead,
     markAllAsRead,
-    deleteAllNotifications,
-    refetch,
+    deleteNotification,
+    deleteAllNotifications
   };
 };
