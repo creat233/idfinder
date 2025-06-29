@@ -1,12 +1,13 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Palette, Sparkles, Crown, Lock, Save, Eye, Type, Zap } from 'lucide-react';
+import { Palette, Sparkles, Crown, Lock, Save, Eye, Volume2, Type, Zap } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,23 +23,29 @@ export const MCardViewCustomization = ({
   const [selectedTheme, setSelectedTheme] = useState('default');
   const [animations, setAnimations] = useState({
     enabled: false,
-    speed: 50
+    speed: 50,
+    type: 'fade'
   });
   const [visualEffects, setVisualEffects] = useState({
     particles: false,
     gradients: true,
     shadows: true
   });
+  const [backgroundMusic, setBackgroundMusic] = useState({
+    enabled: false,
+    volume: 30,
+    track: 'ambient'
+  });
   const [customFont, setCustomFont] = useState('Inter');
   const { toast } = useToast();
 
   const themes = [
-    { id: 'default', name: 'Classique', gradient: 'linear-gradient(135deg, #3b82f6, #8b5cf6)' },
-    { id: 'modern', name: 'Moderne', gradient: 'linear-gradient(135deg, #374151, #111827)' },
-    { id: 'elegant', name: 'Élégant', gradient: 'linear-gradient(135deg, #9333ea, #ec4899)' },
-    { id: 'professional', name: 'Professionnel', gradient: 'linear-gradient(135deg, #2563eb, #4f46e5)' },
-    { id: 'creative', name: 'Créatif', gradient: 'linear-gradient(135deg, #f97316, #ef4444)' },
-    { id: 'nature', name: 'Nature', gradient: 'linear-gradient(135deg, #10b981, #059669)' },
+    { id: 'default', name: 'Classique', color: 'bg-gradient-to-r from-blue-500 to-purple-500' },
+    { id: 'modern', name: 'Moderne', color: 'bg-gradient-to-r from-gray-800 to-gray-900' },
+    { id: 'elegant', name: 'Élégant', color: 'bg-gradient-to-r from-purple-600 to-pink-600' },
+    { id: 'professional', name: 'Professionnel', color: 'bg-gradient-to-r from-blue-600 to-indigo-600' },
+    { id: 'creative', name: 'Créatif', color: 'bg-gradient-to-r from-orange-500 to-red-500' },
+    { id: 'nature', name: 'Nature', color: 'bg-gradient-to-r from-green-500 to-emerald-500' },
   ];
 
   const fontOptions = [
@@ -46,107 +53,17 @@ export const MCardViewCustomization = ({
     'Playfair Display', 'Merriweather', 'Dancing Script', 'Pacifico'
   ];
 
+  const musicTracks = [
+    { id: 'ambient', name: 'Ambiance Zen' },
+    { id: 'corporate', name: 'Professionnel' },
+    { id: 'upbeat', name: 'Dynamique' },
+    { id: 'classical', name: 'Classique' }
+  ];
+
   const isPremium = mcard.plan === 'premium';
 
-  // Appliquer le thème immédiatement
-  const applyTheme = (themeId: string) => {
-    const theme = themes.find(t => t.id === themeId);
-    if (theme && isPremium) {
-      // Retirer toutes les classes de thème existantes
-      document.body.className = document.body.className.replace(/theme-\w+/g, '');
-      // Ajouter la nouvelle classe de thème
-      document.body.classList.add(`theme-${themeId}`);
-      // Définir la variable CSS
-      document.documentElement.style.setProperty('--theme-gradient', theme.gradient);
-      console.log(`Thème appliqué: ${themeId}`, theme.gradient);
-    }
-  };
-
-  // Appliquer la police immédiatement
-  const applyFont = (fontName: string) => {
-    if (isPremium) {
-      document.documentElement.style.setProperty('--custom-font', `'${fontName}', sans-serif`);
-      document.body.style.fontFamily = `'${fontName}', sans-serif`;
-      console.log(`Police appliquée: ${fontName}`);
-    }
-  };
-
-  // Appliquer les effets visuels immédiatement
-  const applyVisualEffects = (effects: typeof visualEffects) => {
-    if (isPremium) {
-      const body = document.body;
-      
-      // Particules
-      if (effects.particles) {
-        body.classList.add('particles-enabled');
-      } else {
-        body.classList.remove('particles-enabled');
-      }
-      
-      // Dégradés
-      if (effects.gradients) {
-        body.classList.add('gradients-enabled');
-      } else {
-        body.classList.remove('gradients-enabled');
-      }
-      
-      // Ombres
-      if (effects.shadows) {
-        body.classList.add('shadows-enabled');
-      } else {
-        body.classList.remove('shadows-enabled');
-      }
-      
-      console.log('Effets visuels appliqués:', effects);
-    }
-  };
-
-  // Gestionnaires d'événements
-  const handleThemeChange = (themeId: string) => {
-    setSelectedTheme(themeId);
-    applyTheme(themeId);
-    toast({
-      title: "Thème appliqué !",
-      description: `Le thème ${themes.find(t => t.id === themeId)?.name} a été activé.`
-    });
-  };
-
-  const handleFontChange = (font: string) => {
-    setCustomFont(font);
-    applyFont(font);
-    toast({
-      title: "Police changée !",
-      description: `La police ${font} a été appliquée.`
-    });
-  };
-
-  const handleVisualEffectChange = (effectType: keyof typeof visualEffects, value: boolean) => {
-    const newEffects = { ...visualEffects, [effectType]: value };
-    setVisualEffects(newEffects);
-    applyVisualEffects(newEffects);
-    
-    const effectNames = {
-      particles: 'Particules',
-      gradients: 'Dégradés',
-      shadows: 'Ombres'
-    };
-    
-    toast({
-      title: `${effectNames[effectType]} ${value ? 'activé' : 'désactivé'}`,
-      description: "L'effet a été appliqué immédiatement."
-    });
-  };
-
-  // Appliquer les effets au chargement
-  useEffect(() => {
-    if (isPremium) {
-      applyTheme(selectedTheme);
-      applyFont(customFont);
-      applyVisualEffects(visualEffects);
-    }
-  }, [isPremium]);
-
   const handleSaveChanges = () => {
+    // Simuler la sauvegarde des paramètres
     toast({
       title: "Paramètres sauvegardés !",
       description: "Vos modifications ont été appliquées avec succès."
@@ -154,23 +71,27 @@ export const MCardViewCustomization = ({
   };
 
   const handlePreview = () => {
+    // Simuler l'aperçu
+    toast({
+      title: "Aperçu généré",
+      description: "Un nouvel onglet va s'ouvrir avec l'aperçu de votre carte."
+    });
+    // Ouvrir l'aperçu dans un nouvel onglet
     window.open(`/mcard/${mcard.slug}?preview=true`, '_blank');
   };
 
-  if (!isOwner) return null;
+  if (!isOwner && !isPremium) return null;
 
   return (
-    <Card className="shadow-lg card-enhanced">
+    <Card className="shadow-lg">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Palette className="h-5 w-5 text-purple-600" />
           Personnalisation avancée
-          {isPremium && (
-            <Badge variant="secondary" className="bg-purple-100 text-purple-700">
-              <Crown className="h-3 w-3 mr-1" />
-              Premium
-            </Badge>
-          )}
+          <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+            <Crown className="h-3 w-3 mr-1" />
+            Premium
+          </Badge>
         </CardTitle>
       </CardHeader>
       
@@ -197,9 +118,9 @@ export const MCardViewCustomization = ({
           <div className="space-y-6">
             {/* Thèmes */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-purple-600" />
-                Thèmes personnalisés
+                Thèmes et couleurs personnalisés
               </h3>
               
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -211,50 +132,48 @@ export const MCardViewCustomization = ({
                         ? 'border-purple-500 shadow-lg scale-105' 
                         : 'border-gray-200 hover:border-purple-300'
                     }`}
-                    onClick={() => handleThemeChange(theme.id)}
+                    onClick={() => setSelectedTheme(theme.id)}
                   >
-                    <div 
-                      className="w-full h-20 rounded-lg mb-3"
-                      style={{ background: theme.gradient }}
-                    ></div>
+                    <div className={`w-full h-20 rounded-lg mb-3 ${theme.color}`}></div>
                     <p className="text-sm font-medium text-center">{theme.name}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Police personnalisée */}
-            <div className="p-4 bg-white/50 rounded-lg space-y-4">
-              <h4 className="font-medium flex items-center gap-2">
-                <Type className="h-5 w-5 text-indigo-600" />
-                Police personnalisée
-              </h4>
-              
-              <div>
-                <Label>Famille de police</Label>
-                <select 
-                  className="w-full mt-1 p-2 border rounded-md bg-white"
-                  value={customFont}
-                  onChange={(e) => handleFontChange(e.target.value)}
-                >
-                  {fontOptions.map(font => (
-                    <option key={font} value={font}>
-                      {font}
-                    </option>
-                  ))}
-                </select>
-                <div 
-                  className="text-sm text-gray-600 mt-2 p-2 bg-gray-50 rounded"
-                  style={{ fontFamily: `'${customFont}', sans-serif` }}
-                >
-                  Aperçu avec la police {customFont}
+            {/* Animations personnalisées */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-blue-600" />
+                  <h4 className="font-medium text-gray-900">Animations personnalisées</h4>
                 </div>
+                <Switch 
+                  checked={animations.enabled}
+                  onCheckedChange={(checked) => setAnimations(prev => ({ ...prev, enabled: checked }))}
+                />
               </div>
+              
+              {animations.enabled && (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Vitesse d'animation</Label>
+                    <Slider
+                      value={[animations.speed]}
+                      onValueChange={(value) => setAnimations(prev => ({ ...prev, speed: value[0] }))}
+                      max={100}
+                      step={10}
+                      className="mt-2"
+                    />
+                    <div className="text-xs text-gray-500 mt-1">Vitesse: {animations.speed}%</div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Effets visuels */}
-            <div className="p-4 bg-white/50 rounded-lg space-y-4">
-              <h4 className="font-medium flex items-center gap-2">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <h4 className="font-medium text-gray-900 flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-green-600" />
                 Effets visuels
               </h4>
@@ -264,7 +183,7 @@ export const MCardViewCustomization = ({
                   <Label>Particules flottantes</Label>
                   <Switch 
                     checked={visualEffects.particles}
-                    onCheckedChange={(checked) => handleVisualEffectChange('particles', checked)}
+                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, particles: checked }))}
                   />
                 </div>
                 
@@ -272,7 +191,7 @@ export const MCardViewCustomization = ({
                   <Label>Dégradés avancés</Label>
                   <Switch 
                     checked={visualEffects.gradients}
-                    onCheckedChange={(checked) => handleVisualEffectChange('gradients', checked)}
+                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, gradients: checked }))}
                   />
                 </div>
                 
@@ -280,59 +199,94 @@ export const MCardViewCustomization = ({
                   <Label>Ombres dynamiques</Label>
                   <Switch 
                     checked={visualEffects.shadows}
-                    onCheckedChange={(checked) => handleVisualEffectChange('shadows', checked)}
+                    onCheckedChange={(checked) => setVisualEffects(prev => ({ ...prev, shadows: checked }))}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Animations */}
-            <div className="p-4 bg-white/50 rounded-lg space-y-4">
+            {/* Musique d'ambiance */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-blue-600" />
-                  <h4 className="font-medium">Animations</h4>
+                  <Volume2 className="h-5 w-5 text-red-600" />
+                  <h4 className="font-medium text-gray-900">Musique d'ambiance</h4>
                 </div>
                 <Switch 
-                  checked={animations.enabled}
-                  onCheckedChange={(checked) => {
-                    setAnimations(prev => ({ ...prev, enabled: checked }));
-                    toast({
-                      title: checked ? "Animations activées" : "Animations désactivées",
-                      description: "Les animations ont été mises à jour."
-                    });
-                  }}
+                  checked={backgroundMusic.enabled}
+                  onCheckedChange={(checked) => setBackgroundMusic(prev => ({ ...prev, enabled: checked }))}
                 />
               </div>
               
-              {animations.enabled && (
-                <div>
-                  <Label>Vitesse d'animation</Label>
-                  <Slider
-                    value={[animations.speed]}
-                    onValueChange={(value) => setAnimations(prev => ({ ...prev, speed: value[0] }))}
-                    max={100}
-                    step={10}
-                    className="mt-2"
-                  />
-                  <div className="text-xs text-gray-500 mt-1">Vitesse: {animations.speed}%</div>
+              {backgroundMusic.enabled && (
+                <div className="space-y-3">
+                  <div>
+                    <Label>Piste audio</Label>
+                    <select 
+                      className="w-full mt-1 p-2 border rounded-md"
+                      value={backgroundMusic.track}
+                      onChange={(e) => setBackgroundMusic(prev => ({ ...prev, track: e.target.value }))}
+                    >
+                      {musicTracks.map(track => (
+                        <option key={track.id} value={track.id}>{track.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <Label>Volume</Label>
+                    <Slider
+                      value={[backgroundMusic.volume]}
+                      onValueChange={(value) => setBackgroundMusic(prev => ({ ...prev, volume: value[0] }))}
+                      max={100}
+                      step={5}
+                      className="mt-2"
+                    />
+                    <div className="text-xs text-gray-500 mt-1">Volume: {backgroundMusic.volume}%</div>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button variant="outline" onClick={handlePreview} className="btn-enhanced">
-                <Eye className="h-4 w-4 mr-2" />
-                Aperçu
-              </Button>
-              <Button 
-                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white btn-enhanced"
-                onClick={handleSaveChanges}
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Sauvegarder
-              </Button>
+            {/* Police personnalisée */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-4">
+              <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                <Type className="h-5 w-5 text-indigo-600" />
+                Police personnalisée
+              </h4>
+              
+              <div>
+                <Label>Famille de police</Label>
+                <select 
+                  className="w-full mt-1 p-2 border rounded-md"
+                  value={customFont}
+                  onChange={(e) => setCustomFont(e.target.value)}
+                >
+                  {fontOptions.map(font => (
+                    <option key={font} value={font} style={{ fontFamily: font }}>
+                      {font}
+                    </option>
+                  ))}
+                </select>
+                <div className="text-xs text-gray-500 mt-1">Aperçu avec la police sélectionnée</div>
+              </div>
             </div>
+
+            {isOwner && (
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={handlePreview}>
+                  <Eye className="h-4 w-4 mr-2" />
+                  Aperçu
+                </Button>
+                <Button 
+                  className="bg-gradient-to-r from-purple-500 to-blue-500 text-white"
+                  onClick={handleSaveChanges}
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Sauvegarder
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
