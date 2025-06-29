@@ -45,6 +45,8 @@ export const useNotifications = () => {
     }
   };
 
+  const refetch = fetchNotifications; // Ajouter la fonction refetch
+
   const markAsRead = async (notificationId: string) => {
     try {
       const { error } = await supabase
@@ -186,6 +188,7 @@ export const useNotifications = () => {
     unreadCount,
     loading,
     fetchNotifications,
+    refetch, // Exporter la fonction refetch
     markAsRead,
     markAllAsRead,
     deleteNotification,

@@ -43,12 +43,7 @@ export const AdminPendingMCards = () => {
           plan,
           created_at,
           slug,
-          subscription_status,
-          profiles!inner(
-            first_name,
-            last_name,
-            phone
-          )
+          subscription_status
         `)
         .eq('subscription_status', 'trial')
         .order('created_at', { ascending: false });
@@ -60,17 +55,38 @@ export const AdminPendingMCards = () => {
 
       console.log('✅ mCards trouvées:', data);
 
-      // Récupérer les emails des utilisateurs
+      // Récupérer les emails des utilisateurs de façon sécurisée
       const userIds = data?.map(card => card.user_id) || [];
-      let userEmails: Record<string, string> = {};
+      const userEmails: Record<string, string> = {};
+      const userPhones: Record<string, string> = {};
       
       if (userIds.length > 0) {
-        const { data: authData } = await supabase.auth.admin.listUsers();
-        if (authData?.users) {
-          userEmails = authData.users.reduce((acc, user) => {
-            acc[user.id] = user.email || '';
-            return acc;
-          }, {} as Record<string, string>);
+        try {
+          // Récupérer les emails via l'API auth admin
+          const { data: authData } = await supabase.auth.admin.listUsers();
+          if (authData?.users) {
+            authData.users.forEach(user => {
+              if (user.email) {
+                userEmails[user.id] = user.email;
+              }
+            });
+          }
+
+          // Récupérer les téléphones depuis la table profiles
+          const { data: profilesData } = await supabase
+            .from('profiles')
+            .select('id, phone')
+            .in('id', userIds);
+
+          if (profilesData) {
+            profilesData.forEach(profile => {
+              if (profile.phone) {
+                userPhones[profile.id] = profile.phone;
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération des données utilisateur:', error);
         }
       }
 
@@ -83,7 +99,7 @@ export const AdminPendingMCards = () => {
         created_at: card.created_at,
         slug: card.slug,
         user_email: userEmails[card.user_id] || 'Email non disponible',
-        user_phone: card.profiles?.phone || 'Téléphone non disponible'
+        user_phone: userPhones[card.user_id] || 'Téléphone non disponible'
       })) || [];
 
       console.log('🔄 Données transformées:', transformedData);
