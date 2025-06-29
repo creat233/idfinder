@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -65,7 +64,7 @@ export const AdminPendingMCards = () => {
           // Récupérer les emails via l'API auth admin
           const { data: authData } = await supabase.auth.admin.listUsers();
           if (authData?.users) {
-            authData.users.forEach(user => {
+            authData.users.forEach((user: any) => {
               if (user.email) {
                 userEmails[user.id] = user.email;
               }
