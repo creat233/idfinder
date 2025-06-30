@@ -30,12 +30,42 @@ export const AdminPendingMCards = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Récupérer toutes les mCards via une requête directe
   const { data: allMCards = [], isLoading } = useQuery({
     queryKey: ['admin-all-mcards'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_all_mcards');
+      const { data, error } = await supabase
+        .from('mcards')
+        .select(`
+          id,
+          user_id,
+          full_name,
+          plan,
+          created_at,
+          slug,
+          subscription_status,
+          subscription_expires_at,
+          profiles:user_id (
+            phone
+          )
+        `)
+        .order('subscription_status', { ascending: true })
+        .order('created_at', { ascending: true });
+
       if (error) throw error;
-      return data as PendingMCard[];
+
+      // Récupérer les emails des utilisateurs
+      const userIds = data.map(card => card.user_id);
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) throw authError;
+
+      // Mapper les emails avec les cartes
+      return data.map(card => ({
+        ...card,
+        user_email: authUsers.users.find(user => user.id === card.user_id)?.email || 'Non disponible',
+        user_phone: card.profiles?.phone || 'Non renseigné'
+      })) as PendingMCard[];
     },
   });
 
