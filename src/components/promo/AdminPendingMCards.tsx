@@ -16,6 +16,8 @@ interface PendingMCard {
   user_email: string;
   user_phone: string;
   slug: string;
+  subscription_status: string;
+  subscription_expires_at?: string;
 }
 
 const PLAN_PRICES = {
@@ -28,10 +30,10 @@ export const AdminPendingMCards = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: pendingMCards = [], isLoading } = useQuery({
-    queryKey: ['admin-pending-mcards'],
+  const { data: allMCards = [], isLoading } = useQuery({
+    queryKey: ['admin-all-mcards'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('admin_get_pending_mcards');
+      const { data, error } = await supabase.rpc('admin_get_all_mcards');
       if (error) throw error;
       return data as PendingMCard[];
     },
@@ -48,20 +50,20 @@ export const AdminPendingMCards = () => {
 
       if (data && data[0]?.success) {
         toast({
-          title: "Abonnement approuvé !",
+          title: "Carte activée !",
           description: data[0].message,
         });
-        queryClient.invalidateQueries({ queryKey: ['admin-pending-mcards'] });
+        queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] });
         queryClient.invalidateQueries({ queryKey: ['admin-revenue-stats'] });
       } else {
         throw new Error(data?.[0]?.message || "Erreur inconnue");
       }
     } catch (error: any) {
-      console.error('Erreur lors de l\'approbation:', error);
+      console.error('Erreur lors de l\'activation:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message || "Impossible d'approuver l'abonnement",
+        description: error.message || "Impossible d'activer la carte",
       });
     } finally {
       setLoading(null);
@@ -85,8 +87,9 @@ export const AdminPendingMCards = () => {
     );
   }
 
-  // Calculer le total des revenus potentiels
-  const totalPotentialRevenue = pendingMCards.reduce((total, mcard) => {
+  // Calculer le nombre de cartes non-actives et les revenus potentiels
+  const nonActiveCards = allMCards.filter(card => card.subscription_status !== 'active');
+  const totalPotentialRevenue = nonActiveCards.reduce((total, mcard) => {
     const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
     return total + (planInfo?.price || 0);
   }, 0);
@@ -94,12 +97,12 @@ export const AdminPendingMCards = () => {
   return (
     <Card>
       <AdminPendingMCardsHeader 
-        pendingCount={pendingMCards.length}
+        pendingCount={nonActiveCards.length}
         totalPotentialRevenue={totalPotentialRevenue}
       />
       <CardContent>
         <AdminPendingMCardsTable
-          pendingMCards={pendingMCards}
+          pendingMCards={allMCards}
           loading={loading}
           onApprove={handleApproveSubscription}
           onPreview={handlePreviewCard}

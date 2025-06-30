@@ -11,6 +11,8 @@ interface PendingMCard {
   user_email: string;
   user_phone: string;
   slug: string;
+  subscription_status: string;
+  subscription_expires_at?: string;
 }
 
 const PLAN_PRICES = {

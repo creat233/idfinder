@@ -21,14 +21,14 @@ export const AdminPendingMCardsHeader = ({
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">
-              mCards en attente de validation
+              Gestion des mCards
             </h2>
             <p className="text-sm text-gray-600 font-normal">
-              Confirmez les paiements mobile money pour activer les cartes
+              Activez les cartes après réception des paiements mobile money
             </p>
           </div>
           <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-            {pendingCount} en attente
+            {pendingCount} à traiter
           </Badge>
         </div>
         
@@ -43,7 +43,7 @@ export const AdminPendingMCardsHeader = ({
           {pendingCount > 0 && (
             <div className="flex items-center gap-1 text-xs text-orange-600 mt-1">
               <AlertTriangle className="h-3 w-3" />
-              <span>{pendingCount} carte{pendingCount > 1 ? 's' : ''} nécessite{pendingCount > 1 ? 'nt' : ''} une confirmation</span>
+              <span>{pendingCount} carte{pendingCount > 1 ? 's' : ''} nécessite{pendingCount > 1 ? 'nt' : ''} une activation</span>
             </div>
           )}
         </div>

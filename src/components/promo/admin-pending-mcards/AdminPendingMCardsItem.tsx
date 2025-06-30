@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Eye, User, Mail, Phone, CreditCard } from "lucide-react";
+import { CheckCircle, Eye, User, Mail, Phone, CreditCard, Calendar } from "lucide-react";
 
 interface PendingMCard {
   id: string;
@@ -12,6 +12,8 @@ interface PendingMCard {
   user_email: string;
   user_phone: string;
   slug: string;
+  subscription_status: string;
+  subscription_expires_at?: string;
 }
 
 interface AdminPendingMCardsItemProps {
@@ -29,12 +31,44 @@ export const AdminPendingMCardsItem = ({
   onApprove,
   onPreview
 }: AdminPendingMCardsItemProps) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'text-green-600 border-green-600 bg-green-50';
+      case 'pending_payment':
+        return 'text-orange-600 border-orange-600 bg-orange-50';
+      case 'trial':
+        return 'text-blue-600 border-blue-600 bg-blue-50';
+      case 'expired':
+        return 'text-red-600 border-red-600 bg-red-50';
+      default:
+        return 'text-gray-600 border-gray-600 bg-gray-50';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'Actif';
+      case 'pending_payment':
+        return 'Paiement en attente';
+      case 'trial':
+        return 'Essai gratuit';
+      case 'expired':
+        return 'Expiré';
+      default:
+        return status;
+    }
+  };
+
+  const isActive = mcard.subscription_status === 'active';
+
   return (
     <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-white">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
-          <div className="bg-blue-100 p-3 rounded-full">
-            <User className="h-6 w-6 text-blue-600" />
+          <div className={`p-3 rounded-full ${isActive ? 'bg-green-100' : 'bg-blue-100'}`}>
+            <User className={`h-6 w-6 ${isActive ? 'text-green-600' : 'text-blue-600'}`} />
           </div>
           <div>
             <h3 className="font-semibold text-xl text-gray-900">{mcard.full_name}</h3>
@@ -70,9 +104,15 @@ export const AdminPendingMCardsItem = ({
           <p className="text-xs text-gray-500">
             Créée le {new Date(mcard.created_at).toLocaleDateString('fr-FR')}
           </p>
-          <Badge variant="outline" className="text-orange-600 border-orange-600 bg-orange-50 mt-1">
-            Paiement en attente
+          <Badge variant="outline" className={getStatusColor(mcard.subscription_status)}>
+            {getStatusText(mcard.subscription_status)}
           </Badge>
+          {mcard.subscription_expires_at && isActive && (
+            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+              <Calendar className="h-3 w-3" />
+              <span>Expire le {new Date(mcard.subscription_expires_at).toLocaleDateString('fr-FR')}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -85,23 +125,33 @@ export const AdminPendingMCardsItem = ({
           <Eye className="h-4 w-4 mr-2" />
           Prévisualiser
         </Button>
-        <Button
-          onClick={() => onApprove(mcard.id)}
-          disabled={loading === mcard.id}
-          className="bg-green-600 hover:bg-green-700 text-white"
-        >
-          {loading === mcard.id ? (
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Activation...
-            </div>
-          ) : (
-            <>
-              <CreditCard className="h-4 w-4 mr-2" />
-              Confirmer paiement ({planInfo?.price.toLocaleString()} FCFA)
-            </>
-          )}
-        </Button>
+        
+        {!isActive && (
+          <Button
+            onClick={() => onApprove(mcard.id)}
+            disabled={loading === mcard.id}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            {loading === mcard.id ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Activation...
+              </div>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Activer la carte ({planInfo?.price.toLocaleString()} FCFA)
+              </>
+            )}
+          </Button>
+        )}
+        
+        {isActive && (
+          <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50 px-4 py-2">
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Carte activée
+          </Badge>
+        )}
       </div>
     </div>
   );
