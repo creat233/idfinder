@@ -42,6 +42,14 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
   const navigate = useNavigate();
 
   const handleCopyLink = () => {
+    if (mcard.subscription_status === 'pending_payment') {
+      toast({ 
+        title: "Lien non disponible", 
+        description: "Votre carte doit être activée par un administrateur avant de pouvoir partager le lien.",
+        variant: "destructive"
+      });
+      return;
+    }
     const url = `${window.location.origin}/m/${mcard.slug}`;
     navigator.clipboard.writeText(url);
     toast({ title: t('linkCopied') });
@@ -68,7 +76,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
     switch (status) {
         case 'active': return t('active');
         case 'trial': return t('trial');
-        case 'pending_payment': return t('pendingPayment');
+        case 'pending_payment': return 'Paiement en attente';
         case 'expired': return t('expired');
         default: return status || 'N/A';
     }
@@ -122,12 +130,16 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
                                 <Edit className="mr-2 h-4 w-4" />
                                 {t('edit')}
                             </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={(e) => {
-                              e.preventDefault();
-                              handleCopyLink();
-                            }}>
+                            <DropdownMenuItem 
+                              onSelect={(e) => {
+                                e.preventDefault();
+                                handleCopyLink();
+                              }}
+                              disabled={mcard.subscription_status === 'pending_payment'}
+                            >
                                 <Copy className="mr-2 h-4 w-4" />
                                 {t('copyLink')}
+                                {mcard.subscription_status === 'pending_payment' && ' (Indisponible)'}
                             </DropdownMenuItem>
                             <AlertDialogTrigger asChild>
                                 <DropdownMenuItem className="text-red-500" onSelect={(e) => e.preventDefault()}>
@@ -154,6 +166,13 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
       <CardContent>
         {mcard.description && <p className="text-sm mb-2">{mcard.description}</p>}
         <p className="text-sm text-muted-foreground">URL: /m/{mcard.slug}</p>
+        {mcard.subscription_status === 'pending_payment' && (
+          <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-md">
+            <p className="text-sm text-orange-800">
+              ⏳ Votre carte est en attente d'activation. Vous pouvez la modifier mais ne pouvez pas encore partager le lien ou le QR code.
+            </p>
+          </div>
+        )}
       </CardContent>
       <CardFooter className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-wrap">

@@ -40,6 +40,8 @@ const MCardView = () => {
     return <MCardViewNotFound />;
   }
 
+  const isPendingPayment = mcard.subscription_status === 'pending_payment';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
@@ -47,9 +49,10 @@ const MCardView = () => {
         isOwner={isOwner}
         showQRCode={showQRCode}
         viewCount={viewCount}
+        subscriptionStatus={mcard.subscription_status}
         onEdit={handleEdit}
         onToggleQRCode={() => setShowQRCode(!showQRCode)}
-        onShare={() => setIsShareDialogOpen(true)}
+        onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
       />
 
       {/* Main Content */}
@@ -63,19 +66,21 @@ const MCardView = () => {
             </Alert>
           )}
 
-          {/* QR Code Section */}
-          <MCardViewQRSection
-            showQRCode={showQRCode}
-            url={window.location.href}
-            cardName={mcard.full_name}
-            onClose={() => setShowQRCode(false)}
-          />
+          {/* QR Code Section - seulement si pas en attente de paiement */}
+          {!isPendingPayment && (
+            <MCardViewQRSection
+              showQRCode={showQRCode}
+              url={window.location.href}
+              cardName={mcard.full_name}
+              onClose={() => setShowQRCode(false)}
+            />
+          )}
 
           {/* Profile Card */}
           <MCardViewProfile
             mcard={mcard}
             onCopyLink={handleCopyLink}
-            onShare={() => setIsShareDialogOpen(true)}
+            onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
             isOwner={isOwner}
           />
 
@@ -115,12 +120,14 @@ const MCardView = () => {
         </div>
       </div>
 
-      {/* Share Dialog */}
-      <MCardShareDialog 
-        isOpen={isShareDialogOpen}
-        onOpenChange={setIsShareDialogOpen}
-        mcard={mcard}
-      />
+      {/* Share Dialog - seulement si pas en attente de paiement */}
+      {!isPendingPayment && (
+        <MCardShareDialog 
+          isOpen={isShareDialogOpen}
+          onOpenChange={setIsShareDialogOpen}
+          mcard={mcard}
+        />
+      )}
     </div>
   );
 };

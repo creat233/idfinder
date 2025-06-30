@@ -7,6 +7,7 @@ interface MCardViewHeaderProps {
   isOwner: boolean;
   showQRCode: boolean;
   viewCount: number;
+  subscriptionStatus?: string;
   onEdit: () => void;
   onToggleQRCode: () => void;
   onShare: () => void;
@@ -16,11 +17,13 @@ export const MCardViewHeader = ({
   isOwner, 
   showQRCode, 
   viewCount,
+  subscriptionStatus,
   onEdit, 
   onToggleQRCode, 
   onShare 
 }: MCardViewHeaderProps) => {
   const navigate = useNavigate();
+  const isPendingPayment = subscriptionStatus === 'pending_payment';
 
   return (
     <div className="bg-white shadow-sm border-b">
@@ -48,11 +51,22 @@ export const MCardViewHeader = ({
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Compteur de vues */}
-            <div className="flex items-center gap-1 text-gray-600">
-              <Eye className="h-4 w-4" />
-              <span className="text-sm">{viewCount.toLocaleString()} vues</span>
-            </div>
+            {/* Message d'attente si en pending_payment */}
+            {isPendingPayment && (
+              <div className="bg-orange-100 border border-orange-200 rounded-lg px-3 py-2">
+                <span className="text-sm text-orange-800 font-medium">
+                  ⏳ Carte en attente d'activation
+                </span>
+              </div>
+            )}
+
+            {/* Compteur de vues - seulement si la carte est active */}
+            {!isPendingPayment && (
+              <div className="flex items-center gap-1 text-gray-600">
+                <Eye className="h-4 w-4" />
+                <span className="text-sm">{viewCount.toLocaleString()} vues</span>
+              </div>
+            )}
 
             {/* Boutons d'action */}
             <div className="flex items-center gap-2">
@@ -62,11 +76,20 @@ export const MCardViewHeader = ({
                   Modifier
                 </Button>
               )}
-              <Button variant="outline" onClick={onToggleQRCode}>
+              <Button 
+                variant="outline" 
+                onClick={onToggleQRCode}
+                disabled={isPendingPayment}
+                title={isPendingPayment ? "QR Code disponible après activation" : "Afficher le QR Code"}
+              >
                 <QrCode className="h-4 w-4 mr-2" />
                 QR Code
               </Button>
-              <Button onClick={onShare}>
+              <Button 
+                onClick={onShare}
+                disabled={isPendingPayment}
+                title={isPendingPayment ? "Partage disponible après activation" : "Partager la carte"}
+              >
                 <Share2 className="h-4 w-4 mr-2" />
                 Partager
               </Button>
