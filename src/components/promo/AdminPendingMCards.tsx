@@ -34,7 +34,8 @@ export const AdminPendingMCards = () => {
   const { data: allMCards = [], isLoading } = useQuery({
     queryKey: ['admin-all-mcards'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // D'abord récupérer les mCards avec les profils
+      const { data: mcardsData, error: mcardsError } = await supabase
         .from('mcards')
         .select(`
           id,
@@ -44,28 +45,38 @@ export const AdminPendingMCards = () => {
           created_at,
           slug,
           subscription_status,
-          subscription_expires_at,
-          profiles:user_id (
-            phone
-          )
+          subscription_expires_at
         `)
         .order('subscription_status', { ascending: true })
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
+      if (mcardsError) throw mcardsError;
 
-      // Récupérer les emails des utilisateurs
-      const userIds = data.map(card => card.user_id);
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      // Récupérer les profils des utilisateurs
+      const userIds = mcardsData.map(card => card.user_id);
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, phone')
+        .in('id', userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Récupérer les emails des utilisateurs via auth.admin
+      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
       
       if (authError) throw authError;
 
-      // Mapper les emails avec les cartes
-      return data.map(card => ({
-        ...card,
-        user_email: authUsers.users.find(user => user.id === card.user_id)?.email || 'Non disponible',
-        user_phone: card.profiles?.phone || 'Non renseigné'
-      })) as PendingMCard[];
+      // Mapper toutes les données
+      return mcardsData.map(card => {
+        const profile = profilesData.find(p => p.id === card.user_id);
+        const authUser = authData.users.find(u => u.id === card.user_id);
+        
+        return {
+          ...card,
+          user_email: authUser?.email || 'Non disponible',
+          user_phone: profile?.phone || 'Non renseigné'
+        };
+      }) as PendingMCard[];
     },
   });
 
