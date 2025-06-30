@@ -35,7 +35,8 @@ export const AdminPendingMCards = () => {
     queryKey: ['admin-all-mcards'],
     queryFn: async () => {
       console.log('Appel de admin_get_all_mcards...');
-      const { data, error } = await supabase.rpc('admin_get_all_mcards');
+      // Use type assertion to work around temporary type mismatch
+      const { data, error } = await (supabase.rpc as any)('admin_get_all_mcards');
 
       if (error) {
         console.error('Erreur admin_get_all_mcards:', error);

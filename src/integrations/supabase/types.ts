@@ -693,6 +693,21 @@ export type Database = {
           message: string
         }[]
       }
+      admin_get_all_mcards: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          full_name: string
+          plan: string
+          created_at: string
+          user_email: string
+          user_phone: string
+          slug: string
+          subscription_status: string
+          subscription_expires_at: string
+        }[]
+      }
       admin_get_all_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: {
