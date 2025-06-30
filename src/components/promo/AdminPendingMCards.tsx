@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -29,53 +30,20 @@ export const AdminPendingMCards = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Récupérer toutes les mCards via une requête directe
+  // Utiliser la fonction admin_get_all_mcards pour récupérer toutes les mCards
   const { data: allMCards = [], isLoading } = useQuery({
     queryKey: ['admin-all-mcards'],
     queryFn: async () => {
-      // D'abord récupérer les mCards avec les profils
-      const { data: mcardsData, error: mcardsError } = await supabase
-        .from('mcards')
-        .select(`
-          id,
-          user_id,
-          full_name,
-          plan,
-          created_at,
-          slug,
-          subscription_status,
-          subscription_expires_at
-        `)
-        .order('subscription_status', { ascending: true })
-        .order('created_at', { ascending: true });
+      console.log('Appel de admin_get_all_mcards...');
+      const { data, error } = await supabase.rpc('admin_get_all_mcards');
 
-      if (mcardsError) throw mcardsError;
+      if (error) {
+        console.error('Erreur admin_get_all_mcards:', error);
+        throw error;
+      }
 
-      // Récupérer les profils des utilisateurs
-      const userIds = mcardsData.map(card => card.user_id);
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, phone')
-        .in('id', userIds);
-
-      if (profilesError) throw profilesError;
-
-      // Récupérer les emails des utilisateurs via auth.admin
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) throw authError;
-
-      // Mapper toutes les données
-      return mcardsData.map(card => {
-        const profile = profilesData ? profilesData.find(p => p?.id === card.user_id) : null;
-        const authUser = authData?.users ? authData.users.find(u => u?.id === card.user_id) : null;
-        
-        return {
-          ...card,
-          user_email: authUser?.email || 'Non disponible',
-          user_phone: profile?.phone || 'Non renseigné'
-        };
-      }) as PendingMCard[];
+      console.log('Données reçues de admin_get_all_mcards:', data);
+      return (data || []) as PendingMCard[];
     },
   });
 
@@ -133,6 +101,9 @@ export const AdminPendingMCards = () => {
     const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
     return total + (planInfo?.price || 0);
   }, 0);
+
+  console.log('Cartes non-actives:', nonActiveCards);
+  console.log('Toutes les cartes:', allMCards);
 
   return (
     <Card>
