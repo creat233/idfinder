@@ -68,8 +68,8 @@ export const AdminPendingMCards = () => {
 
       // Mapper toutes les données
       return mcardsData.map(card => {
-        const profile = profilesData.find(p => p.id === card.user_id);
-        const authUser = authData.users.find(u => u.id === card.user_id);
+        const profile = profilesData?.find(p => p.id === card.user_id);
+        const authUser = authData?.users?.find(u => u.id === card.user_id);
         
         return {
           ...card,
