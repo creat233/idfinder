@@ -12,16 +12,30 @@ export interface MCardData {
 export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
   console.log('Fetching mCard by slug:', slug);
   
-  const { data, error } = await supabase
+  // First try with is_published = true
+  let { data, error } = await supabase
     .from('mcards')
     .select('*')
     .eq('slug', slug)
     .eq('is_published', true)
     .single();
 
-  if (error) {
-    console.error('Error fetching mCard:', error);
-    return null;
+  // If not found and published, try without is_published filter (for pending cards)
+  if (error || !data) {
+    console.log('Card not found with is_published=true, trying without filter...');
+    const { data: unpublishedData, error: unpublishedError } = await supabase
+      .from('mcards')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+    
+    if (unpublishedError) {
+      console.error('Error fetching mCard (both attempts):', error, unpublishedError);
+      return null;
+    }
+    
+    data = unpublishedData;
+    console.log('Found unpublished card:', data);
   }
 
   console.log('MCard data retrieved:', data);

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
 import { createDefaultCard, createDefaultStatuses, createDefaultProducts } from '@/utils/mcardDefaults';
@@ -23,7 +22,7 @@ export const useMCardData = () => {
 
   const fetchMCard = async (slug?: string) => {
     try {
-      console.log('Fetching mCard for slug:', slug);
+      console.log('Starting fetchMCard for slug:', slug);
       
       if (!slug) {
         console.log('No slug provided, using default card');
@@ -52,48 +51,48 @@ export const useMCardData = () => {
         return;
       }
 
-      console.log('Fetching real mCard data...');
+      console.log('Fetching real mCard data for slug:', slug);
       const mcardData = await fetchMCardBySlug(slug);
       
       if (!mcardData) {
         console.log('No mCard found for slug:', slug);
         setError(`Carte non trouvée pour le slug: ${slug}`);
-        const defaultCard = createDefaultCard();
-        setMCard(defaultCard);
-        setStatuses(createDefaultStatuses());
-        setProducts(createDefaultProducts());
-        setViewCount(defaultCard.view_count || 0);
-      } else {
-        console.log('MCard found:', mcardData);
-        setMCard(mcardData);
-        setViewCount(mcardData.view_count || 0);
-        setError(null);
+        setLoading(false);
+        return;
+      }
+
+      console.log('MCard found:', mcardData);
+      setMCard(mcardData);
+      setViewCount(mcardData.view_count || 0);
+      setError(null);
+      
+      const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
+      setIsOwner(ownershipStatus);
+      console.log('Is owner:', ownershipStatus);
+      
+      try {
+        const [statusesData, productsData, reviewsData] = await Promise.all([
+          fetchMCardStatuses(mcardData.id),
+          fetchMCardProducts(mcardData.id),
+          fetchAllMCardReviews(mcardData.id, ownershipStatus)
+        ]);
         
-        const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
-        setIsOwner(ownershipStatus);
-        console.log('Is owner:', ownershipStatus);
+        console.log('Statuses loaded:', statusesData);
+        console.log('Products loaded:', productsData);
+        console.log('Reviews loaded:', reviewsData);
         
-        try {
-          const [statusesData, productsData, reviewsData] = await Promise.all([
-            fetchMCardStatuses(mcardData.id),
-            fetchMCardProducts(mcardData.id),
-            fetchAllMCardReviews(mcardData.id, ownershipStatus)
-          ]);
-          
-          console.log('Statuses loaded:', statusesData);
-          console.log('Products loaded:', productsData);
-          console.log('Reviews loaded:', reviewsData);
-          
-          setStatuses(statusesData);
-          setProducts(productsData);
-          setReviews(reviewsData);
-        } catch (dataError) {
-          console.error('Error loading data:', dataError);
-          setStatuses([]);
-          setProducts([]);
-          setReviews([]);
-        }
-        
+        setStatuses(statusesData);
+        setProducts(productsData);
+        setReviews(reviewsData);
+      } catch (dataError) {
+        console.error('Error loading additional data:', dataError);
+        setStatuses([]);
+        setProducts([]);
+        setReviews([]);
+      }
+      
+      // Only increment view count for published cards
+      if (mcardData.is_published) {
         try {
           const newViewCount = await incrementViewCount(slug, mcardData.view_count || 0);
           setViewCount(newViewCount);
@@ -104,12 +103,6 @@ export const useMCardData = () => {
     } catch (error: any) {
       console.error('Erreur lors de la récupération de la carte:', error);
       setError(`Erreur lors du chargement: ${error.message}`);
-      
-      const defaultCard = createDefaultCard();
-      setMCard(defaultCard);
-      setStatuses(createDefaultStatuses());
-      setProducts(createDefaultProducts());
-      setViewCount(defaultCard.view_count || 0);
     } finally {
       setLoading(false);
     }
