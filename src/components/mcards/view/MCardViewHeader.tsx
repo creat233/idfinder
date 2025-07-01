@@ -60,13 +60,11 @@ export const MCardViewHeader = ({
               </div>
             )}
 
-            {/* Compteur de vues - seulement si la carte est active */}
-            {!isPendingPayment && (
-              <div className="flex items-center gap-1 text-gray-600">
-                <Eye className="h-4 w-4" />
-                <span className="text-sm">{viewCount.toLocaleString()} vues</span>
-              </div>
-            )}
+            {/* Compteur de vues - visible pour toutes les cartes */}
+            <div className="flex items-center gap-1 text-gray-600">
+              <Eye className="h-4 w-4" />
+              <span className="text-sm">{viewCount.toLocaleString()} vues</span>
+            </div>
 
             {/* Boutons d'action */}
             <div className="flex items-center gap-2">
