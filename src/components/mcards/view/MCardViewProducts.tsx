@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Edit, ShoppingCart, Share2, MessageCircle } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
+import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewProductsProps {
@@ -26,9 +27,12 @@ export const MCardViewProducts = ({
 }: MCardViewProductsProps) => {
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const activeProducts = products.filter(product => product.is_active);
+  const isPremium = mcardPlan === 'premium';
+  const canAddProduct = isOwner && isPremium;
 
   const handleProductClick = (product: MCardProduct) => {
     setSelectedProduct(product);
@@ -38,6 +42,14 @@ export const MCardViewProducts = ({
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setSelectedProduct(null);
+  };
+
+  const handleAddProduct = () => {
+    setIsAddDialogOpen(true);
+  };
+
+  const handleProductAdded = () => {
+    onProductsChange?.();
   };
 
   const handleShareProduct = (product: MCardProduct) => {
@@ -64,7 +76,7 @@ export const MCardViewProducts = ({
     window.open(whatsappUrl, '_blank');
   };
 
-  if (activeProducts.length === 0 && !isOwner) return null;
+  if (activeProducts.length === 0 && !canAddProduct) return null;
 
   return (
     <>
@@ -73,21 +85,32 @@ export const MCardViewProducts = ({
           <h3 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🛍️ Produits & Services
           </h3>
-          {isOwner && (
+          {canAddProduct && (
             <Button 
               size="sm" 
               variant="outline"
+              onClick={handleAddProduct}
               className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 mr-1" />
-              Ajouter
+              Ajouter un produit
             </Button>
           )}
         </div>
 
         {activeProducts.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <p>Aucun produit ou service disponible</p>
+            {canAddProduct ? (
+              <div>
+                <p className="mb-4">Aucun produit ou service disponible</p>
+                <Button onClick={handleAddProduct} className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter votre premier produit
+                </Button>
+              </div>
+            ) : (
+              <p>Aucun produit ou service disponible</p>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
@@ -171,6 +194,15 @@ export const MCardViewProducts = ({
         onClose={handleCloseDialog}
         phoneNumber={phoneNumber}
       />
+
+      {canAddProduct && (
+        <MCardViewAddProductDialog
+          isOpen={isAddDialogOpen}
+          onClose={() => setIsAddDialogOpen(false)}
+          mcardId={mcardId}
+          onProductAdded={handleProductAdded}
+        />
+      )}
     </>
   );
 };

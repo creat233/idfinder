@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Clock, Plus, Edit, Share2, MessageCircle, Send } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
 import { MCardViewStatusDialog } from './MCardViewStatusDialog';
+import { MCardViewAddStatusDialog } from './MCardViewAddStatusDialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewStatusesProps {
@@ -26,6 +27,7 @@ export const MCardViewStatuses = ({
 }: MCardViewStatusesProps) => {
   const [selectedStatus, setSelectedStatus] = useState<MCardStatus | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const activeStatuses = statuses.filter(status => {
@@ -33,6 +35,9 @@ export const MCardViewStatuses = ({
     if (!status.expires_at) return true;
     return new Date(status.expires_at) > new Date();
   });
+
+  const isPremium = mcardPlan === 'premium';
+  const canAddStatus = isOwner && isPremium;
 
   const handleStatusClick = (status: MCardStatus) => {
     setSelectedStatus(status);
@@ -42,6 +47,14 @@ export const MCardViewStatuses = ({
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setSelectedStatus(null);
+  };
+
+  const handleAddStatus = () => {
+    setIsAddDialogOpen(true);
+  };
+
+  const handleStatusAdded = () => {
+    onStatusesChange?.();
   };
 
   const handleShareStatus = (status: MCardStatus) => {
@@ -68,7 +81,7 @@ export const MCardViewStatuses = ({
     window.open(whatsappUrl, '_blank');
   };
 
-  if (activeStatuses.length === 0 && !isOwner) return null;
+  if (activeStatuses.length === 0 && !canAddStatus) return null;
 
   return (
     <>
@@ -77,21 +90,32 @@ export const MCardViewStatuses = ({
           <h3 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🟢 Statuts & Disponibilités
           </h3>
-          {isOwner && (
+          {canAddStatus && (
             <Button 
               size="sm" 
               variant="outline"
+              onClick={handleAddStatus}
               className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 mr-1" />
-              Ajouter
+              Ajouter un statut
             </Button>
           )}
         </div>
 
         {activeStatuses.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <p>Aucun statut actif pour le moment</p>
+            {canAddStatus ? (
+              <div>
+                <p className="mb-4">Aucun statut actif pour le moment</p>
+                <Button onClick={handleAddStatus} className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter votre premier statut
+                </Button>
+              </div>
+            ) : (
+              <p>Aucun statut actif pour le moment</p>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -179,6 +203,15 @@ export const MCardViewStatuses = ({
         onClose={handleCloseDialog}
         phoneNumber={phoneNumber}
       />
+
+      {canAddStatus && (
+        <MCardViewAddStatusDialog
+          isOpen={isAddDialogOpen}
+          onClose={() => setIsAddDialogOpen(false)}
+          mcardId={mcardId}
+          onStatusAdded={handleStatusAdded}
+        />
+      )}
     </>
   );
 };
