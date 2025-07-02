@@ -9,13 +9,15 @@ import { MCardShowcase } from '@/components/mcards/MCardShowcase';
 import { MCardCreationPage } from '@/components/mcards/MCardCreationPage';
 import { MCardPricing } from '@/components/mcards/MCardPricing';
 import { MCardsHeader } from '@/components/mcards/MCardsHeader';
+import { MCardFormDialog } from '@/components/mcards/MCardFormDialog';
 import { useMCardsNotificationHandler } from '@/hooks/useMCardsNotificationHandler';
 import { useMCardsUpgradeHandler } from '@/hooks/useMCardsUpgradeHandler';
+import { useMCardsFormHandler } from '@/hooks/useMCardsFormHandler';
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 
 const MCards = () => {
-  const { mcards, loading, requestPlanUpgrade } = useMCards();
+  const { mcards, loading, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
   const { t } = useTranslation();
   const [showCreationPage, setShowCreationPage] = useState(false);
 
@@ -29,6 +31,24 @@ const MCards = () => {
     handleInitiateUpgrade,
     handleRequestUpgrade,
   } = useMCardsUpgradeHandler();
+
+  // Handle form management
+  const {
+    isFormOpen,
+    editingMCard,
+    planForNewCard,
+    isCreating,
+    formLoading,
+    handleOpenEdit,
+    handleStartCreationFlow: handleFormCreationFlow,
+    handleFormSubmit,
+    handleFormOpenChange,
+  } = useMCardsFormHandler({ 
+    mcards, 
+    createMCard, 
+    updateMCard, 
+    loading 
+  });
 
   // Wrapper function to handle the upgrade request with the correct signature
   const handleUpgradeRequest = async (mcardId: string, plan: 'essential' | 'premium') => {
@@ -97,16 +117,21 @@ const MCards = () => {
             <MCardsList
               mcards={mcards}
               loading={loading}
-              deleteMCard={async (id: string) => {
-                // Cette fonction sera gérée par le hook
-              }}
+              deleteMCard={deleteMCard}
               onStartUpgradeFlow={handleInitiateUpgrade}
-              onEdit={(mcard) => {
-                // Cette fonction sera gérée par le hook
-              }}
+              onEdit={handleOpenEdit}
             />
           </div>
         </div>
+        
+        {/* Form Dialog for Creating/Editing MCards */}
+        <MCardFormDialog
+          isOpen={isFormOpen}
+          onOpenChange={handleFormOpenChange}
+          onSubmit={handleFormSubmit}
+          loading={formLoading}
+          mcard={editingMCard}
+        />
       </main>
     </div>
   );
