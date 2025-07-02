@@ -1,71 +1,104 @@
 
 export const mcardsTranslations = {
-  en: {
-    // Basic
-    digitalBusinessCards: "Digital Business Cards",
-    createShareConnect: "Create, Share, Connect",
-    views: "views",
-    mCardCreatedSuccess: "mCard created successfully",
-    mCardUpdatedSuccess: "mCard updated successfully",
-    mCardDeletedSuccess: "mCard deleted successfully",
-    mCardError: "An error occurred",
-    
-    // Plans
-    planFree: "Free",
-    planEssential: "Essential", 
-    planPremium: "Premium",
-    planUpgradeRequestSent: "Upgrade request sent",
-    planUpgradeRequestSentDescription: "Your request to upgrade to {planName} has been sent to administrators",
-    
-    // Subscription
-    subscriptionActive: "Active",
-    subscriptionExpired: "Expired", 
-    subscriptionTrial: "Trial",
-    subscriptionPendingPayment: "Pending Payment",
-    
-    // Actions
-    editCard: "Edit Card",
-    deleteCard: "Delete Card",
-    viewCard: "View Card",
-    shareCard: "Share Card",
-    
-    // Status
-    published: "Published",
-    draft: "Draft",
-    private: "Private"
+  // Basic
+  digitalBusinessCards: {
+    en: "Digital Business Cards",
+    fr: "Cartes de Visite Numériques"
   },
-  fr: {
-    // Basic
-    digitalBusinessCards: "Cartes de Visite Numériques",
-    createShareConnect: "Créer, Partager, Connecter", 
-    views: "vues",
-    mCardCreatedSuccess: "mCard créée avec succès",
-    mCardUpdatedSuccess: "mCard mise à jour avec succès",
-    mCardDeletedSuccess: "mCard supprimée avec succès",
-    mCardError: "Une erreur s'est produite",
-    
-    // Plans
-    planFree: "Gratuit",
-    planEssential: "Essentiel",
-    planPremium: "Premium", 
-    planUpgradeRequestSent: "Demande de mise à niveau envoyée",
-    planUpgradeRequestSentDescription: "Votre demande de mise à niveau vers {planName} a été envoyée aux administrateurs",
-    
-    // Subscription
-    subscriptionActive: "Actif",
-    subscriptionExpired: "Expiré",
-    subscriptionTrial: "Essai",
-    subscriptionPendingPayment: "En attente de paiement",
-    
-    // Actions
-    editCard: "Modifier la carte",
-    deleteCard: "Supprimer la carte", 
-    viewCard: "Voir la carte",
-    shareCard: "Partager la carte",
-    
-    // Status
-    published: "Publié",
-    draft: "Brouillon",
-    private: "Privé"
+  createShareConnect: {
+    en: "Create, Share, Connect",
+    fr: "Créer, Partager, Connecter"
+  },
+  views: {
+    en: "views",
+    fr: "vues"
+  },
+  mCardCreatedSuccess: {
+    en: "mCard created successfully",
+    fr: "mCard créée avec succès"
+  },
+  mCardUpdatedSuccess: {
+    en: "mCard updated successfully", 
+    fr: "mCard mise à jour avec succès"
+  },
+  mCardDeletedSuccess: {
+    en: "mCard deleted successfully",
+    fr: "mCard supprimée avec succès"
+  },
+  mCardError: {
+    en: "An error occurred",
+    fr: "Une erreur s'est produite"
+  },
+  
+  // Plans
+  planFree: {
+    en: "Free",
+    fr: "Gratuit"
+  },
+  planEssential: {
+    en: "Essential",
+    fr: "Essentiel"
+  },
+  planPremium: {
+    en: "Premium",
+    fr: "Premium"
+  },
+  planUpgradeRequestSent: {
+    en: "Upgrade request sent",
+    fr: "Demande de mise à niveau envoyée"
+  },
+  planUpgradeRequestSentDescription: {
+    en: "Your request to upgrade to {planName} has been sent to administrators",
+    fr: "Votre demande de mise à niveau vers {planName} a été envoyée aux administrateurs"
+  },
+  
+  // Subscription
+  subscriptionActive: {
+    en: "Active",
+    fr: "Actif"
+  },
+  subscriptionExpired: {
+    en: "Expired",
+    fr: "Expiré"
+  },
+  subscriptionTrial: {
+    en: "Trial",
+    fr: "Essai"
+  },
+  subscriptionPendingPayment: {
+    en: "Pending Payment",
+    fr: "En attente de paiement"
+  },
+  
+  // Actions
+  editCard: {
+    en: "Edit Card",
+    fr: "Modifier la carte"
+  },
+  deleteCard: {
+    en: "Delete Card",
+    fr: "Supprimer la carte"
+  },
+  viewCard: {
+    en: "View Card",
+    fr: "Voir la carte"
+  },
+  shareCard: {
+    en: "Share Card",
+    fr: "Partager la carte"
+  },
+  
+  // Status
+  published: {
+    en: "Published",
+    fr: "Publié"
+  },
+  draft: {
+    en: "Draft",
+    fr: "Brouillon"
+  },
+  private: {
+    en: "Private",
+    fr: "Privé"
   }
 };
