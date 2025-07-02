@@ -15,6 +15,7 @@ import { AdminSettings } from "@/components/promo/AdminSettings";
 import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
+import { AdminEmailSettings } from "@/components/promo/AdminEmailSettings";
 
 const AdminPromoCodes = () => {
   return (
@@ -27,7 +28,7 @@ const AdminPromoCodes = () => {
           </h1>
           
           <Tabs defaultValue="mcards" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-11 mb-8">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 mb-8">
               <TabsTrigger value="mcards">mCards</TabsTrigger>
               <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
               <TabsTrigger value="codes-promo">Codes</TabsTrigger>
@@ -36,6 +37,7 @@ const AdminPromoCodes = () => {
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="utilisateurs">Utilisateurs</TabsTrigger>
               <TabsTrigger value="emails">Emails</TabsTrigger>
+              <TabsTrigger value="email-config">Config Email</TabsTrigger>
               <TabsTrigger value="audit">Audit</TabsTrigger>
               <TabsTrigger value="publicites">Publicités</TabsTrigger>
               <TabsTrigger value="parametres">Paramètres</TabsTrigger>
@@ -77,6 +79,10 @@ const AdminPromoCodes = () => {
                 <AdminBulkEmailSender />
                 <AdminSingleEmailSender />
               </div>
+            </TabsContent>
+
+            <TabsContent value="email-config">
+              <AdminEmailSettings />
             </TabsContent>
 
             <TabsContent value="audit">

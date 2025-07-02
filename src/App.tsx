@@ -4,27 +4,23 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { AdminRoute } from "@/components/AdminRoute";
+import { TranslationProvider } from "./providers/TranslationProvider";
 import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import Auth from "./pages/Auth";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import MyCards from "./pages/MyCards";
+import Profile from "./pages/Profile";
+import Support from "./pages/Support";
 import SignalerCarte from "./pages/SignalerCarte";
 import RechercheResultat from "./pages/RechercheResultat";
-import Profile from "./pages/Profile";
-import MyCards from "./pages/MyCards";
-import PromoCodes from "./pages/PromoCodes";
-import AdminPromoCodes from "./pages/AdminPromoCodes";
 import NumeroUrgence from "./pages/NumeroUrgence";
-import Support from "./pages/Support";
+import Notifications from "./pages/Notifications";
+import PromoCodes from "./pages/PromoCodes";
 import Demo from "./pages/Demo";
 import About from "./pages/About";
-import Notifications from "./pages/Notifications";
 import MCards from "./pages/MCards";
 import MCardView from "./pages/MCardView";
-import { TranslationProvider } from "@/providers/TranslationProvider";
-import ScrollToTop from "@/components/ScrollToTop";
+import AdminPromoCodes from "./pages/AdminPromoCodes";
 
 const queryClient = new QueryClient();
 
@@ -32,73 +28,31 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
-        <BrowserRouter>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <ScrollToTop />
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/my-cards" element={<MyCards />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/signaler-carte" element={<SignalerCarte />} />
+              <Route path="/recherche-resultat" element={<RechercheResultat />} />
+              <Route path="/numero-urgence" element={<NumeroUrgence />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/codes-promo" element={<PromoCodes />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/about" element={<About />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/urgence" element={<NumeroUrgence />} />
-              <Route path="/numeros-urgence" element={<NumeroUrgence />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
-              
-              {/* Route publique pour visualiser les mCards */}
+              <Route path="/mcards" element={<MCards />} />
               <Route path="/mcard/:slug" element={<MCardView />} />
-              
-              {/* Routes protégées pour utilisateurs normaux */}
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/signaler" element={
-                <ProtectedRoute>
-                  <SignalerCarte />
-                </ProtectedRoute>
-              } />
-              <Route path="/mes-cartes" element={
-                <ProtectedRoute>
-                  <MyCards />
-                </ProtectedRoute>
-              } />
-              <Route path="/codes-promo" element={
-                <ProtectedRoute>
-                  <PromoCodes />
-                </ProtectedRoute>
-              } />
-              <Route path="/mcards" element={
-                <ProtectedRoute>
-                  <MCards />
-                </ProtectedRoute>
-              } />
-              
-              {/* Routes accessibles aux admins ET utilisateurs normaux */}
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } />
-              <Route path="/notifications" element={
-                <ProtectedRoute>
-                  <Notifications />
-                </ProtectedRoute>
-              } />
-              
-              {/* Routes d'administration - STRICTEMENT pour admins */}
-              <Route path="/admin/codes-promo" element={
-                <AdminRoute>
-                  <AdminPromoCodes />
-                </AdminRoute>
-              } />
+              <Route path="/m/:slug" element={<MCardView />} />
+              <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
             </Routes>
-          </TooltipProvider>
-        </BrowserRouter>
+          </BrowserRouter>
+        </TooltipProvider>
       </TranslationProvider>
     </QueryClientProvider>
   );
