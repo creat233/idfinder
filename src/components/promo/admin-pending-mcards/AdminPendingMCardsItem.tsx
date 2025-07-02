@@ -119,11 +119,11 @@ export const AdminPendingMCardsItem = ({
       <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
         <Button
           variant="outline"
-          onClick={() => onPreview(mcard.slug)}
+          onClick={() => window.open(`/mcard/${mcard.slug}`, '_blank')}
           className="text-blue-600 border-blue-600 hover:bg-blue-50"
         >
           <Eye className="h-4 w-4 mr-2" />
-          Prévisualiser
+          Voir la carte
         </Button>
         
         {!isActive && (
