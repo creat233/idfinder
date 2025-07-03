@@ -8,6 +8,7 @@ import { MCardViewStatuses } from '@/components/mcards/view/MCardViewStatuses';
 import { MCardViewReviews } from '@/components/mcards/view/MCardViewReviews';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
+import { MCardVisitorCTA } from '@/components/mcards/MCardVisitorCTA';
 import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -110,6 +111,11 @@ const MCardView = () => {
             isOwner={isOwner}
             onReviewsChange={refreshData}
           />
+
+          {/* CTA pour les visiteurs */}
+          {!isOwner && (
+            <MCardVisitorCTA />
+          )}
         </div>
       </div>
 
