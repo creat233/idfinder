@@ -1,18 +1,17 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Shield, Users, Database, Mail, Send } from "lucide-react";
+import { Settings, Shield, Users, Database } from "lucide-react";
 import { AdminPermissionsList } from "./admin-settings/AdminPermissionsList";
-import { AdminEmailSender } from "./AdminEmailSender";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Simulate loading for admin settings
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -67,26 +66,7 @@ export const AdminSettings = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="permissions" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="permissions" className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Permissions
-              </TabsTrigger>
-              <TabsTrigger value="emails" className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                Emails HTML
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="permissions" className="mt-6">
-              <AdminPermissionsList />
-            </TabsContent>
-            
-            <TabsContent value="emails" className="mt-6">
-              <AdminEmailSender />
-            </TabsContent>
-          </Tabs>
+          <AdminPermissionsList />
         </CardContent>
       </Card>
 

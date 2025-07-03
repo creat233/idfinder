@@ -4,18 +4,15 @@ import { MCard, MCardCreateData, MCardUpdateData } from '@/types/mcard';
 
 const uploadProfilePicture = async (file: File, userId: string): Promise<string | null> => {
   const fileName = `${userId}-${Date.now()}.${file.name.split('.').pop()}`;
-  const filePath = `${userId}/${fileName}`;
+  const filePath = `profile-pictures/${fileName}`;
 
   const { error } = await supabase.storage
     .from('mcard-profile-pictures')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
+    .upload(filePath, file);
 
   if (error) {
     console.error('Error uploading profile picture:', error);
-    throw new Error(`Erreur lors de l'upload de la photo: ${error.message}`);
+    return null;
   }
 
   const { data } = supabase.storage
@@ -28,22 +25,12 @@ const uploadProfilePicture = async (file: File, userId: string): Promise<string 
 const deleteProfilePicture = async (url: string): Promise<void> => {
   if (!url) return;
   
-  try {
-    // Extraire le chemin du fichier depuis l'URL
-    const urlParts = url.split('/storage/v1/object/public/mcard-profile-pictures/');
-    if (urlParts.length > 1) {
-      const filePath = urlParts[1];
-      
-      const { error } = await supabase.storage
-        .from('mcard-profile-pictures')
-        .remove([filePath]);
-        
-      if (error) {
-        console.error('Error deleting profile picture:', error);
-      }
-    }
-  } catch (error) {
-    console.error('Error parsing profile picture URL:', error);
+  const path = url.split('/').pop();
+  if (path && path.includes('profile-pictures/')) {
+    const filePath = path.substring(path.indexOf('profile-pictures/'));
+    await supabase.storage
+      .from('mcard-profile-pictures')
+      .remove([filePath]);
   }
 };
 

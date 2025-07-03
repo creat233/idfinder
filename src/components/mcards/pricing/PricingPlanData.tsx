@@ -5,8 +5,8 @@ export const pricingPlans = [
   {
     id: 'essential',
     name: 'Essentiel',
-    price: 2000,
-    monthlyPrice: 2000,
+    price: 15000,
+    monthlyPrice: 15000,
     description: 'Pour les professionnels actifs',
     features: [
       'Carte de visite digitale complète',
@@ -20,15 +20,15 @@ export const pricingPlans = [
     icon: <Zap className="h-5 w-5 sm:h-6 sm:w-6" />,
     gradient: 'from-blue-100 to-blue-200',
     buttonColor: 'bg-blue-600 hover:bg-blue-700',
-    period: 'mois',
+    period: 'an',
     badge: 'POPULAIRE',
     paymentInfo: 'Activation sous 24h après paiement'
   },
   {
     id: 'premium',
     name: 'Premium',
-    price: 5000,
-    monthlyPrice: 5000,
+    price: 25000,
+    monthlyPrice: 25000,
     description: 'Solution complète pour entrepreneurs',
     features: [
       'Tout du plan Essentiel',
@@ -43,7 +43,7 @@ export const pricingPlans = [
     icon: <Crown className="h-5 w-5 sm:h-6 sm:w-6" />,
     gradient: 'from-purple-100 to-purple-200',
     buttonColor: 'bg-purple-600 hover:bg-purple-700',
-    period: 'mois',
+    period: 'an',
     badge: 'COMPLET',
     paymentInfo: 'Support prioritaire et fonctionnalités avancées'
   },
