@@ -54,11 +54,13 @@ function AppContent() {
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/my-cards" element={<MyCards />} />
+              <Route path="/mes-cartes" element={<MyCards />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/support" element={<Support />} />
               <Route path="/signaler-carte" element={<SignalerCarte />} />
               <Route path="/recherche-resultat" element={<RechercheResultat />} />
               <Route path="/numero-urgence" element={<NumeroUrgence />} />
+              <Route path="/numeros-urgence" element={<NumeroUrgence />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/codes-promo" element={<PromoCodes />} />
               <Route path="/demo" element={<Demo />} />
