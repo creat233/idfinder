@@ -27,8 +27,8 @@ export const pricingPlans = [
   {
     id: 'premium',
     name: 'Premium',
-    price: 5000,
-    monthlyPrice: 5000,
+    price: 3900,
+    monthlyPrice: 3900,
     description: 'Solution complète pour entrepreneurs',
     features: [
       'Tout du plan Essentiel',
