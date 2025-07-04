@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "./providers/TranslationProvider";
+import { useAutoRefresh } from "./hooks/useAutoRefresh";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -25,6 +26,9 @@ import AdminPromoCodes from "./pages/AdminPromoCodes";
 const queryClient = new QueryClient();
 
 function App() {
+  // Auto-refresh toutes les 2 minutes pour maintenir l'app à jour
+  useAutoRefresh(120000);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
