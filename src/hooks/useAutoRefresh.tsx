@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -12,9 +13,16 @@ export const useAutoRefresh = (intervalMs: number = 30000) => {
       return;
     }
 
+    // Éviter les rafraîchissements automatiques trop fréquents
+    if (intervalMs < 30000) {
+      console.warn('Auto-refresh interval too short, using minimum 30 seconds');
+      return;
+    }
+
     const interval = setInterval(() => {
       // On rafraîchit seulement si l'utilisateur est actif (page visible)
       if (!document.hidden) {
+        console.log('Auto-refreshing application...');
         window.location.reload();
       }
     }, intervalMs);
@@ -23,6 +31,7 @@ export const useAutoRefresh = (intervalMs: number = 30000) => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         setTimeout(() => {
+          console.log('Page became visible, refreshing...');
           window.location.reload();
         }, 1000); // Petit délai pour éviter les rafraîchissements trop rapides
       }

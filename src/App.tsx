@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "./providers/TranslationProvider";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAutoRefresh } from "./hooks/useAutoRefresh";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -23,9 +24,17 @@ import MCards from "./pages/MCards";
 import MCardView from "./pages/MCardView";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-function App() {
+function AppContent() {
   // Auto-refresh toutes les 2 minutes pour maintenir l'app à jour
   useAutoRefresh(120000);
   
@@ -59,6 +68,14 @@ function App() {
         </TooltipProvider>
       </TranslationProvider>
     </QueryClientProvider>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 
