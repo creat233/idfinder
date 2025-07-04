@@ -34,10 +34,13 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppContent() {
+function AutoRefreshWrapper() {
   // Auto-refresh toutes les 2 minutes pour maintenir l'app à jour
   useAutoRefresh(120000);
-  
+  return null;
+}
+
+function AppContent() {
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
@@ -45,6 +48,7 @@ function AppContent() {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <AutoRefreshWrapper />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
