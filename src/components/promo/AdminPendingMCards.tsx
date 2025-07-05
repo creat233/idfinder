@@ -184,12 +184,13 @@ export const AdminPendingMCards = () => {
             <p className="text-gray-500">Aucune carte trouvée dans la base de données.</p>
           </div>
         ) : (
-          <AdminPendingMCardsTable
-            pendingMCards={allMCards}
-            loading={loading}
-            onApprove={handleApproveSubscription}
-            onPreview={handlePreviewCard}
-          />
+        <AdminPendingMCardsTable
+          pendingMCards={allMCards}
+          loading={loading}
+          onApprove={handleApproveSubscription}
+          onPreview={handlePreviewCard}
+          onRefresh={() => queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] })}
+        />
         )}
       </CardContent>
     </Card>

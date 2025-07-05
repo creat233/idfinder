@@ -9,6 +9,7 @@ import { MCardViewReviews } from '@/components/mcards/view/MCardViewReviews';
 import { MCardViewCustomization } from '@/components/mcards/view/MCardViewCustomization';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
+import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
 import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -102,6 +103,12 @@ const MCardView = () => {
             mcardId={mcard.id}
             mcardPlan={mcard.plan}
             onProductsChange={refreshData}
+          />
+
+          {/* Physical Products Section */}
+          <MCardPhysicalProducts 
+            mcard={mcard}
+            isOwner={isOwner}
           />
 
           {/* Customization Section */}

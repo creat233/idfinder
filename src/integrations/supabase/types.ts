@@ -693,6 +693,13 @@ export type Database = {
           message: string
         }[]
       }
+      admin_deactivate_mcard: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          success: boolean
+          message: string
+        }[]
+      }
       admin_get_all_mcards: {
         Args: Record<PropertyKey, never>
         Returns: {

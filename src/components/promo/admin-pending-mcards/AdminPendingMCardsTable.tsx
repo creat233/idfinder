@@ -1,6 +1,7 @@
 
 import { AdminPendingMCardsItem } from "./AdminPendingMCardsItem";
 import { AdminPendingMCardsEmptyState } from "./AdminPendingMCardsEmptyState";
+import { MCardDeactivationButton } from "../AdminMCardsDeactivation";
 
 interface PendingMCard {
   id: string;
@@ -25,13 +26,15 @@ interface AdminPendingMCardsTableProps {
   loading: string | null;
   onApprove: (mcardId: string) => void;
   onPreview: (slug: string) => void;
+  onRefresh: () => void;
 }
 
 export const AdminPendingMCardsTable = ({
   pendingMCards,
   loading,
   onApprove,
-  onPreview
+  onPreview,
+  onRefresh
 }: AdminPendingMCardsTableProps) => {
   // Trier les cartes: non-actives en premier, puis par date de création
   const sortedMCards = [...pendingMCards].sort((a, b) => {
@@ -81,19 +84,26 @@ export const AdminPendingMCardsTable = ({
         </div>
       </div>
 
-      {sortedMCards.map((mcard) => {
-        const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
-        return (
-          <AdminPendingMCardsItem
-            key={mcard.id}
-            mcard={mcard}
-            planInfo={planInfo}
-            loading={loading}
-            onApprove={onApprove}
-            onPreview={onPreview}
-          />
-        );
-      })}
+        {sortedMCards.map((mcard) => {
+          const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
+          return (
+            <div key={mcard.id} className="flex items-center gap-2">
+              <div className="flex-1">
+                <AdminPendingMCardsItem
+                  mcard={mcard}
+                  planInfo={planInfo}
+                  loading={loading}
+                  onApprove={onApprove}
+                  onPreview={onPreview}
+                />
+              </div>
+              <MCardDeactivationButton
+                mcard={mcard}
+                onDeactivationSuccess={onRefresh}
+              />
+            </div>
+          );
+        })}
     </div>
   );
 };

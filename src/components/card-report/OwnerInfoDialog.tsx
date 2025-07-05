@@ -6,6 +6,8 @@ import { OwnerInfoDialogHeader } from "./dialog/OwnerInfoDialogHeader";
 import { OwnerInfoDialogContent } from "./dialog/OwnerInfoDialogContent";
 import { OwnerInfoDialogFooter } from "./dialog/OwnerInfoDialogFooter";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OwnerInfoDialogProps {
   isOpen: boolean;
@@ -20,6 +22,7 @@ interface OwnerInfoDialogProps {
 
 export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogProps) => {
   const { currentCountry } = useTranslation();
+  const [reporterPhone, setReporterPhone] = useState<string | null>(null);
   
   const {
     ownerName,
@@ -36,6 +39,29 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
     handleSubmit,
     resetForm,
   } = useOwnerInfoDialog(isOpen, cardData, currentCountry);
+
+  // Récupérer le numéro du trouveur pour les cartes étudiantes et santé
+  useEffect(() => {
+    const fetchReporterPhone = async () => {
+      if ((cardData.document_type === 'student_card' || cardData.document_type === 'health_card') && isOpen) {
+        try {
+          const { data, error } = await supabase
+            .from('reported_cards')
+            .select('reporter_phone')
+            .eq('id', cardData.id)
+            .single();
+
+          if (!error && data?.reporter_phone) {
+            setReporterPhone(data.reporter_phone);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération du numéro:', error);
+        }
+      }
+    };
+
+    fetchReporterPhone();
+  }, [cardData.id, cardData.document_type, isOpen]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     const success = await handleSubmit(e);
@@ -69,6 +95,7 @@ export const OwnerInfoDialog = ({ isOpen, onClose, cardData }: OwnerInfoDialogPr
                 discount={discount}
                 finalPrice={finalPrice}
                 priceInfo={priceInfo}
+                reporterPhone={reporterPhone}
               />
             </div>
             
