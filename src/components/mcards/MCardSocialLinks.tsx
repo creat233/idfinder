@@ -26,6 +26,7 @@ export const MCardSocialLinks = ({ mcard }: MCardSocialLinksProps) => {
     { key: 'snapchat_url', icon: null, label: 'Snapchat', color: 'text-yellow-500', bgColor: 'bg-yellow-50 hover:bg-yellow-100' },
     { key: 'telegram_url', icon: MessageCircle, label: 'Telegram', color: 'text-blue-500', bgColor: 'bg-blue-50 hover:bg-blue-100' },
     { key: 'google_business_url', icon: Star, label: 'Laisser un avis Google', color: 'text-orange-600', bgColor: 'bg-orange-50 hover:bg-orange-100' },
+    { key: 'maps_location_url', icon: null, label: '📍 Voir sur Maps', color: 'text-green-600', bgColor: 'bg-green-50 hover:bg-green-100' },
   ];
 
   const activeSocialLinks = socialLinks.filter(link => 

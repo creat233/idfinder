@@ -52,7 +52,7 @@ export const MCardViewQRSection = ({
             />
             {/* Badge Mcard stylé */}
             <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full shadow-lg border-2 border-white">
-              <span className="font-bold text-sm tracking-wide">Mcard</span>
+              <span className="font-bold text-sm tracking-wide">Mcard Digital</span>
             </div>
           </div>
         </div>

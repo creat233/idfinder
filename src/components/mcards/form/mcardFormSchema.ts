@@ -18,6 +18,7 @@ export const formSchema = z.object({
   snapchat_url: z.string().optional().transform(val => val?.trim() === '' ? undefined : val),
   telegram_url: z.string().optional().transform(val => val?.trim() === '' ? undefined : val),
   google_business_url: z.string().optional().transform(val => val?.trim() === '' ? undefined : val),
+  maps_location_url: z.string().optional().transform(val => val?.trim() === '' ? undefined : val),
   is_published: z.boolean().default(false),
 });
 

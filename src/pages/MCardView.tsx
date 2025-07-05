@@ -10,6 +10,7 @@ import { MCardViewCustomization } from '@/components/mcards/view/MCardViewCustom
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
+import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
 import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -66,6 +67,9 @@ const MCardView = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
+
+          {/* Compliance Warning - Avertissement de conformité */}
+          <MCardComplianceWarning isOwner={isOwner} />
 
           {/* QR Code Section - seulement si pas en attente de paiement */}
           {!isPendingPayment && (

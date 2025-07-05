@@ -67,11 +67,16 @@ export const MCardSocialMediaSection = ({ register, errors }: MCardSocialMediaSe
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="google_business_url">Google Business (Lien pour les avis)</Label>
           <Input id="google_business_url" {...register("google_business_url")} placeholder="https://g.page/votreentreprise/review" />
           {errors.google_business_url && <p className="text-sm text-red-500">{errors.google_business_url.message}</p>}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="maps_location_url">📍 Emplacement sur Maps</Label>
+          <Input id="maps_location_url" {...register("maps_location_url")} placeholder="https://maps.google.com/..." />
+          {errors.maps_location_url && <p className="text-sm text-red-500">{errors.maps_location_url.message}</p>}
         </div>
       </div>
     </>

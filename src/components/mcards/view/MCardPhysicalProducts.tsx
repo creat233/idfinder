@@ -15,19 +15,19 @@ interface MCardPhysicalProductsProps {
 const PHYSICAL_PRODUCTS = [
   {
     id: 'business_card',
-    name: 'Carte de visite digitale',
-    description: 'Carte de visite physique avec QR code personnalisé',
-    price: 5000,
+    name: 'Cartes de visite (100 pièces)',
+    description: 'Pack de 100 cartes de visite avec QR code personnalisé',
+    price: 25000,
     image: '📇',
-    features: ['QR code avec vos informations', 'Design professionnel', 'Matériau premium']
+    features: ['100 cartes de visite', 'QR code avec vos informations', 'Design professionnel', 'Matériau premium']
   },
   {
     id: 'digital_badge',
-    name: 'Badge digital',
+    name: 'Badge digital (unité)',
     description: 'Badge professionnel avec QR code intégré',
-    price: 8000,
+    price: 15000,
     image: '🏷️',
-    features: ['Support métallique', 'QR code gravé', 'Résistant à l\'eau']
+    features: ['Support métallique', 'QR code gravé', 'Résistant à l\'eau', 'Clip de fixation inclus']
   },
   {
     id: 'sticker_label',
@@ -141,7 +141,7 @@ export const MCardPhysicalProducts = ({ mcard, isOwner }: MCardPhysicalProductsP
                 className="w-32 h-32 border-2 border-purple-300 rounded-lg shadow-md"
               />
               <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white px-2 py-1 rounded-full border border-purple-300 shadow-sm">
-                <span className="text-xs font-bold text-purple-600">Mcard</span>
+                <span className="text-xs font-bold text-purple-600">Mcard Digital</span>
               </div>
             </div>
             <div className="text-sm text-gray-600">
