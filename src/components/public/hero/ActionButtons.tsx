@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { ScanSearch, Plus, Search, Gift, CreditCard } from "lucide-react";
+import { ScanSearch, Plus, Search, Gift, CreditCard, Star, CheckCircle } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface ActionButtonsProps {
@@ -99,6 +99,28 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
         >
           <CreditCard className="mr-2 h-5 w-5" />
           {t("myMCards")}
+        </Button>
+      )}
+      {user && (
+        <Button 
+          variant="outline"
+          size="lg"
+          onClick={() => navigate('/mcards-verifiees')}
+          className="border-2 border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg bg-transparent"
+        >
+          <CheckCircle className="mr-2 h-5 w-5" />
+          MCards Vérifiées
+        </Button>
+      )}
+      {user && (
+        <Button 
+          variant="outline"
+          size="lg"
+          onClick={() => navigate('/mes-favoris')}
+          className="border-2 border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg bg-transparent"
+        >
+          <Star className="mr-2 h-5 w-5" />
+          Mes Favoris
         </Button>
       )}
     </div>
