@@ -23,6 +23,10 @@ import About from "./pages/About";
 import MCards from "./pages/MCards";
 import MCardView from "./pages/MCardView";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
+import VerifiedMCards from "./pages/VerifiedMCards";
+import MyFavorites from "./pages/MyFavorites";
+import Messages from "./pages/Messages";
+import VerificationRequest from "./pages/VerificationRequest";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +75,10 @@ function AppContent() {
               <Route path="/mcard/:slug" element={<MCardView />} />
               <Route path="/m/:slug" element={<MCardView />} />
               <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
+              <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
+              <Route path="/mes-favoris" element={<MyFavorites />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

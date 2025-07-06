@@ -4,6 +4,8 @@ import { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/type
 export type MCard = Tables<'mcards'> & {
   view_count?: number;
   price?: number;
+  is_verified?: boolean;
+  verification_status?: string;
 };
 
 export type MCardCreateData = TablesInsert<'mcards'>;

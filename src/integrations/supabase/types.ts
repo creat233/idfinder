@@ -129,6 +129,82 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_interactions: {
+        Row: {
+          created_at: string | null
+          id: string
+          interaction_type: string
+          mcard_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          interaction_type: string
+          mcard_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          interaction_type?: string
+          mcard_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_interactions_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          mcard_id: string
+          message: string
+          recipient_id: string
+          sender_id: string
+          subject: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          mcard_id: string
+          message: string
+          recipient_id: string
+          sender_id: string
+          subject?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          mcard_id?: string
+          message?: string
+          recipient_id?: string
+          sender_id?: string
+          subject?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_messages_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_products: {
         Row: {
           category: string
@@ -295,6 +371,62 @@ export type Database = {
           },
         ]
       }
+      mcard_verification_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          id: string
+          id_document_url: string
+          mcard_id: string
+          ninea_document_url: string | null
+          payment_status: string | null
+          processed_at: string | null
+          processed_by: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+          verification_fee: number | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          id_document_url: string
+          mcard_id: string
+          ninea_document_url?: string | null
+          payment_status?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+          verification_fee?: number | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          id_document_url?: string
+          mcard_id?: string
+          ninea_document_url?: string | null
+          payment_status?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verification_fee?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_verification_requests_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcards: {
         Row: {
           company: string | null
@@ -307,8 +439,10 @@ export type Database = {
           id: string
           instagram_url: string | null
           is_published: boolean
+          is_verified: boolean | null
           job_title: string | null
           linkedin_url: string | null
+          maps_location_url: string | null
           phone_number: string | null
           plan: string
           profile_picture_url: string | null
@@ -322,6 +456,7 @@ export type Database = {
           twitter_url: string | null
           updated_at: string
           user_id: string
+          verification_status: string | null
           view_count: number
           website_url: string | null
           youtube_url: string | null
@@ -337,8 +472,10 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           is_published?: boolean
+          is_verified?: boolean | null
           job_title?: string | null
           linkedin_url?: string | null
+          maps_location_url?: string | null
           phone_number?: string | null
           plan?: string
           profile_picture_url?: string | null
@@ -352,6 +489,7 @@ export type Database = {
           twitter_url?: string | null
           updated_at?: string
           user_id: string
+          verification_status?: string | null
           view_count?: number
           website_url?: string | null
           youtube_url?: string | null
@@ -367,8 +505,10 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           is_published?: boolean
+          is_verified?: boolean | null
           job_title?: string | null
           linkedin_url?: string | null
+          maps_location_url?: string | null
           phone_number?: string | null
           plan?: string
           profile_picture_url?: string | null
@@ -382,6 +522,7 @@ export type Database = {
           twitter_url?: string | null
           updated_at?: string
           user_id?: string
+          verification_status?: string | null
           view_count?: number
           website_url?: string | null
           youtube_url?: string | null
@@ -688,6 +829,13 @@ export type Database = {
       }
       admin_approve_mcard_subscription: {
         Args: { p_mcard_id: string }
+        Returns: {
+          success: boolean
+          message: string
+        }[]
+      }
+      admin_approve_mcard_verification: {
+        Args: { p_request_id: string }
         Returns: {
           success: boolean
           message: string
