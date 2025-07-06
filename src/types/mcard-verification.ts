@@ -6,7 +6,7 @@ export type MCardVerificationRequest = {
   ninea_document_url?: string;
   payment_status: string;
   verification_fee: number;
-  status: 'pending' | 'approved' | 'rejected';
+  status: string;
   admin_notes?: string;
   processed_by?: string;
   processed_at?: string;

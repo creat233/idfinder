@@ -33,7 +33,10 @@ export const createDefaultCard = (): MCard => ({
   tiktok_url: null,
   snapchat_url: null,
   telegram_url: null,
-  google_business_url: null
+  google_business_url: null,
+  maps_location_url: null,
+  is_verified: false,
+  verification_status: 'not_requested'
 });
 
 export const createDefaultStatuses = (): MCardStatus[] => [
