@@ -16,6 +16,7 @@ import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 import { AdminEmailSettings } from "@/components/promo/AdminEmailSettings";
+import { AdminMCardVerifications } from "@/components/promo/AdminMCardVerifications";
 
 const AdminPromoCodes = () => {
   return (
@@ -28,8 +29,9 @@ const AdminPromoCodes = () => {
           </h1>
           
           <Tabs defaultValue="mcards" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 mb-8">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-13 mb-8">
               <TabsTrigger value="mcards">mCards</TabsTrigger>
+              <TabsTrigger value="verifications">Vérifications</TabsTrigger>
               <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
               <TabsTrigger value="codes-promo">Codes</TabsTrigger>
               <TabsTrigger value="recuperations">Récupérations</TabsTrigger>
@@ -45,6 +47,10 @@ const AdminPromoCodes = () => {
 
             <TabsContent value="mcards">
               <AdminPendingMCards />
+            </TabsContent>
+
+            <TabsContent value="verifications">
+              <AdminMCardVerifications />
             </TabsContent>
 
             <TabsContent value="renewals">
