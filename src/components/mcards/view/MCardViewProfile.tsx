@@ -1,12 +1,15 @@
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MCardViewContactInfo } from "./MCardViewContactInfo";
 import { MCardViewQuickActions } from "./MCardViewQuickActions";
+import { MCardVerificationDialog } from "../MCardVerificationDialog";
+import { MCardVerifiedBadge } from "../MCardVerifiedBadge";
 import { MCard } from "@/types/mcard";
-import { Mail, Phone, Globe, MapPin, Briefcase, Building } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle } from "lucide-react";
 
 interface MCardViewProfileProps {
   mcard: MCard;
@@ -23,7 +26,9 @@ const getInitials = (name: string): string => {
 };
 
 export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardViewProfileProps) => {
+  const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
   const isPendingPayment = mcard.subscription_status === 'pending_payment';
+  const canRequestVerification = isOwner && !mcard.is_verified && mcard.verification_status !== 'pending';
 
   const handleCopyLink = () => {
     if (isPendingPayment) {
@@ -70,7 +75,10 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               </AvatarFallback>
             </Avatar>
             
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{mcard.full_name}</h1>
+            <div className="flex items-center gap-2 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900">{mcard.full_name}</h1>
+              <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
+            </div>
             
             {mcard.job_title && (
               <div className="flex items-center gap-2 text-gray-600 mb-2">
@@ -100,7 +108,24 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                    mcard.subscription_status}
                 </Badge>
               )}
+              {mcard.verification_status === 'pending' && (
+                <Badge variant="secondary" className="px-3 py-1 text-orange-600">
+                  Vérification en cours
+                </Badge>
+              )}
             </div>
+
+            {/* Bouton de demande de vérification */}
+            {canRequestVerification && (
+              <Button
+                onClick={() => setIsVerificationDialogOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white mb-4"
+                size="sm"
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Demander la vérification (5 000 FCFA)
+              </Button>
+            )}
           </div>
 
           {/* Informations de contact */}
@@ -123,6 +148,14 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
           </div>
         </div>
       </CardContent>
+
+      {/* Dialog de demande de vérification */}
+      <MCardVerificationDialog
+        isOpen={isVerificationDialogOpen}
+        onOpenChange={setIsVerificationDialogOpen}
+        mcardId={mcard.id}
+        mcardName={mcard.full_name}
+      />
     </Card>
   );
 };
