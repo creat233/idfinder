@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, MessageCircle, User, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MCardMessage } from "@/types/mcard-verification";
-import { supabase } from "@/integrations/supabase/client";
 
 const Messages = () => {
   const [messages, setMessages] = useState<MCardMessage[]>([]);
