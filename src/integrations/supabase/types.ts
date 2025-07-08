@@ -134,6 +134,44 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_analytics: {
+        Row: {
+          created_at: string
+          favorites_count: number
+          id: string
+          likes_count: number
+          mcard_id: string
+          shares_count: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          favorites_count?: number
+          id?: string
+          likes_count?: number
+          mcard_id: string
+          shares_count?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          favorites_count?: number
+          id?: string
+          likes_count?: number
+          mcard_id?: string
+          shares_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_analytics_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_interactions: {
         Row: {
           created_at: string | null

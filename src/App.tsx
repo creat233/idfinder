@@ -55,6 +55,7 @@ function AppContent() {
             <AutoRefreshWrapper />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/my-cards" element={<MyCards />} />

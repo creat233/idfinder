@@ -66,6 +66,12 @@ export const HeaderLinks = ({
             Codes promo
           </Link>
           <Link
+            to="/messages"
+            className="text-gray-700 hover:text-primary"
+          >
+            Messages
+          </Link>
+          <Link
             to="/mcards"
             className="text-gray-700 hover:text-primary"
           >

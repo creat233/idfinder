@@ -8,8 +8,11 @@ import { MCardViewContactInfo } from "./MCardViewContactInfo";
 import { MCardViewQuickActions } from "./MCardViewQuickActions";
 import { MCardVerificationDialog } from "../MCardVerificationDialog";
 import { MCardVerifiedBadge } from "../MCardVerifiedBadge";
+import { MCardSocialLinks } from "../MCardSocialLinks";
+import { MCardAnalyticsDashboard } from "../MCardAnalyticsDashboard";
+import { MCardMessageDialog } from "../MCardMessageDialog";
 import { MCard } from "@/types/mcard";
-import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle } from "lucide-react";
 
 interface MCardViewProfileProps {
   mcard: MCard;
@@ -27,6 +30,7 @@ const getInitials = (name: string): string => {
 
 export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardViewProfileProps) => {
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const isPendingPayment = mcard.subscription_status === 'pending_payment';
   const canRequestVerification = isOwner && !mcard.is_verified && mcard.verification_status !== 'pending';
 
@@ -145,8 +149,32 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               onShare={handleShare}
               disabled={isPendingPayment}
             />
+
+            {/* Bouton pour envoyer un message (seulement pour les non-propriétaires) */}
+            {!isOwner && (
+              <div className="mt-4">
+                <Button
+                  onClick={() => setIsMessageDialogOpen(true)}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Envoyer un message
+                </Button>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Réseaux sociaux */}
+        <MCardSocialLinks mcard={mcard} />
+
+        {/* Analytics Dashboard pour les propriétaires vérifiés */}
+        {isOwner && (
+          <div className="mt-8">
+            <MCardAnalyticsDashboard mcardId={mcard.id} isVerified={mcard.is_verified || false} />
+          </div>
+        )}
       </CardContent>
 
       {/* Dialog de demande de vérification */}
@@ -155,6 +183,15 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
         onOpenChange={setIsVerificationDialogOpen}
         mcardId={mcard.id}
         mcardName={mcard.full_name}
+      />
+
+      {/* Dialog pour envoyer un message */}
+      <MCardMessageDialog
+        isOpen={isMessageDialogOpen}
+        onOpenChange={setIsMessageDialogOpen}
+        recipientId={mcard.user_id}
+        recipientName={mcard.full_name}
+        mcardId={mcard.id}
       />
     </Card>
   );

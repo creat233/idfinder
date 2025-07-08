@@ -36,6 +36,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
           {renderLink("/signaler", "Signaler une carte")}
           {renderLink("/mes-cartes", "Mes cartes")}
           {renderLink("/codes-promo", "Codes promo")}
+          {renderLink("/messages", "Messages")}
         </>
       )}
       {renderLink("/notifications", "Notifications")}

@@ -38,24 +38,37 @@ export const AdminMCardVerifications = () => {
         .from('mcard_verification_requests')
         .select(`
           *,
-          mcards!inner(full_name, user_id),
-          profiles!inner(phone)
+          mcards!inner(full_name, user_id)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Récupérer les emails des utilisateurs
+      // Récupérer les emails et téléphones des utilisateurs
       const userIds = data?.map((req: any) => req.mcards.user_id) || [];
       
-      const processedData = data?.map((req: any) => ({
-        ...req,
-        mcard_name: req.mcards.full_name,
-        user_email: req.user_id, // Temporary fallback
-        user_phone: req.profiles?.phone
-      })) || [];
+      if (userIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, phone')
+          .in('id', userIds);
 
-      setRequests(processedData);
+        const profilesMap = profilesData?.reduce((acc: any, profile: any) => {
+          acc[profile.id] = profile;
+          return acc;
+        }, {}) || {};
+
+        const processedData = data?.map((req: any) => ({
+          ...req,
+          mcard_name: req.mcards.full_name,
+          user_email: `user_${req.user_id.substring(0, 8)}`, // Anonymized for display
+          user_phone: profilesMap[req.mcards.user_id]?.phone || 'Non renseigné'
+        })) || [];
+
+        setRequests(processedData);
+      } else {
+        setRequests([]);
+      }
     } catch (error: any) {
       console.error('Erreur lors du chargement:', error);
       toast({
