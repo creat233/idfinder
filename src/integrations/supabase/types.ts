@@ -172,6 +172,38 @@ export type Database = {
           },
         ]
       }
+      mcard_blocked_users: {
+        Row: {
+          blocked_at: string
+          blocked_user_id: string
+          created_at: string
+          id: string
+          mcard_id: string
+        }
+        Insert: {
+          blocked_at?: string
+          blocked_user_id: string
+          created_at?: string
+          id?: string
+          mcard_id: string
+        }
+        Update: {
+          blocked_at?: string
+          blocked_user_id?: string
+          created_at?: string
+          id?: string
+          mcard_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_blocked_users_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_interactions: {
         Row: {
           created_at: string | null
@@ -1010,6 +1042,10 @@ export type Database = {
       }
       is_admin: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_user_blocked: {
+        Args: { p_mcard_id: string; p_user_id: string }
         Returns: boolean
       }
       log_login_event: {
