@@ -28,10 +28,24 @@ export const MCardMessageDialog = ({
 
   const handleSendMessage = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !message.trim()) return;
+    if (!user || !message.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Vous devez être connecté pour envoyer un message"
+      });
+      return;
+    }
 
     setSending(true);
     try {
+      console.log('Sending message:', {
+        sender_id: user.id,
+        recipient_id: recipientId,
+        mcard_id: mcardId,
+        message: message.trim()
+      });
+
       const { error } = await supabase
         .from('mcard_messages')
         .insert({
@@ -42,7 +56,10 @@ export const MCardMessageDialog = ({
           message: message.trim()
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error sending message:', error);
+        throw error;
+      }
 
       toast({
         title: "✅ Message envoyé !",
@@ -52,10 +69,11 @@ export const MCardMessageDialog = ({
       setMessage("");
       onOpenChange(false);
     } catch (error: any) {
+      console.error('Full error:', error);
       toast({
         variant: "destructive", 
         title: "Erreur",
-        description: "Impossible d'envoyer le message"
+        description: error.message || "Impossible d'envoyer le message"
       });
     } finally {
       setSending(false);

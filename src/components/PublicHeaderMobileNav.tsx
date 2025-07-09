@@ -46,6 +46,12 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onGetStarte
         >
           {t('about')}
         </button>
+        <button 
+          onClick={() => { navigate("/mcards-verifiees"); onClose(); }}
+          className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
+        >
+          MCards Vérifiées
+        </button>
         {user && (
           <button 
             onClick={() => { navigate("/mes-cartes"); onClose(); }}
