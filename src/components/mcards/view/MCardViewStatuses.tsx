@@ -6,6 +6,7 @@ import { Clock, Plus, Edit, Share2, MessageCircle, Send } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
 import { MCardViewStatusDialog } from './MCardViewStatusDialog';
 import { MCardViewAddStatusDialog } from './MCardViewAddStatusDialog';
+import { MCardViewEditStatusDialog } from './MCardViewEditStatusDialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewStatusesProps {
@@ -28,6 +29,8 @@ export const MCardViewStatuses = ({
   const [selectedStatus, setSelectedStatus] = useState<MCardStatus | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingStatus, setEditingStatus] = useState<MCardStatus | null>(null);
   const { toast } = useToast();
 
   const activeStatuses = statuses.filter(status => {
@@ -55,6 +58,16 @@ export const MCardViewStatuses = ({
 
   const handleStatusAdded = () => {
     onStatusesChange?.();
+  };
+
+  const handleEditStatus = (status: MCardStatus) => {
+    setEditingStatus(status);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleStatusUpdated = () => {
+    onStatusesChange?.();
+    setEditingStatus(null);
   };
 
   const handleShareStatus = (status: MCardStatus) => {
@@ -184,7 +197,11 @@ export const MCardViewStatuses = ({
                       </Button>
 
                       {isOwner && (
-                        <Button size="sm" variant="ghost">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => handleEditStatus(status)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                       )}
@@ -210,6 +227,15 @@ export const MCardViewStatuses = ({
           onClose={() => setIsAddDialogOpen(false)}
           mcardId={mcardId}
           onStatusAdded={handleStatusAdded}
+        />
+      )}
+
+      {isOwner && (
+        <MCardViewEditStatusDialog
+          isOpen={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          status={editingStatus}
+          onStatusUpdated={handleStatusUpdated}
         />
       )}
     </>

@@ -6,6 +6,7 @@ import { Plus, Edit, ShoppingCart, Share2, MessageCircle } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
+import { MCardViewEditProductDialog } from './MCardViewEditProductDialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewProductsProps {
@@ -28,6 +29,8 @@ export const MCardViewProducts = ({
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<MCardProduct | null>(null);
   const { toast } = useToast();
 
   const activeProducts = products.filter(product => product.is_active);
@@ -50,6 +53,16 @@ export const MCardViewProducts = ({
 
   const handleProductAdded = () => {
     onProductsChange?.();
+  };
+
+  const handleEditProduct = (product: MCardProduct) => {
+    setEditingProduct(product);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleProductUpdated = () => {
+    onProductsChange?.();
+    setEditingProduct(null);
   };
 
   const handleShareProduct = (product: MCardProduct) => {
@@ -136,7 +149,14 @@ export const MCardViewProducts = ({
                       {product.name}
                     </h4>
                     {isOwner && (
-                      <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditProduct(product);
+                        }}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                     )}
@@ -201,6 +221,15 @@ export const MCardViewProducts = ({
           onClose={() => setIsAddDialogOpen(false)}
           mcardId={mcardId}
           onProductAdded={handleProductAdded}
+        />
+      )}
+
+      {isOwner && (
+        <MCardViewEditProductDialog
+          isOpen={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          product={editingProduct}
+          onProductUpdated={handleProductUpdated}
         />
       )}
     </>
