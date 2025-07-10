@@ -11,6 +11,7 @@ import { Phone, Mail, Building, MapPin, Eye, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MCard } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
+import { URL_CONFIG } from "@/utils/urlConfig";
 
 const VerifiedMCards = () => {
   const [mcards, setMCards] = useState<MCard[]>([]);
@@ -74,7 +75,8 @@ const VerifiedMCards = () => {
   };
 
   const handleCardClick = (slug: string) => {
-    window.open(`/mcard/${slug}`, '_blank');
+    const cardUrl = URL_CONFIG.getMCardUrl(slug);
+    window.open(cardUrl, '_blank');
   };
 
   if (loading) {
