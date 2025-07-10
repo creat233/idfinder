@@ -68,6 +68,11 @@ export const MCardMessageDialog = ({
 
       setMessage("");
       onOpenChange(false);
+      
+      // Recharger la page des messages si l'utilisateur y est
+      if (window.location.pathname === '/messages') {
+        window.location.reload();
+      }
     } catch (error: any) {
       console.error('Full error:', error);
       toast({

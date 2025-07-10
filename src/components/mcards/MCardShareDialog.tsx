@@ -33,7 +33,16 @@ export const MCardShareDialog = ({ isOpen, onOpenChange, mcard }: MCardShareDial
   const { toast } = useToast();
   const [showQR, setShowQR] = useState(false);
   
-  const cardUrl = `${window.location.origin}/mcard/${mcard.slug}`;
+  // Utiliser le domaine personnalisé pour les liens de partage
+  const getCardUrl = () => {
+    const currentOrigin = window.location.origin;
+    if (currentOrigin.includes('lovable.app') || currentOrigin.includes('localhost')) {
+      return `${currentOrigin}/mcard/${mcard.slug}`;
+    }
+    return `https://www.finderid.info/mcard/${mcard.slug}`;
+  };
+  
+  const cardUrl = getCardUrl();
   
   const handleCopyLink = () => {
     navigator.clipboard.writeText(cardUrl);

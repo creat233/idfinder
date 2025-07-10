@@ -27,6 +27,28 @@ const Messages = () => {
   useEffect(() => {
     if (user) {
       loadMessages();
+      
+      // Configurer l'écoute en temps réel des nouveaux messages
+      const channel = supabase
+        .channel('messages-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'mcard_messages',
+            filter: `sender_id=eq.${user.id},recipient_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('Message update:', payload);
+            loadMessages(); // Recharger les messages quand il y a des changements
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
@@ -34,25 +56,39 @@ const Messages = () => {
     if (!user) return;
     
     try {
+      console.log('Chargement des messages pour utilisateur:', user.id);
+      
       const { data, error } = await supabase
         .from('mcard_messages')
         .select(`
           *,
-          sender:profiles!mcard_messages_sender_id_fkey(first_name, last_name),
-          recipient:profiles!mcard_messages_recipient_id_fkey(first_name, last_name),
-          mcard:mcards!mcard_messages_mcard_id_fkey(full_name)
+          mcards!mcard_messages_mcard_id_fkey(full_name)
         `)
         .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
         .order('created_at', { ascending: false });
 
+      console.log('Messages récupérés:', data);
+
       if (error) throw error;
 
-      const processedMessages = data?.map((msg: any) => ({
-        ...msg,
-        sender_name: msg.sender ? `${msg.sender.first_name} ${msg.sender.last_name || ''}`.trim() : 'Utilisateur',
-        recipient_name: msg.recipient ? `${msg.recipient.first_name} ${msg.recipient.last_name || ''}`.trim() : 'Utilisateur',
-        mcard_name: msg.mcard?.full_name || 'Carte supprimée'
-      })) || [];
+      // Récupérer les noms des utilisateurs séparément
+      const userIds = [...new Set([...data?.map(msg => msg.sender_id) || [], ...data?.map(msg => msg.recipient_id) || []])];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name')
+        .in('id', userIds);
+
+      const processedMessages = data?.map((msg: any) => {
+        const senderProfile = profiles?.find(p => p.id === msg.sender_id);
+        const recipientProfile = profiles?.find(p => p.id === msg.recipient_id);
+        
+        return {
+          ...msg,
+          sender_name: senderProfile ? `${senderProfile.first_name || ''} ${senderProfile.last_name || ''}`.trim() || 'Utilisateur' : 'Utilisateur',
+          recipient_name: recipientProfile ? `${recipientProfile.first_name || ''} ${recipientProfile.last_name || ''}`.trim() || 'Utilisateur' : 'Utilisateur',
+          mcard_name: msg.mcards?.full_name || 'Carte supprimée'
+        };
+      }) || [];
 
       setMessages(processedMessages);
     } catch (error: any) {
