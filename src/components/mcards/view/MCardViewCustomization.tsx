@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { Palette, Sparkles, Crown, Lock, Save, Eye, Volume2, Type, Zap } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { useToast } from '@/hooks/use-toast';
+import { URL_CONFIG } from '@/utils/urlConfig';
 
 interface MCardViewCustomizationProps {
   mcard: MCard;
@@ -76,8 +77,9 @@ export const MCardViewCustomization = ({
       title: "Aperçu généré",
       description: "Un nouvel onglet va s'ouvrir avec l'aperçu de votre carte."
     });
-    // Ouvrir l'aperçu dans un nouvel onglet
-    window.open(`/mcard/${mcard.slug}?preview=true`, '_blank');
+    // Utiliser l'URL complète pour s'assurer que l'aperçu fonctionne sur tous les domaines
+    const previewUrl = `${URL_CONFIG.getBaseUrl()}/mcard/${mcard.slug}?preview=true`;
+    window.open(previewUrl, '_blank');
   };
 
   if (!isOwner && !isPremium) return null;

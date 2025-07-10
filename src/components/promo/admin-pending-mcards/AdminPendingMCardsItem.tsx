@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Eye, User, Mail, Phone, CreditCard, Calendar } from "lucide-react";
+import { URL_CONFIG } from "@/utils/urlConfig";
 
 interface PendingMCard {
   id: string;
@@ -119,7 +120,10 @@ export const AdminPendingMCardsItem = ({
       <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
         <Button
           variant="outline"
-          onClick={() => window.open(`/mcard/${mcard.slug}`, '_blank')}
+          onClick={() => {
+            const cardUrl = URL_CONFIG.getMCardUrl(mcard.slug);
+            window.open(cardUrl, '_blank');
+          }}
           className="text-blue-600 border-blue-600 hover:bg-blue-50"
         >
           <Eye className="h-4 w-4 mr-2" />

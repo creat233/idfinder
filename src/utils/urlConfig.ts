@@ -24,11 +24,11 @@ export const URL_CONFIG = {
   
   // Générer l'URL complète pour une carte
   getMCardUrl: (slug: string) => {
-    const isProduction = URL_CONFIG.isProduction();
-    const domain = isProduction ? URL_CONFIG.MAIN_DOMAIN : URL_CONFIG.getCurrentDomain();
-    const protocol = URL_CONFIG.PROTOCOL;
+    // Toujours utiliser le domaine actuel pour éviter les problèmes de navigation
+    const currentDomain = URL_CONFIG.getCurrentDomain();
+    const protocol = window.location.protocol || URL_CONFIG.PROTOCOL;
     
-    return `${protocol}${domain}/mcard/${slug}`;
+    return `${protocol}//${currentDomain}/mcard/${slug}`;
   },
   
   // Générer l'URL pour le partage sur les réseaux sociaux
@@ -38,10 +38,15 @@ export const URL_CONFIG = {
   
   // Obtenir l'URL de base de l'application
   getBaseUrl: () => {
-    const isProduction = URL_CONFIG.isProduction();
-    const domain = isProduction ? URL_CONFIG.MAIN_DOMAIN : URL_CONFIG.getCurrentDomain();
-    const protocol = URL_CONFIG.PROTOCOL;
+    const currentDomain = URL_CONFIG.getCurrentDomain();
+    const protocol = window.location.protocol || URL_CONFIG.PROTOCOL;
     
-    return `${protocol}${domain}`;
+    return `${protocol}//${currentDomain}`;
+  },
+  
+  // Fonction utilitaire pour les liens internes (navigation)
+  getInternalUrl: (path: string) => {
+    // Pour la navigation interne, utiliser des liens relatifs
+    return path.startsWith('/') ? path : `/${path}`;
   }
 };

@@ -87,6 +87,14 @@ export const mcardsTranslations = {
     en: "Share Card",
     fr: "Partager la carte"
   },
+  myMCards: {
+    en: "My mCards",
+    fr: "Mes mCards"
+  },
+  noMCards: {
+    en: "No mCards created yet",
+    fr: "Aucune mCard créée pour l'instant"
+  },
   
   // Status
   published: {
