@@ -75,7 +75,8 @@ const VerifiedMCards = () => {
   };
 
   const handleCardClick = (slug: string) => {
-    const cardUrl = URL_CONFIG.getMCardUrl(slug);
+    // Toujours utiliser le domaine finderid.info pour les liens de cartes
+    const cardUrl = `https://www.finderid.info/mcard/${slug}`;
     window.open(cardUrl, '_blank');
   };
 

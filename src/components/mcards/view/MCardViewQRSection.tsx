@@ -1,8 +1,8 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { QRCodeSVG } from "qrcode.react";
+import { X, Download } from "lucide-react";
+import { URL_CONFIG } from "@/utils/urlConfig";
 
 interface MCardViewQRSectionProps {
   showQRCode: boolean;
@@ -11,63 +11,99 @@ interface MCardViewQRSectionProps {
   onClose: () => void;
 }
 
-export const MCardViewQRSection = ({ 
-  showQRCode, 
-  url, 
-  cardName, 
-  onClose 
-}: MCardViewQRSectionProps) => {
-  const { toast } = useToast();
-
-  const generateQRCode = () => {
-    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}&format=png&ecc=H`;
-  };
-
-  const downloadQRCode = () => {
-    const qrUrl = generateQRCode();
-    const link = document.createElement('a');
-    link.href = qrUrl;
-    link.download = `qr-code-${cardName || 'mcard'}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast({
-      title: "QR Code téléchargé !",
-      description: "Le QR Code a été téléchargé avec succès"
-    });
-  };
-
+export const MCardViewQRSection = ({ showQRCode, url, cardName, onClose }: MCardViewQRSectionProps) => {
   if (!showQRCode) return null;
 
+  // Générer l'URL finderid.info pour le QR code
+  const getQRUrl = () => {
+    const slugMatch = url.match(/\/mcard\/([^?&#]+)/);
+    if (slugMatch && slugMatch[1]) {
+      return URL_CONFIG.getMCardUrl(slugMatch[1]);
+    }
+    return url;
+  };
+
+  const qrUrl = getQRUrl();
+
+  const handleDownload = () => {
+    const svg = document.querySelector('#qrcode-svg');
+    if (svg) {
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      canvas.width = svg.width.baseVal.value;
+      canvas.height = svg.height.baseVal.value;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error("Impossible d'obtenir le contexte 2D du canvas");
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `qrcode_${cardName}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
+      };
+      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+    }
+  };
+
   return (
-    <Card className="mb-6 text-center">
-      <CardContent className="pt-6">
-        <h3 className="text-lg font-semibold mb-4">Code QR de la carte</h3>
-        <div className="flex justify-center mb-4">
-          <div className="relative">
-            <img 
-              src={generateQRCode()} 
-              alt="QR Code de la carte"
-              className="border-2 border-gray-300 rounded-lg shadow-lg"
+    <Card className="bg-white shadow-lg border-0">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Code QR de votre carte
+          </h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-8 w-8 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="flex flex-col items-center space-y-4">
+          <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <QRCodeSVG
+              id="qrcode-svg"
+              value={qrUrl}
+              size={200}
+              level="M"
+              includeMargin={true}
+              className="w-full h-auto"
             />
-            {/* Badge Mcard stylé */}
-            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full shadow-lg border-2 border-white">
-              <span className="font-bold text-sm tracking-wide">Mcard Digital</span>
-            </div>
           </div>
-        </div>
-        <div className="flex gap-2 justify-center">
-          <Button variant="outline" onClick={downloadQRCode}>
-            <Download className="h-4 w-4 mr-2" />
-            Télécharger
+          
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-2">
+              Scannez ce code QR pour accéder à la carte de <span className="font-medium">{cardName}</span>
+            </p>
+            <p className="text-xs text-gray-500 break-all">
+              {qrUrl}
+            </p>
+          </div>
+          
+          <Button
+            onClick={handleDownload}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Télécharger le QR Code
           </Button>
-          <Button variant="outline" onClick={onClose}>
-            Masquer
-          </Button>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          Scannez ce code pour accéder directement à cette carte
-        </p>
       </CardContent>
     </Card>
   );

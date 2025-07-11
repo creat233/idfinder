@@ -11,18 +11,16 @@ export const useMCardActions = () => {
 
   const handleCopyLink = async () => {
     try {
-      // Utiliser le domaine personnalisé finderid.info pour les liens
+      // Toujours utiliser le domaine finderid.info pour les liens copiés
       const currentUrl = window.location.href;
-      const url = new URL(currentUrl);
-      
-      // Si on est en production, utiliser le domaine personnalisé
       let finalUrl = currentUrl;
-      if (url.hostname.includes('lovable.app') || url.hostname.includes('localhost')) {
-        // En développement, garder l'URL actuelle
-        finalUrl = currentUrl;
-      } else {
-        // En production, s'assurer qu'on utilise finderid.info
-        finalUrl = currentUrl.replace(url.origin, 'https://www.finderid.info');
+      
+      // Si on est sur un lien /mcard/, le convertir en finderid.info
+      if (currentUrl.includes('/mcard/')) {
+        const slugMatch = currentUrl.match(/\/mcard\/([^?&#]+)/);
+        if (slugMatch && slugMatch[1]) {
+          finalUrl = `https://www.finderid.info/mcard/${slugMatch[1]}`;
+        }
       }
       
       await navigator.clipboard.writeText(finalUrl);

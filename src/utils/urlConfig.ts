@@ -1,3 +1,4 @@
+
 // Configuration des domaines et URLs pour les cartes
 export const URL_CONFIG = {
   // Domaine principal de l'application
@@ -22,13 +23,10 @@ export const URL_CONFIG = {
     return window.location.hostname;
   },
   
-  // Générer l'URL complète pour une carte
+  // Générer l'URL complète pour une carte - TOUJOURS utiliser finderid.info
   getMCardUrl: (slug: string) => {
-    // Toujours utiliser le domaine actuel pour éviter les problèmes de navigation
-    const currentDomain = URL_CONFIG.getCurrentDomain();
-    const protocol = window.location.protocol || URL_CONFIG.PROTOCOL;
-    
-    return `${protocol}//${currentDomain}/mcard/${slug}`;
+    // Forcer l'utilisation du domaine finderid.info pour tous les liens de cartes
+    return `https://www.finderid.info/mcard/${slug}`;
   },
   
   // Générer l'URL pour le partage sur les réseaux sociaux
