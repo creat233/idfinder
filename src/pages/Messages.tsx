@@ -179,204 +179,80 @@ const Messages = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              💬 Mes Messages
-            </h1>
-            <p className="text-gray-600">Gérez vos conversations avec les propriétaires et visiteurs de MCards</p>
-          </div>
-
-          <Tabs defaultValue="received" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="received" className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
-                Messages reçus {unreadCount > 0 && <Badge variant="destructive">{unreadCount}</Badge>}
-              </TabsTrigger>
-              <TabsTrigger value="sent" className="flex items-center gap-2">
-                <Send className="h-4 w-4" />
-                Messages envoyés
-              </TabsTrigger>
-            </TabsList>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Liste des messages */}
-              <div className="lg:col-span-2">
-                <TabsContent value="received">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Messages reçus ({receivedMessages.length})</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {loading ? (
-                        <div className="text-center py-8">Chargement...</div>
-                      ) : receivedMessages.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          <MessageCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                          <p>Aucun message reçu</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {receivedMessages.map((message) => (
-                            <div
-                              key={message.id}
-                              className={`border rounded-lg p-4 cursor-pointer hover:shadow-md transition-all ${
-                                !message.is_read ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
-                              } ${selectedMessage?.id === message.id ? 'ring-2 ring-blue-500' : ''}`}
-                              onClick={() => {
-                                setSelectedMessage(message);
-                                if (!message.is_read) markAsRead(message.id);
-                              }}
-                            >
-                              <div className="flex items-start justify-between mb-2">
-                                <div className="flex items-center gap-2">
-                                  <User className="h-4 w-4 text-gray-500" />
-                                  <span className="font-medium">{message.sender_name}</span>
-                                  {!message.is_read && (
-                                    <Badge variant="default" className="text-xs">Nouveau</Badge>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-1 text-xs text-gray-500">
-                                  <Clock className="h-3 w-3" />
-                                  {new Date(message.created_at).toLocaleDateString()}
-                                </div>
-                              </div>
-                              
-                              <p className="text-sm text-gray-600 mb-2">
-                                <strong>MCard:</strong> {message.mcard_name}
-                              </p>
-                              
-                              {message.subject && (
-                                <p className="font-medium text-sm mb-1">{message.subject}</p>
-                              )}
-                              
-                              <p className="text-sm text-gray-700 line-clamp-2">
-                                {message.message}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="sent">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Messages envoyés ({sentMessages.length})</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {sentMessages.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          <Send className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                          <p>Aucun message envoyé</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {sentMessages.map((message) => (
-                            <div
-                              key={message.id}
-                              className={`border rounded-lg p-4 cursor-pointer hover:shadow-md hover:bg-gray-50 transition-all ${
-                                selectedMessage?.id === message.id ? 'ring-2 ring-blue-500' : ''
-                              }`}
-                              onClick={() => setSelectedMessage(message)}
-                            >
-                              <div className="flex items-start justify-between mb-2">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600">À:</span>
-                                  <span className="font-medium">{message.recipient_name}</span>
-                                </div>
-                                <div className="flex items-center gap-1 text-xs text-gray-500">
-                                  <Clock className="h-3 w-3" />
-                                  {new Date(message.created_at).toLocaleDateString()}
-                                </div>
-                              </div>
-                              
-                              <p className="text-sm text-gray-600 mb-2">
-                                <strong>MCard:</strong> {message.mcard_name}
-                              </p>
-                              
-                              {message.subject && (
-                                <p className="font-medium text-sm mb-1">{message.subject}</p>
-                              )}
-                              
-                              <p className="text-sm text-gray-700 line-clamp-2">
-                                {message.message}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </div>
-
-              {/* Détail du message et réponse */}
-              <div className="lg:col-span-1">
-                <Card className="sticky top-4">
-                  <CardHeader>
-                    <CardTitle className="text-lg">
-                      {selectedMessage ? 'Détails du message' : 'Sélectionnez un message'}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {selectedMessage ? (
-                      <div className="space-y-4">
-                        <div className="space-y-2 text-sm">
-                          <div><strong>De:</strong> {selectedMessage.sender_name}</div>
-                          <div><strong>À:</strong> {selectedMessage.recipient_name}</div>
-                          <div><strong>MCard:</strong> {selectedMessage.mcard_name}</div>
-                          <div><strong>Date:</strong> {new Date(selectedMessage.created_at).toLocaleString()}</div>
-                        </div>
-                        
-                        {selectedMessage.subject && (
-                          <div>
-                            <strong className="text-sm">Sujet:</strong>
-                            <p className="mt-1">{selectedMessage.subject}</p>
-                          </div>
-                        )}
-                        
-                        <div>
-                          <strong className="text-sm">Message:</strong>
-                          <div className="mt-1 p-3 bg-gray-50 rounded-lg text-sm">
-                            {selectedMessage.message}
-                          </div>
-                        </div>
-
-                        {/* Formulaire de réponse */}
-                        <div className="pt-4 border-t space-y-3">
-                          <strong className="text-sm">Répondre:</strong>
-                          <Textarea
-                            placeholder="Tapez votre réponse..."
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
-                            rows={4}
-                          />
-                          <Button
-                            onClick={handleReply}
-                            disabled={!replyText.trim() || sending}
-                            className="w-full"
-                            size="sm"
-                          >
-                            <Send className="h-4 w-4 mr-2" />
-                            {sending ? 'Envoi...' : 'Envoyer la réponse'}
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-8 text-gray-500">
-                        <MessageCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                        <p>Cliquez sur un message pour voir les détails</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                💬 Messages
+              </h1>
+              <p className="text-gray-600">Vos conversations avec les propriétaires et visiteurs de MCards</p>
             </div>
-          </Tabs>
-        </div>
+
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="mt-4 text-gray-600">Chargement des messages...</p>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="text-center py-12">
+                <MessageCircle className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun message</h3>
+                <p className="text-gray-500">Vous n'avez pas encore de conversations</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <Card 
+                    key={message.id} 
+                    className={`cursor-pointer hover:shadow-lg transition-all duration-200 ${
+                      !message.is_read && message.recipient_id === user?.id 
+                        ? 'ring-2 ring-blue-200 bg-blue-50/50' 
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => {
+                      // Navigation vers la page de conversation
+                      const otherUserId = message.sender_id === user?.id ? message.recipient_id : message.sender_id;
+                      const otherUserName = message.sender_id === user?.id ? message.recipient_name : message.sender_name;
+                      window.location.href = `/conversation/${otherUserId}?mcard=${message.mcard_id}&name=${encodeURIComponent(otherUserName || '')}`;
+                    }}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                            {(message.sender_id === user?.id ? message.recipient_name : message.sender_name)?.charAt(0) || 'U'}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {message.sender_id === user?.id ? message.recipient_name : message.sender_name}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              MCard: {message.mcard_name}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {!message.is_read && message.recipient_id === user?.id && (
+                            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                          )}
+                          <span className="text-xs text-gray-500">
+                            {new Date(message.created_at).toLocaleDateString('fr-FR')}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {message.subject && (
+                        <h4 className="font-medium text-gray-800 mb-2">{message.subject}</h4>
+                      )}
+                      
+                      <p className="text-gray-700 line-clamp-2 text-sm leading-relaxed">
+                        {message.sender_id === user?.id ? 'Vous: ' : ''}{message.message}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
       </div>
       
       <Footer />
