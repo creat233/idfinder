@@ -4,19 +4,21 @@ import { useNotificationCleanup } from "@/hooks/useNotificationCleanup";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Trash2, Eye, CheckCircle, AlertCircle, Gift, Shield, User, CreditCard } from "lucide-react";
+import { Bell, Trash2, Eye, CheckCircle, AlertCircle, Gift, Shield, User, CreditCard, MessageCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 export const NotificationsList = () => {
   const { notifications, loading, markAsRead, markAllAsRead, refetch } = useNotifications();
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Utiliser le nettoyage automatique
   useNotificationCleanup();
@@ -38,6 +40,8 @@ export const NotificationsList = () => {
         return <User className="h-5 w-5 text-indigo-500" />;
       case 'mcard_subscription_activated':
         return <CreditCard className="h-5 w-5 text-green-600" />;
+      case 'new_message':
+        return <MessageCircle className="h-5 w-5 text-blue-600" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
     }
@@ -61,8 +65,22 @@ export const NotificationsList = () => {
         return 'Bienvenue';
       case 'mcard_subscription_activated':
         return 'mCard activée';
+      case 'new_message':
+        return 'Nouveau message';
       default:
         return 'Notification';
+    }
+  };
+
+  const handleNotificationClick = async (notification: any) => {
+    // Marquer comme lu si pas encore lu
+    if (!notification.is_read) {
+      await markAsRead(notification.id);
+    }
+
+    // Rediriger selon le type de notification
+    if (notification.type === 'new_message') {
+      navigate('/messages');
     }
   };
 
@@ -224,7 +242,8 @@ export const NotificationsList = () => {
       {notifications.map((notification) => (
         <Card 
           key={notification.id} 
-          className={`transition-all ${!notification.is_read ? 'border-blue-200 bg-blue-50/50' : ''}`}
+          className={`transition-all cursor-pointer hover:shadow-md ${!notification.is_read ? 'border-blue-200 bg-blue-50/50' : ''} ${notification.type === 'new_message' ? 'hover:bg-blue-50' : 'hover:bg-gray-50'}`}
+          onClick={() => handleNotificationClick(notification)}
         >
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
@@ -260,12 +279,15 @@ export const NotificationsList = () => {
                 </p>
               </div>
               
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
                 {!notification.is_read && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => markAsRead(notification.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      markAsRead(notification.id);
+                    }}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
@@ -277,6 +299,7 @@ export const NotificationsList = () => {
                       variant="ghost"
                       size="sm"
                       disabled={deletingIds.has(notification.id)}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
