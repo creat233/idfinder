@@ -26,7 +26,6 @@ import AdminPromoCodes from "./pages/AdminPromoCodes";
 import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
-import Conversation from "./pages/Conversation";
 import VerificationRequest from "./pages/VerificationRequest";
 
 const queryClient = new QueryClient({
@@ -81,7 +80,6 @@ function AppContent() {
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
-              <Route path="/conversation/:userId" element={<Conversation />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
           </BrowserRouter>
