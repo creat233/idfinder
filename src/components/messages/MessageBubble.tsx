@@ -10,33 +10,37 @@ interface MessageBubbleProps {
 }
 
 export function MessageBubble({ message, isCurrentUser }: MessageBubbleProps) {
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('fr-FR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
-    <div className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-      <div
-        className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-          isCurrentUser
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 text-gray-900'
-        }`}
-      >
-        {message.subject && (
-          <p className={`font-medium text-sm mb-1 ${
-            isCurrentUser ? 'text-blue-100' : 'text-gray-600'
-          }`}>
-            {message.subject}
-          </p>
-        )}
-        <p className="text-sm">{message.message}</p>
-        <p className={`text-xs mt-2 ${
-          isCurrentUser ? 'text-blue-200' : 'text-gray-500'
-        }`}>
-          {new Date(message.created_at).toLocaleString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            day: '2-digit',
-            month: '2-digit'
-          })}
-        </p>
+    <div className={`flex mb-4 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+      <div className={`max-w-[70%] ${isCurrentUser ? 'ml-12' : 'mr-12'}`}>
+        <div
+          className={`px-4 py-3 rounded-[20px] shadow-sm ${
+            isCurrentUser
+              ? 'bg-blue-500 text-white rounded-br-md'
+              : 'bg-gray-100 text-gray-900 rounded-bl-md'
+          }`}
+        >
+          {message.subject && (
+            <p className={`font-medium text-sm mb-2 ${
+              isCurrentUser ? 'text-blue-100' : 'text-gray-600'
+            }`}>
+              {message.subject}
+            </p>
+          )}
+          <p className="text-[15px] leading-[1.4] break-words">{message.message}</p>
+        </div>
+        <div className={`flex mt-1 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+          <span className="text-xs text-gray-500 px-2">
+            {formatTime(message.created_at)}
+          </span>
+        </div>
       </div>
     </div>
   );

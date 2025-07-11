@@ -51,22 +51,22 @@ export function ConversationView({
     <Card className="h-full">
       <div className="h-full flex flex-col">
         {/* En-tête de la conversation */}
-        <div className="p-4 border-b bg-gray-50">
+        <div className="p-4 border-b bg-white shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onBack}
-                className="lg:hidden"
+                className="lg:hidden hover:bg-gray-100"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                {conversation.otherUserName.charAt(0) || 'U'}
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+                {conversation.otherUserName.charAt(0).toUpperCase() || 'U'}
               </div>
               <div>
-                <h2 className="font-semibold text-gray-900">{conversation.otherUserName}</h2>
+                <h2 className="font-semibold text-gray-900 text-[17px]">{conversation.otherUserName}</h2>
                 <p className="text-sm text-gray-500">MCard: {conversation.mcardName}</p>
               </div>
             </div>
@@ -74,14 +74,25 @@ export function ConversationView({
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {conversation.messages.map((message) => (
-            <MessageBubble
-              key={message.id}
-              message={message}
-              isCurrentUser={message.sender_id === currentUserId}
-            />
-          ))}
+        <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
+          {conversation.messages.length === 0 ? (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500 text-center">
+                Aucun message dans cette conversation.<br />
+                Commencez la discussion ci-dessous.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {conversation.messages.map((message) => (
+                <MessageBubble
+                  key={message.id}
+                  message={message}
+                  isCurrentUser={message.sender_id === currentUserId}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Zone de saisie */}
