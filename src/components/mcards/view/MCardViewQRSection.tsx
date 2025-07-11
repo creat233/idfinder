@@ -26,7 +26,7 @@ export const MCardViewQRSection = ({ showQRCode, url, cardName, onClose }: MCard
   const qrUrl = getQRUrl();
 
   const handleDownload = () => {
-    const svg = document.querySelector('#qrcode-svg');
+    const svg = document.querySelector('#qrcode-svg') as SVGSVGElement;
     if (svg) {
       const svgData = new XMLSerializer().serializeToString(svg);
       const canvas = document.createElement('canvas');
