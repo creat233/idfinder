@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Send, MessageCircle, Search, ArrowLeft } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MCardMessage } from "@/types/mcard-verification";
+import { ConversationsList } from "@/components/messages/ConversationsList";
+import { ConversationView } from "@/components/messages/ConversationView";
 
 interface Conversation {
   otherUserId: string;
@@ -205,10 +203,6 @@ const Messages = () => {
     }
   };
 
-  const filteredConversations = conversations.filter(conv =>
-    conv.otherUserName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    conv.mcardName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   if (!user) {
     return (
@@ -241,183 +235,31 @@ const Messages = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
             {/* Liste des conversations */}
             <div className="lg:col-span-1">
-              <Card className="h-full">
-                <CardContent className="p-0">
-                  {/* Barre de recherche */}
-                  <div className="p-4 border-b">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                      <Input
-                        placeholder="Rechercher une conversation..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Liste des conversations */}
-                  <div className="overflow-y-auto h-[calc(100%-80px)]">
-                    {loading ? (
-                      <div className="flex items-center justify-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                      </div>
-                    ) : filteredConversations.length === 0 ? (
-                      <div className="text-center py-8 px-4">
-                        <MessageCircle className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                        <p className="text-gray-500 text-sm">
-                          {searchQuery ? 'Aucune conversation trouvée' : 'Aucune conversation'}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="space-y-1">
-                        {filteredConversations.map((conversation) => (
-                          <div
-                            key={`${conversation.otherUserId}-${conversation.mcardId}`}
-                            className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 ${
-                              selectedConversation?.otherUserId === conversation.otherUserId && 
-                              selectedConversation?.mcardId === conversation.mcardId
-                                ? 'bg-blue-50 border-l-blue-500' 
-                                : 'border-l-transparent'
-                            }`}
-                            onClick={() => {
-                              setSelectedConversation(conversation);
-                              markConversationAsRead(conversation);
-                            }}
-                          >
-                            <div className="flex items-start gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                                {conversation.otherUserName.charAt(0) || 'U'}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between mb-1">
-                                  <h3 className="font-semibold text-gray-900 text-sm truncate">
-                                    {conversation.otherUserName}
-                                  </h3>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    {conversation.unreadCount > 0 && (
-                                      <div className="bg-blue-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-                                        {conversation.unreadCount}
-                                      </div>
-                                    )}
-                                    <span className="text-xs text-gray-500">
-                                      {new Date(conversation.lastMessage.created_at).toLocaleDateString('fr-FR')}
-                                    </span>
-                                  </div>
-                                </div>
-                                <p className="text-xs text-gray-500 mb-1 truncate">
-                                  MCard: {conversation.mcardName}
-                                </p>
-                                <p className="text-sm text-gray-700 line-clamp-1">
-                                  {conversation.lastMessage.sender_id === user.id ? 'Vous: ' : ''}
-                                  {conversation.lastMessage.message}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <ConversationsList
+                conversations={conversations}
+                selectedConversation={selectedConversation}
+                loading={loading}
+                searchQuery={searchQuery}
+                currentUserId={user.id}
+                onSearchChange={setSearchQuery}
+                onConversationSelect={(conversation) => {
+                  setSelectedConversation(conversation);
+                  markConversationAsRead(conversation);
+                }}
+              />
             </div>
 
             {/* Zone de conversation */}
             <div className="lg:col-span-2">
-              <Card className="h-full">
-                {selectedConversation ? (
-                  <div className="h-full flex flex-col">
-                    {/* En-tête de la conversation */}
-                    <div className="p-4 border-b bg-gray-50">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedConversation(null)}
-                            className="lg:hidden"
-                          >
-                            <ArrowLeft className="h-4 w-4" />
-                          </Button>
-                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                            {selectedConversation.otherUserName.charAt(0) || 'U'}
-                          </div>
-                          <div>
-                            <h2 className="font-semibold text-gray-900">{selectedConversation.otherUserName}</h2>
-                            <p className="text-sm text-gray-500">MCard: {selectedConversation.mcardName}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                      {selectedConversation.messages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`flex ${message.sender_id === user.id ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div
-                            className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                              message.sender_id === user.id
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-100 text-gray-900'
-                            }`}
-                          >
-                            {message.subject && (
-                              <p className={`font-medium text-sm mb-1 ${
-                                message.sender_id === user.id ? 'text-blue-100' : 'text-gray-600'
-                              }`}>
-                                {message.subject}
-                              </p>
-                            )}
-                            <p className="text-sm">{message.message}</p>
-                            <p className={`text-xs mt-2 ${
-                              message.sender_id === user.id ? 'text-blue-200' : 'text-gray-500'
-                            }`}>
-                              {new Date(message.created_at).toLocaleString('fr-FR', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                day: '2-digit',
-                                month: '2-digit'
-                              })}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Zone de saisie */}
-                    <div className="p-4 border-t bg-gray-50">
-                      <div className="flex gap-3">
-                        <Textarea
-                          placeholder="Tapez votre message..."
-                          value={replyText}
-                          onChange={(e) => setReplyText(e.target.value)}
-                          rows={2}
-                          className="flex-1 resize-none"
-                        />
-                        <Button
-                          onClick={handleSendMessage}
-                          disabled={!replyText.trim() || sending}
-                          className="self-end"
-                        >
-                          <Send className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-center text-gray-500">
-                      <MessageCircle className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                      <h3 className="text-lg font-medium mb-2">Sélectionnez une conversation</h3>
-                      <p className="text-sm">Choisissez une conversation dans la liste pour commencer à discuter</p>
-                    </div>
-                  </div>
-                )}
-              </Card>
+              <ConversationView
+                conversation={selectedConversation}
+                currentUserId={user.id}
+                replyText={replyText}
+                sending={sending}
+                onReplyChange={setReplyText}
+                onSendMessage={handleSendMessage}
+                onBack={() => setSelectedConversation(null)}
+              />
             </div>
           </div>
         </div>
