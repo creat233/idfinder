@@ -144,12 +144,21 @@ export const MCardViewStatuses = ({
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {status.status_image && (
-                      <img 
-                        src={status.status_image} 
-                        alt={status.status_text}
-                        className="w-full sm:w-16 h-32 sm:h-16 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => handleStatusClick(status)}
-                      />
+                      <div className="relative">
+                        <img 
+                          src={status.status_image} 
+                          alt={status.status_text}
+                          className="w-full sm:w-16 h-32 sm:h-16 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => handleStatusClick(status)}
+                          onError={(e) => {
+                            console.error('Error loading status image:', status.status_image);
+                            e.currentTarget.style.display = 'none';
+                          }}
+                          onLoad={() => {
+                            console.log('Status image loaded successfully:', status.status_image);
+                          }}
+                        />
+                      </div>
                     )}
                     
                     <div className="flex-1 space-y-2">

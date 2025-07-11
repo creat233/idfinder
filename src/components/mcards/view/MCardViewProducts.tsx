@@ -139,6 +139,13 @@ export const MCardViewProducts = ({
                       alt={product.name}
                       className="w-full h-32 md:h-40 object-cover rounded-lg mb-3 cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={() => handleProductClick(product)}
+                      onError={(e) => {
+                        console.error('Error loading product image:', product.image_url);
+                        e.currentTarget.style.display = 'none';
+                      }}
+                      onLoad={() => {
+                        console.log('Product image loaded successfully:', product.image_url);
+                      }}
                     />
                   </div>
                 )}
