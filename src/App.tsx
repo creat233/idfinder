@@ -65,6 +65,7 @@ function AppContent() {
               <Route path="/signaler-carte" element={<SignalerCarte />} />
               <Route path="/signaler" element={<SignalerCarte />} />
               <Route path="/recherche-resultat" element={<RechercheResultat />} />
+              <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
               <Route path="/numero-urgence" element={<NumeroUrgence />} />
               <Route path="/numeros-urgence" element={<NumeroUrgence />} />
               <Route path="/urgence" element={<NumeroUrgence />} />
