@@ -2,16 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MessageCircle, Search } from "lucide-react";
 import { formatMessageDate } from "@/utils/dateUtils";
-
-interface Conversation {
-  otherUserId: string;
-  otherUserName: string;
-  mcardId: string;
-  mcardName: string;
-  messages: any[];
-  lastMessage: any;
-  unreadCount: number;
-}
+import { Conversation } from "@/types/messages";
 
 interface ConversationsListProps {
   conversations: Conversation[];

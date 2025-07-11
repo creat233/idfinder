@@ -3,16 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
-
-interface Conversation {
-  otherUserId: string;
-  otherUserName: string;
-  mcardId: string;
-  mcardName: string;
-  messages: any[];
-  lastMessage: any;
-  unreadCount: number;
-}
+import { Conversation } from "@/types/messages";
 
 interface ConversationViewProps {
   conversation: Conversation | null;
