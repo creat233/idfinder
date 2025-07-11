@@ -82,7 +82,8 @@ export const MCardViewCustomization = ({
     window.open(previewUrl, '_blank');
   };
 
-  if (!isOwner && !isPremium) return null;
+  // Ne pas afficher cette section pour les visiteurs non connectés
+  if (!isOwner) return null;
 
   return (
     <Card className="shadow-lg">

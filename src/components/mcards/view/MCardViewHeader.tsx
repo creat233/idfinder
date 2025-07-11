@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Edit, QrCode, Share2, Eye, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 
 interface MCardViewHeaderProps {
   isOwner: boolean;
@@ -23,7 +25,16 @@ export const MCardViewHeader = ({
   onShare 
 }: MCardViewHeaderProps) => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isPendingPayment = subscriptionStatus === 'pending_payment';
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
 
   return (
     <div className="bg-white shadow-sm border-b">
@@ -31,15 +42,17 @@ export const MCardViewHeader = ({
         <div className="flex items-center justify-between">
           {/* Logo FinderID avec bouton retour */}
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Retour
-            </Button>
+            {isAuthenticated && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Retour
+              </Button>
+            )}
             <div className="flex items-center space-x-2">
               <img 
                 src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 

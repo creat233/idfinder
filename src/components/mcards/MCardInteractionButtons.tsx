@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Heart, Star, Share2, MessageCircle } from "lucide-react";
 import { useMCardInteractions } from "@/hooks/useMCardInteractions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MCardMessageDialog } from "./MCardMessageDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface MCardInteractionButtonsProps {
   mcardId: string;
@@ -27,6 +29,16 @@ export const MCardInteractionButtons = ({
   } = useMCardInteractions(mcardId);
 
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -44,13 +56,21 @@ export const MCardInteractionButtons = ({
     }
   };
 
+  const handleAuthRequired = (action: () => void) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    action();
+  };
+
   return (
     <>
       <div className={`flex gap-2 ${className}`}>
         <Button
           variant="outline"
           size="sm"
-          onClick={handleLike}
+          onClick={() => handleAuthRequired(handleLike)}
           className={`flex items-center gap-1 ${isLiked ? 'text-red-600 border-red-200 bg-red-50' : ''}`}
         >
           <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
@@ -60,7 +80,7 @@ export const MCardInteractionButtons = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={handleFavorite}
+          onClick={() => handleAuthRequired(handleFavorite)}
           className={`flex items-center gap-1 ${isFavorited ? 'text-yellow-600 border-yellow-200 bg-yellow-50' : ''}`}
         >
           <Star className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
@@ -80,7 +100,7 @@ export const MCardInteractionButtons = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setIsMessageDialogOpen(true)}
+          onClick={() => handleAuthRequired(() => setIsMessageDialogOpen(true))}
           className="flex items-center gap-1"
         >
           <MessageCircle className="w-4 h-4" />
