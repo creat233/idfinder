@@ -131,12 +131,15 @@ export const useConversations = (user: any) => {
           {
             event: '*',
             schema: 'public',
-            table: 'mcard_messages',
-            filter: `sender_id=eq.${user.id},recipient_id=eq.${user.id}`
+            table: 'mcard_messages'
           },
           (payload) => {
             console.log('Message update:', payload);
-            loadConversations();
+            // Recharger seulement si l'utilisateur est concerné par ce message
+            const newMessage = payload.new as any;
+            if (newMessage && (newMessage.sender_id === user.id || newMessage.recipient_id === user.id)) {
+              loadConversations();
+            }
           }
         )
         .subscribe();
