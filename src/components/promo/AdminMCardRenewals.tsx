@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle, XCircle, RefreshCw, User, Mail, Phone, Calendar } from "lucide-react";
+import { CheckCircle, XCircle, RefreshCw, User, Mail, Phone, Calendar, Search } from "lucide-react";
 
 interface PendingRenewal {
   id: string;
@@ -23,6 +24,7 @@ interface PendingRenewal {
 
 export const AdminMCardRenewals = () => {
   const [loading, setLoading] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -99,6 +101,17 @@ export const AdminMCardRenewals = () => {
     }
   };
 
+  // Filtrer les renouvellements selon la recherche
+  const filteredRenewals = pendingRenewals.filter(renewal => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      renewal.mcard_name?.toLowerCase().includes(query) ||
+      renewal.user_email?.toLowerCase().includes(query) ||
+      renewal.current_plan?.toLowerCase().includes(query)
+    );
+  });
+
   if (isLoading) {
     return (
       <Card>
@@ -126,14 +139,36 @@ export const AdminMCardRenewals = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {/* Barre de recherche */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="🔍 Rechercher par nom, email, plan..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          {searchQuery && (
+            <div className="mt-2 text-sm text-gray-600">
+              {filteredRenewals.length} résultat{filteredRenewals.length > 1 ? 's' : ''} trouvé{filteredRenewals.length > 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+
         {pendingRenewals.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <RefreshCw className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>Aucune demande de renouvellement en attente</p>
           </div>
+        ) : filteredRenewals.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            <p>Aucun renouvellement ne correspond à votre recherche.</p>
+          </div>
         ) : (
           <div className="space-y-4">
-            {pendingRenewals.map((renewal) => (
+            {filteredRenewals.map((renewal) => (
               <div key={renewal.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">

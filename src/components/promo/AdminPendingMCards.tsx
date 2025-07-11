@@ -1,11 +1,13 @@
 
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminPendingMCardsHeader } from "./admin-pending-mcards/AdminPendingMCardsHeader";
 import { AdminPendingMCardsTable } from "./admin-pending-mcards/AdminPendingMCardsTable";
+import { Search } from "lucide-react";
 
 interface PendingMCard {
   id: string;
@@ -27,6 +29,7 @@ const PLAN_PRICES = {
 
 export const AdminPendingMCards = () => {
   const [loading, setLoading] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -160,8 +163,21 @@ export const AdminPendingMCards = () => {
     );
   }
 
+  // Filtrer les cartes selon la recherche
+  const filteredMCards = allMCards.filter(card => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      card.full_name?.toLowerCase().includes(query) ||
+      card.user_email?.toLowerCase().includes(query) ||
+      card.plan?.toLowerCase().includes(query) ||
+      card.subscription_status?.toLowerCase().includes(query)
+    );
+  });
+
   // Calculer les statistiques
-  const nonActiveCards = allMCards.filter(card => card.subscription_status !== 'active');
+  const nonActiveCards = filteredMCards.filter(card => card.subscription_status !== 'active');
+  const verifiedCards = filteredMCards.filter(card => card.subscription_status === 'active');
   const totalPotentialRevenue = nonActiveCards.reduce((total, mcard) => {
     const planInfo = PLAN_PRICES[mcard.plan as keyof typeof PLAN_PRICES];
     return total + (planInfo?.price || 0);
@@ -173,26 +189,91 @@ export const AdminPendingMCards = () => {
   console.log('- Revenus potentiels:', totalPotentialRevenue);
 
   return (
-    <Card>
-      <AdminPendingMCardsHeader 
-        pendingCount={nonActiveCards.length}
-        totalPotentialRevenue={totalPotentialRevenue}
-      />
-      <CardContent>
-        {allMCards.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500">Aucune carte trouvée dans la base de données.</p>
+    <div className="space-y-6">
+      {/* Section des cartes vérifiées */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-green-600">📋 Comptes Vérifiés</h3>
+              <p className="text-sm text-gray-600">Cartes actives et vérifiées</p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-green-600">{verifiedCards.length}</div>
+              <div className="text-sm text-gray-500">Comptes vérifiés</div>
+            </div>
           </div>
-        ) : (
-        <AdminPendingMCardsTable
-          pendingMCards={allMCards}
-          loading={loading}
-          onApprove={handleApproveSubscription}
-          onPreview={handlePreviewCard}
-          onRefresh={() => queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] })}
+          
+          {verifiedCards.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {verifiedCards.slice(0, 6).map((card) => (
+                <div key={card.id} className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-green-800">{card.full_name}</h4>
+                      <p className="text-sm text-green-600">{card.user_email}</p>
+                      <span className="inline-block mt-1 px-2 py-1 bg-green-100 text-green-700 text-xs rounded">
+                        {PLAN_PRICES[card.plan as keyof typeof PLAN_PRICES]?.name || card.plan}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handlePreviewCard(card.slug)}
+                      className="text-green-600 hover:text-green-800 text-sm font-medium"
+                    >
+                      Voir →
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Section principale avec recherche */}
+      <Card>
+        <AdminPendingMCardsHeader 
+          pendingCount={nonActiveCards.length}
+          totalPotentialRevenue={totalPotentialRevenue}
         />
-        )}
-      </CardContent>
-    </Card>
+        <CardContent>
+          {/* Barre de recherche */}
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="🔍 Rechercher par nom, email, plan, statut..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            {searchQuery && (
+              <div className="mt-2 text-sm text-gray-600">
+                {filteredMCards.length} résultat{filteredMCards.length > 1 ? 's' : ''} trouvé{filteredMCards.length > 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
+
+          {allMCards.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Aucune carte trouvée dans la base de données.</p>
+            </div>
+          ) : filteredMCards.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Aucune carte ne correspond à votre recherche.</p>
+            </div>
+          ) : (
+            <AdminPendingMCardsTable
+              pendingMCards={filteredMCards}
+              loading={loading}
+              onApprove={handleApproveSubscription}
+              onPreview={handlePreviewCard}
+              onRefresh={() => queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] })}
+            />
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };

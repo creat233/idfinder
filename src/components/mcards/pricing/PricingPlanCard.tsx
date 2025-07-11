@@ -22,10 +22,11 @@ interface PricingPlanCardProps {
     paymentInfo: string;
   };
   upgradingCardId?: string | null;
+  mcards?: any[];
   onSelectPlan: (planId: 'essential' | 'premium') => void;
 }
 
-export const PricingPlanCard = ({ plan, upgradingCardId, onSelectPlan }: PricingPlanCardProps) => {
+export const PricingPlanCard = ({ plan, upgradingCardId, mcards = [], onSelectPlan }: PricingPlanCardProps) => {
   const priceInfo = getPriceInfoForCountry('SN');
 
   return (
@@ -93,8 +94,11 @@ export const PricingPlanCard = ({ plan, upgradingCardId, onSelectPlan }: Pricing
             plan.isPopular && "shadow-lg hover:shadow-xl"
           )}
           onClick={() => onSelectPlan(plan.id as 'essential' | 'premium')}
+          disabled={!upgradingCardId && mcards.length >= 3}
         >
-          {upgradingCardId ? (
+          {!upgradingCardId && mcards.length >= 3 ? (
+            "Limite atteinte (3/3)"
+          ) : upgradingCardId ? (
             <>
               Passer au plan {plan.name}
               <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />

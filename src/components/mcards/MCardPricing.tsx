@@ -23,6 +23,9 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
   const handleSelectPlan = (planId: 'essential' | 'premium') => {
     if (upgradingCardId) {
       onRequestUpgrade(upgradingCardId, planId);
+    } else if (mcards.length >= 3) {
+      // Limite atteinte : ne pas permettre la création
+      return;
     } else if (mcards.length >= 1) {
       if (mcards.length > 1) {
         setSelectedPlan(planId);
@@ -59,6 +62,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
                   key={index}
                   plan={plan}
                   upgradingCardId={upgradingCardId}
+                  mcards={mcards}
                   onSelectPlan={handleSelectPlan}
                 />
               ))}

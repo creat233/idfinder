@@ -63,6 +63,18 @@ export const createMCard = async (
   profilePictureFile: File | null, 
   userId: string
 ): Promise<MCard> => {
+  // Vérifier la limite de 3 cartes par utilisateur
+  const { data: existingCards, error: countError } = await supabase
+    .from('mcards')
+    .select('id')
+    .eq('user_id', userId);
+
+  if (countError) throw countError;
+
+  if (existingCards && existingCards.length >= 3) {
+    throw new Error('Limite atteinte : Vous ne pouvez créer que 3 cartes de visite maximum par compte.');
+  }
+
   let profilePictureUrl = null;
 
   if (profilePictureFile) {
