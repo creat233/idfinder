@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
+import { DateSeparator } from "./DateSeparator";
 import { Conversation } from "@/types/messages";
+import { groupMessagesByDate } from "@/utils/messageGrouping";
 
 interface ConversationViewProps {
   conversation: Conversation | null;
@@ -75,12 +77,17 @@ export function ConversationView({
             </div>
           ) : (
             <div className="space-y-1">
-              {conversation.messages.map((message) => (
-                <MessageBubble
-                  key={message.id}
-                  message={message}
-                  isCurrentUser={message.sender_id === currentUserId}
-                />
+              {groupMessagesByDate(conversation.messages).map((group) => (
+                <div key={group.date}>
+                  <DateSeparator date={group.date} />
+                  {group.messages.map((message) => (
+                    <MessageBubble
+                      key={message.id}
+                      message={message}
+                      isCurrentUser={message.sender_id === currentUserId}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           )}
