@@ -75,16 +75,9 @@ const VerifiedMCards = () => {
   };
 
   const handleCardClick = (slug: string) => {
-    // Utiliser le domaine actuel pour la navigation
-    const currentDomain = window.location.hostname;
-    
-    if (currentDomain === 'www.finderid.info' || currentDomain === 'finderid.info') {
-      // Sur le domaine de production, utiliser des liens relatifs
-      window.open(`/mcard/${slug}`, '_blank');
-    } else {
-      // Sur Lovable ou localhost, utiliser l'URL complète finderid.info
-      window.open(`https://www.finderid.info/mcard/${slug}`, '_blank');
-    }
+    // Toujours utiliser l'URL complète finderid.info pour les cartes
+    const url = URL_CONFIG.getMCardUrl(slug);
+    window.open(url, '_blank');
   };
 
   if (loading) {
