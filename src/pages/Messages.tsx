@@ -220,52 +220,52 @@ const Messages = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              💬 Messages
-            </h1>
-            <p className="text-gray-600">Vos conversations avec les propriétaires et visiteurs de MCards</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-            {/* Liste des conversations */}
-            <div className="lg:col-span-1">
-              <ConversationsList
-                conversations={conversations}
-                selectedConversation={selectedConversation}
-                loading={loading}
-                searchQuery={searchQuery}
-                currentUserId={user.id}
-                onSearchChange={setSearchQuery}
-                onConversationSelect={(conversation) => {
-                  setSelectedConversation(conversation);
-                  markConversationAsRead(conversation);
-                }}
-              />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="container mx-auto px-4 py-6 flex-1 flex flex-col">
+          <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                💬 Messages
+              </h1>
+              <p className="text-gray-600">Vos conversations avec les propriétaires et visiteurs de MCards</p>
             </div>
 
-            {/* Zone de conversation */}
-            <div className="lg:col-span-2">
-              <ConversationView
-                conversation={selectedConversation}
-                currentUserId={user.id}
-                replyText={replyText}
-                sending={sending}
-                onReplyChange={setReplyText}
-                onSendMessage={handleSendMessage}
-                onBack={() => setSelectedConversation(null)}
-              />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+              {/* Liste des conversations */}
+              <div className="lg:col-span-1">
+                <ConversationsList
+                  conversations={conversations}
+                  selectedConversation={selectedConversation}
+                  loading={loading}
+                  searchQuery={searchQuery}
+                  currentUserId={user.id}
+                  onSearchChange={setSearchQuery}
+                  onConversationSelect={(conversation) => {
+                    setSelectedConversation(conversation);
+                    markConversationAsRead(conversation);
+                  }}
+                />
+              </div>
+
+              {/* Zone de conversation */}
+              <div className="lg:col-span-2">
+                <ConversationView
+                  conversation={selectedConversation}
+                  currentUserId={user.id}
+                  replyText={replyText}
+                  sending={sending}
+                  onReplyChange={setReplyText}
+                  onSendMessage={handleSendMessage}
+                  onBack={() => setSelectedConversation(null)}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 };
