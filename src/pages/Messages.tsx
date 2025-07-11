@@ -94,13 +94,14 @@ const Messages = () => {
         };
       }) || [];
 
-      // Grouper les messages par conversation
+      // Grouper les messages par conversation (par utilisateur uniquement, pas par mcard)
       const conversationsMap = new Map<string, Conversation>();
       
       processedMessages.forEach((msg: any) => {
         const otherUserId = msg.sender_id === user.id ? msg.recipient_id : msg.sender_id;
         const otherUserName = msg.sender_id === user.id ? msg.recipient_name : msg.sender_name;
-        const key = `${otherUserId}-${msg.mcard_id}`;
+        // Utiliser seulement l'userId pour regrouper, pas le mcard_id
+        const key = otherUserId;
         
         if (!conversationsMap.has(key)) {
           conversationsMap.set(key, {
@@ -125,6 +126,9 @@ const Messages = () => {
         // Mettre à jour le dernier message si plus récent
         if (new Date(msg.created_at) > new Date(conversation.lastMessage.created_at)) {
           conversation.lastMessage = msg;
+          // Mettre à jour aussi les infos de la mcard du dernier message
+          conversation.mcardId = msg.mcard_id;
+          conversation.mcardName = msg.mcard_name;
         }
       });
 
@@ -188,11 +192,10 @@ const Messages = () => {
     if (!user) return;
 
     try {
-      // Marquer tous les messages non lus de cette conversation comme lus
+      // Marquer tous les messages non lus de cet utilisateur comme lus
       await supabase
         .from('mcard_messages')
         .update({ is_read: true })
-        .eq('mcard_id', conversation.mcardId)
         .eq('sender_id', conversation.otherUserId)
         .eq('recipient_id', user.id)
         .eq('is_read', false);

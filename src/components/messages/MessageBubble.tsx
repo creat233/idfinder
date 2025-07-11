@@ -1,3 +1,5 @@
+import { formatMessageTime } from "@/utils/dateUtils";
+
 interface MessageBubbleProps {
   message: {
     id: string;
@@ -10,13 +12,6 @@ interface MessageBubbleProps {
 }
 
 export function MessageBubble({ message, isCurrentUser }: MessageBubbleProps) {
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('fr-FR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   return (
     <div className={`flex mb-4 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-[70%] ${isCurrentUser ? 'ml-12' : 'mr-12'}`}>
@@ -38,7 +33,7 @@ export function MessageBubble({ message, isCurrentUser }: MessageBubbleProps) {
         </div>
         <div className={`flex mt-1 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
           <span className="text-xs text-gray-500 px-2">
-            {formatTime(message.created_at)}
+            {formatMessageTime(message.created_at)}
           </span>
         </div>
       </div>

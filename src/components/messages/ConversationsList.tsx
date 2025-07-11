@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MessageCircle, Search } from "lucide-react";
+import { formatMessageDate } from "@/utils/dateUtils";
 
 interface Conversation {
   otherUserId: string;
@@ -69,10 +70,9 @@ export function ConversationsList({
             <div className="space-y-1">
               {filteredConversations.map((conversation) => (
                 <div
-                  key={`${conversation.otherUserId}-${conversation.mcardId}`}
+                  key={conversation.otherUserId}
                   className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 ${
-                    selectedConversation?.otherUserId === conversation.otherUserId && 
-                    selectedConversation?.mcardId === conversation.mcardId
+                    selectedConversation?.otherUserId === conversation.otherUserId
                       ? 'bg-blue-50 border-l-blue-500' 
                       : 'border-l-transparent'
                   }`}
@@ -94,7 +94,7 @@ export function ConversationsList({
                             </div>
                           )}
                           <span className="text-xs text-gray-500">
-                            {new Date(conversation.lastMessage.created_at).toLocaleDateString('fr-FR')}
+                            {formatMessageDate(conversation.lastMessage.created_at)}
                           </span>
                         </div>
                       </div>
