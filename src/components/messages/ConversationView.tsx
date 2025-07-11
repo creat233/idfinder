@@ -41,59 +41,59 @@ export function ConversationView({
   }
 
   return (
-    <Card className="h-full">
-      <div className="h-full flex flex-col">
-        {/* En-tête de la conversation */}
-        <div className="p-4 border-b bg-white shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onBack}
-                className="lg:hidden hover:bg-gray-100"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-                {conversation.otherUserName.charAt(0).toUpperCase() || 'U'}
-              </div>
-              <div>
-                <h2 className="font-semibold text-gray-900 text-[17px]">{conversation.otherUserName}</h2>
-                <p className="text-sm text-gray-500">MCard: {conversation.mcardName}</p>
-              </div>
+    <Card className="h-full flex flex-col">
+      {/* En-tête de la conversation */}
+      <div className="flex-shrink-0 p-4 border-b bg-white shadow-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBack}
+              className="lg:hidden hover:bg-gray-100"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+              {conversation.otherUserName.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div>
+              <h2 className="font-semibold text-gray-900 text-[17px]">{conversation.otherUserName}</h2>
+              <p className="text-sm text-gray-500">MCard: {conversation.mcardName}</p>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
-          {conversation.messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500 text-center">
-                Aucun message dans cette conversation.<br />
-                Commencez la discussion ci-dessous.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {groupMessagesByDate(conversation.messages).map((group) => (
-                <div key={group.date}>
-                  <DateSeparator date={group.date} />
-                  {group.messages.map((message) => (
-                    <MessageBubble
-                      key={message.id}
-                      message={message}
-                      isCurrentUser={message.sender_id === currentUserId}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {/* Messages - Zone scrollable */}
+      <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50/30">
+        {conversation.messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-gray-500 text-center">
+              Aucun message dans cette conversation.<br />
+              Commencez la discussion ci-dessous.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {groupMessagesByDate(conversation.messages).map((group) => (
+              <div key={group.date}>
+                <DateSeparator date={group.date} />
+                {group.messages.map((message) => (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    isCurrentUser={message.sender_id === currentUserId}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-        {/* Zone de saisie */}
+      {/* Zone de saisie - Fixe en bas */}
+      <div className="flex-shrink-0 border-t bg-white">
         <MessageInput
           value={replyText}
           onChange={onReplyChange}
