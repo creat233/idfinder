@@ -15,6 +15,7 @@ interface ConversationViewProps {
   onReplyChange: (text: string) => void;
   onSendMessage: () => void;
   onBack: () => void;
+  onDeleteMessage?: (messageId: string) => Promise<boolean>;
 }
 
 export function ConversationView({
@@ -24,7 +25,8 @@ export function ConversationView({
   sending,
   onReplyChange,
   onSendMessage,
-  onBack
+  onBack,
+  onDeleteMessage
 }: ConversationViewProps) {
   if (!conversation) {
     return (
@@ -84,6 +86,7 @@ export function ConversationView({
                     key={message.id}
                     message={message}
                     isCurrentUser={message.sender_id === currentUserId}
+                    onDelete={onDeleteMessage}
                   />
                 ))}
               </div>

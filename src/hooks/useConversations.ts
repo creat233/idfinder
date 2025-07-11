@@ -119,6 +119,36 @@ export const useConversations = (user: any) => {
     }
   };
 
+  const deleteMessage = async (messageId: string) => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('mcard_messages')
+        .delete()
+        .eq('id', messageId)
+        .eq('sender_id', user.id); // S'assurer que seul l'expéditeur peut supprimer
+
+      if (error) throw error;
+
+      toast({
+        title: "Message supprimé",
+        description: "Le message a été supprimé avec succès"
+      });
+
+      loadConversations();
+      return true;
+    } catch (error: any) {
+      console.error('Erreur lors de la suppression:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de supprimer le message"
+      });
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       loadConversations();
@@ -154,6 +184,7 @@ export const useConversations = (user: any) => {
     conversations,
     loading,
     loadConversations,
-    markConversationAsRead
+    markConversationAsRead,
+    deleteMessage
   };
 };

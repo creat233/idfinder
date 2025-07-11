@@ -14,7 +14,7 @@ const Messages = () => {
   const [user, setUser] = useState<any>(null);
 
   // Custom hooks pour gérer les conversations et l'envoi de messages
-  const { conversations, loading, loadConversations, markConversationAsRead } = useConversations(user);
+  const { conversations, loading, loadConversations, markConversationAsRead, deleteMessage } = useConversations(user);
   const { sending, sendMessage } = useMessageSender(user, () => {
     setReplyText("");
     loadConversations();
@@ -67,6 +67,7 @@ const Messages = () => {
                   onReplyChange={setReplyText}
                   onSendMessage={handleSendMessage}
                   onBack={() => setSelectedConversation(null)}
+                  onDeleteMessage={deleteMessage}
                 />
               ) : (
                 <ConversationsList
@@ -112,6 +113,7 @@ const Messages = () => {
                   onReplyChange={setReplyText}
                   onSendMessage={handleSendMessage}
                   onBack={() => setSelectedConversation(null)}
+                  onDeleteMessage={deleteMessage}
                 />
               </div>
             </div>
