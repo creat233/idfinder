@@ -8,6 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminPendingMCardsHeader } from "./admin-pending-mcards/AdminPendingMCardsHeader";
 import { AdminPendingMCardsTable } from "./admin-pending-mcards/AdminPendingMCardsTable";
 import { Search } from "lucide-react";
+import { URL_CONFIG } from "@/utils/urlConfig";
 
 interface PendingMCard {
   id: string;
@@ -120,7 +121,7 @@ export const AdminPendingMCards = () => {
 
   const handlePreviewCard = (slug: string) => {
     // Ouvrir la carte dans un nouvel onglet
-    const url = `${window.location.origin}/m/${slug}`;
+    const url = URL_CONFIG.getMCardUrl(slug);
     console.log('Ouverture de la carte:', url);
     window.open(url, '_blank');
   };

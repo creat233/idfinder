@@ -14,6 +14,7 @@ import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarni
 import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import { URL_CONFIG } from '@/utils/urlConfig';
 
 const MCardView = () => {
   const {
@@ -75,7 +76,7 @@ const MCardView = () => {
           {!isPendingPayment && (
             <MCardViewQRSection
               showQRCode={showQRCode}
-              url={window.location.href}
+              url={URL_CONFIG.getMCardUrl(mcard.slug)}
               cardName={mcard.full_name}
               onClose={() => setShowQRCode(false)}
             />

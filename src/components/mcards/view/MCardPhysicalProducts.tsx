@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Package, CreditCard, Truck, QrCode } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { MCard } from "@/types/mcard";
+import { URL_CONFIG } from "@/utils/urlConfig";
 
 interface MCardPhysicalProductsProps {
   mcard: MCard;
@@ -71,8 +72,7 @@ export const MCardPhysicalProducts = ({ mcard, isOwner }: MCardPhysicalProductsP
   };
 
   const generateQRCodeURL = () => {
-    const baseUrl = window.location.origin;
-    const url = `${baseUrl}/m/${mcard.slug}`;
+    const url = URL_CONFIG.getMCardUrl(mcard.slug);
     return `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(url)}&format=png&ecc=H`;
   };
 
