@@ -53,7 +53,7 @@ export const MCardViewHeader = ({
                 Retour
               </Button>
             )}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.open('https://finderid.info', '_blank')}>
               <img 
                 src="/lovable-uploads/4f1d2be2-319b-4f55-8aa0-54813e8045c5.png" 
                 alt="FinderID Logo" 

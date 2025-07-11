@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Plus, Edit, Share2, MessageCircle, Send } from 'lucide-react';
+import { Clock, Plus, Edit, Share2, MessageCircle, Send, Sparkles } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
 import { MCardViewStatusDialog } from './MCardViewStatusDialog';
 import { MCardViewAddStatusDialog } from './MCardViewAddStatusDialog';
 import { MCardViewEditStatusDialog } from './MCardViewEditStatusDialog';
+import { StatusImageModal } from './StatusImageModal';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewStatusesProps {
@@ -140,35 +141,45 @@ export const MCardViewStatuses = ({
               return (
                 <div 
                   key={status.id} 
-                  className="border rounded-lg p-4 hover:shadow-md transition-all"
+                  className="border rounded-xl p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-6">
                     {status.status_image && (
-                      <div className="relative">
-                        <img 
-                          src={status.status_image} 
-                          alt={status.status_text}
-                          className="w-full sm:w-16 h-32 sm:h-16 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => handleStatusClick(status)}
-                          onError={(e) => {
-                            console.error('Error loading status image:', status.status_image);
-                            e.currentTarget.style.display = 'none';
-                          }}
-                          onLoad={() => {
-                            console.log('Status image loaded successfully:', status.status_image);
-                          }}
-                        />
-                      </div>
+                      <StatusImageModal 
+                        imageUrl={status.status_image}
+                        statusText={status.status_text}
+                      >
+                        <div className="relative group">
+                          <img 
+                            src={status.status_image} 
+                            alt={status.status_text}
+                            className="w-full sm:w-24 h-40 sm:h-24 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
+                            onError={(e) => {
+                              console.error('Error loading status image:', status.status_image);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                            onLoad={() => {
+                              console.log('Status image loaded successfully:', status.status_image);
+                            }}
+                          />
+                          <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            Cliquer pour agrandir
+                          </div>
+                        </div>
+                      </StatusImageModal>
                     )}
                     
-                    <div className="flex-1 space-y-2">
-                      <Badge 
-                        className="text-white font-medium cursor-pointer"
-                        style={{ backgroundColor: status.status_color }}
-                        onClick={() => handleStatusClick(status)}
-                      >
-                        {status.status_text}
-                      </Badge>
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Badge 
+                          className="text-white font-medium cursor-pointer hover:scale-105 transition-transform shadow-lg"
+                          style={{ backgroundColor: status.status_color }}
+                          onClick={() => handleStatusClick(status)}
+                        >
+                          <Sparkles className="w-3 h-3 mr-1" />
+                          {status.status_text}
+                        </Badge>
+                      </div>
                       
                       {timeRemaining !== null && (
                         <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -183,15 +194,15 @@ export const MCardViewStatuses = ({
                       )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      {/* Boutons de partage */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      {/* Boutons de partage améliorés */}
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleShareStatus(status)}
-                        className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                        className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:scale-105 transition-all shadow-sm"
                       >
-                        <Share2 className="h-4 w-4 mr-1" />
+                        <Share2 className="h-4 w-4 mr-2" />
                         Partager
                       </Button>
                       
@@ -199,9 +210,9 @@ export const MCardViewStatuses = ({
                         size="sm"
                         variant="outline"
                         onClick={() => handleWhatsAppShare(status)}
-                        className="text-green-600 border-green-600 hover:bg-green-50"
+                        className="text-green-600 border-green-600 hover:bg-green-50 hover:scale-105 transition-all shadow-sm"
                       >
-                        <MessageCircle className="h-4 w-4 mr-1" />
+                        <MessageCircle className="h-4 w-4 mr-2" />
                         WhatsApp
                       </Button>
 
@@ -210,6 +221,7 @@ export const MCardViewStatuses = ({
                           size="sm" 
                           variant="ghost" 
                           onClick={() => handleEditStatus(status)}
+                          className="hover:bg-gray-100 hover:scale-105 transition-all"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>

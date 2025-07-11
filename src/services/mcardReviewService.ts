@@ -30,6 +30,21 @@ export const createMCardReview = async (reviewData: {
 }): Promise<MCardReview | null> => {
   console.log('Creating review:', reviewData);
   
+  // Vérifier la limite de 7 avis pour la carte
+  const { data: existingReviews, error: countError } = await supabase
+    .from('mcard_reviews')
+    .select('id')
+    .eq('mcard_id', reviewData.mcard_id);
+  
+  if (countError) {
+    console.error('Error checking review count:', countError);
+    throw countError;
+  }
+  
+  if (existingReviews && existingReviews.length >= 7) {
+    throw new Error('Cette carte a atteint la limite maximale de 7 avis.');
+  }
+  
   const { data, error } = await supabase
     .from('mcard_reviews')
     .insert([reviewData])

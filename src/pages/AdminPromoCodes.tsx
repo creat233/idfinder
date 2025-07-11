@@ -11,6 +11,7 @@ import { AdminUsersList } from "@/components/promo/AdminUsersList";
 import { AdminRevenueDashboard } from "@/components/promo/AdminRevenueDashboard";
 import { AdminAnalyticsDashboard } from "@/components/promo/AdminAnalyticsDashboard";
 import { AdminAuditLogsList } from "@/components/promo/AdminAuditLogsList";
+import { AdminExtendedAuditLogs } from "@/components/promo/AdminExtendedAuditLogs";
 import { AdminSettings } from "@/components/promo/AdminSettings";
 import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
@@ -92,7 +93,7 @@ const AdminPromoCodes = () => {
             </TabsContent>
 
             <TabsContent value="audit">
-              <AdminAuditLogsList />
+              <AdminExtendedAuditLogs />
             </TabsContent>
 
             <TabsContent value="publicites">

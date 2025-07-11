@@ -5,14 +5,17 @@ import { MCardInteractionButtons } from "@/components/mcards/MCardInteractionBut
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, Building, Eye, Heart } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Phone, Mail, Building, Eye, Heart, Search } from "lucide-react";
 import { getFavoriteCards } from "@/services/mcardInteractionService";
 import { MCard } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
 
 const MyFavorites = () => {
   const [favorites, setFavorites] = useState<MCard[]>([]);
+  const [filteredFavorites, setFilteredFavorites] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -23,6 +26,7 @@ const MyFavorites = () => {
     try {
       const data = await getFavoriteCards();
       setFavorites(data);
+      setFilteredFavorites(data);
     } catch (error: any) {
       console.error('Erreur lors du chargement des favoris:', error);
       toast({
@@ -34,6 +38,23 @@ const MyFavorites = () => {
       setLoading(false);
     }
   };
+
+  // Filtrer les favoris selon la recherche
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredFavorites(favorites);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = favorites.filter(card => 
+        card.full_name?.toLowerCase().includes(query) ||
+        card.company?.toLowerCase().includes(query) ||
+        card.job_title?.toLowerCase().includes(query) ||
+        card.email?.toLowerCase().includes(query) ||
+        card.description?.toLowerCase().includes(query)
+      );
+      setFilteredFavorites(filtered);
+    }
+  }, [searchQuery, favorites]);
 
   const handleCardClick = (slug: string) => {
     window.open(`/mcard/${slug}`, '_blank');
@@ -66,10 +87,28 @@ const MyFavorites = () => {
           </p>
         </div>
 
+        {/* Barre de recherche */}
+        <div className="max-w-md mx-auto mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="🔍 Rechercher dans vos favoris..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          {searchQuery && (
+            <div className="mt-2 text-sm text-gray-600 text-center">
+              {filteredFavorites.length} résultat{filteredFavorites.length > 1 ? 's' : ''} trouvé{filteredFavorites.length > 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+
         {/* Stats */}
         <div className="text-center mb-8">
           <Badge variant="secondary" className="text-lg px-4 py-2">
-            {favorites.length} favori{favorites.length > 1 ? 's' : ''}
+            {favorites.length} favori{favorites.length > 1 ? 's' : ''} {searchQuery && `• ${filteredFavorites.length} affiché${filteredFavorites.length > 1 ? 's' : ''}`}
           </Badge>
         </div>
 
@@ -84,9 +123,19 @@ const MyFavorites = () => {
               Explorez les MCard vérifiées et ajoutez-les à vos favoris
             </p>
           </div>
+        ) : filteredFavorites.length === 0 ? (
+          <div className="text-center py-12">
+            <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg mb-4">
+              Aucun favori ne correspond à votre recherche
+            </p>
+            <p className="text-gray-400">
+              Essayez avec d'autres mots-clés
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {favorites.map((mcard) => (
+            {filteredFavorites.map((mcard) => (
               <Card 
                 key={mcard.id} 
                 className="hover:shadow-lg transition-shadow cursor-pointer bg-white/80 backdrop-blur-sm"

@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, ShoppingCart, Share2, MessageCircle } from 'lucide-react';
+import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
 import { MCardViewEditProductDialog } from './MCardViewEditProductDialog';
+import { ProductImageModal } from './ProductImageModal';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewProductsProps {
@@ -126,35 +127,51 @@ export const MCardViewProducts = ({
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
             {activeProducts.map((product) => (
               <div 
                 key={product.id} 
-                className="border rounded-lg p-4 hover:shadow-md transition-all"
+                className="border rounded-xl p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
               >
                 {product.image_url && (
-                  <div className="relative">
-                    <img 
-                      src={product.image_url} 
-                      alt={product.name}
-                      className="w-full h-32 md:h-40 object-cover rounded-lg mb-3 cursor-pointer hover:opacity-80 transition-opacity"
-                      onClick={() => handleProductClick(product)}
-                      onError={(e) => {
-                        console.error('Error loading product image:', product.image_url);
-                        e.currentTarget.style.display = 'none';
-                      }}
-                      onLoad={() => {
-                        console.log('Product image loaded successfully:', product.image_url);
-                      }}
-                    />
-                  </div>
+                  <ProductImageModal
+                    imageUrl={product.image_url}
+                    product={product}
+                  >
+                    <div className="relative group mb-4">
+                      <img 
+                        src={product.image_url} 
+                        alt={product.name}
+                        className="w-full h-48 md:h-56 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
+                        onError={(e) => {
+                          console.error('Error loading product image:', product.image_url);
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        onLoad={() => {
+                          console.log('Product image loaded successfully:', product.image_url);
+                        }}
+                      />
+                      <div className="absolute top-3 right-3 bg-black/50 text-white text-xs px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        Cliquer pour agrandir
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </ProductImageModal>
                 )}
                 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-start justify-between">
-                    <h4 className="font-medium text-gray-900 cursor-pointer hover:text-blue-600 transition-colors" onClick={() => handleProductClick(product)}>
-                      {product.name}
-                    </h4>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-xl text-gray-900 cursor-pointer hover:text-blue-600 transition-colors mb-2" onClick={() => handleProductClick(product)}>
+                        {product.name}
+                      </h4>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="secondary" className="text-sm font-medium">
+                          <Star className="w-3 h-3 mr-1" />
+                          {product.category}
+                        </Badge>
+                      </div>
+                    </div>
                     {isOwner && (
                       <Button 
                         size="sm" 
@@ -163,15 +180,12 @@ export const MCardViewProducts = ({
                           e.stopPropagation();
                           handleEditProduct(product);
                         }}
+                        className="hover:bg-gray-100 hover:scale-105 transition-all"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
                     )}
                   </div>
-                  
-                  <Badge variant="secondary" className="text-xs">
-                    {product.category}
-                  </Badge>
                   
                   {product.description && (
                     <p className="text-sm text-gray-600 line-clamp-2">
@@ -179,22 +193,22 @@ export const MCardViewProducts = ({
                     </p>
                   )}
                   
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-green-600">
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl">
+                    <span className="text-2xl font-bold text-green-600">
                       {product.price.toLocaleString()} {product.currency}
                     </span>
-                    <ShoppingCart className="h-4 w-4 text-gray-400" />
+                    <ShoppingCart className="h-6 w-6 text-green-500" />
                   </div>
 
-                  {/* Boutons de partage */}
-                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                  {/* Boutons de partage améliorés */}
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleShareProduct(product)}
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50 flex-1"
+                      className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:scale-105 transition-all flex-1 shadow-sm"
                     >
-                      <Share2 className="h-4 w-4 mr-1" />
+                      <Share2 className="h-4 w-4 mr-2" />
                       Partager
                     </Button>
                     
@@ -202,9 +216,9 @@ export const MCardViewProducts = ({
                       size="sm"
                       variant="outline"
                       onClick={() => handleWhatsAppShare(product)}
-                      className="text-green-600 border-green-600 hover:bg-green-50 flex-1"
+                      className="text-green-600 border-green-600 hover:bg-green-50 hover:scale-105 transition-all flex-1 shadow-sm"
                     >
-                      <MessageCircle className="h-4 w-4 mr-1" />
+                      <MessageCircle className="h-4 w-4 mr-2" />
                       WhatsApp
                     </Button>
                   </div>
