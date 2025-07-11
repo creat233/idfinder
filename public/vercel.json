@@ -1,0 +1,56 @@
+{
+  "rewrites": [
+    {
+      "source": "/mcard/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/m/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mcards",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/search",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/messages",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/notifications",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/codes-promo",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/verification-request",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mcards-verifiees",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mes-favoris",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Netlify redirects file pour les applications SPA
+# Rediriger toutes les routes vers index.html pour permettre le routage côté client
+
+# Routes spécifiques pour les cartes MCard
+/mcard/*  /index.html  200
+/m/*      /index.html  200
+
+# Routes de l'application
+/mcards           /index.html  200
+/profile          /index.html  200
+/admin/*          /index.html  200
+/search           /index.html  200
+/messages         /index.html  200
+/notifications    /index.html  200
+/codes-promo      /index.html  200
+/verification-request  /index.html  200
+/mcards-verifiees /index.html  200
+/mes-favoris      /index.html  200
+
+# Fallback pour toutes les autres routes
+/*        /index.html  200

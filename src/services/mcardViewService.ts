@@ -94,17 +94,30 @@ export const incrementViewCount = async (slug: string, currentCount: number): Pr
   try {
     console.log('Incrementing view count for slug:', slug, 'current count:', currentCount);
     
-    const { error } = await supabase
-      .from('mcards')
-      .update({ view_count: currentCount + 1 })
-      .eq('slug', slug)
-      .eq('is_published', true);
+    // Use the edge function for better reliability
+    const { error } = await supabase.functions.invoke('increment-view', {
+      body: { slug }
+    });
     
     if (!error) {
-      console.log('View count incremented successfully');
+      console.log('View count incremented successfully via edge function');
       return currentCount + 1;
     } else {
-      console.error('Error incrementing view count:', error);
+      console.error('Error incrementing view count via edge function:', error);
+      
+      // Fallback to direct database update
+      const { error: dbError } = await supabase
+        .from('mcards')
+        .update({ view_count: currentCount + 1 })
+        .eq('slug', slug)
+        .eq('is_published', true);
+      
+      if (!dbError) {
+        console.log('View count incremented successfully via fallback');
+        return currentCount + 1;
+      } else {
+        console.error('Error incrementing view count via fallback:', dbError);
+      }
     }
   } catch (error) {
     console.error('Erreur lors de l\'incrémentation du compteur de vues:', error);
