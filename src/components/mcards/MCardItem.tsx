@@ -21,6 +21,7 @@ import { format } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MCard } from "@/types/mcard";
 import { useNavigate } from "react-router-dom";
+import { URL_CONFIG } from "@/utils/urlConfig";
 
 interface MCardItemProps {
   mcard: MCard;
@@ -50,13 +51,22 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
       });
       return;
     }
-    const url = `${window.location.origin}/m/${mcard.slug}`;
+    const url = URL_CONFIG.getMCardUrl(mcard.slug);
     navigator.clipboard.writeText(url);
     toast({ title: t('linkCopied') });
   };
 
   const handleViewCard = () => {
-    navigate(`/m/${mcard.slug}`);
+    if (mcard.subscription_status === 'pending_payment') {
+      toast({ 
+        title: "Carte non accessible", 
+        description: "Votre carte doit être activée par un administrateur avant d'être accessible.",
+        variant: "destructive"
+      });
+      return;
+    }
+    const url = URL_CONFIG.getMCardUrl(mcard.slug);
+    window.open(url, '_blank');
   };
 
   const getStatusVariant = (status: string | null): "default" | "secondary" | "destructive" => {
@@ -165,7 +175,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
       </CardHeader>
       <CardContent>
         {mcard.description && <p className="text-sm mb-2">{mcard.description}</p>}
-        <p className="text-sm text-muted-foreground">URL: /m/{mcard.slug}</p>
+        <p className="text-sm text-muted-foreground">URL: {URL_CONFIG.getMCardUrl(mcard.slug)}</p>
         {mcard.subscription_status === 'pending_payment' && (
           <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-md">
             <p className="text-sm text-orange-800">
