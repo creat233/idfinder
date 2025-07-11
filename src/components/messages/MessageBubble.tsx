@@ -13,13 +13,13 @@ interface MessageBubbleProps {
 
 export function MessageBubble({ message, isCurrentUser }: MessageBubbleProps) {
   return (
-    <div className={`flex mb-4 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex mb-3 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-[70%] ${isCurrentUser ? 'ml-12' : 'mr-12'}`}>
         <div
-          className={`px-4 py-3 rounded-[20px] shadow-sm ${
+          className={`px-4 py-3 rounded-[18px] shadow-sm ${
             isCurrentUser
-              ? 'bg-blue-500 text-white rounded-br-md'
-              : 'bg-gray-100 text-gray-900 rounded-bl-md'
+              ? 'bg-blue-500 text-white rounded-br-[4px]'
+              : 'bg-gray-100 text-gray-900 rounded-bl-[4px]'
           }`}
         >
           {message.subject && (
@@ -29,10 +29,10 @@ export function MessageBubble({ message, isCurrentUser }: MessageBubbleProps) {
               {message.subject}
             </p>
           )}
-          <p className="text-[15px] leading-[1.4] break-words">{message.message}</p>
+          <p className="text-[15px] leading-[1.4] break-words whitespace-pre-wrap">{message.message}</p>
         </div>
-        <div className={`flex mt-1 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-          <span className="text-xs text-gray-500 px-2">
+        <div className={`flex mt-1 px-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+          <span className="text-xs text-gray-500">
             {formatMessageTime(message.created_at)}
           </span>
         </div>
