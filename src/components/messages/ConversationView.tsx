@@ -1,12 +1,19 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft, MessageCircle, Menu, UserX, UserCheck } from "lucide-react";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
 import { DateSeparator } from "./DateSeparator";
 import { Conversation } from "@/types/messages";
 import { groupMessagesByDate } from "@/utils/messageGrouping";
+import { useState } from "react";
 
 interface ConversationViewProps {
   conversation: Conversation | null;
@@ -33,6 +40,33 @@ export function ConversationView({
   onBlockUser,
   onUnblockUser
 }: ConversationViewProps) {
+  const [isBlocking, setIsBlocking] = useState(false);
+  const handleBlockUser = async () => {
+    if (!onBlockUser || !conversation || !window.confirm("Êtes-vous sûr de vouloir bloquer cet utilisateur ?")) {
+      return;
+    }
+
+    setIsBlocking(true);
+    try {
+      await onBlockUser(conversation.otherUserId);
+    } finally {
+      setIsBlocking(false);
+    }
+  };
+
+  const handleUnblockUser = async () => {
+    if (!onUnblockUser || !conversation || !window.confirm("Êtes-vous sûr de vouloir débloquer cet utilisateur ?")) {
+      return;
+    }
+
+    setIsBlocking(true);
+    try {
+      await onUnblockUser(conversation.otherUserId);
+    } finally {
+      setIsBlocking(false);
+    }
+  };
+
   if (!conversation) {
     return (
       <Card className="h-full">
@@ -51,25 +85,49 @@ export function ConversationView({
     <div className="h-full flex flex-col">
       {/* En-tête de la conversation */}
       <div className="flex-shrink-0 p-4 border-b bg-white shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onBack}
-              className="lg:hidden hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
-              {conversation.otherUserName.charAt(0).toUpperCase() || 'U'}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onBack}
+                className="lg:hidden hover:bg-gray-100"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+                {conversation.otherUserName.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <div>
+                <h2 className="font-semibold text-gray-900 text-[17px]">{conversation.otherUserName}</h2>
+                <p className="text-sm text-gray-500">MCard: {conversation.mcardName}</p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-semibold text-gray-900 text-[17px]">{conversation.otherUserName}</h2>
-              <p className="text-sm text-gray-500">MCard: {conversation.mcardName}</p>
-            </div>
+            
+            {/* Menu de blocage/déblocage dans l'en-tête */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                  disabled={isBlocking}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onClick={handleBlockUser}
+                  disabled={isBlocking}
+                  className="text-red-600 focus:text-red-600"
+                >
+                  <UserX className="h-4 w-4 mr-2" />
+                  Bloquer l'utilisateur
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        </div>
       </div>
 
       {/* Messages - Zone scrollable */}
@@ -92,9 +150,6 @@ export function ConversationView({
                     message={message}
                     isCurrentUser={message.sender_id === currentUserId}
                     onDelete={onDeleteMessage}
-                    onBlockUser={onBlockUser}
-                    onUnblockUser={onUnblockUser}
-                    isUserBlocked={false} // TODO: Implémenter la vérification du blocage
                   />
                 ))}
               </div>

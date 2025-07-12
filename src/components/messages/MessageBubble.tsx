@@ -19,21 +19,14 @@ interface MessageBubbleProps {
   };
   isCurrentUser: boolean;
   onDelete?: (messageId: string) => Promise<boolean>;
-  onBlockUser?: (userId: string) => Promise<void>;
-  onUnblockUser?: (userId: string) => Promise<void>;
-  isUserBlocked?: boolean;
 }
 
 export function MessageBubble({ 
   message, 
   isCurrentUser, 
-  onDelete, 
-  onBlockUser, 
-  onUnblockUser, 
-  isUserBlocked = false 
+  onDelete
 }: MessageBubbleProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isBlocking, setIsBlocking] = useState(false);
 
   const handleDelete = async () => {
     if (!onDelete || !window.confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) {
@@ -48,31 +41,6 @@ export function MessageBubble({
     }
   };
 
-  const handleBlockUser = async () => {
-    if (!onBlockUser || !window.confirm("Êtes-vous sûr de vouloir bloquer cet utilisateur ?")) {
-      return;
-    }
-
-    setIsBlocking(true);
-    try {
-      await onBlockUser(message.sender_id);
-    } finally {
-      setIsBlocking(false);
-    }
-  };
-
-  const handleUnblockUser = async () => {
-    if (!onUnblockUser || !window.confirm("Êtes-vous sûr de vouloir débloquer cet utilisateur ?")) {
-      return;
-    }
-
-    setIsBlocking(true);
-    try {
-      await onUnblockUser(message.sender_id);
-    } finally {
-      setIsBlocking(false);
-    }
-  };
 
   return (
     <div className={`flex mb-3 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
@@ -121,42 +89,6 @@ export function MessageBubble({
                     <Trash2 className="h-4 w-4 mr-2" />
                     Supprimer le message
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-
-            {/* Menu avec trois traits pour blocage/déblocage (seulement pour les destinataires) */}
-            {!isCurrentUser && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                  >
-                    <Menu className="h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  {isUserBlocked ? (
-                    <DropdownMenuItem
-                      onClick={handleUnblockUser}
-                      disabled={isBlocking || !onUnblockUser}
-                      className="text-green-600 focus:text-green-600"
-                    >
-                      <UserCheck className="h-4 w-4 mr-2" />
-                      Débloquer l'utilisateur
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem
-                      onClick={handleBlockUser}
-                      disabled={isBlocking || !onBlockUser}
-                      className="text-red-600 focus:text-red-600"
-                    >
-                      <UserX className="h-4 w-4 mr-2" />
-                      Bloquer l'utilisateur
-                    </DropdownMenuItem>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
