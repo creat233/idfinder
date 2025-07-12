@@ -98,32 +98,34 @@ export function MessageBubble({
             {formatMessageTime(message.created_at)}
           </span>
           
-          {/* Menu contextuel pour toutes les actions */}
+          {/* Menu contextuel pour les actions */}
           <div className="flex items-center gap-1">
-            {/* Menu avec trois points pour suppression */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                >
-                  <MoreVertical className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  disabled={isDeleting || !onDelete}
-                  className="text-red-600 focus:text-red-600"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Supprimer le message
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Menu avec trois points pour suppression - seulement pour l'expéditeur */}
+            {isCurrentUser && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                  >
+                    <MoreVertical className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    disabled={isDeleting || !onDelete}
+                    className="text-red-600 focus:text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Supprimer le message
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
-            {/* Menu avec trois traits pour blocage/déblocage (seulement si pas l'utilisateur actuel) */}
+            {/* Menu avec trois traits pour blocage/déblocage (seulement pour les destinataires) */}
             {!isCurrentUser && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
