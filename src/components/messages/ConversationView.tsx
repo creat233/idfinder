@@ -17,6 +17,8 @@ interface ConversationViewProps {
   onSendMessage: () => void;
   onBack: () => void;
   onDeleteMessage?: (messageId: string) => Promise<boolean>;
+  onBlockUser?: (userId: string) => Promise<void>;
+  onUnblockUser?: (userId: string) => Promise<void>;
 }
 
 export function ConversationView({
@@ -27,7 +29,9 @@ export function ConversationView({
   onReplyChange,
   onSendMessage,
   onBack,
-  onDeleteMessage
+  onDeleteMessage,
+  onBlockUser,
+  onUnblockUser
 }: ConversationViewProps) {
   if (!conversation) {
     return (
@@ -69,7 +73,7 @@ export function ConversationView({
       </div>
 
       {/* Messages - Zone scrollable */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30 scroll-smooth" style={{ scrollBehavior: 'smooth' }}>
         {conversation.messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500 text-center">
@@ -88,6 +92,9 @@ export function ConversationView({
                     message={message}
                     isCurrentUser={message.sender_id === currentUserId}
                     onDelete={onDeleteMessage}
+                    onBlockUser={onBlockUser}
+                    onUnblockUser={onUnblockUser}
+                    isUserBlocked={false} // TODO: Implémenter la vérification du blocage
                   />
                 ))}
               </div>

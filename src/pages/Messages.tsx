@@ -28,6 +28,47 @@ const Messages = () => {
     await sendMessage(replyText, selectedConversation);
   };
 
+  const handleBlockUser = async (userId: string) => {
+    if (!selectedConversation) return;
+    
+    try {
+      const { error } = await supabase
+        .from('mcard_blocked_users')
+        .insert({
+          mcard_id: selectedConversation.mcardId,
+          blocked_user_id: userId
+        });
+
+      if (error) throw error;
+
+      // Recharger les conversations pour refléter le changement
+      loadConversations();
+    } catch (error) {
+      console.error('Erreur lors du blocage:', error);
+      alert('Erreur lors du blocage de l\'utilisateur');
+    }
+  };
+
+  const handleUnblockUser = async (userId: string) => {
+    if (!selectedConversation) return;
+    
+    try {
+      const { error } = await supabase
+        .from('mcard_blocked_users')
+        .delete()
+        .eq('mcard_id', selectedConversation.mcardId)
+        .eq('blocked_user_id', userId);
+
+      if (error) throw error;
+
+      // Recharger les conversations pour refléter le changement
+      loadConversations();
+    } catch (error) {
+      console.error('Erreur lors du déblocage:', error);
+      alert('Erreur lors du déblocage de l\'utilisateur');
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -68,6 +109,8 @@ const Messages = () => {
                   onSendMessage={handleSendMessage}
                   onBack={() => setSelectedConversation(null)}
                   onDeleteMessage={deleteMessage}
+                  onBlockUser={handleBlockUser}
+                  onUnblockUser={handleUnblockUser}
                 />
               ) : (
                 <ConversationsList
@@ -114,6 +157,8 @@ const Messages = () => {
                   onSendMessage={handleSendMessage}
                   onBack={() => setSelectedConversation(null)}
                   onDeleteMessage={deleteMessage}
+                  onBlockUser={handleBlockUser}
+                  onUnblockUser={handleUnblockUser}
                 />
               </div>
             </div>
