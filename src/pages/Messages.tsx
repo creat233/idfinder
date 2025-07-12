@@ -69,6 +69,30 @@ const Messages = () => {
     }
   };
 
+  const handleDeleteConversation = async () => {
+    if (!selectedConversation) return;
+    
+    try {
+      // Supprimer tous les messages de la conversation
+      const { error } = await supabase
+        .from('mcard_messages')
+        .delete()
+        .eq('mcard_id', selectedConversation.mcardId)
+        .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`);
+
+      if (error) throw error;
+
+      // Réinitialiser la conversation sélectionnée
+      setSelectedConversation(null);
+      
+      // Recharger les conversations pour refléter le changement
+      loadConversations();
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la conversation:', error);
+      alert('Erreur lors de la suppression de la conversation');
+    }
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -111,6 +135,7 @@ const Messages = () => {
                   onDeleteMessage={deleteMessage}
                   onBlockUser={handleBlockUser}
                   onUnblockUser={handleUnblockUser}
+                  onDeleteConversation={handleDeleteConversation}
                 />
               ) : (
                 <ConversationsList
@@ -159,6 +184,7 @@ const Messages = () => {
                   onDeleteMessage={deleteMessage}
                   onBlockUser={handleBlockUser}
                   onUnblockUser={handleUnblockUser}
+                  onDeleteConversation={handleDeleteConversation}
                 />
               </div>
             </div>
