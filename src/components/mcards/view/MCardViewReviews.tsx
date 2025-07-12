@@ -1,14 +1,16 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Star, MessageSquare, User, Plus, Check, X } from "lucide-react";
+import { Star, MessageSquare, User, Plus, Check, X, LogIn } from "lucide-react";
 import { MCardReview } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
 import { createMCardReview, approveReview } from "@/services/mcardReviewService";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 interface MCardViewReviewsProps {
   reviews: MCardReview[];
@@ -31,7 +33,44 @@ export const MCardViewReviews = ({
     comment: ''
   });
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const { toast } = useToast();
+
+  // Récupérer les informations de l'utilisateur connecté
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+
+        if (user) {
+          // Récupérer le profil de l'utilisateur
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('first_name, last_name')
+            .eq('id', user.id)
+            .single();
+
+          setUserProfile(profile);
+
+          // Pré-remplir les champs
+          if (profile) {
+            const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
+            setNewReview(prev => ({
+              ...prev,
+              visitor_name: fullName || user.email?.split('@')[0] || '',
+              visitor_email: user.email || ''
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données utilisateur:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleSubmitReview = async () => {
     if (!newReview.visitor_name.trim()) {
@@ -58,12 +97,12 @@ export const MCardViewReviews = ({
         description: "Votre avis a été envoyé et sera visible après approbation du propriétaire."
       });
 
-      setNewReview({
-        visitor_name: '',
-        visitor_email: '',
+      // Réinitialiser seulement les champs modifiables
+      setNewReview(prev => ({
+        ...prev,
         rating: 5,
         comment: ''
-      });
+      }));
       setShowAddReview(false);
       onReviewsChange();
     } catch (error) {
@@ -125,7 +164,7 @@ export const MCardViewReviews = ({
               </Badge>
             )}
           </CardTitle>
-          {!isOwner && (
+          {!isOwner && user && (
             <Button 
               variant="outline" 
               size="sm" 
@@ -135,6 +174,18 @@ export const MCardViewReviews = ({
               <Plus className="h-4 w-4 mr-2" />
               Laisser un avis
             </Button>
+          )}
+          {!isOwner && !user && (
+            <Link to="/auth">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Se connecter pour laisser un avis
+              </Button>
+            </Link>
           )}
         </div>
       </CardHeader>
@@ -147,22 +198,24 @@ export const MCardViewReviews = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nom *
+                    Nom * <span className="text-xs text-green-600">(récupéré de votre profil)</span>
                   </label>
                   <Input
                     value={newReview.visitor_name}
-                    onChange={(e) => setNewReview(prev => ({ ...prev, visitor_name: e.target.value }))}
+                    disabled
+                    className="bg-gray-50 text-gray-700"
                     placeholder="Votre nom"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email (optionnel)
+                    Email <span className="text-xs text-green-600">(récupéré de votre compte)</span>
                   </label>
                   <Input
                     type="email"
                     value={newReview.visitor_email}
-                    onChange={(e) => setNewReview(prev => ({ ...prev, visitor_email: e.target.value }))}
+                    disabled
+                    className="bg-gray-50 text-gray-700"
                     placeholder="votre@email.com"
                   />
                 </div>
