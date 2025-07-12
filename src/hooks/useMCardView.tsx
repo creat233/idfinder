@@ -45,7 +45,7 @@ export const useMCardView = () => {
       console.log('No slug found in URL, loading default');
       fetchMCard();
     }
-  }, [slug, location.pathname]);
+  }, [slug, location.pathname, fetchMCard]);
 
   return {
     mcard,
