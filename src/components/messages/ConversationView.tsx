@@ -44,7 +44,7 @@ export function ConversationView({
   }
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col">
       {/* En-tête de la conversation */}
       <div className="flex-shrink-0 p-4 border-b bg-white shadow-sm">
         <div className="flex items-center justify-between">
@@ -68,8 +68,8 @@ export function ConversationView({
         </div>
       </div>
 
-      {/* Messages - Zone scrollable avec hauteur fixe */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+      {/* Messages - Zone scrollable */}
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
         {conversation.messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500 text-center">
@@ -78,7 +78,7 @@ export function ConversationView({
             </p>
           </div>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-1 pb-4">
             {groupMessagesByDate(conversation.messages).map((group) => (
               <div key={group.date}>
                 <DateSeparator date={group.date} />
@@ -96,8 +96,8 @@ export function ConversationView({
         )}
       </div>
 
-      {/* Zone de saisie - TOUJOURS VISIBLE en bas */}
-      <div className="flex-shrink-0 border-t bg-white">
+      {/* Zone de saisie - FIXE EN BAS */}
+      <div className="flex-shrink-0 border-t bg-white sticky bottom-0 z-10">
         <MessageInput
           value={replyText}
           onChange={onReplyChange}
@@ -105,6 +105,6 @@ export function ConversationView({
           sending={sending}
         />
       </div>
-    </Card>
+    </div>
   );
 }

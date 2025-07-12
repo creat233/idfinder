@@ -21,25 +21,26 @@ export function MessageInput({ value, onChange, onSend, sending }: MessageInputP
   };
 
   return (
-    <div className="p-4 border-t bg-white shadow-lg">
-      <div className="flex gap-3 items-end">
+    <div className="p-4 bg-white border-t-2 border-gray-200 shadow-lg">
+      <div className="flex gap-3 items-end max-w-4xl mx-auto">
         <Textarea
           placeholder="Tapez votre message..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyPress}
-          rows={2}
-          className="flex-1 resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
+          rows={3}
+          className="flex-1 resize-none border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg text-base p-3 min-h-[60px] max-h-[120px]"
         />
         <Button
           onClick={onSend}
           disabled={!value.trim() || sending}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white h-[80px]"
+          size="lg"
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-[60px] min-w-[60px] shadow-md"
         >
           {sending ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           ) : (
-            <Send className="h-4 w-4" />
+            <Send className="h-5 w-5" />
           )}
         </Button>
       </div>
