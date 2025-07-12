@@ -13,7 +13,8 @@ import { MessageInput } from "./MessageInput";
 import { DateSeparator } from "./DateSeparator";
 import { Conversation } from "@/types/messages";
 import { groupMessagesByDate } from "@/utils/messageGrouping";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ConversationViewProps {
   conversation: Conversation | null;
@@ -41,6 +42,35 @@ export function ConversationView({
   onUnblockUser
 }: ConversationViewProps) {
   const [isBlocking, setIsBlocking] = useState(false);
+  const [isUserBlocked, setIsUserBlocked] = useState(false);
+
+  // Vérifier si l'utilisateur est bloqué
+  useEffect(() => {
+    const checkBlockStatus = async () => {
+      if (!conversation || !currentUserId) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('mcard_blocked_users')
+          .select('id')
+          .eq('mcard_id', conversation.mcardId)
+          .eq('blocked_user_id', conversation.otherUserId)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Erreur lors de la vérification du blocage:', error);
+          return;
+        }
+
+        setIsUserBlocked(!!data);
+      } catch (error) {
+        console.error('Erreur lors de la vérification du blocage:', error);
+      }
+    };
+
+    checkBlockStatus();
+  }, [conversation, currentUserId]);
+
   const handleBlockUser = async () => {
     if (!onBlockUser || !conversation || !window.confirm("Êtes-vous sûr de vouloir bloquer cet utilisateur ?")) {
       return;
@@ -49,6 +79,7 @@ export function ConversationView({
     setIsBlocking(true);
     try {
       await onBlockUser(conversation.otherUserId);
+      setIsUserBlocked(true);
     } finally {
       setIsBlocking(false);
     }
@@ -62,6 +93,7 @@ export function ConversationView({
     setIsBlocking(true);
     try {
       await onUnblockUser(conversation.otherUserId);
+      setIsUserBlocked(false);
     } finally {
       setIsBlocking(false);
     }
@@ -117,14 +149,25 @@ export function ConversationView({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                  onClick={handleBlockUser}
-                  disabled={isBlocking}
-                  className="text-red-600 focus:text-red-600"
-                >
-                  <UserX className="h-4 w-4 mr-2" />
-                  Bloquer l'utilisateur
-                </DropdownMenuItem>
+                {isUserBlocked ? (
+                  <DropdownMenuItem
+                    onClick={handleUnblockUser}
+                    disabled={isBlocking}
+                    className="text-green-600 focus:text-green-600"
+                  >
+                    <UserCheck className="h-4 w-4 mr-2" />
+                    Débloquer l'utilisateur
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={handleBlockUser}
+                    disabled={isBlocking}
+                    className="text-red-600 focus:text-red-600"
+                  >
+                    <UserX className="h-4 w-4 mr-2" />
+                    Bloquer l'utilisateur
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
