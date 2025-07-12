@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
@@ -20,20 +21,20 @@ export function MessageInput({ value, onChange, onSend, sending }: MessageInputP
   };
 
   return (
-    <div className="p-4 border-t bg-white">
-      <div className="flex gap-3">
+    <div className="p-4 border-t bg-white shadow-lg">
+      <div className="flex gap-3 items-end">
         <Textarea
           placeholder="Tapez votre message..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyPress}
           rows={2}
-          className="flex-1 resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          className="flex-1 resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
         />
         <Button
           onClick={onSend}
           disabled={!value.trim() || sending}
-          className="self-end px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white h-[80px]"
         >
           {sending ? (
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

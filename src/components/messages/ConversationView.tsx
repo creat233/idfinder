@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle } from "lucide-react";
@@ -43,7 +44,7 @@ export function ConversationView({
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col overflow-hidden">
       {/* En-tête de la conversation */}
       <div className="flex-shrink-0 p-4 border-b bg-white shadow-sm">
         <div className="flex items-center justify-between">
@@ -67,8 +68,8 @@ export function ConversationView({
         </div>
       </div>
 
-      {/* Messages - Zone scrollable */}
-      <div className="flex-1 min-h-0 overflow-y-auto p-6 bg-gray-50/30">
+      {/* Messages - Zone scrollable avec hauteur fixe */}
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         {conversation.messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500 text-center">
@@ -95,7 +96,7 @@ export function ConversationView({
         )}
       </div>
 
-      {/* Zone de saisie - Fixe en bas */}
+      {/* Zone de saisie - TOUJOURS VISIBLE en bas */}
       <div className="flex-shrink-0 border-t bg-white">
         <MessageInput
           value={replyText}
