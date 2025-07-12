@@ -48,13 +48,17 @@ export const useConversations = (user: any) => {
       processedMessages.forEach((msg: ProcessedMessage) => {
         const otherUserId = msg.sender_id === user.id ? msg.recipient_id : msg.sender_id;
         const otherUserName = msg.sender_id === user.id ? msg.recipient_name : msg.sender_name;
+        // Afficher le nom complet : Nom Prénom - Entreprise
+        const displayName = msg.sender_id === user.id 
+          ? msg.recipient_name
+          : `${msg.sender_name} - ${msg.mcard_name}`;
         // Utiliser seulement l'userId pour regrouper, pas le mcard_id
         const key = otherUserId;
         
         if (!conversationsMap.has(key)) {
           conversationsMap.set(key, {
             otherUserId,
-            otherUserName,
+            otherUserName: displayName,
             mcardId: msg.mcard_id,
             mcardName: msg.mcard_name,
             messages: [],
@@ -77,6 +81,8 @@ export const useConversations = (user: any) => {
           // Mettre à jour aussi les infos de la mcard du dernier message
           conversation.mcardId = msg.mcard_id;
           conversation.mcardName = msg.mcard_name;
+          // Mettre à jour le nom d'affichage aussi
+          conversation.otherUserName = displayName;
         }
       });
 
