@@ -73,7 +73,19 @@ export const MCardViewReviews = ({
   }, []);
 
   const handleSubmitReview = async () => {
+    console.log('🔍 Tentative d\'envoi d\'avis:', newReview);
+    
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Vous devez être connecté pour laisser un avis."
+      });
+      return;
+    }
+
     if (!newReview.visitor_name.trim()) {
+      console.log('❌ Nom manquant:', newReview.visitor_name);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -84,7 +96,8 @@ export const MCardViewReviews = ({
 
     setLoading(true);
     try {
-      await createMCardReview({
+      console.log('📤 Envoi de l\'avis...');
+      const result = await createMCardReview({
         mcard_id: mcardId,
         visitor_name: newReview.visitor_name.trim(),
         visitor_email: newReview.visitor_email.trim() || undefined,
@@ -92,6 +105,7 @@ export const MCardViewReviews = ({
         comment: newReview.comment.trim() || undefined
       });
 
+      console.log('✅ Avis créé avec succès:', result);
       toast({
         title: "Avis envoyé !",
         description: "Votre avis a été envoyé et sera visible après approbation du propriétaire."
@@ -106,11 +120,11 @@ export const MCardViewReviews = ({
       setShowAddReview(false);
       onReviewsChange();
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'avis:', error);
+      console.error('❌ Erreur lors de l\'envoi de l\'avis:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible d'envoyer l'avis. Veuillez réessayer."
+        description: error instanceof Error ? error.message : "Impossible d'envoyer l'avis. Veuillez réessayer."
       });
     } finally {
       setLoading(false);

@@ -28,7 +28,16 @@ export const createMCardReview = async (reviewData: {
   rating: number;
   comment?: string;
 }): Promise<MCardReview | null> => {
-  console.log('Creating review:', reviewData);
+  console.log('🔍 Création d\'un avis avec les données:', reviewData);
+  
+  // Vérifier que l'utilisateur est connecté
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('❌ Utilisateur non connecté');
+    throw new Error('Vous devez être connecté pour laisser un avis.');
+  }
+  
+  console.log('✅ Utilisateur connecté:', user.email);
   
   // Vérifier la limite de 7 avis pour la carte
   const { data: existingReviews, error: countError } = await supabase
