@@ -108,5 +108,27 @@ export const mcardsTranslations = {
   private: {
     en: "Private",
     fr: "Privé"
+  },
+  
+  // Missing translations
+  status: {
+    en: "Status",
+    fr: "Statut"
+  },
+  isPublished: {
+    en: "Published",
+    fr: "Publié"
+  },
+  copyLink: {
+    en: "Copy Link",
+    fr: "Copier le lien"
+  },
+  deleteMCard: {
+    en: "Delete mCard",
+    fr: "Supprimer la mCard"
+  },
+  deleteMCardConfirmation: {
+    en: "Are you sure you want to delete this mCard? This action cannot be undone.",
+    fr: "Êtes-vous sûr de vouloir supprimer cette mCard ? Cette action est irréversible."
   }
 };
