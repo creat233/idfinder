@@ -83,41 +83,44 @@ const MCardView = () => {
             />
           )}
 
-          {/* Profile Card avec personnalisation appliquée */}
-          <MCardCustomized mcardId={mcard.id} className="rounded-2xl overflow-hidden">
-            <MCardViewProfile
+          {/* Toutes les sections avec personnalisation appliquée */}
+          <MCardCustomized mcardId={mcard.id}>
+            {/* Profile Card */}
+            <div className="rounded-2xl overflow-hidden mb-6">
+              <MCardViewProfile
+                mcard={mcard}
+                onCopyLink={handleCopyLink}
+                onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
+                isOwner={isOwner}
+              />
+            </div>
+
+            {/* Statuses Section */}
+            <MCardViewStatuses
+              statuses={statuses}
+              phoneNumber={mcard.phone_number}
+              isOwner={isOwner}
+              mcardId={mcard.id}
+              mcardPlan={mcard.plan}
+              onStatusesChange={refreshData}
+            />
+
+            {/* Products Section */}
+            <MCardViewProducts 
+              products={products}
+              phoneNumber={mcard.phone_number}
+              isOwner={isOwner}
+              mcardId={mcard.id}
+              mcardPlan={mcard.plan}
+              onProductsChange={refreshData}
+            />
+
+            {/* Physical Products Section */}
+            <MCardPhysicalProducts 
               mcard={mcard}
-              onCopyLink={handleCopyLink}
-              onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
               isOwner={isOwner}
             />
           </MCardCustomized>
-
-          {/* Statuses Section */}
-          <MCardViewStatuses
-            statuses={statuses}
-            phoneNumber={mcard.phone_number}
-            isOwner={isOwner}
-            mcardId={mcard.id}
-            mcardPlan={mcard.plan}
-            onStatusesChange={refreshData}
-          />
-
-          {/* Products Section */}
-          <MCardViewProducts 
-            products={products}
-            phoneNumber={mcard.phone_number}
-            isOwner={isOwner}
-            mcardId={mcard.id}
-            mcardPlan={mcard.plan}
-            onProductsChange={refreshData}
-          />
-
-          {/* Physical Products Section */}
-          <MCardPhysicalProducts 
-            mcard={mcard}
-            isOwner={isOwner}
-          />
 
           {/* Customization Section */}
           <MCardViewCustomization
