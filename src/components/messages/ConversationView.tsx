@@ -1,6 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, MessageCircle, Menu, UserX, UserCheck } from "lucide-react";
 import { 
   DropdownMenu, 
@@ -174,31 +175,35 @@ export function ConversationView({
       </div>
 
       {/* Messages - Zone scrollable */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30 scroll-smooth" style={{ scrollBehavior: 'smooth' }}>
-        {conversation.messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500 text-center">
-              Aucun message dans cette conversation.<br />
-              Commencez la discussion ci-dessous.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-1 pb-4">
-            {groupMessagesByDate(conversation.messages).map((group) => (
-              <div key={group.date}>
-                <DateSeparator date={group.date} />
-                {group.messages.map((message) => (
-                  <MessageBubble
-                    key={message.id}
-                    message={message}
-                    isCurrentUser={message.sender_id === currentUserId}
-                    onDelete={onDeleteMessage}
-                  />
+      <div className="flex-1 bg-gray-50/30">
+        <ScrollArea className="h-full">
+          <div className="p-6">
+            {conversation.messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full min-h-[400px]">
+                <p className="text-gray-500 text-center">
+                  Aucun message dans cette conversation.<br />
+                  Commencez la discussion ci-dessous.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-1 pb-4">
+                {groupMessagesByDate(conversation.messages).map((group) => (
+                  <div key={group.date}>
+                    <DateSeparator date={group.date} />
+                    {group.messages.map((message) => (
+                      <MessageBubble
+                        key={message.id}
+                        message={message}
+                        isCurrentUser={message.sender_id === currentUserId}
+                        onDelete={onDeleteMessage}
+                      />
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
+        </ScrollArea>
       </div>
 
       {/* Zone de saisie - FIXE EN BAS */}
