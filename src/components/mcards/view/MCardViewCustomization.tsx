@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Palette, Sparkles, Crown, Lock, Save, Eye, Volume2, Type, Zap } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Palette, Sparkles, Crown, Lock, Save, Eye, Volume2, Type, Zap, ChevronDown } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { useToast } from '@/hooks/use-toast';
 import { URL_CONFIG } from '@/utils/urlConfig';
@@ -225,15 +226,18 @@ export const MCardViewCustomization = ({
                 <div className="space-y-3">
                   <div>
                     <Label>Piste audio</Label>
-                    <select 
-                      className="w-full mt-1 p-2 border rounded-md"
-                      value={backgroundMusic.track}
-                      onChange={(e) => setBackgroundMusic(prev => ({ ...prev, track: e.target.value }))}
-                    >
-                      {musicTracks.map(track => (
-                        <option key={track.id} value={track.id}>{track.name}</option>
-                      ))}
-                    </select>
+                    <Select value={backgroundMusic.track} onValueChange={(value) => setBackgroundMusic(prev => ({ ...prev, track: value }))}>
+                      <SelectTrigger className="w-full mt-1">
+                        <SelectValue placeholder="Choisir une piste audio" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {musicTracks.map(track => (
+                          <SelectItem key={track.id} value={track.id}>
+                            {track.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>
@@ -260,17 +264,18 @@ export const MCardViewCustomization = ({
               
               <div>
                 <Label>Famille de police</Label>
-                <select 
-                  className="w-full mt-1 p-2 border rounded-md"
-                  value={customFont}
-                  onChange={(e) => setCustomFont(e.target.value)}
-                >
-                  {fontOptions.map(font => (
-                    <option key={font} value={font} style={{ fontFamily: font }}>
-                      {font}
-                    </option>
-                  ))}
-                </select>
+                <Select value={customFont} onValueChange={setCustomFont}>
+                  <SelectTrigger className="w-full mt-1">
+                    <SelectValue placeholder="Choisir une police" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fontOptions.map(font => (
+                      <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                        {font}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <div className="text-xs text-gray-500 mt-1">Aperçu avec la police sélectionnée</div>
               </div>
             </div>
