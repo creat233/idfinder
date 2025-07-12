@@ -31,13 +31,36 @@ export const createMCardReview = async (reviewData: {
   console.log('🔍 Création d\'un avis avec les données:', reviewData);
   
   // Vérifier que l'utilisateur est connecté
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.log('❌ Erreur lors de la récupération de l\'utilisateur:', userError);
+    throw new Error('Erreur d\'authentification.');
+  }
+  
   if (!user) {
     console.log('❌ Utilisateur non connecté');
     throw new Error('Vous devez être connecté pour laisser un avis.');
   }
   
   console.log('✅ Utilisateur connecté:', user.email);
+  
+  // Vérifier la session
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) {
+    console.log('❌ Erreur lors de la récupération de la session:', sessionError);
+    throw new Error('Erreur de session.');
+  }
+  
+  if (!session) {
+    console.log('❌ Aucune session active');
+    throw new Error('Session expirée. Veuillez vous reconnecter.');
+  }
+  
+  console.log('✅ Session active:', {
+    userId: session.user.id,
+    accessToken: session.access_token ? 'Présent' : 'Absent',
+    expiresAt: session.expires_at
+  });
   
   // Vérifier la limite de 7 avis pour la carte
   const { data: existingReviews, error: countError } = await supabase
