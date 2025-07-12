@@ -204,6 +204,59 @@ export type Database = {
           },
         ]
       }
+      mcard_customization: {
+        Row: {
+          animation_speed: number | null
+          animation_type: string | null
+          animations_enabled: boolean | null
+          created_at: string
+          custom_font: string | null
+          gradients_enabled: boolean | null
+          id: string
+          mcard_id: string
+          particles_enabled: boolean | null
+          shadows_enabled: boolean | null
+          theme: string | null
+          updated_at: string
+        }
+        Insert: {
+          animation_speed?: number | null
+          animation_type?: string | null
+          animations_enabled?: boolean | null
+          created_at?: string
+          custom_font?: string | null
+          gradients_enabled?: boolean | null
+          id?: string
+          mcard_id: string
+          particles_enabled?: boolean | null
+          shadows_enabled?: boolean | null
+          theme?: string | null
+          updated_at?: string
+        }
+        Update: {
+          animation_speed?: number | null
+          animation_type?: string | null
+          animations_enabled?: boolean | null
+          created_at?: string
+          custom_font?: string | null
+          gradients_enabled?: boolean | null
+          id?: string
+          mcard_id?: string
+          particles_enabled?: boolean | null
+          shadows_enabled?: boolean | null
+          theme?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_customization_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: true
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_interactions: {
         Row: {
           created_at: string | null
@@ -1020,6 +1073,23 @@ export type Database = {
           signup_date: string
           count: number
         }[]
+      }
+      get_or_create_mcard_customization: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          animation_speed: number | null
+          animation_type: string | null
+          animations_enabled: boolean | null
+          created_at: string
+          custom_font: string | null
+          gradients_enabled: boolean | null
+          id: string
+          mcard_id: string
+          particles_enabled: boolean | null
+          shadows_enabled: boolean | null
+          theme: string | null
+          updated_at: string
+        }
       }
       get_public_ads: {
         Args: Record<PropertyKey, never>

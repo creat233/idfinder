@@ -11,6 +11,7 @@ import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
 import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
+import { MCardCustomized } from '@/components/mcards/MCardCustomized';
 import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -82,13 +83,15 @@ const MCardView = () => {
             />
           )}
 
-          {/* Profile Card */}
-          <MCardViewProfile
-            mcard={mcard}
-            onCopyLink={handleCopyLink}
-            onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
-            isOwner={isOwner}
-          />
+          {/* Profile Card avec personnalisation appliquée */}
+          <MCardCustomized mcardId={mcard.id} className="rounded-2xl overflow-hidden">
+            <MCardViewProfile
+              mcard={mcard}
+              onCopyLink={handleCopyLink}
+              onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
+              isOwner={isOwner}
+            />
+          </MCardCustomized>
 
           {/* Statuses Section */}
           <MCardViewStatuses
