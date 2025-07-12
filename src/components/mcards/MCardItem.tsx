@@ -57,16 +57,8 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
   };
 
   const handleViewCard = () => {
-    if (mcard.subscription_status === 'pending_payment') {
-      toast({ 
-        title: "Carte non accessible", 
-        description: "Votre carte doit être activée par un administrateur avant d'être accessible.",
-        variant: "destructive"
-      });
-      return;
-    }
-    const url = URL_CONFIG.getMCardUrl(mcard.slug);
-    window.open(url, '_blank');
+    // Pour le propriétaire, on navigue dans le même onglet pour accéder aux fonctionnalités de gestion
+    navigate(`/mcard/${mcard.slug}`);
   };
 
   const getStatusVariant = (status: string | null): "default" | "secondary" | "destructive" => {
