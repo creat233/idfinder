@@ -10,6 +10,7 @@ interface ConversationHeaderProps {
   onBack: () => void;
   onBlockUser: () => void;
   onUnblockUser: () => void;
+  onDeleteConversation: () => void;
 }
 
 export function ConversationHeader({
@@ -19,7 +20,8 @@ export function ConversationHeader({
   isBlocking,
   onBack,
   onBlockUser,
-  onUnblockUser
+  onUnblockUser,
+  onDeleteConversation
 }: ConversationHeaderProps) {
   return (
     <div className="flex-shrink-0 p-4 border-b bg-white shadow-sm">
@@ -47,6 +49,7 @@ export function ConversationHeader({
           isBlocking={isBlocking}
           onBlockUser={onBlockUser}
           onUnblockUser={onUnblockUser}
+          onDeleteConversation={onDeleteConversation}
         />
       </div>
     </div>

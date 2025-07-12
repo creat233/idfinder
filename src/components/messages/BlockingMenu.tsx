@@ -1,24 +1,27 @@
 import { Button } from "@/components/ui/button";
-import { Menu, UserX, UserCheck } from "lucide-react";
+import { Menu, UserX, UserCheck, Trash2 } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 interface BlockingMenuProps {
   isUserBlocked: boolean;
   isBlocking: boolean;
   onBlockUser: () => void;
   onUnblockUser: () => void;
+  onDeleteConversation: () => void;
 }
 
 export function BlockingMenu({ 
   isUserBlocked, 
   isBlocking, 
   onBlockUser, 
-  onUnblockUser 
+  onUnblockUser,
+  onDeleteConversation
 }: BlockingMenuProps) {
   return (
     <DropdownMenu>
@@ -52,6 +55,16 @@ export function BlockingMenu({
             Bloquer l'utilisateur
           </DropdownMenuItem>
         )}
+        
+        <DropdownMenuSeparator />
+        
+        <DropdownMenuItem
+          onClick={onDeleteConversation}
+          className="text-red-600 focus:text-red-600"
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          Supprimer la conversation
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

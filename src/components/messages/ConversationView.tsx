@@ -18,6 +18,7 @@ interface ConversationViewProps {
   onDeleteMessage?: (messageId: string) => Promise<boolean>;
   onBlockUser?: (userId: string) => Promise<void>;
   onUnblockUser?: (userId: string) => Promise<void>;
+  onDeleteConversation?: () => Promise<void>;
 }
 
 export function ConversationView({
@@ -30,7 +31,8 @@ export function ConversationView({
   onBack,
   onDeleteMessage,
   onBlockUser,
-  onUnblockUser
+  onUnblockUser,
+  onDeleteConversation
 }: ConversationViewProps) {
   const [isBlocking, setIsBlocking] = useState(false);
   const [isUserBlocked, setIsUserBlocked] = useState(false);
@@ -90,6 +92,18 @@ export function ConversationView({
     }
   };
 
+  const handleDeleteConversation = async () => {
+    if (!onDeleteConversation || !conversation || !window.confirm("Êtes-vous sûr de vouloir supprimer cette conversation ? Cette action est irréversible.")) {
+      return;
+    }
+
+    try {
+      await onDeleteConversation();
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la conversation:', error);
+    }
+  };
+
   if (!conversation) {
     return <EmptyConversation />;
   }
@@ -104,6 +118,7 @@ export function ConversationView({
         onBack={onBack}
         onBlockUser={handleBlockUser}
         onUnblockUser={handleUnblockUser}
+        onDeleteConversation={handleDeleteConversation}
       />
 
       <ConversationMessages
