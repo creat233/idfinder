@@ -1,0 +1,54 @@
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { BlockingMenu } from "./BlockingMenu";
+
+interface ConversationHeaderProps {
+  otherUserName: string;
+  mcardName: string;
+  isUserBlocked: boolean;
+  isBlocking: boolean;
+  onBack: () => void;
+  onBlockUser: () => void;
+  onUnblockUser: () => void;
+}
+
+export function ConversationHeader({
+  otherUserName,
+  mcardName,
+  isUserBlocked,
+  isBlocking,
+  onBack,
+  onBlockUser,
+  onUnblockUser
+}: ConversationHeaderProps) {
+  return (
+    <div className="flex-shrink-0 p-4 border-b bg-white shadow-sm">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="lg:hidden hover:bg-gray-100"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+            {otherUserName.charAt(0).toUpperCase() || 'U'}
+          </div>
+          <div>
+            <h2 className="font-semibold text-gray-900 text-[17px]">{otherUserName}</h2>
+            <p className="text-sm text-gray-500">MCard: {mcardName}</p>
+          </div>
+        </div>
+        
+        <BlockingMenu
+          isUserBlocked={isUserBlocked}
+          isBlocking={isBlocking}
+          onBlockUser={onBlockUser}
+          onUnblockUser={onUnblockUser}
+        />
+      </div>
+    </div>
+  );
+}
