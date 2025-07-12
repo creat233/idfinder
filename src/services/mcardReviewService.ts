@@ -42,25 +42,7 @@ export const createMCardReview = async (reviewData: {
     throw new Error('Vous devez être connecté pour laisser un avis.');
   }
   
-  console.log('✅ Utilisateur connecté:', user.email);
-  
-  // Vérifier la session
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError) {
-    console.log('❌ Erreur lors de la récupération de la session:', sessionError);
-    throw new Error('Erreur de session.');
-  }
-  
-  if (!session) {
-    console.log('❌ Aucune session active');
-    throw new Error('Session expirée. Veuillez vous reconnecter.');
-  }
-  
-  console.log('✅ Session active:', {
-    userId: session.user.id,
-    accessToken: session.access_token ? 'Présent' : 'Absent',
-    expiresAt: session.expires_at
-  });
+  console.log('✅ Utilisateur connecté:', user.email, 'ID:', user.id);
   
   // Vérifier la limite de 7 avis pour la carte
   const { data: existingReviews, error: countError } = await supabase
@@ -77,46 +59,29 @@ export const createMCardReview = async (reviewData: {
     throw new Error('Cette carte a atteint la limite maximale de 7 avis.');
   }
   
-  // Insérer l'avis avec un retry en cas d'échec d'authentification
-  console.log('📤 Tentative d\'insertion de l\'avis...');
-  let insertAttempt = 0;
-  const maxAttempts = 3;
+  console.log('📤 Insertion de l\'avis dans la base de données...');
   
-  while (insertAttempt < maxAttempts) {
-    try {
-      insertAttempt++;
-      console.log(`🔄 Tentative ${insertAttempt}/${maxAttempts}`);
-      
-      // Forcer la réinitialisation de la session avant l'insertion
-      await supabase.auth.refreshSession();
-      
-      const { data, error } = await supabase
-        .from('mcard_reviews')
-        .insert([reviewData])
-        .select()
-        .single();
+  const { data, error } = await supabase
+    .from('mcard_reviews')
+    .insert([{
+      ...reviewData,
+      is_approved: false  // Avis en attente par défaut
+    }])
+    .select()
+    .single();
   
-      if (error) {
-        console.error(`❌ Erreur tentative ${insertAttempt}:`, error);
-        if (insertAttempt === maxAttempts) {
-          throw error;
-        }
-        // Attendre un peu avant de réessayer
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        continue;
-      }
-  
-      console.log('✅ Avis créé avec succès:', data);
-      return data;
-      
-    } catch (error) {
-      console.error(`❌ Exception tentative ${insertAttempt}:`, error);
-      if (insertAttempt === maxAttempts) {
-        throw error;
-      }
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
+  if (error) {
+    console.error('❌ Erreur lors de l\'insertion:', error);
+    throw new Error(`Impossible de créer l'avis: ${error.message}`);
   }
+  
+  if (!data) {
+    console.error('❌ Aucune donnée retournée après insertion');
+    throw new Error('Erreur lors de la création de l\'avis');
+  }
+  
+  console.log('✅ Avis créé avec succès:', data);
+  return data;
 };
 
 export const fetchAllMCardReviews = async (mcardId: string, isOwner: boolean): Promise<MCardReview[]> => {
