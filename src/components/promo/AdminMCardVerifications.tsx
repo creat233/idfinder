@@ -32,6 +32,43 @@ export const AdminMCardVerifications = () => {
     loadVerificationRequests();
   }, []);
 
+  // Écouter les changements en temps réel sur les demandes de vérification
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-verifications-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcard_verification_requests'
+        },
+        (payload) => {
+          console.log('Changement détecté sur les vérifications:', payload);
+          // Recharger les demandes de vérification
+          loadVerificationRequests();
+          
+          // Afficher une notification pour les nouvelles demandes
+          if (payload.eventType === 'INSERT') {
+            toast({
+              title: "🔍 Nouvelle demande de vérification",
+              description: "Une nouvelle demande de vérification vient d'être soumise.",
+            });
+          } else if (payload.eventType === 'UPDATE' && payload.old.status !== payload.new.status) {
+            toast({
+              title: "📝 Statut de vérification mis à jour",
+              description: `Le statut d'une demande a changé vers "${payload.new.status}".`,
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [toast]);
+
   const loadVerificationRequests = async () => {
     try {
       const { data, error } = await supabase

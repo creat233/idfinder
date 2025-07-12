@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +33,43 @@ export const AdminPendingMCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Écouter les changements en temps réel sur les tables mcards
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-mcards-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcards'
+        },
+        (payload) => {
+          console.log('Changement détecté sur mcards:', payload);
+          // Invalider et refrescher les données
+          queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] });
+          
+          // Afficher une notification pour les nouvelles cartes
+          if (payload.eventType === 'INSERT') {
+            toast({
+              title: "🆕 Nouvelle carte créée",
+              description: `La carte "${payload.new.full_name}" vient d'être créée et nécessite une activation.`,
+            });
+          } else if (payload.eventType === 'UPDATE' && payload.old.subscription_status !== payload.new.subscription_status) {
+            toast({
+              title: "📝 Carte mise à jour",
+              description: `Le statut de la carte "${payload.new.full_name}" a changé.`,
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient, toast]);
 
   // Récupérer toutes les mCards avec gestion d'erreur améliorée
   const { data: allMCards = [], isLoading, error } = useQuery({
