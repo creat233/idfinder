@@ -77,19 +77,46 @@ export const createMCardReview = async (reviewData: {
     throw new Error('Cette carte a atteint la limite maximale de 7 avis.');
   }
   
-  const { data, error } = await supabase
-    .from('mcard_reviews')
-    .insert([reviewData])
-    .select()
-    .single();
+  // Insérer l'avis avec un retry en cas d'échec d'authentification
+  console.log('📤 Tentative d\'insertion de l\'avis...');
+  let insertAttempt = 0;
+  const maxAttempts = 3;
   
-  if (error) {
-    console.error('Error creating review:', error);
-    throw error;
+  while (insertAttempt < maxAttempts) {
+    try {
+      insertAttempt++;
+      console.log(`🔄 Tentative ${insertAttempt}/${maxAttempts}`);
+      
+      // Forcer la réinitialisation de la session avant l'insertion
+      await supabase.auth.refreshSession();
+      
+      const { data, error } = await supabase
+        .from('mcard_reviews')
+        .insert([reviewData])
+        .select()
+        .single();
+  
+      if (error) {
+        console.error(`❌ Erreur tentative ${insertAttempt}:`, error);
+        if (insertAttempt === maxAttempts) {
+          throw error;
+        }
+        // Attendre un peu avant de réessayer
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        continue;
+      }
+  
+      console.log('✅ Avis créé avec succès:', data);
+      return data;
+      
+    } catch (error) {
+      console.error(`❌ Exception tentative ${insertAttempt}:`, error);
+      if (insertAttempt === maxAttempts) {
+        throw error;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
-  
-  console.log('Review created:', data);
-  return data;
 };
 
 export const fetchAllMCardReviews = async (mcardId: string, isOwner: boolean): Promise<MCardReview[]> => {

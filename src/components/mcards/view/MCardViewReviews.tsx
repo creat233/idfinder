@@ -105,26 +105,43 @@ export const MCardViewReviews = ({
         comment: newReview.comment.trim() || undefined
       });
 
-      console.log('✅ Avis créé avec succès:', result);
-      toast({
-        title: "Avis envoyé !",
-        description: "Votre avis a été envoyé et sera visible après approbation du propriétaire."
-      });
+      if (result) {
+        console.log('✅ Avis créé avec succès:', result);
+        toast({
+          title: "Avis envoyé !",
+          description: "Votre avis a été envoyé et sera visible après approbation du propriétaire."
+        });
 
-      // Réinitialiser seulement les champs modifiables
-      setNewReview(prev => ({
-        ...prev,
-        rating: 5,
-        comment: ''
-      }));
-      setShowAddReview(false);
-      onReviewsChange();
+        // Réinitialiser seulement les champs modifiables
+        setNewReview(prev => ({
+          ...prev,
+          rating: 5,
+          comment: ''
+        }));
+        setShowAddReview(false);
+        onReviewsChange();
+      }
     } catch (error) {
       console.error('❌ Erreur lors de l\'envoi de l\'avis:', error);
+      
+      let errorMessage = "Impossible d'envoyer l'avis. Veuillez réessayer.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('authentification') || error.message.includes('connecté')) {
+          errorMessage = "Problème d'authentification. Veuillez vous reconnecter.";
+        } else if (error.message.includes('session')) {
+          errorMessage = "Session expirée. Veuillez vous reconnecter.";
+        } else if (error.message.includes('limite')) {
+          errorMessage = error.message;
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error instanceof Error ? error.message : "Impossible d'envoyer l'avis. Veuillez réessayer."
+        description: errorMessage
       });
     } finally {
       setLoading(false);
