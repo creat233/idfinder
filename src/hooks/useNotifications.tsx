@@ -172,8 +172,7 @@ export const useNotifications = () => {
         description: "Toutes vos notifications ont été supprimées avec succès."
       });
 
-      // Force refresh after successful deletion
-      await fetchNotifications();
+      // Ne pas refetch immédiatement, laisser le real-time se synchroniser
     } catch (error: any) {
       console.error('Error deleting all notifications:', error);
       toast({
