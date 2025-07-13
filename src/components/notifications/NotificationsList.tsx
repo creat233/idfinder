@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useNavigate } from "react-router-dom";
 
 export const NotificationsList = () => {
-  const { notifications, loading, markAsRead, markAllAsRead, refetch } = useNotifications();
+  const { notifications, loading, markAsRead, markAllAsRead, deleteAllNotifications, refetch } = useNotifications();
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const { toast } = useToast();
@@ -102,7 +102,7 @@ export const NotificationsList = () => {
         description: "La notification a été supprimée avec succès."
       });
 
-      // Actualiser la liste
+      // Actualiser la liste via le hook
       await refetch();
     } catch (error: any) {
       console.error('Error deleting notification:', error);
@@ -123,33 +123,15 @@ export const NotificationsList = () => {
   const handleDeleteAllNotifications = async () => {
     try {
       setIsDeletingAll(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('notifications')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (error) {
-        throw error;
+      if (deleteAllNotifications) {
+        await deleteAllNotifications();
+        // Petit délai pour s'assurer que la suppression est synchronisée
+        setTimeout(() => {
+          setIsDeletingAll(false);
+        }, 500);
       }
-
-      toast({
-        title: "Toutes les notifications supprimées",
-        description: "Toutes vos notifications ont été supprimées avec succès."
-      });
-
-      // Actualiser la liste
-      await refetch();
-    } catch (error: any) {
-      console.error('Error deleting all notifications:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de supprimer toutes les notifications"
-      });
-    } finally {
+    } catch (error) {
+      console.error('Error in handleDeleteAllNotifications:', error);
       setIsDeletingAll(false);
     }
   };

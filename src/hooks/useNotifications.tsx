@@ -152,20 +152,28 @@ export const useNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Update local state immediately for better UX
+      setNotifications([]);
+
       const { error } = await supabase
         .from('notifications')
         .delete()
         .eq('user_id', user.id);
 
-      if (error) throw error;
-
-      // Update local state immediately for better UX
-      setNotifications([]);
+      if (error) {
+        console.error('Error deleting notifications:', error);
+        // Revert local state if error
+        await fetchNotifications();
+        throw error;
+      }
 
       toast({
         title: "Toutes les notifications supprimées",
         description: "Toutes vos notifications ont été supprimées avec succès."
       });
+
+      // Force refresh after successful deletion
+      await fetchNotifications();
     } catch (error: any) {
       console.error('Error deleting all notifications:', error);
       toast({
