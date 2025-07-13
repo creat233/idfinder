@@ -119,8 +119,8 @@ export const UserCardsList = ({ cards, onRefresh }: UserCardsListProps) => {
       {cards.map((card) => (
         <Card key={card.id} className={`transition-all ${!card.is_active ? 'opacity-60 border-gray-300' : ''}`}>
           <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <CardTitle className="text-base sm:text-lg">
                 {getDocumentTypeDisplay(card.document_type)}
               </CardTitle>
               <div className="flex items-center gap-2">
@@ -133,15 +133,17 @@ export const UserCardsList = ({ cards, onRefresh }: UserCardsListProps) => {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-6">
             <div className="space-y-2">
-              <p className="text-sm text-gray-600">
-                <strong>Numéro:</strong> {card.card_number}
-              </p>
+              <div className="text-sm text-gray-600">
+                <strong>Numéro:</strong> 
+                <span className="font-mono ml-1 break-all">{card.card_number}</span>
+              </div>
               {card.card_holder_name && (
-                <p className="text-sm text-gray-600">
-                  <strong>Nom:</strong> {card.card_holder_name}
-                </p>
+                <div className="text-sm text-gray-600">
+                  <strong>Nom:</strong> 
+                  <span className="ml-1">{card.card_holder_name}</span>
+                </div>
               )}
               <p className="text-sm text-gray-500">
                 Ajoutée le {new Date(card.created_at).toLocaleDateString('fr-FR')}
@@ -155,22 +157,24 @@ export const UserCardsList = ({ cards, onRefresh }: UserCardsListProps) => {
               )}
             </div>
             
-            <div className="flex gap-2 mt-4">
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleToggleVisibility(card.id, card.is_active)}
-                className="flex-1"
+                className="flex-1 sm:flex-none"
               >
                 {card.is_active ? (
                   <>
                     <EyeOff className="h-4 w-4 mr-2" />
-                    Masquer
+                    <span className="hidden sm:inline">Masquer</span>
+                    <span className="sm:hidden">Masquer</span>
                   </>
                 ) : (
                   <>
                     <Eye className="h-4 w-4 mr-2" />
-                    Activer
+                    <span className="hidden sm:inline">Activer</span>
+                    <span className="sm:hidden">Activer</span>
                   </>
                 )}
               </Button>
@@ -181,8 +185,10 @@ export const UserCardsList = ({ cards, onRefresh }: UserCardsListProps) => {
                     variant="destructive"
                     size="sm"
                     disabled={deletingCardId === card.id}
+                    className="sm:w-auto"
                   >
                     <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Supprimer</span>
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>

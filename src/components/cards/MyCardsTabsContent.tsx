@@ -68,21 +68,23 @@ export const MyCardsTabsContent = ({
 
   return (
     <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as "cards" | "notifications")}>
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="cards">
-          {t("myCards") || "Mes cartes"} ({cards.length})
+      <TabsList className="grid w-full grid-cols-2 h-auto">
+        <TabsTrigger value="cards" className="text-xs sm:text-sm py-2">
+          <span className="hidden sm:inline">{t("myCards") || "Mes cartes"} ({cards.length})</span>
+          <span className="sm:hidden">Cartes ({cards.length})</span>
         </TabsTrigger>
-        <TabsTrigger value="notifications" className="relative">
-          {t("notifications") || "Notifications"}
+        <TabsTrigger value="notifications" className="relative text-xs sm:text-sm py-2">
+          <span className="hidden sm:inline">{t("notifications") || "Notifications"}</span>
+          <span className="sm:hidden">Notifs</span>
           {unreadCount > 0 && (
-            <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 text-xs">
+            <Badge variant="destructive" className="ml-1 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 p-0 text-xs">
               {unreadCount}
             </Badge>
           )}
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="cards" className="space-y-6">
+      <TabsContent value="cards" className="space-y-4 sm:space-y-6 mt-4">
         <MyCardsExplanation />
         
         {/* Show debug tools if user has the specific card */}
@@ -103,7 +105,7 @@ export const MyCardsTabsContent = ({
         )}
       </TabsContent>
 
-      <TabsContent value="notifications" className="space-y-6">
+      <TabsContent value="notifications" className="space-y-4 sm:space-y-6 mt-4">
         {notificationsLoading ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>

@@ -190,21 +190,23 @@ export const NotificationsList = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-600">
-          {notifications.length} notification{notifications.length > 1 ? 's' : ''}
-          <span className="text-xs text-gray-400 ml-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="text-sm text-gray-600">
+          <span>{notifications.length} notification{notifications.length > 1 ? 's' : ''}</span>
+          <div className="text-xs text-gray-400 mt-1 sm:mt-0 sm:ml-2 sm:inline">
             (Suppression automatique après 24h)
-          </span>
-        </p>
-        <div className="flex gap-2">
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={markAllAsRead}
+            className="flex-1 sm:flex-none"
           >
             <Eye className="h-4 w-4 mr-2" />
-            Tout marquer comme lu
+            <span className="hidden sm:inline">Tout marquer comme lu</span>
+            <span className="sm:hidden">Marquer tout</span>
           </Button>
           
           <AlertDialog>
@@ -213,9 +215,11 @@ export const NotificationsList = () => {
                 variant="destructive" 
                 size="sm"
                 disabled={isDeletingAll}
+                className="flex-1 sm:flex-none"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                {isDeletingAll ? 'Suppression...' : 'Supprimer tout'}
+                <span className="hidden sm:inline">{isDeletingAll ? 'Suppression...' : 'Supprimer tout'}</span>
+                <span className="sm:hidden">{isDeletingAll ? 'Suppression...' : 'Supprimer'}</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -245,14 +249,14 @@ export const NotificationsList = () => {
           className={`transition-all cursor-pointer hover:shadow-md ${!notification.is_read ? 'border-blue-200 bg-blue-50/50' : ''} ${notification.type === 'new_message' ? 'hover:bg-blue-50' : 'hover:bg-gray-50'}`}
           onClick={() => handleNotificationClick(notification)}
         >
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0 mt-1">
                 {getTypeIcon(notification.type)}
               </div>
               
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
                   <Badge variant="outline" className="text-xs">
                     {getTypeLabel(notification.type)}
                   </Badge>
@@ -263,11 +267,11 @@ export const NotificationsList = () => {
                   )}
                 </div>
                 
-                <h4 className="font-medium text-gray-900 mb-1">
+                <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
                   {notification.title}
                 </h4>
                 
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                   {notification.message}
                 </p>
                 
@@ -279,7 +283,7 @@ export const NotificationsList = () => {
                 </p>
               </div>
               
-              <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
+              <div className="flex flex-col sm:flex-row gap-1" onClick={(e) => e.stopPropagation()}>
                 {!notification.is_read && (
                   <Button
                     variant="ghost"
@@ -288,8 +292,10 @@ export const NotificationsList = () => {
                       e.stopPropagation();
                       markAsRead(notification.id);
                     }}
+                    className="min-w-0"
                   >
                     <Eye className="h-4 w-4" />
+                    <span className="sr-only">Marquer comme lu</span>
                   </Button>
                 )}
                 
@@ -300,8 +306,10 @@ export const NotificationsList = () => {
                       size="sm"
                       disabled={deletingIds.has(notification.id)}
                       onClick={(e) => e.stopPropagation()}
+                      className="min-w-0"
                     >
                       <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Supprimer</span>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
