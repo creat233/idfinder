@@ -31,14 +31,14 @@ export const MCardsList = ({ mcards, loading, deleteMCard, onStartUpgradeFlow, o
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-semibold">
           {t('myMCards')} ({mcards.length}/3)
         </h2>
       </div>
 
-      {/* Barre de recherche */}
+      {/* Barre de recherche - Responsive */}
       {mcards.length > 0 && (
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -46,29 +46,30 @@ export const MCardsList = ({ mcards, loading, deleteMCard, onStartUpgradeFlow, o
             placeholder="🔍 Rechercher parmi vos cartes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 text-sm sm:text-base"
           />
           {searchQuery && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-xs sm:text-sm text-gray-600">
               {filteredMCards.length} carte{filteredMCards.length > 1 ? 's' : ''} trouvée{filteredMCards.length > 1 ? 's' : ''}
             </div>
           )}
         </div>
       )}
 
+      {/* États vides et résultats - Responsive */}
       {mcards.length === 0 && !loading ? (
-        <div className="text-center py-8 border-2 border-dashed rounded-lg">
-          <p>{t('noMCards')}</p>
-          <p className="text-sm text-gray-500 mt-2">
+        <div className="text-center py-6 sm:py-8 border-2 border-dashed rounded-lg">
+          <p className="text-sm sm:text-base">{t('noMCards')}</p>
+          <p className="text-xs sm:text-sm text-gray-500 mt-2">
             Vous pouvez créer jusqu'à 3 cartes de visite
           </p>
         </div>
       ) : filteredMCards.length === 0 && searchQuery ? (
-        <div className="text-center py-8 border-2 border-dashed rounded-lg">
-          <p className="text-gray-500">Aucune carte ne correspond à votre recherche.</p>
+        <div className="text-center py-6 sm:py-8 border-2 border-dashed rounded-lg">
+          <p className="text-sm sm:text-base text-gray-500">Aucune carte ne correspond à votre recherche.</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {filteredMCards.map(mcard => (
             <MCardItem 
               key={mcard.id} 

@@ -85,126 +85,158 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
   }
 
   return (
-    <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleViewCard}>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4 flex-1">
-                <Avatar className="h-16 w-16">
-                    <AvatarImage src={mcard.profile_picture_url || undefined} alt={mcard.full_name || 'Profile picture'} />
-                    <AvatarFallback>{getInitials(mcard.full_name || '')}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                    <CardTitle>{mcard.full_name}</CardTitle>
-                    <CardDescription>{mcard.job_title} at {mcard.company}</CardDescription>
-                </div>
+    <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]" onClick={handleViewCard}>
+      <CardHeader className="pb-3 sm:pb-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+          {/* Profil section - Responsive */}
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <Avatar className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 flex-shrink-0">
+              <AvatarImage src={mcard.profile_picture_url || undefined} alt={mcard.full_name || 'Profile picture'} />
+              <AvatarFallback className="text-sm sm:text-base">{getInitials(mcard.full_name || '')}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-sm sm:text-base lg:text-lg truncate">{mcard.full_name}</CardTitle>
+              <CardDescription className="text-xs sm:text-sm truncate">
+                {mcard.job_title}{mcard.company ? ` at ${mcard.company}` : ''}
+              </CardDescription>
             </div>
-            <div className="flex items-center gap-2">
-                <Badge variant={mcard.is_published ? "default" : "secondary"}>
-                    {mcard.is_published ? t('isPublished') : t('draft')}
-                </Badge>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewCard();
-                  }}
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Voir la carte
-                </Button>
-                <AlertDialog>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem onSelect={(e) => {
-                              e.preventDefault();
-                              onEdit(mcard);
-                            }}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                {t('edit')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onSelect={(e) => {
-                                e.preventDefault();
-                                handleCopyLink();
-                              }}
-                              disabled={mcard.subscription_status === 'pending_payment'}
-                            >
-                                <Copy className="mr-2 h-4 w-4" />
-                                {t('copyLink')}
-                                {mcard.subscription_status === 'pending_payment' && ' (Indisponible)'}
-                            </DropdownMenuItem>
-                            <AlertDialogTrigger asChild>
-                                <DropdownMenuItem className="text-red-500" onSelect={(e) => e.preventDefault()}>
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    {t('delete')}
-                                </DropdownMenuItem>
-                            </AlertDialogTrigger>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                        <AlertDialogTitle>{t('deleteMCard')}</AlertDialogTitle>
-                        <AlertDialogDescription>{t('deleteMCardConfirmation')}</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                        <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => onDelete(mcard.id)} className="bg-destructive hover:bg-destructive/90">{t('delete')}</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
+          </div>
+          
+          {/* Actions section - Responsive */}
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
+            {/* Status Badge - Always visible */}
+            <Badge variant={mcard.is_published ? "default" : "secondary"} className="text-xs whitespace-nowrap">
+              {mcard.is_published ? t('isPublished') : t('draft')}
+            </Badge>
+            
+            {/* Primary Action Button - Responsive */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="text-xs sm:text-sm px-2 sm:px-3"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewCard();
+              }}
+            >
+              <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Voir la carte</span>
+            </Button>
+            
+            {/* Menu dropdown */}
+            <AlertDialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onSelect={(e) => {
+                    e.preventDefault();
+                    onEdit(mcard);
+                  }}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t('edit')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      handleCopyLink();
+                    }}
+                    disabled={mcard.subscription_status === 'pending_payment'}
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    {t('copyLink')}
+                    {mcard.subscription_status === 'pending_payment' && ' (Indisponible)'}
+                  </DropdownMenuItem>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem className="text-red-500" onSelect={(e) => e.preventDefault()}>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      {t('delete')}
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('deleteMCard')}</AlertDialogTitle>
+                  <AlertDialogDescription>{t('deleteMCardConfirmation')}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete(mcard.id)} className="bg-destructive hover:bg-destructive/90">{t('delete')}</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </CardHeader>
-      <CardContent>
-        {mcard.description && <p className="text-sm mb-2">{mcard.description}</p>}
-        <p className="text-sm text-muted-foreground">URL: {URL_CONFIG.getMCardUrl(mcard.slug)}</p>
+      
+      <CardContent className="pt-0 pb-3 sm:pb-4">
+        {/* Description - Responsive */}
+        {mcard.description && (
+          <p className="text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-2 text-gray-600">{mcard.description}</p>
+        )}
+        
+        {/* URL - Responsive */}
+        <p className="text-xs text-muted-foreground truncate mb-2 sm:mb-3">
+          <span className="font-medium">URL:</span> {URL_CONFIG.getMCardUrl(mcard.slug)}
+        </p>
+        
+        {/* Warning for pending payment - Responsive */}
         {mcard.subscription_status === 'pending_payment' && (
-          <div className="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-md">
-            <p className="text-sm text-orange-800">
+          <div className="p-2 sm:p-3 bg-orange-50 border border-orange-200 rounded-md">
+            <p className="text-xs sm:text-sm text-orange-800 leading-relaxed">
               ⏳ Votre carte est en attente d'activation. Vous pouvez la modifier mais ne pouvez pas encore partager le lien ou le QR code.
             </p>
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4 flex-wrap">
+      
+      <CardFooter className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pt-0">
+        {/* Status and info section - Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-4">
             <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">{t('status')}:</span>
-                <Badge variant={getStatusVariant(mcard.subscription_status)}>
+              <span className="text-xs sm:text-sm font-medium">{t('status')}:</span>
+              <Badge variant={getStatusVariant(mcard.subscription_status)} className="text-xs">
                 {getStatusText(mcard.subscription_status)}
-                </Badge>
+              </Badge>
             </div>
-            {mcard.subscription_expires_at && (
-                <p className="text-sm text-muted-foreground">
-                    {t('expiresOn')} {format(new Date(mcard.subscription_expires_at), 'dd/MM/yyyy')}
-                </p>
-            )}
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Eye className="h-4 w-4" />
+            
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
+              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
               <span>{mcard.view_count ?? 0} {t('views') || 'vues'}</span>
             </div>
+          </div>
+          
+          {/* Expiry date - Responsive */}
+          {mcard.subscription_expires_at && (
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              {t('expiresOn')} {format(new Date(mcard.subscription_expires_at), 'dd/MM/yyyy')}
+            </p>
+          )}
         </div>
+        
+        {/* Upgrade button - Responsive */}
         {(mcard.subscription_status === 'trial' || mcard.subscription_status === 'expired') && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={(e) => {
-                e.stopPropagation();
-                onStartUpgradeFlow(mcard.id);
-              }}
-            >
-              {t('upgradeSubscription')}
-            </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full sm:w-auto text-xs sm:text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onStartUpgradeFlow(mcard.id);
+            }}
+          >
+            {t('upgradeSubscription')}
+          </Button>
         )}
       </CardFooter>
     </Card>
