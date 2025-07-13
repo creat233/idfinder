@@ -63,11 +63,12 @@ const MCards = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="mb-4 px-4">
+        <div className="px-3 sm:px-4 lg:px-6 xl:px-8 mb-3 sm:mb-4">
           <Button 
             variant="outline" 
             onClick={() => setShowCreationPage(false)}
-            className="mt-4"
+            className="mt-3 sm:mt-4 text-sm sm:text-base"
+            size="sm"
           >
             ← Retour à l'aperçu
           </Button>
@@ -82,7 +83,7 @@ const MCards = () => {
       <Header />
       <main className="w-full">
         {/* Hero Section - Responsive */}
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="px-3 sm:px-4 lg:px-6 xl:px-8">
           <MCardsHeader />
         </div>
         
@@ -112,8 +113,8 @@ const MCards = () => {
         </div>
 
         {/* My Cards Section - Responsive */}
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="container mx-auto py-16">
+        <div className="w-full px-3 sm:px-4 lg:px-6 xl:px-8">
+          <div className="container mx-auto py-8 sm:py-12 lg:py-16">
             <MCardsList
               mcards={mcards}
               loading={loading}
