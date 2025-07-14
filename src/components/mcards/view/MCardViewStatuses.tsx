@@ -99,9 +99,9 @@ export const MCardViewStatuses = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mx-2 sm:mx-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+          <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🟢 Statuts & Disponibilités
           </h3>
           {canAddStatus && (
@@ -141,9 +141,9 @@ export const MCardViewStatuses = ({
               return (
                 <div 
                   key={status.id} 
-                  className="border rounded-xl p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
+                  className="border rounded-xl p-3 sm:p-4 md:p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4 md:gap-6">
                     {status.status_image && (
                       <StatusImageModal 
                         imageUrl={status.status_image}
@@ -153,7 +153,7 @@ export const MCardViewStatuses = ({
                           <img 
                             src={status.status_image} 
                             alt={status.status_text}
-                            className="w-full sm:w-24 h-40 sm:h-24 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
+                            className="w-full sm:w-20 md:w-24 h-32 sm:h-20 md:h-24 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
                             onError={(e) => {
                               console.error('Error loading status image:', status.status_image);
                               e.currentTarget.style.display = 'none';
@@ -194,7 +194,7 @@ export const MCardViewStatuses = ({
                       )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                       {/* Boutons de partage améliorés */}
                       <Button
                         size="sm"

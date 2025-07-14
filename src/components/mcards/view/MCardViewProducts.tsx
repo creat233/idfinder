@@ -94,9 +94,9 @@ export const MCardViewProducts = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-          <h3 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mx-2 sm:mx-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+          <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🛍️ Produits & Services
           </h3>
           {canAddProduct && (
@@ -127,22 +127,22 @@ export const MCardViewProducts = ({
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {activeProducts.map((product) => (
               <div 
                 key={product.id} 
-                className="border rounded-xl p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
+                className="border rounded-xl p-3 sm:p-4 md:p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
               >
                 {product.image_url && (
                   <ProductImageModal
                     imageUrl={product.image_url}
                     product={product}
                   >
-                    <div className="relative group mb-4">
+                    <div className="relative group mb-3 sm:mb-4">
                       <img 
                         src={product.image_url} 
                         alt={product.name}
-                        className="w-full h-48 md:h-56 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
+                        className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
                         onError={(e) => {
                           console.error('Error loading product image:', product.image_url);
                           e.currentTarget.style.display = 'none';
@@ -159,10 +159,10 @@ export const MCardViewProducts = ({
                   </ProductImageModal>
                 )}
                 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="font-bold text-xl text-gray-900 cursor-pointer hover:text-blue-600 transition-colors mb-2" onClick={() => handleProductClick(product)}>
+                      <h4 className="font-bold text-lg sm:text-xl text-gray-900 cursor-pointer hover:text-blue-600 transition-colors mb-2" onClick={() => handleProductClick(product)}>
                         {product.name}
                       </h4>
                       <div className="flex items-center gap-2 mb-2">
@@ -193,15 +193,15 @@ export const MCardViewProducts = ({
                     </p>
                   )}
                   
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl">
-                    <span className="text-2xl font-bold text-green-600">
+                  <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl">
+                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-green-600">
                       {product.price.toLocaleString()} {product.currency}
                     </span>
                     <ShoppingCart className="h-6 w-6 text-green-500" />
                   </div>
 
                   {/* Boutons de partage améliorés */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <div className="flex flex-wrap gap-2 sm:gap-3 pt-2">
                     <Button
                       size="sm"
                       variant="outline"
