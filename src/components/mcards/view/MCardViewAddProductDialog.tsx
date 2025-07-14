@@ -19,6 +19,7 @@ interface MCardViewAddProductDialogProps {
 const PRODUCT_CATEGORIES = [
   'Service',
   'Produit',
+  'Menu restaurant',
   'Consultation',
   'Formation',
   'Événement',
