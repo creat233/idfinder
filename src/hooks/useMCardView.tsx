@@ -19,7 +19,8 @@ export const useMCardView = () => {
     viewCount,
     error,
     fetchMCard,
-    refreshData
+    refreshData,
+    updateViewCount
   } = useMCardData();
 
   const {
@@ -31,7 +32,7 @@ export const useMCardView = () => {
     handleEdit
   } = useMCardActions();
 
-  useMCardRealtime({ mcard, slug, refreshData });
+  useMCardRealtime({ mcard, slug, refreshData, onViewCountUpdate: updateViewCount });
 
   useEffect(() => {
     // Vérifier si on a besoin de rediriger vers l'URL canonique

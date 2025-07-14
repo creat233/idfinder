@@ -126,6 +126,10 @@ export const useMCardData = () => {
     }
   };
 
+  const updateViewCount = (newCount: number) => {
+    setViewCount(newCount);
+  };
+
   return {
     mcard,
     statuses,
@@ -137,6 +141,7 @@ export const useMCardData = () => {
     error,
     fetchMCard,
     refreshData,
+    updateViewCount,
     setMCard,
     setStatuses,
     setProducts,

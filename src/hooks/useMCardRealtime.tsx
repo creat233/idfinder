@@ -7,9 +7,10 @@ interface UseMCardRealtimeProps {
   mcard: MCard | null;
   slug?: string;
   refreshData: () => void;
+  onViewCountUpdate?: (newCount: number) => void;
 }
 
-export const useMCardRealtime = ({ mcard, slug, refreshData }: UseMCardRealtimeProps) => {
+export const useMCardRealtime = ({ mcard, slug, refreshData, onViewCountUpdate }: UseMCardRealtimeProps) => {
   useEffect(() => {
     if (!mcard || slug === 'demo') return;
 
@@ -49,10 +50,29 @@ export const useMCardRealtime = ({ mcard, slug, refreshData }: UseMCardRealtimeP
       })
       .subscribe();
 
+    // Canal pour les vues en temps réel
+    const viewsChannel = supabase
+      .channel('mcard-views-realtime')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'mcards',
+        filter: `id=eq.${mcard.id}`
+      }, (payload) => {
+        if (payload.new && onViewCountUpdate) {
+          const newViewCount = (payload.new as any).view_count;
+          if (newViewCount !== undefined) {
+            onViewCountUpdate(newViewCount);
+          }
+        }
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(statusesChannel);
       supabase.removeChannel(productsChannel);
       supabase.removeChannel(reviewsChannel);
+      supabase.removeChannel(viewsChannel);
     };
-  }, [mcard, slug, refreshData]);
+  }, [mcard, slug, refreshData, onViewCountUpdate]);
 };
