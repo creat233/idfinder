@@ -65,7 +65,7 @@ export const MCardViewEditProductDialog = ({
     const filePath = `product-images/${fileName}`;
 
     const { error } = await supabase.storage
-      .from('mcard-profile-pictures')
+      .from('product-images')
       .upload(filePath, file);
 
     if (error) {
@@ -74,7 +74,7 @@ export const MCardViewEditProductDialog = ({
     }
 
     const { data } = supabase.storage
-      .from('mcard-profile-pictures')
+      .from('product-images')
       .getPublicUrl(filePath);
 
     return data.publicUrl;

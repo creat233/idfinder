@@ -52,7 +52,7 @@ export const MCardViewEditStatusDialog = ({
     const filePath = `status-images/${fileName}`;
 
     const { error } = await supabase.storage
-      .from('mcard-profile-pictures')
+      .from('status-images')
       .upload(filePath, file);
 
     if (error) {
@@ -61,7 +61,7 @@ export const MCardViewEditStatusDialog = ({
     }
 
     const { data } = supabase.storage
-      .from('mcard-profile-pictures')
+      .from('status-images')
       .getPublicUrl(filePath);
 
     return data.publicUrl;
