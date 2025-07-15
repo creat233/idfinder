@@ -1052,6 +1052,10 @@ export type Database = {
         Args: { user_email: string }
         Returns: boolean
       }
+      deactivate_expired_promo_codes: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_promo_code: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -1119,6 +1123,10 @@ export type Database = {
         Returns: boolean
       }
       log_login_event: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      notify_expired_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }

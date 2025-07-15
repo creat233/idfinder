@@ -32,7 +32,25 @@ export const usePromoCodes = () => {
       }
 
       console.log("Codes promo récupérés:", data?.length || 0);
-      setPromoCodes(data || []);
+      
+      // Vérifier et marquer les codes expirés côté client
+      const now = new Date();
+      const processedCodes = (data || []).map(code => {
+        const expiresAt = new Date(code.expires_at);
+        const isExpired = expiresAt < now;
+        
+        if (isExpired && code.is_active) {
+          console.warn(`⏰ Code ${code.code} expiré le ${expiresAt.toLocaleDateString()}`);
+        }
+        
+        return {
+          ...code,
+          isExpired, // Ajouter un flag pour l'UI
+          daysUntilExpiration: Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        };
+      });
+      
+      setPromoCodes(processedCodes);
     } catch (error: any) {
       console.error("Erreur fetchPromoCodes:", error);
       showError("Erreur", "Impossible de récupérer les codes promo");

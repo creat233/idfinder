@@ -9,25 +9,41 @@ import { PromoCodeActivation } from "./PromoCodeActivation";
 import { PromoCodeShareButtons } from "./PromoCodeShareButtons";
 
 interface PromoCodeCardProps {
-  promoCode: PromoCodeData;
+  promoCode: PromoCodeData & { 
+    isExpired?: boolean; 
+    daysUntilExpiration?: number; 
+  };
 }
 
 export const PromoCodeCard = ({ promoCode }: PromoCodeCardProps) => {
   const { t } = useTranslation();
+  const now = new Date();
+  const expiresAt = new Date(promoCode.expires_at);
+  const isExpired = expiresAt < now;
+  const daysUntilExpiration = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <Card>
+    <Card className={isExpired ? "border-red-200 bg-red-50" : ""}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="font-mono text-lg">{promoCode.code}</span>
           <div className="flex gap-2">
-            {promoCode.is_active ? (
+            {isExpired ? (
+              <Badge variant="destructive" className="bg-red-100 text-red-800">
+                ⏰ Expiré
+              </Badge>
+            ) : promoCode.is_active ? (
               <Badge variant="default" className="bg-green-100 text-green-800">
                 {t("codeActive")}
               </Badge>
             ) : (
               <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
                 {t("codeNotActive")}
+              </Badge>
+            )}
+            {!isExpired && daysUntilExpiration <= 7 && daysUntilExpiration > 0 && (
+              <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200">
+                Expire dans {daysUntilExpiration}j
               </Badge>
             )}
           </div>
@@ -45,13 +61,23 @@ export const PromoCodeCard = ({ promoCode }: PromoCodeCardProps) => {
           </div>
           <div className="col-span-2">
             <span className="font-medium">{t("expiresOn")}:</span>
-            <span className="ml-2">
+            <span className={`ml-2 ${isExpired ? 'text-red-600 font-semibold' : ''}`}>
               {format(new Date(promoCode.expires_at), "dd/MM/yyyy", { locale: fr })}
+              {isExpired && <span className="text-red-500 ml-2">• EXPIRÉ</span>}
             </span>
           </div>
         </div>
 
-        {!promoCode.is_active ? (
+        {isExpired ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p className="text-sm text-red-800 font-medium">
+              ⏰ Ce code promo a expiré le {format(expiresAt, "dd/MM/yyyy", { locale: fr })}
+            </p>
+            <p className="text-xs text-red-600 mt-1">
+              Les codes expirés ne peuvent plus être utilisés. Créez un nouveau code promo pour continuer à gagner des commissions.
+            </p>
+          </div>
+        ) : !promoCode.is_active ? (
           <PromoCodeActivation promoCode={promoCode.code} />
         ) : (
           <PromoCodeShareButtons code={promoCode.code} />
