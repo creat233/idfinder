@@ -18,6 +18,7 @@ import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 import { AdminEmailSettings } from "@/components/promo/AdminEmailSettings";
 import { InfluencerEmailTemplate } from "@/components/admin/InfluencerEmailTemplate";
+import { SystemStatusChecker } from "@/components/admin/SystemStatusChecker";
 import { AdminMCardVerifications } from "@/components/promo/AdminMCardVerifications";
 
 const AdminPromoCodes = () => {
@@ -30,8 +31,9 @@ const AdminPromoCodes = () => {
             Administration FinderID
           </h1>
           
-          <Tabs defaultValue="mcards" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-13 mb-8">
+          <Tabs defaultValue="status" className="w-full">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-14 mb-8">
+              <TabsTrigger value="status">Statut</TabsTrigger>
               <TabsTrigger value="mcards">mCards</TabsTrigger>
               <TabsTrigger value="verifications">Vérifications</TabsTrigger>
               <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
@@ -46,6 +48,10 @@ const AdminPromoCodes = () => {
               <TabsTrigger value="publicites">Publicités</TabsTrigger>
               <TabsTrigger value="parametres">Paramètres</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="status">
+              <SystemStatusChecker />
+            </TabsContent>
 
             <TabsContent value="mcards">
               <AdminPendingMCards />

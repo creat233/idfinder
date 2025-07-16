@@ -2,6 +2,16 @@
 import { Translations } from './types';
 
 export const authTranslations: Translations = {
+  // Traductions générales
+  login: { fr: "Connexion", en: "Login" },
+  createAccount: { fr: "Créer un compte", en: "Create Account" },
+  accessAccount: { fr: "Accédez à votre compte", en: "Access your account" },
+  joinFinderID: { fr: "Rejoignez FinderID", en: "Join FinderID" },
+  resetPassword: { fr: "Réinitialiser le mot de passe", en: "Reset Password" },
+  forgotPassword: { fr: "Mot de passe oublié ?", en: "Forgot password?" },
+  signUp: { fr: "Inscription", en: "Sign Up" },
+  noAccount: { fr: "Pas de compte", en: "No account" },
+  
   logout: { fr: "Déconnexion", en: "Logout" },
   logout_success: { fr: "Vous avez été déconnecté.", en: "You have been logged out." },
 

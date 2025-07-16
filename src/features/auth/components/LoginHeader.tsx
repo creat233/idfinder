@@ -18,8 +18,13 @@ const LoginHeader = () => {
         <div className="w-20 h-20 bg-white rounded-2xl shadow-2xl flex items-center justify-center">
           <img
             src="/lovable-uploads/c768a56b-6acc-4b86-bfea-cc20a4bb9ce0.png"
-            alt="Logo"
-            className="w-16 h-16"
+            alt="Audit Marketing Digital"
+            className="w-16 h-16 object-contain"
+            onError={(e) => {
+              console.error('Logo image failed to load:', e);
+              // Fallback to default logo
+              e.currentTarget.src = "/lovable-uploads/66a0985b-99e7-45ba-8ba3-0573e2b2ad29.png";
+            }}
           />
         </div>
         <motion.div
