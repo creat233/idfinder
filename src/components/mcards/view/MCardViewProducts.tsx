@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star } from 'lucide-react';
+import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star, Send } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
@@ -215,11 +215,11 @@ export const MCardViewProducts = ({
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleWhatsAppShare(product)}
-                      className="text-green-600 border-green-600 hover:bg-green-50 hover:scale-105 transition-all flex-1 shadow-sm"
+                      onClick={() => handleProductClick(product)}
+                      className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
                     >
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      WhatsApp
+                      <Send className="h-4 w-4 mr-2" />
+                      Message
                     </Button>
                   </div>
                 </div>

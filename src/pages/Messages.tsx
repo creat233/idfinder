@@ -112,7 +112,7 @@ const Messages = () => {
       <Header />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="container mx-auto px-4 py-6 flex-1 flex flex-col max-w-7xl">
+        <div className="px-4 py-6 flex-1 flex flex-col w-full max-w-none">
           <div className="text-center mb-6 flex-shrink-0">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               💬 Messages

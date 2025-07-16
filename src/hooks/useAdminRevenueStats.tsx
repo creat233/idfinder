@@ -63,7 +63,7 @@ export const useAdminRevenueStats = () => {
       
       // Revenus des mCards
       const mcardRevenue = approvedMCards.reduce((total, mcard) => {
-        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 25000 : 0;
+        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 30000 : 0;
         return total + price;
       }, 0);
 
@@ -78,17 +78,17 @@ export const useAdminRevenueStats = () => {
       const yearlyMCards = approvedMCards.filter(m => new Date(m.created_at) >= startOfYear);
 
       const dailyRevenue = dailyMCards.reduce((total, mcard) => {
-        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 25000 : 0;
+        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 30000 : 0;
         return total + price;
       }, 0);
 
       const monthlyRevenue = monthlyMCards.reduce((total, mcard) => {
-        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 25000 : 0;
+        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 30000 : 0;
         return total + price;
       }, 0);
 
       const yearlyRevenue = yearlyMCards.reduce((total, mcard) => {
-        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 25000 : 0;
+        const price = mcard.plan === 'essential' ? 15000 : mcard.plan === 'premium' ? 30000 : 0;
         return total + price;
       }, 0);
 

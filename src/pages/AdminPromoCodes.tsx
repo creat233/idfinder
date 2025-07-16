@@ -17,6 +17,7 @@ import { AdminAdsManager } from "@/components/promo/AdminAdsManager";
 import { AdminBulkEmailSender } from "@/components/promo/AdminBulkEmailSender";
 import { AdminSingleEmailSender } from "@/components/promo/AdminSingleEmailSender";
 import { AdminEmailSettings } from "@/components/promo/AdminEmailSettings";
+import { InfluencerEmailTemplate } from "@/components/admin/InfluencerEmailTemplate";
 import { AdminMCardVerifications } from "@/components/promo/AdminMCardVerifications";
 
 const AdminPromoCodes = () => {
@@ -85,6 +86,7 @@ const AdminPromoCodes = () => {
               <div className="space-y-8">
                 <AdminBulkEmailSender />
                 <AdminSingleEmailSender />
+                <InfluencerEmailTemplate />
               </div>
             </TabsContent>
 

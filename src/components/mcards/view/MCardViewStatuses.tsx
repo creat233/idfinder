@@ -209,11 +209,11 @@ export const MCardViewStatuses = ({
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleWhatsAppShare(status)}
-                        className="text-green-600 border-green-600 hover:bg-green-50 hover:scale-105 transition-all shadow-sm"
+                        onClick={() => handleStatusClick(status)}
+                        className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all shadow-sm"
                       >
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        WhatsApp
+                        <Send className="h-4 w-4 mr-2" />
+                        Message
                       </Button>
 
                       {isOwner && (
