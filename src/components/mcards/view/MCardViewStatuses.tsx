@@ -7,6 +7,7 @@ import { MCardStatus } from '@/types/mcard';
 import { MCardViewStatusDialog } from './MCardViewStatusDialog';
 import { MCardViewAddStatusDialog } from './MCardViewAddStatusDialog';
 import { MCardViewEditStatusDialog } from './MCardViewEditStatusDialog';
+import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { StatusImageModal } from './StatusImageModal';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,6 +17,8 @@ interface MCardViewStatusesProps {
   isOwner?: boolean;
   mcardId: string;
   mcardPlan?: string;
+  mcardOwnerName?: string;
+  mcardOwnerUserId?: string;
   onStatusesChange?: () => void;
 }
 

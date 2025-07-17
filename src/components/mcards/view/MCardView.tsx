@@ -32,6 +32,8 @@ const MCardView = () => {
     refreshData
   } = useMCardView();
 
+  const { currentLanguage, setCurrentLanguage, translatedContent } = useMCardTranslation(mcard);
+
   if (loading) {
     return <MCardViewLoading />;
   }
@@ -85,24 +87,28 @@ const MCardView = () => {
           />
 
           {/* Statuses Section */}
-          <MCardViewStatuses
-            statuses={statuses}
-            phoneNumber={mcard.phone_number}
-            isOwner={isOwner}
-            mcardId={mcard.id}
-            mcardPlan={mcard.plan}
-            onStatusesChange={refreshData}
-          />
+            <MCardViewStatuses 
+              statuses={statuses}
+              phoneNumber={mcard.phone_number}
+              isOwner={isOwner}
+              mcardId={mcard.id}
+              mcardPlan={mcard.plan}
+              mcardOwnerName={mcard.full_name}
+              mcardOwnerUserId={mcard.user_id}
+              onStatusesChange={refreshData}
+            />
 
           {/* Products Section */}
-          <MCardViewProducts 
-            products={products}
-            phoneNumber={mcard.phone_number}
-            isOwner={isOwner}
-            mcardId={mcard.id}
-            mcardPlan={mcard.plan}
-            onProductsChange={refreshData}
-          />
+            <MCardViewProducts 
+              products={products}
+              phoneNumber={mcard.phone_number}
+              isOwner={isOwner}
+              mcardId={mcard.id}
+              mcardPlan={mcard.plan}
+              mcardOwnerName={mcard.full_name}
+              mcardOwnerUserId={mcard.user_id}
+              onProductsChange={refreshData}
+            />
 
           {/* Reviews Section */}
           <MCardViewReviews

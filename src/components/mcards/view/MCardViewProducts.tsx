@@ -7,6 +7,7 @@ import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
 import { MCardViewEditProductDialog } from './MCardViewEditProductDialog';
+import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { ProductImageModal } from './ProductImageModal';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,6 +17,8 @@ interface MCardViewProductsProps {
   isOwner?: boolean;
   mcardId: string;
   mcardPlan?: string;
+  mcardOwnerName?: string;
+  mcardOwnerUserId?: string;
   onProductsChange?: () => void;
 }
 

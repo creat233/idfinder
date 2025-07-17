@@ -50,7 +50,7 @@ export const MCardCreationPage = () => {
     {
       id: 'premium',
       name: 'Premium',
-      price: 3900,
+      price: 5000,
       period: 'mois',
       description: 'Solution complète pour entrepreneurs',
       features: [
