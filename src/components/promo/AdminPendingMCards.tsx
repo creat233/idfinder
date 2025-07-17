@@ -46,28 +46,39 @@ export const AdminPendingMCards = () => {
           table: 'mcards'
         },
         (payload) => {
-          console.log('Changement détecté sur mcards:', payload);
-          // Invalider et refrescher les données
+          console.log('🔄 Changement détecté sur mcards:', payload);
+          
+          // Invalider et refrescher les données immédiatement
           queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] });
+          queryClient.refetchQueries({ queryKey: ['admin-all-mcards'] });
           
           // Afficher une notification pour les nouvelles cartes
           if (payload.eventType === 'INSERT') {
             toast({
               title: "🆕 Nouvelle carte créée",
               description: `La carte "${payload.new.full_name}" vient d'être créée et nécessite une activation.`,
+              duration: 5000,
             });
-          } else if (payload.eventType === 'UPDATE' && payload.old.subscription_status !== payload.new.subscription_status) {
+          } else if (payload.eventType === 'UPDATE' && payload.old?.subscription_status !== payload.new?.subscription_status) {
             toast({
               title: "📝 Carte mise à jour",
               description: `Le statut de la carte "${payload.new.full_name}" a changé.`,
+              duration: 3000,
             });
           }
         }
       )
       .subscribe();
 
+    // Forcer une actualisation toutes les 30 secondes pour s'assurer de la synchronisation
+    const interval = setInterval(() => {
+      console.log('🔄 Actualisation automatique des cartes...');
+      queryClient.invalidateQueries({ queryKey: ['admin-all-mcards'] });
+    }, 30000);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(interval);
     };
   }, [queryClient, toast]);
 
