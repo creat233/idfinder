@@ -10,6 +10,7 @@ import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardVisitorCTA } from '@/components/mcards/MCardVisitorCTA';
 import { useMCardView } from '@/hooks/useMCardView';
+import { useMCardTranslation } from '@/hooks/useMCardTranslation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 

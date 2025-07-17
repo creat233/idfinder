@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,6 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Send, User } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
 
 interface MCardContactDialogProps {
   isOpen: boolean;
@@ -38,7 +37,15 @@ export const MCardContactDialog = ({
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuthStore();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   const handleSendMessage = async () => {
     if (!user) {
