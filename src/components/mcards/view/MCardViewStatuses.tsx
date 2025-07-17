@@ -1,14 +1,13 @@
 
 import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Plus, Edit, Share2, MessageCircle, Send, Sparkles } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
 import { MCardViewStatusDialog } from './MCardViewStatusDialog';
 import { MCardViewAddStatusDialog } from './MCardViewAddStatusDialog';
 import { MCardViewEditStatusDialog } from './MCardViewEditStatusDialog';
 import { MCardContactDialog } from '../messaging/MCardContactDialog';
-import { StatusImageModal } from './StatusImageModal';
+import { MCardStatusCarousel } from './MCardStatusCarousel';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewStatusesProps {
@@ -28,6 +27,8 @@ export const MCardViewStatuses = ({
   isOwner, 
   mcardId, 
   mcardPlan,
+  mcardOwnerName,
+  mcardOwnerUserId,
   onStatusesChange 
 }: MCardViewStatusesProps) => {
   const [selectedStatus, setSelectedStatus] = useState<MCardStatus | null>(null);
@@ -35,6 +36,9 @@ export const MCardViewStatuses = ({
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingStatus, setEditingStatus] = useState<MCardStatus | null>(null);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [contactContext, setContactContext] = useState<{ type: 'status' | 'product'; title: string } | undefined>();
+  const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
   const { toast } = useToast();
 
   const activeStatuses = statuses.filter(status => {
@@ -135,106 +139,22 @@ export const MCardViewStatuses = ({
             )}
           </div>
         ) : (
-          <div className="space-y-4">
-            {activeStatuses.map((status) => {
-              const timeRemaining = status.expires_at ? 
-                Math.max(0, Math.floor((new Date(status.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60))) : 
-                null;
-
-              return (
-                <div 
-                  key={status.id} 
-                  className="border rounded-xl p-3 sm:p-4 md:p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4 md:gap-6">
-                    {status.status_image && (
-                      <StatusImageModal 
-                        imageUrl={status.status_image}
-                        statusText={status.status_text}
-                      >
-                        <div className="relative group">
-                          <img 
-                            src={status.status_image} 
-                            alt={status.status_text}
-                            className="w-full sm:w-20 md:w-24 h-32 sm:h-20 md:h-24 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
-                            onError={(e) => {
-                              console.error('Error loading status image:', status.status_image);
-                              e.currentTarget.style.display = 'none';
-                            }}
-                            onLoad={() => {
-                              console.log('Status image loaded successfully:', status.status_image);
-                            }}
-                          />
-                          <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                            Cliquer pour agrandir
-                          </div>
-                        </div>
-                      </StatusImageModal>
-                    )}
-                    
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Badge 
-                          className="text-white font-medium cursor-pointer hover:scale-105 transition-transform shadow-lg"
-                          style={{ backgroundColor: status.status_color }}
-                          onClick={() => handleStatusClick(status)}
-                        >
-                          <Sparkles className="w-3 h-3 mr-1" />
-                          {status.status_text}
-                        </Badge>
-                      </div>
-                      
-                      {timeRemaining !== null && (
-                        <div className="flex items-center gap-1 text-sm text-gray-600">
-                          <Clock className="h-4 w-4" />
-                          <span>
-                            {timeRemaining > 0 
-                              ? `Expire dans ${timeRemaining}h`
-                              : 'Expiré'
-                            }
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 sm:gap-3">
-                      {/* Boutons de partage améliorés */}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleShareStatus(status)}
-                        className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:scale-105 transition-all shadow-sm"
-                      >
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Partager
-                      </Button>
-                      
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleStatusClick(status)}
-                        className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all shadow-sm"
-                      >
-                        <Send className="h-4 w-4 mr-2" />
-                        Message
-                      </Button>
-
-                      {isOwner && (
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => handleEditStatus(status)}
-                          className="hover:bg-gray-100 hover:scale-105 transition-all"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <MCardStatusCarousel
+            statuses={activeStatuses}
+            isOwner={isOwner}
+            currentIndex={currentStatusIndex}
+            onIndexChange={setCurrentStatusIndex}
+            onStatusClick={handleStatusClick}
+            onEditStatus={handleEditStatus}
+            onShareStatus={handleShareStatus}
+            onContactOwner={(status) => {
+              setContactContext({
+                type: 'status',
+                title: status.status_text
+              });
+              setIsContactDialogOpen(true);
+            }}
+          />
         )}
       </div>
 
@@ -260,6 +180,17 @@ export const MCardViewStatuses = ({
           onClose={() => setIsEditDialogOpen(false)}
           status={editingStatus}
           onStatusUpdated={handleStatusUpdated}
+        />
+      )}
+
+      {!isOwner && mcardOwnerUserId && mcardOwnerName && (
+        <MCardContactDialog
+          isOpen={isContactDialogOpen}
+          onClose={() => setIsContactDialogOpen(false)}
+          mcardId={mcardId}
+          mcardOwnerName={mcardOwnerName}
+          recipientId={mcardOwnerUserId}
+          context={contactContext}
         />
       )}
     </>

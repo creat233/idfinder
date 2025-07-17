@@ -28,6 +28,8 @@ export const MCardViewProducts = ({
   isOwner, 
   mcardId, 
   mcardPlan,
+  mcardOwnerName,
+  mcardOwnerUserId,
   onProductsChange 
 }: MCardViewProductsProps) => {
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
@@ -35,6 +37,8 @@ export const MCardViewProducts = ({
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<MCardProduct | null>(null);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [contactContext, setContactContext] = useState<{ type: 'status' | 'product'; title: string } | undefined>();
   const { toast } = useToast();
 
   const activeProducts = products.filter(product => product.is_active);
@@ -215,15 +219,23 @@ export const MCardViewProducts = ({
                       Partager
                     </Button>
                     
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleProductClick(product)}
-                      className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
-                    >
-                      <Send className="h-4 w-4 mr-2" />
-                      Message
-                    </Button>
+                    {!isOwner && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setContactContext({
+                            type: 'product',
+                            title: product.name
+                          });
+                          setIsContactDialogOpen(true);
+                        }}
+                        className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Contacter
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -254,6 +266,17 @@ export const MCardViewProducts = ({
           onClose={() => setIsEditDialogOpen(false)}
           product={editingProduct}
           onProductUpdated={handleProductUpdated}
+        />
+      )}
+
+      {!isOwner && mcardOwnerUserId && mcardOwnerName && (
+        <MCardContactDialog
+          isOpen={isContactDialogOpen}
+          onClose={() => setIsContactDialogOpen(false)}
+          mcardId={mcardId}
+          mcardOwnerName={mcardOwnerName}
+          recipientId={mcardOwnerUserId}
+          context={contactContext}
         />
       )}
     </>

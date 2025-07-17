@@ -9,6 +9,7 @@ import { MCardViewReviews } from '@/components/mcards/view/MCardViewReviews';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardVisitorCTA } from '@/components/mcards/MCardVisitorCTA';
+import { MCardTranslateButton } from '@/components/mcards/translate/MCardTranslateButton';
 import { useMCardView } from '@/hooks/useMCardView';
 import { useMCardTranslation } from '@/hooks/useMCardTranslation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -134,6 +135,12 @@ const MCardView = () => {
           mcard={mcard}
         />
       )}
+
+      {/* Translate Button */}
+      <MCardTranslateButton
+        currentLanguage={currentLanguage}
+        onLanguageChange={setCurrentLanguage}
+      />
     </div>
   );
 };
