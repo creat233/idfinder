@@ -136,11 +136,13 @@ const MCardView = () => {
         />
       )}
 
-      {/* Translate Button */}
-      <MCardTranslateButton
-        currentLanguage={currentLanguage}
-        onLanguageChange={setCurrentLanguage}
-      />
+      {/* Translate Button - Affiché pour tous les visiteurs */}
+      <div className="fixed bottom-4 right-4 z-40">
+        <MCardTranslateButton
+          currentLanguage={currentLanguage}
+          onLanguageChange={setCurrentLanguage}
+        />
+      </div>
     </div>
   );
 };

@@ -5,21 +5,29 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, Send, X, Maximize2 } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface MCardViewProductDialogProps {
   product: MCardProduct | null;
   isOpen: boolean;
   onClose: () => void;
   phoneNumber?: string;
+  mcardId?: string;
+  mcardOwnerName?: string;
+  mcardOwnerUserId?: string;
 }
 
 export const MCardViewProductDialog = ({ 
   product, 
   isOpen, 
   onClose, 
-  phoneNumber 
+  phoneNumber,
+  mcardId,
+  mcardOwnerName,
+  mcardOwnerUserId
 }: MCardViewProductDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
+  const navigate = useNavigate();
 
   if (!product) return null;
 
@@ -36,6 +44,26 @@ export const MCardViewProductDialog = ({
       const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${product.name}" au prix de ${product.price} ${product.currency}.`);
       const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
       window.open(telegramUrl, '_blank');
+    }
+  };
+
+  const handleContactMessage = () => {
+    if (mcardId && mcardOwnerUserId) {
+      // Stocker les données du produit pour le message pré-rempli
+      const productContext = {
+        type: 'product' as const,
+        title: product.name,
+        mcardId,
+        mcardOwnerName: mcardOwnerName || 'Propriétaire',
+        recipientId: mcardOwnerUserId
+      };
+      
+      // Stocker dans localStorage pour que la page Messages puisse récupérer
+      localStorage.setItem('pendingMessage', JSON.stringify(productContext));
+      
+      // Rediriger vers la page des messages
+      navigate('/messages');
+      onClose();
     }
   };
 
@@ -91,26 +119,40 @@ export const MCardViewProductDialog = ({
             </div>
 
             {/* Boutons de contact */}
-            {phoneNumber && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-3">
+              {/* Bouton Contacter via Messages */}
+              {mcardId && mcardOwnerUserId && (
                 <Button 
-                  onClick={handleWhatsAppContact}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
+                  onClick={handleContactMessage}
+                  className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-base"
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  Commander via WhatsApp
+                  Contacter le vendeur
                 </Button>
-                
-                <Button 
-                  onClick={handleTelegramContact}
-                  variant="outline"
-                  className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
-                >
-                  <Send className="h-5 w-5 mr-2" />
-                  Commander via Telegram
-                </Button>
-              </div>
-            )}
+              )}
+              
+              {/* Boutons WhatsApp et Telegram si numéro disponible */}
+              {phoneNumber && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Button 
+                    onClick={handleWhatsAppContact}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    Commander via WhatsApp
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleTelegramContact}
+                    variant="outline"
+                    className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
+                  >
+                    <Send className="h-5 w-5 mr-2" />
+                    Commander via Telegram
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </DialogContent>
       </Dialog>

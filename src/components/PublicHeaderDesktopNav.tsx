@@ -50,6 +50,12 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
         >
           MCards Vérifiées
         </button>
+        <button 
+          onClick={() => navigate("/demo?cardNumber=123456")}
+          className="text-gray-600 hover:text-[#7E69AB] transition-colors font-medium border border-gray-300 px-3 py-1 rounded-md"
+        >
+          Tester : 123456
+        </button>
         {user && (
           <button 
             onClick={() => navigate("/mes-cartes")}

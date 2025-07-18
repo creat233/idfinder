@@ -22,6 +22,20 @@ const Messages = () => {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    
+    // Vérifier s'il y a un message en attente depuis un produit
+    const pendingMessage = localStorage.getItem('pendingMessage');
+    if (pendingMessage) {
+      try {
+        const messageData = JSON.parse(pendingMessage);
+        // Auto-ouvrir la conversation avec ce contexte
+        // Ceci sera géré par le composant ConversationsList
+        localStorage.removeItem('pendingMessage'); // Nettoyer après utilisation
+      } catch (error) {
+        console.error('Erreur parsing pendingMessage:', error);
+        localStorage.removeItem('pendingMessage');
+      }
+    }
   }, []);
 
   const handleSendMessage = async () => {

@@ -249,6 +249,9 @@ export const MCardViewProducts = ({
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         phoneNumber={phoneNumber}
+        mcardId={mcardId}
+        mcardOwnerName={mcardOwnerName}
+        mcardOwnerUserId={mcardOwnerUserId}
       />
 
       {canAddProduct && (
