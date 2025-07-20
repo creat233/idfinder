@@ -6,6 +6,7 @@ import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardVerifiedBadge } from "@/components/mcards/MCardVerifiedBadge";
 import { MCardInteractionButtons } from "@/components/mcards/MCardInteractionButtons";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
+import { VerifiedMCardsStatusCarousel } from "@/components/mcards/view/VerifiedMCardsStatusCarousel";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -150,6 +151,9 @@ const VerifiedMCards = () => {
             />
           </div>
         </div>
+
+        {/* Carousel des statuts */}
+        <VerifiedMCardsStatusCarousel />
 
         {/* Stats améliorées */}
         <div className="text-center mb-12">
