@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MCardStatus } from '@/types/mcard';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Autoplay from "embla-carousel-autoplay";
 
 interface StatusWithMCard extends MCardStatus {
   mcard: {
@@ -22,7 +24,11 @@ export const VerifiedMCardsStatusCarousel = ({ onStatusClick }: VerifiedMCardsSt
   const [allStatuses, setAllStatuses] = useState<StatusWithMCard[]>([]);
   const [currentStatusIndex, setCurrentStatusIndex] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
+  const [api, setApi] = useState<CarouselApi>();
   const intervalRefs = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const autoplayPlugin = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  );
 
   useEffect(() => {
     loadAllStatuses();
@@ -134,7 +140,15 @@ export const VerifiedMCardsStatusCarousel = ({ onStatusClick }: VerifiedMCardsSt
       </div>
 
       <div className="relative">
-        <Carousel className="w-full">
+        <Carousel 
+          className="w-full"
+          setApi={setApi}
+          plugins={[autoplayPlugin.current]}
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
           <CarouselContent className="-ml-2 md:-ml-4">
             {Object.entries(statusesByCard).map(([mcardId, statuses]) => {
               const currentIndex = currentStatusIndex[mcardId] || 0;
@@ -212,14 +226,24 @@ export const VerifiedMCardsStatusCarousel = ({ onStatusClick }: VerifiedMCardsSt
           <CarouselNext className="hidden md:flex -right-4" />
         </Carousel>
 
-        {/* Navigation mobile */}
+        {/* Navigation mobile avec swipe activé */}
         <div className="flex md:hidden justify-center mt-4 space-x-4">
-          <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            onClick={() => api?.scrollPrev()}
+          >
             <ChevronLeft className="w-5 h-5 text-gray-600" />
-          </button>
-          <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            onClick={() => api?.scrollNext()}
+          >
             <ChevronRight className="w-5 h-5 text-gray-600" />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

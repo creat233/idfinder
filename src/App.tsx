@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "./providers/TranslationProvider";
+import { CartProvider } from "./contexts/CartContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAutoRefresh } from "./hooks/useAutoRefresh";
 import Index from "./pages/Index";
@@ -26,6 +27,7 @@ import AdminPromoCodes from "./pages/AdminPromoCodes";
 import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
+import Cart from "./pages/Cart";
 import VerificationRequest from "./pages/VerificationRequest";
 
 const queryClient = new QueryClient({
@@ -48,7 +50,8 @@ function AppContent() {
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
-        <TooltipProvider>
+        <CartProvider>
+          <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -80,10 +83,12 @@ function AppContent() {
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/panier" element={<Cart />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
           </BrowserRouter>
-        </TooltipProvider>
+          </TooltipProvider>
+        </CartProvider>
       </TranslationProvider>
     </QueryClientProvider>
   );

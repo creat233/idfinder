@@ -2,10 +2,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Send, X, Maximize2 } from 'lucide-react';
+import { MessageCircle, Send, X, Maximize2, ShoppingBag } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewProductDialogProps {
   product: MCardProduct | null;
@@ -28,6 +30,8 @@ export const MCardViewProductDialog = ({
 }: MCardViewProductDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
   const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
+  const { toast } = useToast();
 
   if (!product) return null;
 
@@ -64,6 +68,20 @@ export const MCardViewProductDialog = ({
       // Rediriger vers la page des messages
       navigate('/messages');
       onClose();
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (product && mcardId) {
+      addToCart(product, {
+        mcardId,
+        ownerName: mcardOwnerName,
+        ownerUserId: mcardOwnerUserId
+      });
+      toast({
+        title: "Produit ajouté au panier !",
+        description: `${product.name} a été ajouté à votre panier`
+      });
     }
   };
 
@@ -118,8 +136,22 @@ export const MCardViewProductDialog = ({
               )}
             </div>
 
-            {/* Boutons de contact */}
+            {/* Boutons d'action */}
             <div className="space-y-3">
+              {/* Bouton Ajouter au panier */}
+              <Button
+                onClick={handleAddToCart}
+                disabled={isInCart(product.id)}
+                className={`w-full py-3 text-base ${
+                  isInCart(product.id)
+                    ? "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-orange-600 hover:bg-orange-700 text-white"
+                }`}
+              >
+                <ShoppingBag className="h-5 w-5 mr-2" />
+                {isInCart(product.id) ? "Dans le panier" : "Ajouter au panier"}
+              </Button>
+
               {/* Bouton Contacter via Messages */}
               {mcardId && mcardOwnerUserId && (
                 <Button 
