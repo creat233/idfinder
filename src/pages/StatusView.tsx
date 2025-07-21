@@ -27,7 +27,9 @@ export const StatusView = () => {
   const { toast } = useToast();
   const [status, setStatus] = useState<StatusWithMCard | null>(null);
   const [allUserStatuses, setAllUserStatuses] = useState<StatusWithMCard[]>([]);
+  const [allGlobalStatuses, setAllGlobalStatuses] = useState<StatusWithMCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [globalCurrentIndex, setGlobalCurrentIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,28 @@ export const StatusView = () => {
 
   const loadStatus = async () => {
     try {
+      // Charger tous les statuts globaux vérifiés d'abord
+      const { data: globalStatuses, error: globalError } = await supabase
+        .from('mcard_statuses')
+        .select(`
+          *,
+          mcard:mcards!inner(
+            id,
+            full_name,
+            description,
+            profile_picture_url,
+            user_id,
+            is_verified
+          )
+        `)
+        .eq('is_active', true)
+        .eq('mcard.is_verified', true)
+        .gte('expires_at', new Date().toISOString())
+        .order('created_at', { ascending: false });
+
+      if (globalError) throw globalError;
+      setAllGlobalStatuses(globalStatuses || []);
+
       // Charger le statut spécifique
       const { data: statusData, error: statusError } = await supabase
         .from('mcard_statuses')
@@ -82,9 +106,13 @@ export const StatusView = () => {
 
       setAllUserStatuses(allStatuses || []);
       
-      // Trouver l'index du statut actuel
+      // Trouver l'index du statut actuel dans sa carte
       const currentIdx = allStatuses?.findIndex(s => s.id === statusId) || 0;
       setCurrentIndex(currentIdx);
+
+      // Trouver l'index global du statut actuel
+      const globalIdx = globalStatuses?.findIndex(s => s.id === statusId) || 0;
+      setGlobalCurrentIndex(globalIdx);
 
     } catch (error) {
       console.error('Erreur lors du chargement du statut:', error);
@@ -99,13 +127,27 @@ export const StatusView = () => {
   };
 
   const handlePrevious = () => {
-    const newIndex = currentIndex > 0 ? currentIndex - 1 : allUserStatuses.length - 1;
-    setCurrentIndex(newIndex);
+    if (currentIndex > 0) {
+      // Navigation dans la même carte
+      const previousStatus = allUserStatuses[currentIndex - 1];
+      navigate(`/status/${previousStatus.id}`);
+    } else if (globalCurrentIndex > 0) {
+      // Navigation vers le statut précédent global
+      const previousGlobalStatus = allGlobalStatuses[globalCurrentIndex - 1];
+      navigate(`/status/${previousGlobalStatus.id}`);
+    }
   };
 
   const handleNext = () => {
-    const newIndex = currentIndex < allUserStatuses.length - 1 ? currentIndex + 1 : 0;
-    setCurrentIndex(newIndex);
+    if (currentIndex < allUserStatuses.length - 1) {
+      // Navigation dans la même carte
+      const nextStatus = allUserStatuses[currentIndex + 1];
+      navigate(`/status/${nextStatus.id}`);
+    } else if (globalCurrentIndex < allGlobalStatuses.length - 1) {
+      // Navigation vers le statut suivant global
+      const nextGlobalStatus = allGlobalStatuses[globalCurrentIndex + 1];
+      navigate(`/status/${nextGlobalStatus.id}`);
+    }
   };
 
   const handleLike = async () => {
@@ -202,7 +244,10 @@ export const StatusView = () => {
             </Button>
             
             {/* Profile Info */}
-            <div className="flex items-center gap-3">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:bg-primary/5 rounded-lg p-2 -m-2 transition-colors"
+              onClick={() => navigate(`/m/${status.mcard.id}`)}
+            >
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
                 {status.mcard.profile_picture_url ? (
                   <img
@@ -217,7 +262,7 @@ export const StatusView = () => {
                 )}
               </div>
               <div>
-                <h2 className="font-semibold text-foreground">{status.mcard.full_name}</h2>
+                <h2 className="font-semibold text-foreground hover:text-primary transition-colors">{status.mcard.full_name}</h2>
                 {status.mcard.description && (
                   <p className="text-sm text-muted-foreground truncate max-w-xs">
                     {status.mcard.description}
@@ -257,6 +302,7 @@ export const StatusView = () => {
                   size="sm"
                   className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full w-10 h-10 p-0"
                   onClick={handlePrevious}
+                  disabled={globalCurrentIndex === 0}
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
@@ -265,6 +311,7 @@ export const StatusView = () => {
                   size="sm"
                   className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full w-10 h-10 p-0"
                   onClick={handleNext}
+                  disabled={globalCurrentIndex === allGlobalStatuses.length - 1}
                 >
                   <ChevronRight className="w-5 h-5" />
                 </Button>
@@ -293,7 +340,7 @@ export const StatusView = () => {
               <h3 className="text-lg font-semibold text-foreground mb-2">
                 {currentStatus.status_text}
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground mb-2">
                 {new Date(currentStatus.created_at).toLocaleDateString('fr-FR', {
                   day: 'numeric',
                   month: 'long',
@@ -301,6 +348,14 @@ export const StatusView = () => {
                   minute: '2-digit'
                 })}
               </p>
+              <div className="text-xs text-muted-foreground">
+                <span className="block">
+                  {currentIndex + 1} sur {allUserStatuses.length} (cette carte)
+                </span>
+                <span className="block">
+                  {globalCurrentIndex + 1} sur {allGlobalStatuses.length} (tous les statuts)
+                </span>
+              </div>
             </div>
 
             {/* Like button */}
