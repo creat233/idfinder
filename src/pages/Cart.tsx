@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, MessageCircle, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Trash2, MessageCircle, ShoppingCart, ArrowLeft, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MCardContactDialog } from '@/components/mcards/messaging/MCardContactDialog';
 import { format } from 'date-fns';
@@ -11,6 +12,8 @@ import { fr } from 'date-fns/locale';
 export default function Cart() {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>('');
   const [selectedContact, setSelectedContact] = useState<{
     mcardId: string;
     ownerName: string;
@@ -29,6 +32,15 @@ export default function Cart() {
       });
       setContactDialogOpen(true);
     }
+  };
+
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setImageDialogOpen(true);
+  };
+
+  const handleOwnerClick = (mcardId: string) => {
+    navigate(`/mcard/${mcardId}`);
   };
 
   const groupedItems = cartItems.reduce((acc, item) => {
@@ -108,21 +120,35 @@ export default function Cart() {
           {Object.entries(groupedItems).map(([key, group]) => (
             <div key={key} className="bg-white rounded-xl shadow-lg p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-900">{group.ownerName}</h3>
-                {group.ownerUserId && (
+                <h3 
+                  className="text-xl font-semibold text-gray-900 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => handleOwnerClick(group.mcardId)}
+                >
+                  {group.ownerName}
+                </h3>
+                <div className="flex gap-2">
                   <Button
-                    onClick={() => handleContactOwner({
-                      mcardId: group.mcardId,
-                      mcardOwnerName: group.ownerName,
-                      mcardOwnerUserId: group.ownerUserId,
-                      name: group.products.map(p => p.name).join(', ')
-                    })}
-                    className="bg-primary hover:bg-primary/90"
+                    variant="outline"
+                    onClick={() => handleOwnerClick(group.mcardId)}
+                    className="text-primary border-primary hover:bg-primary/10"
                   >
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Contacter le vendeur
+                    Voir la carte
                   </Button>
-                )}
+                  {group.ownerUserId && (
+                    <Button
+                      onClick={() => handleContactOwner({
+                        mcardId: group.mcardId,
+                        mcardOwnerName: group.ownerName,
+                        mcardOwnerUserId: group.ownerUserId,
+                        name: group.products.map(p => p.name).join(', ')
+                      })}
+                      className="bg-primary hover:bg-primary/90"
+                    >
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Contacter
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="grid gap-4">
@@ -132,7 +158,8 @@ export default function Cart() {
                       <img
                         src={item.image_url}
                         alt={item.name}
-                        className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                        className="w-20 h-20 object-cover rounded-lg flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => handleImageClick(item.image_url)}
                       />
                     )}
                     
@@ -152,6 +179,22 @@ export default function Cart() {
                           Ajouté le {format(item.addedAt, 'dd MMM yyyy à HH:mm', { locale: fr })}
                         </span>
                       </div>
+                      <div className="flex gap-2 mt-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleContactOwner({
+                            mcardId: item.mcardId,
+                            mcardOwnerName: item.mcardOwnerName,
+                            mcardOwnerUserId: item.mcardOwnerUserId,
+                            name: item.name
+                          })}
+                          className="text-primary border-primary hover:bg-primary/10"
+                        >
+                          <MessageCircle className="h-3 w-3 mr-1" />
+                          Message
+                        </Button>
+                      </div>
                     </div>
                     
                     <Button
@@ -168,6 +211,27 @@ export default function Cart() {
             </div>
           ))}
         </div>
+
+        {/* Image Full Screen Dialog */}
+        <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
+          <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-black/95 border-none">
+            <div className="relative flex items-center justify-center w-full h-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setImageDialogOpen(false)}
+                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+              >
+                <X className="h-6 w-6" />
+              </Button>
+              <img
+                src={selectedImage}
+                alt="Image en plein écran"
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {selectedContact && (
           <MCardContactDialog
