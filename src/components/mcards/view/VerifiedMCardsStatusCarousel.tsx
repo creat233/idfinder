@@ -105,8 +105,8 @@ export const VerifiedMCardsStatusCarousel = ({ onStatusClick }: VerifiedMCardsSt
 
   const handleStatusClick = (status: StatusWithMCard) => {
     onStatusClick?.(status);
-    // Ouvrir la carte dans un nouvel onglet
-    window.open(`/mcard/${status.mcard.slug}`, '_blank');
+    // Naviguer vers la page de visualisation du statut
+    window.open(`/status/${status.id}`, '_blank');
   };
 
   if (loading) {

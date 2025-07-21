@@ -28,6 +28,7 @@ import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
 import Cart from "./pages/Cart";
+import { StatusView } from "./pages/StatusView";
 import VerificationRequest from "./pages/VerificationRequest";
 
 const queryClient = new QueryClient({
@@ -84,6 +85,7 @@ function AppContent() {
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/panier" element={<Cart />} />
+              <Route path="/status/:statusId" element={<StatusView />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
           </BrowserRouter>
