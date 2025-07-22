@@ -278,12 +278,12 @@ export const StatusView = () => {
       <div className="container mx-auto px-4 py-8 max-w-md">
         <div className="bg-card rounded-3xl shadow-2xl overflow-hidden">
           {/* Status Image Container */}
-          <div className="relative aspect-[3/4] bg-gradient-to-br from-primary/5 to-secondary/5">
+          <div className="relative min-h-[500px] bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center">
             {currentStatus.status_image ? (
               <img
                 src={currentStatus.status_image}
                 alt={currentStatus.status_text}
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-full object-contain rounded-lg"
               />
             ) : (
               <div 

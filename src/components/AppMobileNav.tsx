@@ -49,6 +49,10 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
   const loggedOutNav = (
     <>
       {renderLink("/mcards-verifiees", "MCards Vérifiées")}
+      {renderLink("/codes-promo", "Codes promo")}
+      {renderLink("/messages", "Messages")}
+      {renderLink("/mes-favoris", "Mes favoris")}
+      {renderLink("/panier", "Panier")}
       {renderLink("/demo", "Démo")}
       {renderLink("/urgence", "Numéros d'urgence")}
       {renderLink("/about", "À propos")}
