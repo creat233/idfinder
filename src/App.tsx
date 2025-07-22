@@ -30,6 +30,7 @@ import Messages from "./pages/Messages";
 import Cart from "./pages/Cart";
 import { StatusView } from "./pages/StatusView";
 import VerificationRequest from "./pages/VerificationRequest";
+import { MobileBottomNav } from "./components/MobileBottomNav";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -88,6 +89,7 @@ function AppContent() {
               <Route path="/status/:statusId" element={<StatusView />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
+            <MobileBottomNav />
           </BrowserRouter>
           </TooltipProvider>
         </CartProvider>
