@@ -109,7 +109,7 @@ export function ConversationView({
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-white">
       <ConversationHeader
         otherUserName={conversation.otherUserName}
         mcardName={conversation.mcardName}
@@ -121,13 +121,15 @@ export function ConversationView({
         onDeleteConversation={handleDeleteConversation}
       />
 
-      <ConversationMessages
-        messages={conversation.messages}
-        currentUserId={currentUserId}
-        onDeleteMessage={onDeleteMessage}
-      />
+      <div className="flex-1 overflow-hidden">
+        <ConversationMessages
+          messages={conversation.messages}
+          currentUserId={currentUserId}
+          onDeleteMessage={onDeleteMessage}
+        />
+      </div>
 
-      <div className="flex-shrink-0 border-t bg-white sticky bottom-0 z-10">
+      <div className="flex-shrink-0 border-t bg-white">
         <MessageInput
           value={replyText}
           onChange={onReplyChange}

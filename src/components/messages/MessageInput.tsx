@@ -21,21 +21,23 @@ export function MessageInput({ value, onChange, onSend, sending }: MessageInputP
   };
 
   return (
-    <div className="p-4 bg-white border-t-2 border-gray-200 shadow-lg">
-      <div className="flex gap-3 items-end max-w-4xl mx-auto">
-        <Textarea
-          placeholder="Tapez votre message..."
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyPress}
-          rows={3}
-          className="flex-1 resize-none border-2 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg text-base p-3 min-h-[60px] max-h-[120px]"
-        />
+    <div className="p-4 bg-gradient-to-r from-white to-gray-50 border-t border-gray-200">
+      <div className="flex gap-3 items-end max-w-full">
+        <div className="flex-1 relative">
+          <Textarea
+            placeholder="Tapez votre message..."
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onKeyDown={handleKeyPress}
+            rows={1}
+            className="flex-1 resize-none border-2 border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl text-base p-4 pr-12 min-h-[52px] max-h-[120px] bg-white shadow-sm transition-all duration-200"
+          />
+        </div>
         <Button
           onClick={onSend}
           disabled={!value.trim() || sending}
           size="lg"
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-[60px] min-w-[60px] shadow-md"
+          className="px-4 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl h-[52px] min-w-[52px] shadow-lg transition-all duration-200 hover:shadow-xl"
         >
           {sending ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

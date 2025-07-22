@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Star, MessageSquare, User, Plus, Check, X, LogIn } from "lucide-react";
+import { Star, MessageSquare, User, Plus, Check, X, LogIn, ArrowLeft } from "lucide-react";
 import { MCardReview } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
 import { createMCardReview, approveReview } from "@/services/mcardReviewService";
@@ -187,13 +187,24 @@ export const MCardViewReviews = ({
       <CardHeader className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-t-lg">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-xl text-gray-800">
-            <MessageSquare className="h-5 w-5 text-yellow-600" />
-            Avis & Témoignages
-            {approvedReviews.length > 0 && (
-              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                {approvedReviews.length}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.history.back()}
+                className="lg:hidden hover:bg-white/50 -ml-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <MessageSquare className="h-5 w-5 text-yellow-600" />
+              <span className="hidden sm:inline">Avis & Témoignages</span>
+              <span className="sm:hidden">Avis</span>
+              {approvedReviews.length > 0 && (
+                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                  {approvedReviews.length}
+                </Badge>
+              )}
+            </div>
           </CardTitle>
           {!isOwner && user && (
             <Button 
