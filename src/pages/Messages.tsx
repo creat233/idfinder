@@ -125,15 +125,6 @@ const Messages = () => {
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 flex flex-col w-full h-full">
-          <div className="bg-white border-b border-gray-200 px-4 py-4 flex-shrink-0 shadow-sm">
-            <div className="flex items-center justify-center">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                💬 Messages
-              </h1>
-            </div>
-            <p className="text-center text-gray-600 mt-2">Vos conversations avec les propriétaires et visiteurs de MCards</p>
-          </div>
-
           <div className="flex-1 min-h-0">
             {/* Vue mobile */}
             <div className="lg:hidden h-full">
