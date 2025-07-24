@@ -17,7 +17,6 @@ import Support from "./pages/Support";
 import SignalerCarte from "./pages/SignalerCarte";
 import RechercheResultat from "./pages/RechercheResultat";
 import NumeroUrgence from "./pages/NumeroUrgence";
-import Notifications from "./pages/Notifications";
 import PromoCodes from "./pages/PromoCodes";
 import Demo from "./pages/Demo";
 import About from "./pages/About";
@@ -30,6 +29,7 @@ import Messages from "./pages/Messages";
 import Cart from "./pages/Cart";
 import { StatusView } from "./pages/StatusView";
 import VerificationRequest from "./pages/VerificationRequest";
+import Notifications from "./pages/Notifications";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 
 const queryClient = new QueryClient({

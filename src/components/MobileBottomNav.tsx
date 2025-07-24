@@ -1,10 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Heart, MessageCircle, Bell, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { useNotifications } from "@/hooks/useNotifications";
 
 export const MobileBottomNav = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { unreadCount } = useNotifications();
 
   const navItems = [
     { 
@@ -87,6 +90,15 @@ export const MobileBottomNav = () => {
                         animate={{ scale: 1.2, opacity: 1 }}
                         transition={{ duration: 0.3 }}
                       />
+                    )}
+                    {/* Badge de notification pour les notifications */}
+                    {item.name === "Notifications" && unreadCount > 0 && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs font-bold animate-pulse"
+                      >
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </Badge>
                     )}
                   </div>
                   <span className={`text-xs font-medium transition-all duration-300 ${

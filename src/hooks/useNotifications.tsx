@@ -1,84 +1,83 @@
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface Notification {
   id: string;
-  title: string;
-  message: string;
-  type: string;
-  is_read: boolean;
-  created_at: string;
   user_id: string;
   card_id?: string;
   reported_card_id?: string;
+  type: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  action_url?: string;
 }
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const { toast } = useToast();
 
-  const fetchNotifications = useCallback(async () => {
+  useEffect(() => {
+    loadNotifications();
+    setupRealtimeSubscription();
+  }, []);
+
+  const loadNotifications = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setNotifications([]);
+        setLoading(false);
         return;
       }
 
-      // Supprimer automatiquement les notifications de plus de 24h
-      const twentyFourHoursAgo = new Date();
-      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-      await supabase
-        .from('notifications')
-        .delete()
-        .eq('user_id', user.id)
-        .lt('created_at', twentyFourHoursAgo.toISOString());
-
-      // Récupérer les notifications restantes
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(50);
 
-      if (error) {
-        console.error('Error fetching notifications:', error);
-        throw error;
-      }
+      if (error) throw error;
 
       setNotifications(data || []);
-    } catch (error: any) {
-      console.error('Error in fetchNotifications:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de charger les notifications"
-      });
+      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
+    } catch (error) {
+      console.error('Erreur lors du chargement des notifications:', error);
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  };
 
-  useEffect(() => {
-    fetchNotifications();
+  const setupRealtimeSubscription = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) return;
 
-    // Subscribe to real-time changes
     const channel = supabase
-      .channel('notifications-realtime')
+      .channel('notifications_changes')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
           table: 'notifications',
+          filter: `user_id=eq.${user.id}`
         },
-        () => {
-          console.log('Notification change detected, refetching...');
-          fetchNotifications();
+        (payload) => {
+          const newNotification = payload.new as Notification;
+          setNotifications(prev => [newNotification, ...prev]);
+          setUnreadCount(prev => prev + 1);
+          
+          // Afficher une toast pour les nouvelles notifications
+          toast({
+            title: newNotification.title,
+            description: newNotification.message,
+            duration: 5000,
+          });
         }
       )
       .subscribe();
@@ -86,7 +85,7 @@ export const useNotifications = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fetchNotifications]);
+  };
 
   const markAsRead = async (notificationId: string) => {
     try {
@@ -97,21 +96,17 @@ export const useNotifications = () => {
 
       if (error) throw error;
 
-      // Update local state immediately for better UX
       setNotifications(prev => 
-        prev.map(notif => 
-          notif.id === notificationId 
-            ? { ...notif, is_read: true }
-            : notif
+        prev.map(notification => 
+          notification.id === notificationId 
+            ? { ...notification, is_read: true }
+            : notification
         )
       );
-    } catch (error: any) {
-      console.error('Error marking notification as read:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de marquer la notification comme lue"
-      });
+
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Erreur lors du marquage comme lu:', error);
     }
   };
 
@@ -128,22 +123,37 @@ export const useNotifications = () => {
 
       if (error) throw error;
 
-      // Update local state immediately for better UX
       setNotifications(prev => 
-        prev.map(notif => ({ ...notif, is_read: true }))
+        prev.map(notification => ({ ...notification, is_read: true }))
       );
+      setUnreadCount(0);
 
       toast({
-        title: "Notifications marquées comme lues",
-        description: "Toutes vos notifications ont été marquées comme lues"
+        title: "Toutes les notifications marquées comme lues",
+        description: "Vos notifications ont été mises à jour"
       });
-    } catch (error: any) {
-      console.error('Error marking all notifications as read:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de marquer toutes les notifications comme lues"
-      });
+    } catch (error) {
+      console.error('Erreur lors du marquage de toutes les notifications:', error);
+    }
+  };
+
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
+      const notification = notifications.find(n => n.id === notificationId);
+      if (notification && !notification.is_read) {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+
+      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la notification:', error);
     }
   };
 
@@ -152,42 +162,24 @@ export const useNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Update local state immediately for better UX
-      setNotifications([]);
-
       const { error } = await supabase
         .from('notifications')
         .delete()
         .eq('user_id', user.id);
 
-      if (error) {
-        console.error('Error deleting notifications:', error);
-        // Revert local state if error
-        await fetchNotifications();
-        throw error;
-      }
+      if (error) throw error;
+
+      setNotifications([]);
+      setUnreadCount(0);
 
       toast({
         title: "Toutes les notifications supprimées",
-        description: "Toutes vos notifications ont été supprimées avec succès."
+        description: "Vos notifications ont été effacées"
       });
-
-      // Ne pas refetch immédiatement, laisser le real-time se synchroniser
-    } catch (error: any) {
-      console.error('Error deleting all notifications:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message || "Impossible de supprimer toutes les notifications"
-      });
+    } catch (error) {
+      console.error('Erreur lors de la suppression de toutes les notifications:', error);
     }
   };
-
-  const refetch = useCallback(() => {
-    return fetchNotifications();
-  }, [fetchNotifications]);
-
-  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   return {
     notifications,
@@ -195,7 +187,9 @@ export const useNotifications = () => {
     unreadCount,
     markAsRead,
     markAllAsRead,
+    deleteNotification,
     deleteAllNotifications,
-    refetch,
+    refreshNotifications: loadNotifications,
+    refetch: loadNotifications
   };
 };

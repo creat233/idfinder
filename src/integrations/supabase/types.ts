@@ -257,6 +257,27 @@ export type Database = {
           },
         ]
       }
+      mcard_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          mcard_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mcard_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mcard_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mcard_interactions: {
         Row: {
           created_at: string | null
@@ -659,6 +680,7 @@ export type Database = {
       }
       notifications: {
         Row: {
+          action_url: string | null
           card_id: string | null
           created_at: string
           id: string
@@ -670,6 +692,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          action_url?: string | null
           card_id?: string | null
           created_at?: string
           id?: string
@@ -681,6 +704,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          action_url?: string | null
           card_id?: string | null
           created_at?: string
           id?: string
