@@ -29,7 +29,7 @@ const MyCards = () => {
     deleteAllNotifications,
   } = useNotifications();
 
-  const [activeTab, setActiveTab] = useState<"cards" | "notifications">("cards");
+  const [activeTab, setActiveTab] = useState<"cards" | "notifications" | "mcards">("cards");
   const [showAdModal, setShowAdModal] = useState(false);
 
   // Auto cleanup old notifications

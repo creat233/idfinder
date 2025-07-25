@@ -2,7 +2,7 @@
 import { useTranslation } from "@/hooks/useTranslation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Star, Zap, Crown } from "lucide-react";
+import { Check, X, Star, Zap, Crown, Sparkles } from "lucide-react";
 
 export const MCardFeaturesDetailed = () => {
   const { t } = useTranslation();
@@ -12,73 +12,106 @@ export const MCardFeaturesDetailed = () => {
       name: "Création de carte",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Créez votre carte de visite digitale personnalisée"
     },
     {
       name: "Partage illimité",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Partagez votre carte via QR code, lien ou NFC"
     },
     {
       name: "Photo de profil",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Ajoutez votre photo professionnelle"
     },
     {
       name: "Informations de contact",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Téléphone, email, site web, adresse"
     },
     {
       name: "Réseaux sociaux",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Liens vers vos profils sociaux professionnels"
     },
     {
       name: "Statistiques de vues",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Suivez qui consulte votre carte"
     },
     {
       name: "Mise à jour en temps réel",
       essential: true,
       premium: true,
+      ultimate: true,
       description: "Vos contacts voient toujours vos infos à jour"
     },
     {
-      name: "Statuts personnalisés",
-      essential: false,
-      premium: true,
-      description: "Affichez votre disponibilité en temps réel"
+      name: "Produits/Services",
+      essential: "20 max",
+      premium: "50 max",
+      ultimate: "100 max",
+      description: "Présentez vos offres directement sur votre carte"
     },
     {
-      name: "Catalogue produits/services",
-      essential: false,
-      premium: true,
-      description: "Présentez vos offres directement sur votre carte"
+      name: "Statuts personnalisés",
+      essential: "15 max",
+      premium: "30 max",
+      ultimate: "50 max",
+      description: "Affichez votre disponibilité en temps réel"
     },
     {
       name: "Analytics avancées",
       essential: false,
       premium: true,
+      ultimate: true,
       description: "Analyses détaillées des interactions"
     },
     {
       name: "Support prioritaire",
-      essential: false,
-      premium: true,
-      description: "Assistance technique prioritaire"
+      essential: "Email",
+      premium: "24/7",
+      ultimate: "Dédié",
+      description: "Assistance technique selon votre plan"
     },
     {
       name: "Personnalisation avancée",
       essential: false,
       premium: true,
+      ultimate: true,
       description: "Thèmes et couleurs personnalisés"
+    },
+    {
+      name: "API personnalisée",
+      essential: false,
+      premium: false,
+      ultimate: true,
+      description: "Intégrations sur mesure"
+    },
+    {
+      name: "Formation personnalisée",
+      essential: false,
+      premium: false,
+      ultimate: true,
+      description: "Sessions de formation dédiées"
+    },
+    {
+      name: "Gestionnaire de compte",
+      essential: false,
+      premium: false,
+      ultimate: true,
+      description: "Accompagnement personnalisé"
     }
   ];
 
@@ -88,14 +121,21 @@ export const MCardFeaturesDetailed = () => {
       name: 'Essentiel',
       icon: <Zap className="h-5 w-5" />,
       color: 'bg-blue-100 text-blue-800',
-      price: '2000 FCFA/mois'
+      price: '3000 FCFA/mois'
     },
     {
       id: 'premium',
       name: 'Premium',
       icon: <Crown className="h-5 w-5" />,
       color: 'bg-purple-100 text-purple-800',
-      price: '10000 FCFA/an'
+      price: '6000 FCFA/mois'
+    },
+    {
+      id: 'ultimate',
+      name: 'Ultimate',
+      icon: <Sparkles className="h-5 w-5" />,
+      color: 'bg-amber-100 text-amber-800',
+      price: '9900 FCFA/mois'
     }
   ];
 
@@ -114,7 +154,7 @@ export const MCardFeaturesDetailed = () => {
         <div className="overflow-x-auto">
           <div className="min-w-full">
             {/* En-têtes des plans */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-4 gap-4 mb-8">
               <div className="p-4">
                 <h3 className="font-semibold text-lg">Fonctionnalités</h3>
               </div>
@@ -134,7 +174,7 @@ export const MCardFeaturesDetailed = () => {
               {features.map((feature, index) => (
                 <Card key={index} className="transition-all hover:shadow-md">
                   <CardContent className="p-4">
-                    <div className="grid grid-cols-3 gap-4 items-center">
+                    <div className="grid grid-cols-4 gap-4 items-center">
                       <div>
                         <h4 className="font-medium text-gray-900">{feature.name}</h4>
                         <p className="text-sm text-gray-600">{feature.description}</p>
@@ -142,7 +182,9 @@ export const MCardFeaturesDetailed = () => {
                       
                       {/* Essentiel */}
                       <div className="text-center">
-                        {feature.essential ? (
+                        {typeof feature.essential === 'string' ? (
+                          <span className="text-sm font-medium text-blue-600">{feature.essential}</span>
+                        ) : feature.essential ? (
                           <Check className="h-6 w-6 text-blue-500 mx-auto" />
                         ) : (
                           <X className="h-6 w-6 text-gray-300 mx-auto" />
@@ -151,10 +193,28 @@ export const MCardFeaturesDetailed = () => {
                       
                       {/* Premium */}
                       <div className="text-center">
-                        {feature.premium ? (
+                        {typeof feature.premium === 'string' ? (
+                          <span className="text-sm font-medium text-purple-600">{feature.premium}</span>
+                        ) : feature.premium ? (
                           <div className="flex items-center justify-center">
                             <Check className="h-6 w-6 text-purple-500" />
                             {!feature.essential && (
+                              <Star className="h-4 w-4 text-yellow-500 ml-1" />
+                            )}
+                          </div>
+                        ) : (
+                          <X className="h-6 w-6 text-gray-300 mx-auto" />
+                        )}
+                      </div>
+
+                      {/* Ultimate */}
+                      <div className="text-center">
+                        {typeof feature.ultimate === 'string' ? (
+                          <span className="text-sm font-medium text-amber-600">{feature.ultimate}</span>
+                        ) : feature.ultimate ? (
+                          <div className="flex items-center justify-center">
+                            <Check className="h-6 w-6 text-amber-500" />
+                            {!feature.premium && !feature.essential && (
                               <Star className="h-4 w-4 text-yellow-500 ml-1" />
                             )}
                           </div>
