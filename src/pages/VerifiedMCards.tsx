@@ -6,6 +6,7 @@ import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductCarousel } from "@/components/verified/ProductCarousel";
 import { ProductImageModal } from "@/components/verified/ProductImageModal";
+import { StatusCarousel } from "@/components/verified/StatusCarousel";
 import { CheckCircle } from "lucide-react";
 import { MCard, MCardProduct } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
@@ -71,6 +72,9 @@ const VerifiedMCards = () => {
           </div>
         </div>
       </div>
+
+      {/* Carousel de statuts */}
+      <StatusCarousel />
 
       {/* Carousel de produits */}
       <ProductCarousel onImageClick={handleImageClick} />

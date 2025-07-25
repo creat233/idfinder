@@ -27,12 +27,12 @@ export const ProductImageModal = ({ isOpen, onClose, product, mcard }: ProductIm
       <DialogContent className="max-w-[98vw] max-h-[98vh] w-full p-0 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 h-[98vh]">
           {/* Image du produit - Responsive et adaptative */}
-          <div className="relative bg-black flex items-center justify-center min-h-[50vh] lg:min-h-full">
+          <div className="relative bg-black flex items-center justify-center min-h-[50vh] lg:min-h-full p-4">
             <img
               src={product.image_url || ''}
               alt={product.name}
-              className="w-full h-full object-contain max-w-full max-h-full"
-              style={{ maxHeight: '100%', maxWidth: '100%' }}
+              className="max-w-full max-h-full object-contain"
+              style={{ width: 'auto', height: 'auto', maxWidth: '100%', maxHeight: '100%' }}
             />
             
             {/* Badge du produit */}
