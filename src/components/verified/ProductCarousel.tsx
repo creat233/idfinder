@@ -14,9 +14,10 @@ interface MCardWithProducts extends MCard {
 
 interface ProductCarouselProps {
   onImageClick?: (product: MCardProduct, mcard: MCard) => void;
+  selectedCategory?: string;
 }
 
-export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
+export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: ProductCarouselProps) => {
   const [mcards, setMCards] = useState<MCardWithProducts[]>([]);
   const [currentProductIndex, setCurrentProductIndex] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
@@ -136,10 +137,22 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
     );
   }
 
-  if (mcards.length === 0) {
+  // Filtrer les cartes selon la catégorie sélectionnée
+  const filteredMCards = selectedCategory === "all" 
+    ? mcards 
+    : mcards.filter(mcard => 
+        mcard.products.some(product => product.category === selectedCategory)
+      );
+
+  if (filteredMCards.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500">Aucun produit disponible pour le moment</p>
+        <p className="text-gray-500">
+          {selectedCategory === "all" 
+            ? "Aucun produit disponible pour le moment" 
+            : `Aucun produit dans la catégorie "${selectedCategory}"`
+          }
+        </p>
       </div>
     );
   }
@@ -151,17 +164,25 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
           🛍️ Produits & Services
         </h2>
         <div className="text-sm text-gray-500">
-          {mcards.length} professionnels
+          {filteredMCards.length} professionnels
         </div>
       </div>
       
       {/* Carousel horizontal avec scroll */}
       <div className="relative">
         <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth">
-          {mcards.map((mcard) => {
-        const currentIndex = currentProductIndex[mcard.id] || 0;
-        const currentProduct = mcard.products[currentIndex];
+          {filteredMCards.map((mcard) => {
+        // Filtrer les produits selon la catégorie pour cette carte
+        const filteredProducts = selectedCategory === "all" 
+          ? mcard.products 
+          : mcard.products.filter(product => product.category === selectedCategory);
         
+        if (filteredProducts.length === 0) return null;
+        
+        // Utiliser les produits filtrés pour l'affichage
+        const currentIndex = currentProductIndex[mcard.id] || 0;
+        const adjustedIndex = Math.min(currentIndex, filteredProducts.length - 1);
+        const currentProduct = filteredProducts[adjustedIndex];
         return (
           <div key={mcard.id} className="flex-none w-80 bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border border-gray-100 snap-start animate-fade-in hover-scale">
             {/* Section Image du produit - Format carré pour une meilleure visibilité */}
@@ -179,7 +200,7 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
               {/* Navigation des produits */}
-              {mcard.products.length > 1 && (
+              {filteredProducts.length > 1 && (
                 <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 flex justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Button
                     size="sm"
@@ -187,7 +208,7 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
                     className="bg-white/80 hover:bg-white shadow-lg rounded-full p-2 h-8 w-8"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handlePrevProduct(mcard.id, mcard.products.length);
+                      handlePrevProduct(mcard.id, filteredProducts.length);
                     }}
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -198,7 +219,7 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
                     className="bg-white/80 hover:bg-white shadow-lg rounded-full p-2 h-8 w-8"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleNextProduct(mcard.id, mcard.products.length);
+                      handleNextProduct(mcard.id, filteredProducts.length);
                     }}
                   >
                     <ChevronRight className="h-4 w-4" />
@@ -207,13 +228,13 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
               )}
               
               {/* Indicateurs de pagination */}
-              {mcard.products.length > 1 && (
+              {filteredProducts.length > 1 && (
                 <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {mcard.products.map((_, index) => (
+                  {filteredProducts.map((_, index) => (
                     <div
                       key={index}
                       className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                        index === currentIndex ? 'bg-white shadow-lg' : 'bg-white/50'
+                        index === adjustedIndex ? 'bg-white shadow-lg' : 'bg-white/50'
                       }`}
                     />
                   ))}

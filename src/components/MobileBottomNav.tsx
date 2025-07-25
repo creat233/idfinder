@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, MessageCircle, Bell, User } from "lucide-react";
+import { Home, CheckCircle, MessageCircle, Bell, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -27,8 +27,8 @@ export const MobileBottomNav = () => {
     },
     { 
       name: "MCards", 
-      icon: Heart, 
-      path: "/verified-mcards", 
+      icon: CheckCircle, 
+      path: "/verified-mcards",
       label: "MCards" 
     },
     { 

@@ -1,15 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
-
 import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductCarousel } from "@/components/verified/ProductCarousel";
 import { ProductImageModal } from "@/components/verified/ProductImageModal";
 import { StatusCarousel } from "@/components/verified/StatusCarousel";
-import { CheckCircle } from "lucide-react";
 import { MCard, MCardProduct } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 const VerifiedMCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,7 +16,19 @@ const VerifiedMCards = () => {
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [selectedMCard, setSelectedMCard] = useState<MCard | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { toast } = useToast();
+
+  const categories = [
+    { id: "all", name: "Tout" },
+    { id: "Service", name: "Service" },
+    { id: "Produit", name: "Produit" },
+    { id: "Menu restaurant", name: "Menu restaurant" },
+    { id: "Consultation", name: "Consultation" },
+    { id: "Formation", name: "Formation" },
+    { id: "Événement", name: "Événement" },
+    { id: "Autre", name: "Autre" }
+  ];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -48,10 +59,6 @@ const VerifiedMCards = () => {
       
       {/* Header simplifié */}
       <div className="text-center py-8 px-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full mb-4 shadow-lg">
-          <CheckCircle className="h-8 w-8 text-white" />
-        </div>
-        
         <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
           {getTranslatedText('MCards Vérifiées')}
         </h1>
@@ -71,13 +78,34 @@ const VerifiedMCards = () => {
         <p className="text-lg text-gray-600 mb-6 max-w-xl mx-auto">
           {getTranslatedText('Découvrez les produits et services')} <span className="font-semibold text-blue-600">{getTranslatedText('des professionnels vérifiés')}</span>
         </p>
+
+        {/* Filtres par catégorie */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="flex flex-wrap justify-center gap-2 px-4">
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category.id)}
+                className={`transition-all duration-200 ${
+                  selectedCategory === category.id 
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                    : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                }`}
+              >
+                {category.name}
+              </Button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Carousel de statuts */}
       <StatusCarousel />
 
       {/* Carousel de produits */}
-      <ProductCarousel onImageClick={handleImageClick} />
+      <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
 
       {/* Modal pour afficher l'image et le profil */}
       <ProductImageModal
