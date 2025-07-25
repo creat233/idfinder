@@ -47,7 +47,7 @@ export const MCardStatusCarousel = ({
     null;
 
   return (
-    <div className="relative bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 rounded-2xl shadow-xl p-6 border border-white/60 backdrop-blur-sm">
+    <div className="relative bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 rounded-2xl shadow-xl p-6 border border-white/60 backdrop-blur-sm overflow-hidden">
       {/* Navigation arrows */}
       {hasMultipleStatuses && (
         <>
@@ -55,33 +55,33 @@ export const MCardStatusCarousel = ({
             size="icon"
             variant="ghost"
             onClick={prevStatus}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/90 hover:bg-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 border border-white/50"
           >
-            <ChevronLeft className="h-5 w-5 text-gray-700" />
+            <ChevronLeft className="h-6 w-6 text-gray-700" />
           </Button>
           
           <Button
             size="icon"
             variant="ghost"
             onClick={nextStatus}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/80 hover:bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/90 hover:bg-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 border border-white/50"
           >
-            <ChevronRight className="h-5 w-5 text-gray-700" />
+            <ChevronRight className="h-6 w-6 text-gray-700" />
           </Button>
         </>
       )}
 
       {/* Status indicators */}
       {hasMultipleStatuses && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 bg-white/80 rounded-full px-3 py-1 shadow-sm">
           {statuses.map((_, index) => (
             <button
               key={index}
               onClick={() => onIndexChange(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 index === currentIndex 
-                  ? 'bg-blue-600 w-6' 
-                  : 'bg-white/60 hover:bg-white/80'
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 w-8 shadow-sm' 
+                  : 'bg-gray-300 hover:bg-gray-400'
               }`}
             />
           ))}
@@ -89,50 +89,57 @@ export const MCardStatusCarousel = ({
       )}
 
       {/* Main content */}
-      <div className="flex flex-col sm:flex-row sm:items-start gap-6 pt-8">
+      <div className="flex flex-col lg:flex-row lg:items-start gap-6 pt-8">
         {/* Status image */}
         {currentStatus.status_image && (
           <StatusImageModal 
             imageUrl={currentStatus.status_image}
             statusText={currentStatus.status_text}
           >
-            <div className="relative group flex-shrink-0">
-              <img 
-                src={currentStatus.status_image} 
-                alt={currentStatus.status_text}
-                className="w-full sm:w-32 md:w-40 h-48 sm:h-32 md:h-40 object-cover rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500 group-hover:scale-105"
-                onError={(e) => {
-                  console.error('Error loading status image:', currentStatus.status_image);
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-3 left-3 right-3 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
-                Cliquer pour agrandir
+            <div className="relative group flex-shrink-0 mx-auto lg:mx-0">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
+                <img 
+                  src={currentStatus.status_image} 
+                  alt={currentStatus.status_text}
+                  className="w-full lg:w-48 h-64 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    console.error('Error loading status image:', currentStatus.status_image);
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                    <span className="text-white text-sm font-medium">Cliquer pour agrandir</span>
+                  </div>
+                </div>
               </div>
             </div>
           </StatusImageModal>
         )}
         
         {/* Status content */}
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-6">
           {/* Badge with status text */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center lg:justify-start">
             <Badge 
-              className="text-white font-semibold cursor-pointer hover:scale-105 transition-all duration-300 shadow-lg text-base px-4 py-2"
-              style={{ backgroundColor: currentStatus.status_color }}
+              className="text-white font-bold cursor-pointer hover:scale-105 transition-all duration-300 shadow-lg text-lg px-6 py-3 rounded-full border-2 border-white/30"
+              style={{ 
+                backgroundColor: currentStatus.status_color,
+                background: `linear-gradient(135deg, ${currentStatus.status_color}, ${currentStatus.status_color}dd)`
+              }}
               onClick={() => onStatusClick(currentStatus)}
             >
-              <Sparkles className="w-4 h-4 mr-2" />
+              <Sparkles className="w-5 h-5 mr-3 animate-pulse" />
               {currentStatus.status_text}
             </Badge>
           </div>
           
           {/* Time remaining */}
           {timeRemaining !== null && (
-            <div className="flex items-center gap-2 text-sm text-gray-600 bg-white/60 rounded-lg px-3 py-2 w-fit">
-              <Clock className="h-4 w-4" />
-              <span className="font-medium">
+            <div className="flex items-center justify-center lg:justify-start gap-3 text-sm text-gray-600 bg-white/80 rounded-xl px-4 py-3 w-fit mx-auto lg:mx-0 shadow-sm">
+              <Clock className="h-5 w-5 text-blue-600" />
+              <span className="font-semibold">
                 {timeRemaining > 0 
                   ? `Expire dans ${timeRemaining}h`
                   : 'Expiré'
@@ -142,37 +149,37 @@ export const MCardStatusCarousel = ({
           )}
 
           {/* Action buttons */}
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-4 pt-4 justify-center lg:justify-start">
             <Button
-              size="sm"
+              size="lg"
               variant="outline"
               onClick={() => onShareStatus(currentStatus)}
-              className="bg-white/80 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 hover:scale-105 transition-all duration-300 shadow-sm"
+              className="bg-white/90 border-blue-300 text-blue-700 hover:bg-blue-50 hover:border-blue-400 hover:scale-105 transition-all duration-300 shadow-lg rounded-xl px-6 py-3 font-semibold"
             >
-              <Share2 className="h-4 w-4 mr-2" />
+              <Share2 className="h-5 w-5 mr-3" />
               Partager
             </Button>
             
             {!isOwner && (
               <Button
-                size="sm"
+                size="lg"
                 variant="outline"
                 onClick={() => onContactOwner(currentStatus)}
-                className="bg-white/80 border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 hover:scale-105 transition-all duration-300 shadow-sm"
+                className="bg-white/90 border-purple-300 text-purple-700 hover:bg-purple-50 hover:border-purple-400 hover:scale-105 transition-all duration-300 shadow-lg rounded-xl px-6 py-3 font-semibold"
               >
-                <Send className="h-4 w-4 mr-2" />
+                <Send className="h-5 w-5 mr-3" />
                 Contacter
               </Button>
             )}
 
             {isOwner && (
               <Button 
-                size="sm" 
+                size="lg" 
                 variant="ghost" 
                 onClick={() => onEditStatus(currentStatus)}
-                className="bg-white/60 hover:bg-white/80 hover:scale-105 transition-all duration-300"
+                className="bg-white/80 hover:bg-white/90 hover:scale-105 transition-all duration-300 rounded-xl px-6 py-3 font-semibold shadow-lg"
               >
-                <Edit className="h-4 w-4 mr-2" />
+                <Edit className="h-5 w-5 mr-3" />
                 Modifier
               </Button>
             )}
@@ -182,7 +189,7 @@ export const MCardStatusCarousel = ({
 
       {/* Counter */}
       {hasMultipleStatuses && (
-        <div className="absolute bottom-4 right-4 bg-white/80 text-gray-700 text-xs px-3 py-1 rounded-full font-medium shadow-sm">
+        <div className="absolute bottom-4 right-4 bg-white/90 text-gray-700 text-sm px-4 py-2 rounded-full font-semibold shadow-lg border border-white/50">
           {currentIndex + 1} / {statuses.length}
         </div>
       )}
