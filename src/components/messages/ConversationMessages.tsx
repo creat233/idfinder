@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
 import { DateSeparator } from "./DateSeparator";
@@ -16,10 +17,20 @@ export function ConversationMessages({
   currentUserId,
   onDeleteMessage
 }: ConversationMessagesProps) {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Scroll vers le bas quand les messages changent
+  useEffect(() => {
+    const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollElement) {
+      scrollElement.scrollTop = scrollElement.scrollHeight;
+    }
+  }, [messages]);
   return (
     <div className="flex-1 bg-gradient-to-b from-gray-50/50 to-white overflow-hidden relative">
-      <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6 pb-24 space-y-2 min-h-full">
+      <ScrollArea ref={scrollAreaRef} className="h-full w-full">
+        <div className="p-4 md:p-6 pb-4 space-y-2 min-h-full flex flex-col"
+             style={{ paddingBottom: '120px' }}>
           {messages.length === 0 ? (
             <EmptyMessages />
           ) : (

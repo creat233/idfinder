@@ -121,7 +121,7 @@ export function ConversationView({
         onDeleteConversation={handleDeleteConversation}
       />
 
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
         <ConversationMessages
           messages={conversation.messages}
           currentUserId={currentUserId}
@@ -129,7 +129,7 @@ export function ConversationView({
         />
       </div>
 
-      <div className="flex-shrink-0 border-t bg-white">
+      <div className="absolute bottom-0 left-0 right-0 border-t bg-white z-10">
         <MessageInput
           value={replyText}
           onChange={onReplyChange}
