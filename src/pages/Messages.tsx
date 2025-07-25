@@ -123,7 +123,7 @@ const Messages = () => {
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
-      <div className="flex-1 flex flex-col overflow-hidden pb-16 md:pb-0">
+      <div className="flex-1 flex flex-col overflow-hidden pb-20 md:pb-0">
         <div className="flex-1 flex flex-col w-full h-full">
           <div className="flex-1 min-h-0">
             {/* Vue mobile */}
@@ -159,7 +159,7 @@ const Messages = () => {
             </div>
 
             {/* Vue desktop */}
-            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full">
+            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full p-4">
               {/* Liste des conversations */}
               <div className="lg:col-span-1">
                 <ConversationsList

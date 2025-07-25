@@ -144,24 +144,25 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 md:p-6 pb-8">
       {mcards.map((mcard) => {
         const currentIndex = currentProductIndex[mcard.id] || 0;
         const currentProduct = mcard.products[currentIndex];
         
         return (
-          <div key={mcard.id} className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300">
+          <div key={mcard.id} className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-100">
             {/* Section Image du produit */}
-            <div className="relative h-64 overflow-hidden">
+            <div className="relative h-48 md:h-64 overflow-hidden">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
                 onClick={() => onImageClick?.(currentProduct, mcard)}
+                loading="lazy"
               />
               
               {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
               {/* Navigation des produits */}
               {mcard.products.length > 1 && (

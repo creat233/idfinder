@@ -3,11 +3,20 @@ import { Home, Heart, MessageCircle, Bell, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 export const MobileBottomNav = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const { unreadCount } = useNotifications();
+  const [user, setUser] = useState<any>(null);
+  const { unreadCount: unreadMessages } = useUnreadMessages(user);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
 
   const navItems = [
     { 
@@ -17,10 +26,10 @@ export const MobileBottomNav = () => {
       label: "Accueil" 
     },
     { 
-      name: "Favoris", 
+      name: "MCards", 
       icon: Heart, 
-      path: "/mes-favoris", 
-      label: "Favoris" 
+      path: "/verified-mcards", 
+      label: "MCards" 
     },
     { 
       name: "Messages", 
@@ -51,8 +60,8 @@ export const MobileBottomNav = () => {
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
-      <div className="bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-lg">
-        <div className="grid grid-cols-5 h-16">
+      <div className="bg-gradient-to-r from-white/95 via-blue-50/95 to-purple-50/95 backdrop-blur-md border-t border-gradient-primary/20 shadow-xl">
+        <div className="grid grid-cols-5 h-18 py-2">
           {navItems.map((item) => {
             const IconComponent = item.icon;
             const active = isActive(item.path);
@@ -66,7 +75,7 @@ export const MobileBottomNav = () => {
                 {active && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent rounded-t-xl"
+                    className="absolute inset-0 bg-gradient-to-t from-primary/20 via-primary/10 to-transparent rounded-t-xl shadow-lg"
                     initial={false}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
@@ -74,21 +83,21 @@ export const MobileBottomNav = () => {
                 
                 <div className={`flex flex-col items-center justify-center space-y-1 relative z-10 transition-all duration-300 ${
                   active 
-                    ? "text-primary scale-110" 
-                    : "text-gray-500 group-hover:text-primary group-hover:scale-105"
+                    ? "text-primary scale-110 font-bold" 
+                    : "text-gray-600 group-hover:text-primary group-hover:scale-105"
                 }`}>
-                  <div className={`relative ${active ? "drop-shadow-md" : ""}`}>
+                  <div className={`relative ${active ? "drop-shadow-lg" : ""}`}>
                     <IconComponent 
-                      className={`h-5 w-5 transition-all duration-300 ${
-                        active ? "fill-primary/20" : ""
+                      className={`h-6 w-6 transition-all duration-300 ${
+                        active ? "fill-primary/30 stroke-2" : ""
                       }`} 
                     />
                     {active && (
                       <motion.div
-                        className="absolute inset-0 bg-primary/20 rounded-full blur-sm -z-10"
+                        className="absolute inset-0 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-full blur-md -z-10"
                         initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1.2, opacity: 1 }}
-                        transition={{ duration: 0.3 }}
+                        animate={{ scale: 1.4, opacity: 1 }}
+                        transition={{ type: "spring", duration: 0.4 }}
                       />
                     )}
                     {/* Badge de notification pour les notifications */}
@@ -100,9 +109,18 @@ export const MobileBottomNav = () => {
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </Badge>
                     )}
+                    {/* Badge de notification pour les messages */}
+                    {item.name === "Messages" && unreadMessages > 0 && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs font-bold animate-pulse"
+                      >
+                        {unreadMessages > 99 ? '99+' : unreadMessages}
+                      </Badge>
+                    )}
                   </div>
                   <span className={`text-xs font-medium transition-all duration-300 ${
-                    active ? "font-semibold" : ""
+                    active ? "font-bold text-primary" : ""
                   }`}>
                     {item.label}
                   </span>

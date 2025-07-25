@@ -42,7 +42,7 @@ const VerifiedMCards = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 pb-24 md:pb-0">
       <PublicHeader />
       
       {/* Header simplifié */}
@@ -51,7 +51,7 @@ const VerifiedMCards = () => {
           <CheckCircle className="h-8 w-8 text-white" />
         </div>
         
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
           {getTranslatedText('MCards Vérifiées')}
         </h1>
         
@@ -60,12 +60,15 @@ const VerifiedMCards = () => {
         </p>
         
         {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-8">
-          <MCardSearchBar 
-            onSearch={handleSearch}
-            placeholder={`🔍 ${getTranslatedText('Rechercher par nom, entreprise, secteur d\'activité, service...')}`}
-            className="shadow-lg"
-          />
+        <div className="max-w-2xl mx-auto mb-8 px-4">
+          <div className="relative">
+            <MCardSearchBar 
+              onSearch={handleSearch}
+              placeholder={`🔍 ${getTranslatedText('Rechercher par nom, entreprise, secteur d\'activité, service...')}`}
+              className="shadow-xl bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl"
+            />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/5 via-blue-500/5 to-purple-500/5 -z-10"></div>
+          </div>
         </div>
       </div>
 
