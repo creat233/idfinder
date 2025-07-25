@@ -171,7 +171,7 @@ export const MyMCardsView = ({ mcards, loading, onEdit, onShare, onView }: MyMCa
       </div>
 
       {/* MCards List */}
-      <div className="space-y-4">
+      <div className="space-y-4 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         {mcards.map((mcard) => (
           <Card key={mcard.id} className="hover:shadow-lg transition-shadow duration-200">
             <CardContent className="p-6">

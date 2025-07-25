@@ -127,16 +127,16 @@ export function ConversationView({
           currentUserId={currentUserId}
           onDeleteMessage={onDeleteMessage}
         />
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 border-t bg-white z-10">
-        <MessageInput
-          value={replyText}
-          onChange={onReplyChange}
-          onSend={onSendMessage}
-          sending={sending}
-        />
+        
+        <div className="absolute bottom-0 left-0 right-0 border-t bg-white z-10">
+          <MessageInput
+            value={replyText}
+            onChange={onReplyChange}
+            onSend={onSendMessage}
+            sending={sending}
+          />
+        </div>
       </div>
     </div>
   );
-}
+};
