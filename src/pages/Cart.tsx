@@ -61,7 +61,7 @@ export default function Cart() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 py-8 pb-24 md:pb-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center gap-4 mb-8">
             <Button 
@@ -91,7 +91,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 pb-24 md:pb-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">

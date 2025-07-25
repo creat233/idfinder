@@ -7,7 +7,7 @@ import { DashboardShare } from "@/components/dashboard/DashboardShare";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-24 md:pb-0">
       <Header />
       <DashboardHero />
       <DashboardStats />
