@@ -24,14 +24,15 @@ export const ProductImageModal = ({ isOpen, onClose, product, mcard }: ProductIm
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-          {/* Image du produit */}
-          <div className="relative bg-black flex items-center justify-center">
+      <DialogContent className="max-w-[98vw] max-h-[98vh] w-full p-0 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 h-[98vh]">
+          {/* Image du produit - Responsive et adaptative */}
+          <div className="relative bg-black flex items-center justify-center min-h-[50vh] lg:min-h-full">
             <img
               src={product.image_url || ''}
               alt={product.name}
-              className="max-w-full max-h-full object-contain"
+              className="w-full h-full object-contain max-w-full max-h-full"
+              style={{ maxHeight: '100%', maxWidth: '100%' }}
             />
             
             {/* Badge du produit */}
@@ -50,7 +51,7 @@ export const ProductImageModal = ({ isOpen, onClose, product, mcard }: ProductIm
           </div>
           
           {/* Informations du profil et du produit */}
-          <div className="p-6 flex flex-col">
+          <div className="p-3 sm:p-6 flex flex-col overflow-y-auto max-h-[98vh]">
             {/* Profil du propriétaire */}
             <div className="mb-6">
               <div className="flex items-center space-x-4 mb-4">

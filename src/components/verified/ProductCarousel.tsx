@@ -152,14 +152,15 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
         
         return (
           <div key={mcard.id} className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-100">
-            {/* Section Image du produit */}
-            <div className="relative h-48 md:h-64 overflow-hidden">
+            {/* Section Image du produit - Responsive et adaptative */}
+            <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
                 onClick={() => onImageClick?.(currentProduct, mcard)}
                 loading="lazy"
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
               />
               
               {/* Overlay gradient */}
