@@ -142,7 +142,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   }
 
   return (
-    <div className="mb-12 px-4">
+    <div className="mb-8 px-4">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Statuts Récents
@@ -154,7 +154,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
       
       {/* Carousel horizontal avec scroll */}
       <div className="relative">
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth">
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth">
           {mcards.map((mcard) => {
             const currentIndex = currentStatusIndex[mcard.id] || 0;
             const currentStatus = mcard.statuses[currentIndex];
@@ -263,11 +263,9 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                     </div>
                     
                     <div className="flex-shrink-0">
-                      {mcard.is_verified && (
-                        <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-2 py-1">
-                          ✓ Vérifié
-                        </Badge>
-                      )}
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-200 shadow-md">
+                        <User className="h-5 w-5 text-purple-600" />
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -56,8 +56,12 @@ const VerifiedMCards = () => {
           {getTranslatedText('MCards Vérifiées')}
         </h1>
         
+        <p className="text-lg text-gray-600 mb-6 max-w-xl mx-auto">
+          {getTranslatedText('Découvrez les produits et services')} <span className="font-semibold text-blue-600">{getTranslatedText('des professionnels vérifiés')}</span>
+        </p>
+        
         {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-6 px-4">
+        <div className="max-w-2xl mx-auto mb-8 px-4">
           <div className="relative">
             <MCardSearchBar 
               onSearch={handleSearch}
@@ -67,10 +71,6 @@ const VerifiedMCards = () => {
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/5 via-blue-500/5 to-purple-500/5 -z-10"></div>
           </div>
         </div>
-        
-        <p className="text-lg text-gray-600 mb-6 max-w-xl mx-auto">
-          {getTranslatedText('Découvrez les produits et services')} <span className="font-semibold text-blue-600">{getTranslatedText('des professionnels vérifiés')}</span>
-        </p>
       </div>
 
       {/* Carousel de statuts */}
