@@ -930,6 +930,39 @@ export type Database = {
           },
         ]
       }
+      security_audit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          success: boolean | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_cards: {
         Row: {
           card_holder_name: string | null
@@ -1153,6 +1186,10 @@ export type Database = {
       notify_expired_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      validate_password_strength: {
+        Args: { password: string }
+        Returns: boolean
       }
     }
     Enums: {
