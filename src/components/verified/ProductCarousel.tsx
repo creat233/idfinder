@@ -145,15 +145,27 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 md:p-6 pb-8">
-      {mcards.map((mcard) => {
+    <div className="mb-8 px-4">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+          🛍️ Produits & Services
+        </h2>
+        <div className="text-sm text-gray-500">
+          {mcards.length} professionnels
+        </div>
+      </div>
+      
+      {/* Carousel horizontal avec scroll */}
+      <div className="relative">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth">
+          {mcards.map((mcard) => {
         const currentIndex = currentProductIndex[mcard.id] || 0;
         const currentProduct = mcard.products[currentIndex];
         
         return (
-          <div key={mcard.id} className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-100">
-            {/* Section Image du produit - Responsive et adaptative */}
-            <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden">
+          <div key={mcard.id} className="flex-none w-80 bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border border-gray-100 snap-start animate-fade-in hover-scale">
+            {/* Section Image du produit - Format carré pour une meilleure visibilité */}
+            <div className="relative h-64 overflow-hidden">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
@@ -249,9 +261,11 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
                 </div>
                 
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <User className="h-4 w-4 text-blue-600" />
-                  </div>
+                  {mcard.is_verified && (
+                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-2 py-1">
+                      ✓ Vérifié
+                    </Badge>
+                  )}
                 </div>
               </div>
               
@@ -278,6 +292,14 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
           </div>
         );
       })}
+          
+          {/* Espace pour le scroll */}
+          <div className="flex-none w-4"></div>
+        </div>
+        
+        {/* Indicateur de scroll */}
+        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-white via-white to-transparent w-8 h-full pointer-events-none"></div>
+      </div>
     </div>
   );
 };
