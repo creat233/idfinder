@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { URL_CONFIG } from '@/utils/urlConfig';
+import { MCardInteractionButtons } from '@/components/mcards/MCardInteractionButtons';
 
 interface MCardWithProducts extends MCard {
   products: MCardProduct[];
@@ -222,7 +223,7 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
             </div>
             
             {/* Section profil du propriétaire */}
-            <div className="p-4">
+            <div className="p-4 pb-2">
               <div 
                 className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors duration-200"
                 onClick={() => handleProfileClick(mcard.slug)}
@@ -259,6 +260,18 @@ export const ProductCarousel = ({ onImageClick }: ProductCarouselProps) => {
                 {currentProduct.description && (
                   <p className="text-xs text-gray-600 mt-1 line-clamp-2">{currentProduct.description}</p>
                 )}
+              </div>
+            </div>
+            
+            {/* Boutons d'interaction */}
+            <div className="px-4 pb-4">
+              <div className="flex justify-end items-center space-x-2">
+                <MCardInteractionButtons 
+                  mcardId={mcard.id}
+                  mcardOwnerId={mcard.user_id}
+                  mcardOwnerName={mcard.full_name}
+                  className="bg-white/90 backdrop-blur-sm"
+                />
               </div>
             </div>
           </div>

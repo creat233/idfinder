@@ -1,6 +1,6 @@
 
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+
 import { DemoHero } from "@/components/demo/DemoHero";
 import { DemoPricing } from "@/components/demo/DemoPricing";
 import { DemoTabs } from "@/components/demo/DemoTabs";
@@ -20,7 +20,6 @@ const Demo = () => {
         <DemoCTA />
       </main>
 
-      <Footer />
     </div>
   );
 };

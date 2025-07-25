@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
-import { Footer } from "@/components/Footer";
+
 import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductCarousel } from "@/components/verified/ProductCarousel";
@@ -91,7 +91,6 @@ const VerifiedMCards = () => {
         />
       </div>
       
-      <Footer />
     </div>
   );
 };

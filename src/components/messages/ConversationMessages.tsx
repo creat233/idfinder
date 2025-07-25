@@ -17,13 +17,13 @@ export function ConversationMessages({
   onDeleteMessage
 }: ConversationMessagesProps) {
   return (
-    <div className="flex-1 bg-gradient-to-b from-gray-50/50 to-white">
+    <div className="flex-1 bg-gradient-to-b from-gray-50/50 to-white overflow-hidden">
       <ScrollArea className="h-full w-full">
-        <div className="p-4 md:p-6 max-h-full">
+        <div className="p-4 md:p-6 pb-24">
           {messages.length === 0 ? (
             <EmptyMessages />
           ) : (
-            <div className="space-y-2 pb-6 min-h-full overflow-y-auto">
+            <div className="space-y-2">
               {groupMessagesByDate(messages).map((group) => (
                 <div key={group.date}>
                   <DateSeparator date={group.date} />
