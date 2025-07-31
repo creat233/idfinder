@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
 import { DateSeparator } from "./DateSeparator";
@@ -17,29 +16,16 @@ export function ConversationMessages({
   currentUserId,
   onDeleteMessage
 }: ConversationMessagesProps) {
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  // Scroll vers le bas quand les messages changent
-  useEffect(() => {
-    const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollElement) {
-      scrollElement.scrollTop = scrollElement.scrollHeight;
-    }
-  }, [messages]);
   return (
-    <div className="flex-1 bg-gradient-to-b from-gray-50/50 to-white overflow-hidden relative">
-      <ScrollArea ref={scrollAreaRef} className="h-full w-full">
-        <div className="p-4 md:p-6 space-y-2 min-h-full flex flex-col justify-end"
-             style={{ 
-               paddingBottom: '140px',
-               minHeight: 'calc(100vh - 180px)'
-             }}>
+    <div className="flex-1 bg-gray-50/30">
+      <ScrollArea className="h-full">
+        <div className="p-6">
           {messages.length === 0 ? (
             <EmptyMessages />
           ) : (
-            <div className="space-y-2 flex flex-col">
+            <div className="space-y-1 pb-4">
               {groupMessagesByDate(messages).map((group) => (
-                <div key={group.date} className="space-y-2">
+                <div key={group.date}>
                   <DateSeparator date={group.date} />
                   {group.messages.map((message) => (
                     <MessageBubble

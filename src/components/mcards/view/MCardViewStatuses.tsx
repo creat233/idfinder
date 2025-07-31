@@ -139,25 +139,22 @@ export const MCardViewStatuses = ({
             )}
           </div>
         ) : (
-          <div className="max-h-96 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            <MCardStatusCarousel
-              statuses={activeStatuses}
-              isOwner={isOwner}
-              currentIndex={currentStatusIndex}
-              onIndexChange={setCurrentStatusIndex}
-              onStatusClick={handleStatusClick}
-              onEditStatus={handleEditStatus}
-              onShareStatus={handleShareStatus}
-              onContactOwner={(status) => {
-                setContactContext({
-                  type: 'status',
-                  title: status.status_text
-                });
-                setIsContactDialogOpen(true);
-              }}
-              mcardId={mcardId}
-            />
-          </div>
+          <MCardStatusCarousel
+            statuses={activeStatuses}
+            isOwner={isOwner}
+            currentIndex={currentStatusIndex}
+            onIndexChange={setCurrentStatusIndex}
+            onStatusClick={handleStatusClick}
+            onEditStatus={handleEditStatus}
+            onShareStatus={handleShareStatus}
+            onContactOwner={(status) => {
+              setContactContext({
+                type: 'status',
+                title: status.status_text
+              });
+              setIsContactDialogOpen(true);
+            }}
+          />
         )}
       </div>
 

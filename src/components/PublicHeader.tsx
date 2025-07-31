@@ -10,15 +10,32 @@ import { PublicHeaderDesktopNav } from "./PublicHeaderDesktopNav";
 import { PublicHeaderMobileNav } from "./PublicHeaderMobileNav";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useAuthState } from "@/hooks/useAuthState";
-import { robustSignOut } from "@/utils/authCleanup";
 
 export const PublicHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useAuthState();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // Check current user session
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleGetStarted = () => {
     if (user) {
@@ -29,20 +46,12 @@ export const PublicHeader = () => {
   };
 
   const handleSignOut = async () => {
-    try {
-      await robustSignOut(supabase);
-      toast({
-        title: t("signOutSuccessTitle"),
-        description: t("signOutSuccessDesc"),
-      });
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast({
-        variant: "destructive",
-        title: "Erreur de déconnexion",
-        description: "Une erreur s'est produite lors de la déconnexion.",
-      });
-    }
+    await supabase.auth.signOut();
+    toast({
+      title: t("signOutSuccessTitle"),
+      description: t("signOutSuccessDesc"),
+    });
+    navigate("/");
   };
 
   const toggleMenu = () => {

@@ -90,36 +90,7 @@ export const fetchMCardProducts = async (mcardId: string): Promise<MCardProduct[
   return data || [];
 };
 
-// Vérifier si une vue a déjà été comptée pour cette carte dans cette session
-const hasViewedCard = (slug: string): boolean => {
-  try {
-    const viewedCards = JSON.parse(localStorage.getItem('viewedCards') || '[]');
-    return viewedCards.includes(slug);
-  } catch {
-    return false;
-  }
-};
-
-// Marquer une carte comme vue dans cette session
-const markCardAsViewed = (slug: string): void => {
-  try {
-    const viewedCards = JSON.parse(localStorage.getItem('viewedCards') || '[]');
-    if (!viewedCards.includes(slug)) {
-      viewedCards.push(slug);
-      localStorage.setItem('viewedCards', JSON.stringify(viewedCards));
-    }
-  } catch {
-    // Ignore localStorage errors
-  }
-};
-
 export const incrementViewCount = async (slug: string, currentCount: number): Promise<number> => {
-  // Vérifier si cette carte a déjà été vue dans cette session
-  if (hasViewedCard(slug)) {
-    console.log('Card already viewed in this session, not incrementing:', slug);
-    return currentCount;
-  }
-
   try {
     console.log('Incrementing view count for slug:', slug, 'current count:', currentCount);
     
@@ -130,8 +101,6 @@ export const incrementViewCount = async (slug: string, currentCount: number): Pr
     
     if (!error) {
       console.log('View count incremented successfully via edge function');
-      // Marquer la carte comme vue
-      markCardAsViewed(slug);
       return currentCount + 1;
     } else {
       console.error('Error incrementing view count via edge function:', error);
@@ -145,8 +114,6 @@ export const incrementViewCount = async (slug: string, currentCount: number): Pr
       
       if (!dbError) {
         console.log('View count incremented successfully via fallback');
-        // Marquer la carte comme vue
-        markCardAsViewed(slug);
         return currentCount + 1;
       } else {
         console.error('Error incrementing view count via fallback:', dbError);

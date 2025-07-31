@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star, Send, ShoppingBag } from 'lucide-react';
+import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star, Send } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
@@ -10,7 +10,6 @@ import { MCardViewEditProductDialog } from './MCardViewEditProductDialog';
 import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { ProductImageModal } from './ProductImageModal';
 import { useToast } from '@/hooks/use-toast';
-import { useCart } from '@/contexts/CartContext';
 
 interface MCardViewProductsProps {
   products: MCardProduct[];
@@ -41,7 +40,6 @@ export const MCardViewProducts = ({
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [contactContext, setContactContext] = useState<{ type: 'status' | 'product'; title: string } | undefined>();
   const { toast } = useToast();
-  const { addToCart, isInCart } = useCart();
 
   const activeProducts = products.filter(product => product.is_active);
   const isPremium = mcardPlan === 'premium';
@@ -97,39 +95,6 @@ export const MCardViewProducts = ({
     const message = encodeURIComponent(`Produit: ${product.name} - ${product.price.toLocaleString()} ${product.currency} - ${window.location.href}`);
     const whatsappUrl = `https://wa.me/?text=${message}`;
     window.open(whatsappUrl, '_blank');
-  };
-
-  const handleAddToCart = (product: MCardProduct) => {
-    addToCart(product, {
-      mcardId,
-      ownerName: mcardOwnerName,
-      ownerUserId: mcardOwnerUserId
-    });
-    toast({
-      title: "Produit ajouté au panier !",
-      description: `${product.name} a été ajouté à votre panier`
-    });
-  };
-
-  const getActionButtonText = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'service':
-        return 'Contacte';
-      case 'produit':
-        return 'Achète';
-      case 'menu restaurant':
-        return 'Commende';
-      case 'consultation':
-        return 'Rendez-Vous';
-      case 'formation':
-        return 'S\'inscrire';
-      case 'événement':
-        return 'Réserve';
-      case 'autre':
-        return 'Contacte';
-      default:
-        return 'Contacte';
-    }
   };
 
   if (activeProducts.length === 0 && !canAddProduct) return null;
@@ -242,7 +207,7 @@ export const MCardViewProducts = ({
                     <ShoppingCart className="h-6 w-6 text-green-500" />
                   </div>
 
-                  {/* Boutons d'action améliorés */}
+                  {/* Boutons de partage améliorés */}
                   <div className="flex flex-wrap gap-2 sm:gap-3 pt-2">
                     <Button
                       size="sm"
@@ -255,38 +220,21 @@ export const MCardViewProducts = ({
                     </Button>
                     
                     {!isOwner && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant={isInCart(product.id) ? "default" : "outline"}
-                          onClick={() => handleAddToCart(product)}
-                          disabled={isInCart(product.id)}
-                          className={`${
-                            isInCart(product.id)
-                              ? "bg-green-600 text-white hover:bg-green-700"
-                              : "text-green-600 border-green-600 hover:bg-green-50"
-                          } hover:scale-105 transition-all flex-1 shadow-sm`}
-                        >
-                          <ShoppingBag className="h-4 w-4 mr-2" />
-                          {isInCart(product.id) ? "Dans le panier" : "Ajouter au panier"}
-                        </Button>
-                        
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setContactContext({
-                              type: 'product',
-                              title: product.name
-                            });
-                            setIsContactDialogOpen(true);
-                          }}
-                          className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
-                        >
-                          <Send className="h-4 w-4 mr-2" />
-                          {getActionButtonText(product.category)}
-                        </Button>
-                      </>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setContactContext({
+                            type: 'product',
+                            title: product.name
+                          });
+                          setIsContactDialogOpen(true);
+                        }}
+                        className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Contacter
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -301,9 +249,6 @@ export const MCardViewProducts = ({
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         phoneNumber={phoneNumber}
-        mcardId={mcardId}
-        mcardOwnerName={mcardOwnerName}
-        mcardOwnerUserId={mcardOwnerUserId}
       />
 
       {canAddProduct && (

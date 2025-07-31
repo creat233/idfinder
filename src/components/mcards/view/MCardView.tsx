@@ -6,18 +6,14 @@ import { MCardViewProfile } from '@/components/mcards/view/MCardViewProfile';
 import { MCardViewProducts } from '@/components/mcards/view/MCardViewProducts';
 import { MCardViewStatuses } from '@/components/mcards/view/MCardViewStatuses';
 import { MCardViewReviews } from '@/components/mcards/view/MCardViewReviews';
-import { MCardViewCustomization } from '@/components/mcards/view/MCardViewCustomization';
 import { MCardViewLoading } from '@/components/mcards/view/MCardViewLoading';
 import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
-import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
-import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
-import { MCardCustomized } from '@/components/mcards/MCardCustomized';
+import { MCardVisitorCTA } from '@/components/mcards/MCardVisitorCTA';
 import { MCardTranslateButton } from '@/components/mcards/translate/MCardTranslateButton';
 import { useMCardView } from '@/hooks/useMCardView';
 import { useMCardTranslation } from '@/hooks/useMCardTranslation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
-import { URL_CONFIG } from '@/utils/urlConfig';
 
 const MCardView = () => {
   const {
@@ -63,9 +59,9 @@ const MCardView = () => {
         onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
       />
 
-      {/* Main Content - Responsive */}
-      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
-        <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4 md:space-y-6">
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
           {/* Error Alert */}
           {error && (
             <Alert variant="destructive" className="shadow-lg">
@@ -74,63 +70,47 @@ const MCardView = () => {
             </Alert>
           )}
 
-          {/* Compliance Warning - Avertissement de conformité */}
-          <MCardComplianceWarning isOwner={isOwner} />
-
           {/* QR Code Section - seulement si pas en attente de paiement */}
           {!isPendingPayment && (
             <MCardViewQRSection
               showQRCode={showQRCode}
-              url={URL_CONFIG.getMCardUrl(mcard.slug)}
+              url={window.location.href}
               cardName={mcard.full_name}
               onClose={() => setShowQRCode(false)}
             />
           )}
 
-          {/* Toutes les sections avec personnalisation appliquée */}
-          <MCardCustomized mcardId={mcard.id}>
-            {/* Profile Card */}
-            <div className="rounded-2xl overflow-hidden mb-6">
-              <MCardViewProfile
-                mcard={mcard}
-                onCopyLink={handleCopyLink}
-                onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
-                isOwner={isOwner}
-              />
-            </div>
+          {/* Profile Card */}
+          <MCardViewProfile
+            mcard={mcard}
+            onCopyLink={handleCopyLink}
+            onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
+            isOwner={isOwner}
+          />
 
-            {/* Statuses Section */}
-            <MCardViewStatuses
+          {/* Statuses Section */}
+            <MCardViewStatuses 
               statuses={statuses}
               phoneNumber={mcard.phone_number}
               isOwner={isOwner}
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
+              mcardOwnerName={mcard.full_name}
+              mcardOwnerUserId={mcard.user_id}
               onStatusesChange={refreshData}
             />
 
-            {/* Products Section */}
+          {/* Products Section */}
             <MCardViewProducts 
               products={products}
               phoneNumber={mcard.phone_number}
               isOwner={isOwner}
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
+              mcardOwnerName={mcard.full_name}
+              mcardOwnerUserId={mcard.user_id}
               onProductsChange={refreshData}
             />
-
-            {/* Physical Products Section */}
-            <MCardPhysicalProducts 
-              mcard={mcard}
-              isOwner={isOwner}
-            />
-          </MCardCustomized>
-
-          {/* Customization Section */}
-          <MCardViewCustomization
-            mcard={mcard}
-            isOwner={isOwner}
-          />
 
           {/* Reviews Section */}
           <MCardViewReviews
@@ -139,6 +119,11 @@ const MCardView = () => {
             isOwner={isOwner}
             onReviewsChange={refreshData}
           />
+
+          {/* CTA pour les visiteurs */}
+          {!isOwner && (
+            <MCardVisitorCTA />
+          )}
         </div>
       </div>
 
@@ -151,13 +136,11 @@ const MCardView = () => {
         />
       )}
 
-      {/* Translate Button - Visible pour tous */}
-      <div className="fixed bottom-20 right-4 z-[100]">
-        <MCardTranslateButton
-          currentLanguage={currentLanguage}
-          onLanguageChange={setCurrentLanguage}
-        />
-      </div>
+      {/* Translate Button */}
+      <MCardTranslateButton
+        currentLanguage={currentLanguage}
+        onLanguageChange={setCurrentLanguage}
+      />
     </div>
   );
 };

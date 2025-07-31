@@ -1,6 +1,6 @@
 
 import { Header } from "@/components/Header";
-
+import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { SupportHeader } from "@/components/support/SupportHeader";
 import { SupportCards } from "@/components/support/SupportCards";
@@ -35,6 +35,7 @@ const Support = () => {
         </div>
       </main>
       
+      <Footer />
     </div>
   );
 };

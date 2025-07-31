@@ -82,7 +82,7 @@ export const ProfileContent = ({
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 md:pb-0">
+    <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <Card className="p-6">

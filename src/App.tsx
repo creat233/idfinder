@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "./providers/TranslationProvider";
-import { CartProvider } from "./contexts/CartContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAutoRefresh } from "./hooks/useAutoRefresh";
 import Index from "./pages/Index";
@@ -17,6 +16,7 @@ import Support from "./pages/Support";
 import SignalerCarte from "./pages/SignalerCarte";
 import RechercheResultat from "./pages/RechercheResultat";
 import NumeroUrgence from "./pages/NumeroUrgence";
+import Notifications from "./pages/Notifications";
 import PromoCodes from "./pages/PromoCodes";
 import Demo from "./pages/Demo";
 import About from "./pages/About";
@@ -26,11 +26,7 @@ import AdminPromoCodes from "./pages/AdminPromoCodes";
 import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
-import Cart from "./pages/Cart";
-import { StatusView } from "./pages/StatusView";
 import VerificationRequest from "./pages/VerificationRequest";
-import Notifications from "./pages/Notifications";
-import { MobileBottomNav } from "./components/MobileBottomNav";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,8 +48,7 @@ function AppContent() {
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
-        <CartProvider>
-          <TooltipProvider>
+        <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -85,14 +80,10 @@ function AppContent() {
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
-              <Route path="/panier" element={<Cart />} />
-              <Route path="/status/:statusId" element={<StatusView />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
-            <MobileBottomNav />
           </BrowserRouter>
-          </TooltipProvider>
-        </CartProvider>
+        </TooltipProvider>
       </TranslationProvider>
     </QueryClientProvider>
   );

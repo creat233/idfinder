@@ -22,7 +22,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
   };
 
   const renderLink = (to: string, text: string) => (
-    <Link to={to} className="block px-4 py-2 text-sm text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg mx-2 transition-colors" onClick={onClose}>
+    <Link to={to} className="block px-4 text-gray-700 hover:text-primary" onClick={onClose}>
       {text}
     </Link>
   );
@@ -35,11 +35,8 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
         <>
           {renderLink("/signaler", "Signaler une carte")}
           {renderLink("/mes-cartes", "Mes cartes")}
-          {renderLink("/mcards-verifiees", "MCards Vérifiées")}
           {renderLink("/codes-promo", "Codes promo")}
           {renderLink("/messages", "Messages")}
-          {renderLink("/mes-favoris", "Mes favoris")}
-          {renderLink("/panier", "Panier")}
         </>
       )}
       {renderLink("/notifications", "Notifications")}
@@ -48,14 +45,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
 
   const loggedOutNav = (
     <>
-      {renderLink("/mcards-verifiees", "MCards Vérifiées")}
-      {renderLink("/codes-promo", "Codes promo")}
-      {renderLink("/messages", "Messages")}
-      {renderLink("/mes-favoris", "Mes favoris")}
-      {renderLink("/panier", "Panier")}
-      {renderLink("/demo", "Démo")}
       {renderLink("/urgence", "Numéros d'urgence")}
-      {renderLink("/about", "À propos")}
       {renderLink("/support", "Support")}
     </>
   );
@@ -67,7 +57,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
           <Button 
             variant="outline" 
             onClick={() => handleNavigate("/profile")}
-            className="w-full justify-start text-sm"
+            className="w-full"
           >
             <User className="mr-2 h-4 w-4" />
             Mon profil
@@ -75,7 +65,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
           <Button 
             variant="outline" 
             onClick={() => { onSignOut(); onClose(); }}
-            className="w-full justify-start text-sm text-red-600 border-red-600"
+            className="w-full text-red-600 border-red-600"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Déconnexion
@@ -85,7 +75,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
         <Button 
           variant="outline" 
           onClick={() => handleNavigate("/auth")}
-          className="w-full text-sm"
+          className="w-full"
         >
           Se connecter
         </Button>
@@ -94,11 +84,9 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
   );
 
   return (
-    <div className="md:hidden bg-white border-t border-gray-200 max-h-[80vh] overflow-y-auto">
-      <nav className="py-4 space-y-2">
-        <div className="space-y-1">
-          {user ? loggedInNav : loggedOutNav}
-        </div>
+    <div className="md:hidden bg-white border-t border-gray-200">
+      <nav className="py-4 space-y-4">
+        {user ? loggedInNav : loggedOutNav}
         {authButtons}
       </nav>
     </div>

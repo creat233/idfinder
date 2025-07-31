@@ -5,10 +5,7 @@ import { UserCardsList } from "./UserCardsList";
 import { NotificationsList } from "@/components/notifications/NotificationsList";
 import { MyCardsExplanation } from "./MyCardsExplanation";
 import { NotificationDebugButton } from "./NotificationDebugButton";
-import { MyMCardsView } from "./MyMCardsView";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useMCards } from "@/hooks/useMCards";
-import { MCard } from "@/types/mcard";
 
 interface UserCard {
   id: string;
@@ -30,8 +27,8 @@ interface Notification {
 }
 
 interface MyCardsTabsContentProps {
-  activeTab: "cards" | "notifications" | "mcards";
-  onTabChange: (tab: "cards" | "notifications" | "mcards") => void;
+  activeTab: "cards" | "notifications";
+  onTabChange: (tab: "cards" | "notifications") => void;
   cards: UserCard[];
   cardsLoading: boolean;
   notifications: Notification[];
@@ -59,7 +56,6 @@ export const MyCardsTabsContent = ({
   onDeleteAllNotifications,
 }: MyCardsTabsContentProps) => {
   const { t } = useTranslation();
-  const { mcards, loading: mcardsLoading } = useMCards();
 
   // Check if user has the specific card number 1234567890
   const hasCard1234567890 = cards.some(card => card.card_number === "1234567890");
@@ -70,33 +66,12 @@ export const MyCardsTabsContent = ({
     // est gérée au niveau parent
   };
 
-  const handleEditMCard = (mcard: MCard) => {
-    // Navigation vers l'édition de la MCard
-    window.open(`/mcard/edit/${mcard.id}`, '_blank');
-  };
-
-  const handleShareMCard = (mcard: MCard) => {
-    // Copier le lien de partage
-    const shareUrl = `${window.location.origin}/m/${mcard.slug}`;
-    navigator.clipboard.writeText(shareUrl);
-    // Vous pouvez ajouter un toast ici pour confirmer la copie
-  };
-
-  const handleViewMCard = (mcard: MCard) => {
-    // Ouvrir la MCard dans un nouvel onglet
-    window.open(`/m/${mcard.slug}`, '_blank');
-  };
-
   return (
-    <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as "cards" | "notifications" | "mcards")}>
-      <TabsList className="grid w-full grid-cols-3 h-auto">
+    <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as "cards" | "notifications")}>
+      <TabsList className="grid w-full grid-cols-2 h-auto">
         <TabsTrigger value="cards" className="text-xs sm:text-sm py-2">
           <span className="hidden sm:inline">{t("myCards") || "Mes cartes"} ({cards.length})</span>
           <span className="sm:hidden">Cartes ({cards.length})</span>
-        </TabsTrigger>
-        <TabsTrigger value="mcards" className="text-xs sm:text-sm py-2">
-          <span className="hidden sm:inline">MCards ({mcards.length})</span>
-          <span className="sm:hidden">MCards ({mcards.length})</span>
         </TabsTrigger>
         <TabsTrigger value="notifications" className="relative text-xs sm:text-sm py-2">
           <span className="hidden sm:inline">{t("notifications") || "Notifications"}</span>
@@ -128,16 +103,6 @@ export const MyCardsTabsContent = ({
             onRefresh={handleRefresh}
           />
         )}
-      </TabsContent>
-
-      <TabsContent value="mcards" className="space-y-4 sm:space-y-6 mt-4">
-        <MyMCardsView
-          mcards={mcards}
-          loading={mcardsLoading}
-          onEdit={handleEditMCard}
-          onShare={handleShareMCard}
-          onView={handleViewMCard}
-        />
       </TabsContent>
 
       <TabsContent value="notifications" className="space-y-4 sm:space-y-6 mt-4">

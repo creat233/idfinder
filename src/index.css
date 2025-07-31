@@ -119,16 +119,6 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
 }
 
-/* Scrollbar hiding utilities */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
 .marker-police, .marker-medical, .marker-fire, .marker-other {
   transition: transform 0.2s ease;
 }

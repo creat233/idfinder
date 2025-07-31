@@ -2,36 +2,24 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Send, X, Maximize2, ShoppingBag } from 'lucide-react';
+import { MessageCircle, Send, X, Maximize2 } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewProductDialogProps {
   product: MCardProduct | null;
   isOpen: boolean;
   onClose: () => void;
   phoneNumber?: string;
-  mcardId?: string;
-  mcardOwnerName?: string;
-  mcardOwnerUserId?: string;
 }
 
 export const MCardViewProductDialog = ({ 
   product, 
   isOpen, 
   onClose, 
-  phoneNumber,
-  mcardId,
-  mcardOwnerName,
-  mcardOwnerUserId
+  phoneNumber 
 }: MCardViewProductDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
-  const navigate = useNavigate();
-  const { addToCart, isInCart } = useCart();
-  const { toast } = useToast();
 
   if (!product) return null;
 
@@ -48,40 +36,6 @@ export const MCardViewProductDialog = ({
       const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${product.name}" au prix de ${product.price} ${product.currency}.`);
       const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
       window.open(telegramUrl, '_blank');
-    }
-  };
-
-  const handleContactMessage = () => {
-    if (mcardId && mcardOwnerUserId) {
-      // Stocker les données du produit pour le message pré-rempli
-      const productContext = {
-        type: 'product' as const,
-        title: product.name,
-        mcardId,
-        mcardOwnerName: mcardOwnerName || 'Propriétaire',
-        recipientId: mcardOwnerUserId
-      };
-      
-      // Stocker dans localStorage pour que la page Messages puisse récupérer
-      localStorage.setItem('pendingMessage', JSON.stringify(productContext));
-      
-      // Rediriger vers la page des messages
-      navigate('/messages');
-      onClose();
-    }
-  };
-
-  const handleAddToCart = () => {
-    if (product && mcardId) {
-      addToCart(product, {
-        mcardId,
-        ownerName: mcardOwnerName,
-        ownerUserId: mcardOwnerUserId
-      });
-      toast({
-        title: "Produit ajouté au panier !",
-        description: `${product.name} a été ajouté à votre panier`
-      });
     }
   };
 
@@ -136,55 +90,27 @@ export const MCardViewProductDialog = ({
               )}
             </div>
 
-            {/* Boutons d'action */}
-            <div className="space-y-3">
-              {/* Bouton Ajouter au panier */}
-              <Button
-                onClick={handleAddToCart}
-                disabled={isInCart(product.id)}
-                className={`w-full py-3 text-base ${
-                  isInCart(product.id)
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-orange-600 hover:bg-orange-700 text-white"
-                }`}
-              >
-                <ShoppingBag className="h-5 w-5 mr-2" />
-                {isInCart(product.id) ? "Dans le panier" : "Ajouter au panier"}
-              </Button>
-
-              {/* Bouton Contacter via Messages */}
-              {mcardId && mcardOwnerUserId && (
+            {/* Boutons de contact */}
+            {phoneNumber && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Button 
-                  onClick={handleContactMessage}
-                  className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-base"
+                  onClick={handleWhatsAppContact}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  Contacter le vendeur
+                  Commander via WhatsApp
                 </Button>
-              )}
-              
-              {/* Boutons WhatsApp et Telegram si numéro disponible */}
-              {phoneNumber && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Button 
-                    onClick={handleWhatsAppContact}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
-                  >
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    Commander via WhatsApp
-                  </Button>
-                  
-                  <Button 
-                    onClick={handleTelegramContact}
-                    variant="outline"
-                    className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Commander via Telegram
-                  </Button>
-                </div>
-              )}
-            </div>
+                
+                <Button 
+                  onClick={handleTelegramContact}
+                  variant="outline"
+                  className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
+                >
+                  <Send className="h-5 w-5 mr-2" />
+                  Commander via Telegram
+                </Button>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

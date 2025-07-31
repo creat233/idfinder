@@ -22,20 +22,6 @@ const Messages = () => {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    
-    // Vérifier s'il y a un message en attente depuis un produit
-    const pendingMessage = localStorage.getItem('pendingMessage');
-    if (pendingMessage) {
-      try {
-        const messageData = JSON.parse(pendingMessage);
-        // Auto-ouvrir la conversation avec ce contexte
-        // Ceci sera géré par le composant ConversationsList
-        localStorage.removeItem('pendingMessage'); // Nettoyer après utilisation
-      } catch (error) {
-        console.error('Erreur parsing pendingMessage:', error);
-        localStorage.removeItem('pendingMessage');
-      }
-    }
   }, []);
 
   const handleSendMessage = async () => {
@@ -122,11 +108,19 @@ const Messages = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
+    <div className="h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
+      <Header />
+      
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 flex flex-col w-full h-full">
-          <div className="flex-1 min-h-0"
-               style={{ paddingBottom: '80px' }}>
+        <div className="px-4 py-6 flex-1 flex flex-col w-full max-w-none">
+          <div className="text-center mb-6 flex-shrink-0">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              💬 Messages
+            </h1>
+            <p className="text-gray-600">Vos conversations avec les propriétaires et visiteurs de MCards</p>
+          </div>
+
+          <div className="flex-1 min-h-0">
             {/* Vue mobile */}
             <div className="lg:hidden h-full">
               {selectedConversation ? (
@@ -160,7 +154,7 @@ const Messages = () => {
             </div>
 
             {/* Vue desktop */}
-            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full p-4">
+            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full">
               {/* Liste des conversations */}
               <div className="lg:col-span-1">
                 <ConversationsList

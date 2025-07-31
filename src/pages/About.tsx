@@ -1,6 +1,6 @@
 
 import { Header } from "@/components/Header";
-
+import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Shield, Users, Target, Heart, Phone } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -186,6 +186,7 @@ const About = () => {
         </section>
       </main>
 
+      <Footer />
     </div>
   );
 };
