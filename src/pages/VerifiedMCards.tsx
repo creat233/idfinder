@@ -1,9 +1,12 @@
+
 import { useState, useEffect } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
 import { Footer } from "@/components/Footer";
 import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardVerifiedBadge } from "@/components/mcards/MCardVerifiedBadge";
 import { MCardInteractionButtons } from "@/components/mcards/MCardInteractionButtons";
+import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
+import { VerifiedMCardsStatusCarousel } from "@/components/mcards/view/VerifiedMCardsStatusCarousel";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +21,7 @@ const VerifiedMCards = () => {
   const [filteredMCards, setFilteredMCards] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentLanguage, setCurrentLanguage] = useState<'fr' | 'en'>('fr');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -75,9 +79,36 @@ const VerifiedMCards = () => {
   };
 
   const handleCardClick = (slug: string) => {
-    // Toujours utiliser l'URL complète finderid.info pour les cartes
     const url = URL_CONFIG.getMCardUrl(slug);
     window.open(url, '_blank');
+  };
+
+  const getTranslatedText = (text: string) => {
+    if (currentLanguage === 'fr') return text;
+    
+    // Traductions de base
+    const translations: Record<string, string> = {
+      'MCards Vérifiées': 'Verified MCards',
+      'Découvrez notre sélection de cartes professionnelles': 'Discover our selection of professional cards',
+      'vérifiées et authentifiées': 'verified and authenticated',
+      'par notre équipe. Faites confiance aux professionnels certifiés pour vos besoins.': 'by our team. Trust certified professionals for your needs.',
+      'Rechercher par nom, entreprise, secteur d\'activité, service...': 'Search by name, company, industry, service...',
+      'professionnel': 'professional',
+      'professionnels': 'professionals',
+      'vérifié': 'verified',
+      'vérifiés': 'verified',
+      'trouvé': 'found',
+      'trouvés': 'found',
+      'Aucun résultat trouvé': 'No results found',
+      'Aucune carte vérifiée': 'No verified cards',
+      'Essayez avec d\'autres mots-clés ou affinez votre recherche': 'Try other keywords or refine your search',
+      'Les premières cartes vérifiées apparaîtront bientôt ici': 'The first verified cards will appear here soon',
+      'Voir le profil': 'View profile',
+      'Premium': 'Premium',
+      'Essentiel': 'Essential'
+    };
+
+    return translations[text] || text;
   };
 
   if (loading) {
@@ -85,7 +116,7 @@ const VerifiedMCards = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
         <PublicHeader />
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center">Chargement des cartes vérifiées...</div>
+          <div className="text-center">{getTranslatedText('Chargement des cartes vérifiées...')}</div>
         </div>
         <Footer />
       </div>
@@ -104,31 +135,33 @@ const VerifiedMCards = () => {
           </div>
           
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-            MCards Vérifiées
+            {getTranslatedText('MCards Vérifiées')}
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Découvrez notre sélection de cartes professionnelles <span className="font-semibold text-blue-600">vérifiées et authentifiées</span> par notre équipe. 
-            Faites confiance aux professionnels certifiés pour vos besoins.
+            {getTranslatedText('Découvrez notre sélection de cartes professionnelles')} <span className="font-semibold text-blue-600">{getTranslatedText('vérifiées et authentifiées')}</span> {getTranslatedText('par notre équipe. Faites confiance aux professionnels certifiés pour vos besoins.')}
           </p>
           
           {/* Search Bar améliorée */}
           <div className="max-w-3xl mx-auto">
             <MCardSearchBar 
               onSearch={handleSearch}
-              placeholder="🔍 Rechercher par nom, entreprise, secteur d'activité, service..."
+              placeholder={`🔍 ${getTranslatedText('Rechercher par nom, entreprise, secteur d\'activité, service...')}`}
               className="shadow-xl"
             />
           </div>
         </div>
+
+        {/* Carousel des statuts */}
+        <VerifiedMCardsStatusCarousel />
 
         {/* Stats améliorées */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-full px-6 py-3 shadow-lg">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-lg font-semibold text-gray-800">
-              {filteredMCards.length} professionnel{filteredMCards.length > 1 ? 's' : ''} vérifié{filteredMCards.length > 1 ? 's' : ''} 
-              {searchQuery && ' trouvé' + (filteredMCards.length > 1 ? 's' : '')}
+              {filteredMCards.length} {getTranslatedText(filteredMCards.length > 1 ? 'professionnels' : 'professionnel')} {getTranslatedText(filteredMCards.length > 1 ? 'vérifiés' : 'vérifié')} 
+              {searchQuery && ' ' + getTranslatedText(filteredMCards.length > 1 ? 'trouvés' : 'trouvé')}
             </span>
             <CheckCircle className="h-5 w-5 text-green-600" />
           </div>
@@ -142,12 +175,12 @@ const VerifiedMCards = () => {
                 <CheckCircle className="h-12 w-12 text-gray-400" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {searchQuery ? 'Aucun résultat trouvé' : 'Aucune carte vérifiée'}
+                {searchQuery ? getTranslatedText('Aucun résultat trouvé') : getTranslatedText('Aucune carte vérifiée')}
               </h3>
               <p className="text-gray-500">
                 {searchQuery 
-                  ? 'Essayez avec d\'autres mots-clés ou affinez votre recherche' 
-                  : 'Les premières cartes vérifiées apparaîtront bientôt ici'
+                  ? getTranslatedText('Essayez avec d\'autres mots-clés ou affinez votre recherche')
+                  : getTranslatedText('Les premières cartes vérifiées apparaîtront bientôt ici')
                 }
               </p>
             </div>
@@ -242,7 +275,7 @@ const VerifiedMCards = () => {
                             : 'border-blue-200 text-blue-700 bg-blue-50'
                         }`}
                       >
-                        {mcard.plan === 'premium' ? '✨ Premium' : '🎯 Essentiel'}
+                        {mcard.plan === 'premium' ? `✨ ${getTranslatedText('Premium')}` : `🎯 ${getTranslatedText('Essentiel')}`}
                       </Badge>
                     </div>
                     
@@ -257,7 +290,7 @@ const VerifiedMCards = () => {
                     <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-0.5 group-hover:from-blue-700 group-hover:to-purple-700 transition-all duration-300">
                       <div className="bg-white rounded-md px-4 py-2 text-center">
                         <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                          Voir le profil →
+                          {getTranslatedText('Voir le profil')} →
                         </span>
                       </div>
                     </div>
@@ -277,6 +310,14 @@ const VerifiedMCards = () => {
             ))}
           </div>
         )}
+      </div>
+      
+      {/* Bouton de traduction */}
+      <div className="fixed bottom-20 right-4 z-[100]">
+        <MCardTranslateButton
+          currentLanguage={currentLanguage}
+          onLanguageChange={setCurrentLanguage}
+        />
       </div>
       
       <Footer />
