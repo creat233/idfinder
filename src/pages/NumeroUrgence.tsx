@@ -37,7 +37,7 @@ const NumeroUrgence = () => {
       <PublicHeader />
       
       <main className="flex-grow bg-white">
-        <div className="container mx-auto py-12 px-4">
+        <div className="container mx-auto py-12 px-4" style={{ paddingTop: '120px' }}>
           <EmergencyHeader />
           
           <div className="max-w-4xl mx-auto">

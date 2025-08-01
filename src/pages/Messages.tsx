@@ -123,8 +123,10 @@ const Messages = () => {
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
-      {/* Header conditionnel - masqué sur mobile quand conversation ouverte */}
-      {!(selectedConversation && window.innerWidth < 1024) && <Header />}
+      {/* Header masqué complètement sur mobile quand conversation ouverte */}
+      <div className={selectedConversation ? "hidden lg:block" : "block"}>
+        <Header />
+      </div>
       
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 flex flex-col w-full h-full">
