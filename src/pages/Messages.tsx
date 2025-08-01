@@ -9,6 +9,14 @@ import { Conversation } from "@/types/messages";
 
 const Messages = () => {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  
+  // Émettre un événement quand l'état de la conversation change
+  useEffect(() => {
+    const event = new CustomEvent('conversationStateChange', {
+      detail: { hasSelectedConversation: !!selectedConversation }
+    });
+    window.dispatchEvent(event);
+  }, [selectedConversation]);
   const [replyText, setReplyText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
@@ -135,19 +143,21 @@ const Messages = () => {
             {/* Vue mobile */}
             <div className="lg:hidden h-full">
               {selectedConversation ? (
-                <ConversationView
-                  conversation={selectedConversation}
-                  currentUserId={user.id}
-                  replyText={replyText}
-                  sending={sending}
-                  onReplyChange={setReplyText}
-                  onSendMessage={handleSendMessage}
-                  onBack={() => setSelectedConversation(null)}
-                  onDeleteMessage={deleteMessage}
-                  onBlockUser={handleBlockUser}
-                  onUnblockUser={handleUnblockUser}
-                  onDeleteConversation={handleDeleteConversation}
-                />
+                <div className="h-full" style={{ paddingBottom: '0px' }}>
+                  <ConversationView
+                    conversation={selectedConversation}
+                    currentUserId={user.id}
+                    replyText={replyText}
+                    sending={sending}
+                    onReplyChange={setReplyText}
+                    onSendMessage={handleSendMessage}
+                    onBack={() => setSelectedConversation(null)}
+                    onDeleteMessage={deleteMessage}
+                    onBlockUser={handleBlockUser}
+                    onUnblockUser={handleUnblockUser}
+                    onDeleteConversation={handleDeleteConversation}
+                  />
+                </div>
               ) : (
                 <ConversationsList
                   conversations={conversations}

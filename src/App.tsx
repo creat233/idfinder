@@ -8,6 +8,7 @@ import { TranslationProvider } from "./providers/TranslationProvider";
 import { CartProvider } from "./contexts/CartContext";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAutoRefresh } from "./hooks/useAutoRefresh";
+import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -49,6 +50,18 @@ function AutoRefreshWrapper() {
 }
 
 function AppContent() {
+  const [isInConversation, setIsInConversation] = useState(false);
+  
+  useEffect(() => {
+    // Écouter les changements de state des conversations
+    const handleConversationChange = (event: CustomEvent) => {
+      setIsInConversation(event.detail.hasSelectedConversation);
+    };
+    
+    window.addEventListener('conversationStateChange', handleConversationChange as EventListener);
+    return () => window.removeEventListener('conversationStateChange', handleConversationChange as EventListener);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider>
@@ -89,7 +102,7 @@ function AppContent() {
               <Route path="/status/:statusId" element={<StatusView />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
             </Routes>
-            <MobileBottomNav />
+            {!isInConversation && <MobileBottomNav />}
           </BrowserRouter>
           </TooltipProvider>
         </CartProvider>

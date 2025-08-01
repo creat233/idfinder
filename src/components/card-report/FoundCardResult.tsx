@@ -41,6 +41,8 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
         return 'Permis de conduire';
       case 'student_card':
         return 'Carte étudiante';
+      case 'health_card':
+        return 'Carte de santé';
       case 'vehicle_registration':
         return 'Carte grise véhicule';
       case 'motorcycle_registration':
@@ -125,29 +127,28 @@ export const FoundCardResult = ({ cardData }: FoundCardResultProps) => {
             <p className="font-semibold text-gray-900">{getDocumentTypeLabel(cardData.document_type)}</p>
           </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800 mb-2">Informations de récupération</h4>
-              <div className="space-y-2 text-sm text-blue-700">
-                <p>• Frais de récupération : <strong>{priceInfo.baseFee} {priceInfo.symbol}</strong> (incluant la récompense du trouveur)</p>
-                <p>• Livraison à domicile disponible (frais supplémentaires à votre charge)</p>
-                <p>• Récupération en main propre possible selon accord avec le trouveur</p>
+            {/* Affichage conditionnel selon le type de carte */}
+            {(cardData.document_type === 'student_card' || cardData.document_type === 'health_card') ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h4 className="font-semibold text-green-800 mb-2">✨ Service GRATUIT</h4>
+                <div className="space-y-2 text-sm text-green-700">
+                  <p>• <strong>Récupération 100% GRATUITE</strong> pour ce type de document</p>
+                  <p>• Contact direct avec le trouveur après validation de votre identité</p>
+                  <p>• Numéro de téléphone disponible immédiatement</p>
+                  <p>• Accord direct pour la récupération (main propre ou livraison)</p>
+                </div>
               </div>
-            </div>
-
-            {/* Affichage du numéro pour cartes étudiantes et santé */}
-            {(cardData.document_type === 'student_card' || cardData.document_type === 'health_card') && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h4 className="font-semibold text-yellow-800 mb-2 flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  Contact direct avec le trouveur
-                </h4>
-                <div className="space-y-2 text-sm text-yellow-700">
-                  <p>• Pour ce type de document, vous pouvez contacter directement le trouveur</p>
-                  <p>• Numéro disponible après validation de votre identité</p>
-                  <p>• Cliquez sur "Récupérer ma carte" pour obtenir les coordonnées</p>
+            ) : (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-800 mb-2">Informations de récupération</h4>
+                <div className="space-y-2 text-sm text-blue-700">
+                  <p>• Frais de récupération : <strong>{priceInfo.baseFee} {priceInfo.symbol}</strong> (incluant la récompense du trouveur)</p>
+                  <p>• Livraison à domicile disponible (frais supplémentaires à votre charge)</p>
+                  <p>• Récupération en main propre possible selon accord avec le trouveur</p>
                 </div>
               </div>
             )}
+
         </CardContent>
         
         <CardFooter className="pt-2 pb-6 bg-gray-50 border-t">
