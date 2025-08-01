@@ -121,12 +121,7 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
             >
               {t('login')}
             </Button>
-            <Button 
-              onClick={onGetStarted}
-              className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:opacity-90"
-            >
-              {t('getStartedNow')}
-            </Button>
+            {/* Bouton Signaler masqué */}
           </>
         )}
       </div>

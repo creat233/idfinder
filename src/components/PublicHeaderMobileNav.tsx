@@ -97,12 +97,7 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onGetStarte
               >
                 {t('login')}
               </Button>
-              <Button 
-                onClick={() => { onGetStarted(); onClose(); }}
-                className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white"
-              >
-                {t('getStartedNow')}
-              </Button>
+              {/* Bouton Signaler masqué */}
             </>
           )}
         </div>

@@ -27,11 +27,7 @@ export const useMessageSender = (user: any, onMessageSent: () => void) => {
 
       if (error) throw error;
 
-      toast({
-        title: "✅ Message envoyé",
-        description: "Votre message a été envoyé avec succès"
-      });
-
+      // Pas de notification - le message apparaît automatiquement
       onMessageSent();
     } catch (error: any) {
       toast({

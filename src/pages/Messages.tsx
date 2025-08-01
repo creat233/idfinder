@@ -123,10 +123,13 @@ const Messages = () => {
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
+      {/* Header conditionnel - masqué sur mobile quand conversation ouverte */}
+      {!(selectedConversation && window.innerWidth < 1024) && <Header />}
+      
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 flex flex-col w-full h-full">
           <div className="flex-1 min-h-0"
-               style={{ paddingBottom: '80px' }}>
+               style={{ paddingBottom: selectedConversation && window.innerWidth < 1024 ? '0px' : '80px', paddingTop: selectedConversation && window.innerWidth < 1024 ? '0px' : '80px' }}>
             {/* Vue mobile */}
             <div className="lg:hidden h-full">
               {selectedConversation ? (
@@ -160,7 +163,7 @@ const Messages = () => {
             </div>
 
             {/* Vue desktop */}
-            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full p-4">
+            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full p-4" style={{ paddingTop: '80px' }}>
               {/* Liste des conversations */}
               <div className="lg:col-span-1">
                 <ConversationsList

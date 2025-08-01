@@ -29,10 +29,10 @@ export function ConversationMessages({
   return (
     <div className="flex-1 bg-gradient-to-b from-gray-50/50 to-white overflow-hidden relative">
       <ScrollArea ref={scrollAreaRef} className="h-full w-full">
-        <div className="p-4 md:p-6 space-y-2 min-h-full flex flex-col justify-end"
+        <div className="p-4 md:p-6 space-y-2"
              style={{ 
                paddingBottom: '140px',
-               minHeight: 'calc(100vh - 180px)'
+               minHeight: '100%'
              }}>
           {messages.length === 0 ? (
             <EmptyMessages />

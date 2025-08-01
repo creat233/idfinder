@@ -122,19 +122,23 @@ export function ConversationView({
       />
 
       <div className="flex-1 overflow-hidden relative">
-        <ConversationMessages
-          messages={conversation.messages}
-          currentUserId={currentUserId}
-          onDeleteMessage={onDeleteMessage}
-        />
-        
-        <div className="absolute bottom-0 left-0 right-0 border-t bg-white z-10">
-          <MessageInput
-            value={replyText}
-            onChange={onReplyChange}
-            onSend={onSendMessage}
-            sending={sending}
-          />
+        <div className="h-full flex flex-col">
+          <div className="flex-1 overflow-y-auto">
+            <ConversationMessages
+              messages={conversation.messages}
+              currentUserId={currentUserId}
+              onDeleteMessage={onDeleteMessage}
+            />
+          </div>
+          
+          <div className="border-t bg-white z-10 flex-shrink-0">
+            <MessageInput
+              value={replyText}
+              onChange={onReplyChange}
+              onSend={onSendMessage}
+              sending={sending}
+            />
+          </div>
         </div>
       </div>
     </div>

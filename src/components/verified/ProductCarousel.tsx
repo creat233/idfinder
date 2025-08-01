@@ -168,9 +168,9 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
         </div>
       </div>
       
-      {/* Carousel horizontal avec scroll */}
+      {/* Grille responsive sans scroll */}
       <div className="relative">
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredMCards.map((mcard) => {
         // Filtrer les produits selon la catégorie pour cette carte
         const filteredProducts = selectedCategory === "all" 
@@ -184,7 +184,7 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
         const adjustedIndex = Math.min(currentIndex, filteredProducts.length - 1);
         const currentProduct = filteredProducts[adjustedIndex];
         return (
-          <div key={mcard.id} className="flex-none w-80 bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border border-gray-100 snap-start animate-fade-in hover-scale">
+          <div key={mcard.id} className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border border-gray-100 animate-fade-in hover-scale">
             {/* Section Image du produit - Format carré pour une meilleure visibilité */}
             <div className="relative h-64 overflow-hidden">
               <img
@@ -313,13 +313,7 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
           </div>
         );
       })}
-          
-          {/* Espace pour le scroll */}
-          <div className="flex-none w-4"></div>
         </div>
-        
-        {/* Indicateur de scroll */}
-        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-white via-white to-transparent w-8 h-full pointer-events-none"></div>
       </div>
     </div>
   );
