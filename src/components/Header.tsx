@@ -8,75 +8,72 @@ import { useToast } from "@/hooks/use-toast";
 import { HeaderLinks } from "./HeaderLinks";
 import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
 import { AppMobileNav } from "./AppMobileNav";
+import { useAuthState } from "@/hooks/useAuthState";
+import { robustSignOut } from "@/utils/authCleanup";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { user, isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     const checkIsAdmin = async () => {
-      const { data, error } = await supabase.rpc('is_admin');
-      if (error) {
-        console.error("Error checking admin status:", error);
+      if (!user) {
         setIsAdmin(false);
-      } else {
-        setIsAdmin(data);
-        
-        // Si c'est un admin et qu'on vient de se connecter, le rediriger
-        if (data && user) {
-          const currentPath = window.location.pathname;
-          if (!currentPath.startsWith("/admin") && 
-              currentPath !== "/profile" && 
-              currentPath !== "/notifications") {
-            console.log('Admin détecté dans Header, redirection vers admin');
-            navigate("/admin/codes-promo");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.rpc('is_admin');
+        if (error) {
+          console.error("Error checking admin status:", error);
+          setIsAdmin(false);
+        } else {
+          setIsAdmin(data || false);
+          
+          // Si c'est un admin et qu'on vient de se connecter, le rediriger
+          if (data && user) {
+            const currentPath = window.location.pathname;
+            if (!currentPath.startsWith("/admin") && 
+                currentPath !== "/profile" && 
+                currentPath !== "/notifications") {
+              console.log('Admin détecté dans Header, redirection vers admin');
+              navigate("/admin/codes-promo");
+            }
           }
         }
+      } catch (error) {
+        console.error("Error in checkIsAdmin:", error);
+        setIsAdmin(false);
       }
     };
 
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      
-      if (user) {
-        await checkIsAdmin();
-      }
-    };
-
-    getUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        const currentUser = session?.user ?? null;
-        setUser(currentUser);
-        
-        if (currentUser) {
-          await checkIsAdmin();
-        } else {
-          setIsAdmin(false);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, [navigate, user]);
+    // Utiliser setTimeout pour éviter les deadlocks avec onAuthStateChange
+    if (user) {
+      setTimeout(() => {
+        checkIsAdmin();
+      }, 0);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user, navigate]);
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      setIsAdmin(false);
+      await robustSignOut(supabase);
       toast({
         title: "Déconnexion réussie",
         description: "Vous avez été déconnecté avec succès.",
       });
-      navigate("/");
     } catch (error) {
       console.error("Error signing out:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de déconnexion",
+        description: "Une erreur s'est produite lors de la déconnexion.",
+      });
     }
   };
 

@@ -111,6 +111,27 @@ export const MCardViewProducts = ({
     });
   };
 
+  const getActionButtonText = (category: string) => {
+    switch (category.toLowerCase()) {
+      case 'service':
+        return 'Contacte';
+      case 'produit':
+        return 'Achète';
+      case 'menu restaurant':
+        return 'Commende';
+      case 'consultation':
+        return 'Rendez-Vous';
+      case 'formation':
+        return 'S\'inscrire';
+      case 'événement':
+        return 'Réserve';
+      case 'autre':
+        return 'Contacte';
+      default:
+        return 'Contacte';
+    }
+  };
+
   if (activeProducts.length === 0 && !canAddProduct) return null;
 
   return (
@@ -263,7 +284,7 @@ export const MCardViewProducts = ({
                           className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
                         >
                           <Send className="h-4 w-4 mr-2" />
-                          Contacter
+                          {getActionButtonText(product.category)}
                         </Button>
                       </>
                     )}

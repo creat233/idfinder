@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/useTranslation";
+import { cleanupAuthState } from "@/utils/authCleanup";
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -112,6 +113,17 @@ export const useAuth = () => {
     setError(null);
     
     try {
+      // Nettoyer l'état d'authentification avant de se connecter
+      cleanupAuthState();
+      
+      // Tentative de déconnexion globale pour éviter les conflits
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continuer même si la déconnexion échoue
+        console.log('Déconnexion préventive ignorée');
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
@@ -125,7 +137,8 @@ export const useAuth = () => {
       if (data.user) {
         await supabase.rpc('log_login_event');
         console.log("✅ Connexion réussie, redirection vers l'accueil");
-        // Redirection immédiate après connexion réussie
+        
+        // Forcer le rechargement de page pour un état propre
         window.location.href = "/";
       }
 

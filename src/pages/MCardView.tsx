@@ -47,7 +47,7 @@ const MCardView = () => {
   const isPendingPayment = mcard.subscription_status === 'pending_payment';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-24 md:pb-0">
       {/* Header */}
       <MCardViewHeader
         isOwner={isOwner}

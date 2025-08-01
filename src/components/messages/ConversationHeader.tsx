@@ -31,9 +31,10 @@ export function ConversationHeader({
             variant="ghost"
             size="sm"
             onClick={onBack}
-            className="lg:hidden hover:bg-gray-100"
+            className="hover:bg-gray-100 flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Retour</span>
           </Button>
           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
             {otherUserName.charAt(0).toUpperCase() || 'U'}

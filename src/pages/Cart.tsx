@@ -24,13 +24,15 @@ export default function Cart() {
 
   const handleContactOwner = (item: any) => {
     if (item.mcardOwnerUserId && item.mcardOwnerName) {
-      setSelectedContact({
-        mcardId: item.mcardId,
-        ownerName: item.mcardOwnerName,
-        ownerUserId: item.mcardOwnerUserId,
-        productName: item.name
+      const message = `Bonjour, je suis intéressé(e) par votre produit "${item.name}" que j'ai ajouté à mon panier. Pouvez-vous me donner plus d'informations ?`;
+      navigate('/messages', { 
+        state: { 
+          prefilledMessage: message,
+          recipientId: item.mcardOwnerUserId,
+          mcardId: item.mcardId,
+          mcardOwnerName: item.mcardOwnerName
+        } 
       });
-      setContactDialogOpen(true);
     }
   };
 
@@ -59,7 +61,7 @@ export default function Cart() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 py-8 pb-24 md:pb-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center gap-4 mb-8">
             <Button 
@@ -89,7 +91,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 pb-24 md:pb-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -214,21 +216,35 @@ export default function Cart() {
 
         {/* Image Full Screen Dialog */}
         <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-          <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-black/95 border-none">
-            <div className="relative flex items-center justify-center w-full h-full">
+          <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 bg-gradient-to-br from-black/95 to-gray-900/95 border-none overflow-hidden">
+            <div className="relative w-full h-full min-h-[80vh] flex items-center justify-center">
+              {/* Elegant close button */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setImageDialogOpen(false)}
-                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+                className="absolute top-6 right-6 z-50 text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm rounded-full border border-white/20 transition-all duration-300"
               >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
               </Button>
-              <img
-                src={selectedImage}
-                alt="Image en plein écran"
-                className="max-w-full max-h-full object-contain"
-              />
+              
+              {/* Beautiful image container */}
+              <div className="relative p-8 w-full h-full flex items-center justify-center">
+                <div className="relative max-w-full max-h-full">
+                  <img
+                    src={selectedImage}
+                    alt="Image en plein écran"
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  />
+                  {/* Subtle glow effect */}
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-transparent via-transparent to-white/5 pointer-events-none"></div>
+                </div>
+              </div>
+              
+              {/* Background pattern for elegance */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-secondary/20"></div>
+              </div>
             </div>
           </DialogContent>
         </Dialog>

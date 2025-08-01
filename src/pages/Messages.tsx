@@ -122,19 +122,11 @@ const Messages = () => {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
-      <Header />
-      
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex flex-col">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="px-4 py-6 flex-1 flex flex-col w-full max-w-none">
-          <div className="text-center mb-6 flex-shrink-0">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-              💬 Messages
-            </h1>
-            <p className="text-gray-600">Vos conversations avec les propriétaires et visiteurs de MCards</p>
-          </div>
-
-          <div className="flex-1 min-h-0">
+        <div className="flex-1 flex flex-col w-full h-full">
+          <div className="flex-1 min-h-0"
+               style={{ paddingBottom: '80px' }}>
             {/* Vue mobile */}
             <div className="lg:hidden h-full">
               {selectedConversation ? (
@@ -168,7 +160,7 @@ const Messages = () => {
             </div>
 
             {/* Vue desktop */}
-            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full">
+            <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full p-4">
               {/* Liste des conversations */}
               <div className="lg:col-span-1">
                 <ConversationsList

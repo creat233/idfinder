@@ -48,7 +48,7 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
           {t('about')}
         </button>
         <button 
-          onClick={() => navigate("/mcards-verifiees")}
+          onClick={() => navigate("/verified-mcards")}
           className="text-gray-600 hover:text-[#7E69AB] transition-colors"
         >
           MCards Vérifiées

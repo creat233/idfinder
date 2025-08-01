@@ -29,7 +29,7 @@ const MyCards = () => {
     deleteAllNotifications,
   } = useNotifications();
 
-  const [activeTab, setActiveTab] = useState<"cards" | "notifications">("cards");
+  const [activeTab, setActiveTab] = useState<"cards" | "notifications" | "mcards">("cards");
   const [showAdModal, setShowAdModal] = useState(false);
 
   // Auto cleanup old notifications
@@ -50,9 +50,9 @@ const MyCards = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 md:pb-0">
       <Header />
-      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-full overflow-x-hidden">
         <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
           <MyCardsHeader
             cardCount={cards.length}
