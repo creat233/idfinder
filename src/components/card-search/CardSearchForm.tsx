@@ -40,7 +40,6 @@ export const CardSearchForm = () => {
         .from('reported_cards')
         .select('*')
         .eq('card_number', searchQuery.trim())
-        .eq('status', 'pending')
         .single();
 
       if (error && error.code !== 'PGRST116') {

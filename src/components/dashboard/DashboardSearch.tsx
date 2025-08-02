@@ -93,6 +93,7 @@ export const DashboardSearch = () => {
       motorcycle_registration: "Carte grise moto",
       residence_permit: "Carte de séjour",
       student_card: "Carte étudiante",
+      health_card: "Carte de santé",
     };
     return types[type] || type;
   };
@@ -163,12 +164,12 @@ export const DashboardSearch = () => {
                 <h4 className="font-semibold text-blue-800 mb-2">
                   Pour récupérer votre carte :
                 </h4>
-                {foundCard.document_type === "student_card" ? (
+                {foundCard.document_type === "student_card" || foundCard.document_type === "health_card" ? (
                   <div className="text-sm text-blue-700">
                     <p>📞 Contactez directement la personne qui a trouvé votre carte :</p>
                     <p className="font-mono text-lg mt-1">{foundCard.reporter_phone}</p>
                     <p className="text-xs mt-2 text-green-600">
-                      ✨ Service gratuit pour les cartes étudiantes
+                      ✨ Service gratuit pour les cartes {foundCard.document_type === "student_card" ? "étudiantes" : "de santé"}
                     </p>
                   </div>
                 ) : (
