@@ -13,6 +13,7 @@ import { RecoveryInstructions } from "@/components/card-search/RecoveryInstructi
 import { RecoveryActionButton } from "@/components/card-search/RecoveryActionButton";
 import { CardSearchLoading } from "@/components/card-search/CardSearchLoading";
 import { CardNotFound } from "@/components/card-search/CardNotFound";
+import { FreeCardContactButton } from "@/components/card-search/FreeCardContactButton";
 
 interface ReportedCard {
   id: string;
@@ -28,6 +29,7 @@ interface ReportedCard {
   recovery_currency?: string;
   recovery_currency_symbol?: string;
   recovery_final_price?: number;
+  reporter_phone?: string;
 }
 
 const RechercheResultat = () => {
@@ -61,8 +63,7 @@ const RechercheResultat = () => {
         .from('reported_cards')
         .select('*')
         .eq('card_number', cardNumber)
-        .eq('status', 'pending')
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching card:', error);
@@ -107,6 +108,8 @@ const RechercheResultat = () => {
   const handleRecoveryClick = () => {
     setShowOwnerDialog(true);
   };
+
+  const isFreeCard = card?.document_type === 'student_card' || card?.document_type === 'health_card';
 
   // Affichage pendant le chargement
   if (loading) {
@@ -178,32 +181,38 @@ const RechercheResultat = () => {
                 <div className="lg:sticky lg:top-24 space-y-4">
                   
                   <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
-                    <RecoveryActionButton onRecoveryClick={handleRecoveryClick} />
+                    {isFreeCard ? (
+                      <FreeCardContactButton card={card} />
+                    ) : (
+                      <RecoveryActionButton onRecoveryClick={handleRecoveryClick} />
+                    )}
                   </div>
 
-                  <div className="hidden lg:block bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-800 mb-2 text-sm">
-                      📋 Informations rapides
-                    </h3>
-                    <div className="space-y-2 text-xs text-blue-700">
-                      <div className="flex justify-between">
-                        <span>Frais de base:</span>
-                        <span className="font-semibold">
-                          {card.recovery_base_fee ? `${card.recovery_base_fee} ${card.recovery_currency_symbol || 'FCFA'}` : '7000 FCFA'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Prix final:</span>
-                        <span className="font-semibold text-green-600">
-                          {card.recovery_final_price ? `${card.recovery_final_price} ${card.recovery_currency_symbol || 'FCFA'}` : 'À déterminer'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Livraison:</span>
-                        <span className="font-semibold">Disponible</span>
+                  {!isFreeCard && (
+                    <div className="hidden lg:block bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h3 className="font-semibold text-blue-800 mb-2 text-sm">
+                        📋 Informations rapides
+                      </h3>
+                      <div className="space-y-2 text-xs text-blue-700">
+                        <div className="flex justify-between">
+                          <span>Frais de base:</span>
+                          <span className="font-semibold">
+                            {card.recovery_base_fee ? `${card.recovery_base_fee} ${card.recovery_currency_symbol || 'FCFA'}` : '7000 FCFA'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Prix final:</span>
+                          <span className="font-semibold text-green-600">
+                            {card.recovery_final_price ? `${card.recovery_final_price} ${card.recovery_currency_symbol || 'FCFA'}` : 'À déterminer'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Livraison:</span>
+                          <span className="font-semibold">Disponible</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -212,23 +221,25 @@ const RechercheResultat = () => {
               <RecoveryInstructions />
             </div>
 
-            <div className="sm:hidden mt-6 bg-white rounded-lg shadow-sm border p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 text-sm">
-                💡 Informations importantes
-              </h3>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="text-center p-2 bg-blue-50 rounded">
-                  <div className="font-semibold text-blue-800">
-                    {card.recovery_base_fee ? `${card.recovery_base_fee}` : '7000'} {card.recovery_currency_symbol || 'FCFA'}
+            {!isFreeCard && (
+              <div className="sm:hidden mt-6 bg-white rounded-lg shadow-sm border p-4">
+                <h3 className="font-semibold text-gray-800 mb-3 text-sm">
+                  💡 Informations importantes
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="text-center p-2 bg-blue-50 rounded">
+                    <div className="font-semibold text-blue-800">
+                      {card.recovery_base_fee ? `${card.recovery_base_fee}` : '7000'} {card.recovery_currency_symbol || 'FCFA'}
+                    </div>
+                    <div className="text-blue-600">Frais de récupération</div>
                   </div>
-                  <div className="text-blue-600">Frais de récupération</div>
-                </div>
-                <div className="text-center p-2 bg-green-50 rounded">
-                  <div className="font-semibold text-green-800">Réduction</div>
-                  <div className="text-green-600">Avec code promo</div>
+                  <div className="text-center p-2 bg-green-50 rounded">
+                    <div className="font-semibold text-green-800">Réduction</div>
+                    <div className="text-green-600">Avec code promo</div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="mt-8 sm:mt-12 text-center">
               <div className="bg-gray-100 rounded-lg p-4 sm:p-6">
@@ -260,7 +271,7 @@ const RechercheResultat = () => {
 
       <Footer />
 
-      {showOwnerDialog && (
+      {!isFreeCard && showOwnerDialog && (
         <OwnerInfoDialog
           isOpen={showOwnerDialog}
           onClose={() => setShowOwnerDialog(false)}

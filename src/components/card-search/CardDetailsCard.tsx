@@ -26,6 +26,7 @@ export const CardDetailsCard = ({ card }: CardDetailsCardProps) => {
       case 'license': return 'Permis de conduire';
       case 'driver_license': return 'Permis de conduire';
       case 'student_card': return 'Carte étudiante';
+      case 'health_card': return 'Carte de santé';
       case 'vehicle_registration': return 'Carte grise véhicule';
       case 'motorcycle_registration': return 'Carte grise moto';
       case 'residence_permit': return 'Titre de séjour';

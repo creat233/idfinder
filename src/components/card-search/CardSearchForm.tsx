@@ -40,7 +40,7 @@ export const CardSearchForm = () => {
         .from('reported_cards')
         .select('*')
         .eq('card_number', searchQuery.trim())
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         throw error;
