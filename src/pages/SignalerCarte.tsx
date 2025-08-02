@@ -197,13 +197,15 @@ const SignalerCarte = () => {
               </div>
             )}
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? t("sending") : t("signalCard")}
-            </Button>
+            <div className="sticky bottom-4 bg-white p-4 -mx-4 border-t shadow-lg">
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? t("sending") : t("signalCard")}
+              </Button>
+            </div>
           </form>
         </div>
       </main>

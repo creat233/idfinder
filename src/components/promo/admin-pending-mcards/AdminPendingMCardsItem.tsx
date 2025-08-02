@@ -96,9 +96,13 @@ export const AdminPendingMCardsItem = ({
             <Badge variant="secondary" className="bg-blue-100 text-blue-800">
               Plan {planInfo?.name || mcard.plan}
             </Badge>
-            {planInfo && (
+            {planInfo && planInfo.price > 0 ? (
               <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50">
                 {planInfo.price.toLocaleString()} FCFA
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="text-blue-600 border-blue-600 bg-blue-50">
+                Gratuit
               </Badge>
             )}
           </div>
@@ -144,7 +148,10 @@ export const AdminPendingMCardsItem = ({
             ) : (
               <>
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Activer la carte ({planInfo?.price.toLocaleString()} FCFA)
+                {planInfo && planInfo.price > 0 
+                  ? `Activer la carte (${planInfo.price.toLocaleString()} FCFA)`
+                  : 'Activer la carte (Gratuit)'
+                }
               </>
             )}
           </Button>
