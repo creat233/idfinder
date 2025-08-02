@@ -197,7 +197,7 @@ const SignalerCarte = () => {
               </div>
             )}
 
-            <div className="sticky bottom-4 bg-white p-4 -mx-4 border-t shadow-lg">
+            <div className="sticky bottom-20 bg-white p-4 -mx-4 border-t shadow-lg">
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-lg"
