@@ -1077,6 +1077,20 @@ export type Database = {
           country: string
         }[]
       }
+      admin_get_expired_mcards: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          full_name: string
+          plan: string
+          user_email: string
+          user_phone: string
+          subscription_expires_at: string
+          days_expired: number
+          created_at: string
+        }[]
+      }
       admin_get_pending_mcards: {
         Args: Record<PropertyKey, never>
         Returns: {
