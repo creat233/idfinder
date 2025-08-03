@@ -1119,6 +1119,14 @@ export type Database = {
           days_remaining: number
         }[]
       }
+      admin_send_renewal_notifications: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          success: boolean
+          message: string
+          notifications_sent: number
+        }[]
+      }
       can_activate_promo_codes: {
         Args: { user_email: string }
         Returns: boolean

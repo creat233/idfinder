@@ -24,6 +24,8 @@ import About from "./pages/About";
 import MCards from "./pages/MCards";
 import MCardView from "./pages/MCardView";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
+import AdminExpiredCards from "./pages/AdminExpiredCards";
+import AdminLegal from "./pages/AdminLegal";
 import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
@@ -95,6 +97,8 @@ function AppContent() {
               <Route path="/mcard/:slug" element={<MCardView />} />
               <Route path="/m/:slug" element={<MCardView />} />
               <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
+              <Route path="/admin/cartes-expirees" element={<AdminExpiredCards />} />
+              <Route path="/admin/juridique" element={<AdminLegal />} />
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
