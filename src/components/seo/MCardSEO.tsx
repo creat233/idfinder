@@ -13,15 +13,40 @@ interface MCardSEOProps {
     phone_number?: string;
     slug: string;
   };
+  products?: Array<{
+    name: string;
+    category: string;
+    description?: string;
+  }>;
+  statuses?: Array<{
+    status_text: string;
+  }>;
 }
 
-export const MCardSEO = ({ mcard }: MCardSEOProps) => {
+export const MCardSEO = ({ mcard, products = [], statuses = [] }: MCardSEOProps) => {
   const title = `${mcard.full_name}${mcard.job_title ? ` - ${mcard.job_title}` : ''}${mcard.company ? ` chez ${mcard.company}` : ''} | FinderID`;
   const description = mcard.description || 
     `Découvrez le profil professionnel de ${mcard.full_name}${mcard.job_title ? `, ${mcard.job_title}` : ''}${mcard.company ? ` chez ${mcard.company}` : ''}. Contactez-les directement via FinderID.`;
   
   const cardUrl = `https://www.finderid.info/mcard/${mcard.slug}`;
   const imageUrl = mcard.profile_picture_url || 'https://www.finderid.info/og-image.png';
+
+  // Construire les mots-clés dynamiquement
+  const baseKeywords = [mcard.full_name, 'carte de visite digitale', 'FinderID', 'profil professionnel', 'contact'];
+  
+  if (mcard.job_title) baseKeywords.push(mcard.job_title);
+  if (mcard.company) baseKeywords.push(mcard.company);
+  
+  // Ajouter les produits/services comme mots-clés
+  const productKeywords = products?.map(p => p.name) || [];
+  const categoryKeywords = products?.map(p => p.category) || [];
+  
+  // Ajouter les statuts comme mots-clés
+  const statusKeywords = statuses?.map(s => s.status_text) || [];
+  
+  const allKeywords = [...baseKeywords, ...productKeywords, ...categoryKeywords, ...statusKeywords]
+    .filter(Boolean)
+    .join(', ');
 
   // Données structurées JSON-LD pour le SEO
   const structuredData = {
@@ -48,7 +73,7 @@ export const MCardSEO = ({ mcard }: MCardSEOProps) => {
       <meta name="description" content={description} />
       
       {/* Mots-clés */}
-      <meta name="keywords" content={`${mcard.full_name}, ${mcard.job_title || ''}, ${mcard.company || ''}, carte de visite digitale, FinderID, profil professionnel, contact`} />
+      <meta name="keywords" content={allKeywords} />
       
       {/* URL canonique */}
       <link rel="canonical" href={cardUrl} />

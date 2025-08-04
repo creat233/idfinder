@@ -50,7 +50,7 @@ const MCardView = () => {
   return (
     <>
       {/* SEO pour les moteurs de recherche */}
-      <MCardSEO mcard={mcard} />
+      <MCardSEO mcard={mcard} products={products} statuses={statuses} />
       
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-24 md:pb-0">
       {/* Header */}

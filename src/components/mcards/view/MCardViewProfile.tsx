@@ -12,6 +12,7 @@ import { MCardSocialLinks } from "../MCardSocialLinks";
 import { MCardAnalyticsDashboard } from "../MCardAnalyticsDashboard";
 import { MCardMessageDialog } from "../MCardMessageDialog";
 import { MCard } from "@/types/mcard";
+import { MCardInteractionButtons } from "../MCardInteractionButtons";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle } from "lucide-react";
 
 interface MCardViewProfileProps {
@@ -150,8 +151,20 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               disabled={isPendingPayment}
             />
 
-            {/* Bouton pour envoyer un message (seulement pour les non-propriétaires) - Responsive */}
-            {!isOwner && (
+            {/* Boutons d'interaction (favoris, partage, message) */}
+            {!isOwner && !isPendingPayment && (
+              <div className="mt-3 sm:mt-4">
+                <MCardInteractionButtons
+                  mcardId={mcard.id}
+                  mcardOwnerId={mcard.user_id}
+                  mcardOwnerName={mcard.full_name}
+                  className="justify-center"
+                />
+              </div>
+            )}
+
+            {/* Bouton pour envoyer un message (seulement pour les propriétaires en attente) - Responsive */}
+            {!isOwner && isPendingPayment && (
               <div className="mt-3 sm:mt-4">
                 <Button
                   onClick={() => setIsMessageDialogOpen(true)}
