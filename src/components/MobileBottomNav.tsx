@@ -26,12 +26,6 @@ export const MobileBottomNav = () => {
       label: "Accueil" 
     },
     { 
-      name: "MCards", 
-      icon: CheckCircle, 
-      path: "/verified-mcards",
-      label: "MCards" 
-    },
-    { 
       name: "Messages", 
       icon: MessageCircle, 
       path: "/messages", 
@@ -67,7 +61,7 @@ export const MobileBottomNav = () => {
         {/* Ligne décorative en haut */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
         
-        <div className="grid grid-cols-5 h-20 py-1">
+        <div className="grid grid-cols-4 h-20 py-1">
           {navItems.map((item) => {
             const IconComponent = item.icon;
             const active = isActive(item.path);
