@@ -16,6 +16,7 @@ import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { URL_CONFIG } from '@/utils/urlConfig';
+import { MCardSEO } from '@/components/seo/MCardSEO';
 
 const MCardView = () => {
   const {
@@ -47,7 +48,11 @@ const MCardView = () => {
   const isPendingPayment = mcard.subscription_status === 'pending_payment';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-24 md:pb-0">
+    <>
+      {/* SEO pour les moteurs de recherche */}
+      <MCardSEO mcard={mcard} />
+      
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-24 md:pb-0">
       {/* Header */}
       <MCardViewHeader
         isOwner={isOwner}
@@ -147,6 +152,7 @@ const MCardView = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

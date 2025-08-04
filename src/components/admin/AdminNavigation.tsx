@@ -18,6 +18,15 @@ export const AdminNavigation = () => {
 
   const adminSections = [
     {
+      title: "Messages Admin",
+      description: "Demandes de récupération et messages",
+      icon: FileText,
+      path: "/admin/messages",
+      color: "bg-red-100 text-red-800",
+      count: "Urgent",
+      urgent: true
+    },
+    {
       title: "Codes Promo",
       description: "Gérer les codes promotionnels",
       icon: FileText,

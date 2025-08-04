@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "./providers/TranslationProvider";
 import { CartProvider } from "./contexts/CartContext";
+import { HelmetProvider } from "react-helmet-async";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAutoRefresh } from "./hooks/useAutoRefresh";
 import { useState, useEffect } from "react";
@@ -26,6 +27,7 @@ import MCardView from "./pages/MCardView";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
 import AdminExpiredCards from "./pages/AdminExpiredCards";
 import AdminLegal from "./pages/AdminLegal";
+import AdminMessages from "./pages/AdminMessages";
 import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
@@ -65,7 +67,8 @@ function AppContent() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
       <TranslationProvider>
         <CartProvider>
           <TooltipProvider>
@@ -99,6 +102,7 @@ function AppContent() {
               <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
               <Route path="/admin/cartes-expirees" element={<AdminExpiredCards />} />
               <Route path="/admin/juridique" element={<AdminLegal />} />
+              <Route path="/admin/messages" element={<AdminMessages />} />
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
@@ -112,6 +116,7 @@ function AppContent() {
         </CartProvider>
       </TranslationProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
