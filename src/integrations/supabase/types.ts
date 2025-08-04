@@ -53,6 +53,68 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_messages: {
+        Row: {
+          card_id: string
+          card_info: Json | null
+          content: string
+          created_at: string
+          id: string
+          message_type: string
+          metadata: Json | null
+          owner_info: Json | null
+          price_info: Json | null
+          priority: string | null
+          processed_at: string | null
+          processed_by: string | null
+          promo_info: Json | null
+          status: string | null
+          title: string
+        }
+        Insert: {
+          card_id: string
+          card_info?: Json | null
+          content: string
+          created_at?: string
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          owner_info?: Json | null
+          price_info?: Json | null
+          priority?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          promo_info?: Json | null
+          status?: string | null
+          title: string
+        }
+        Update: {
+          card_id?: string
+          card_info?: Json | null
+          content?: string
+          created_at?: string
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          owner_info?: Json | null
+          price_info?: Json | null
+          priority?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          promo_info?: Json | null
+          status?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_messages_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "reported_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_permissions: {
         Row: {
           created_at: string
