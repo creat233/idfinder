@@ -26,14 +26,8 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
     } else if (mcards.length >= 3) {
       // Limite atteinte : ne pas permettre la création
       return;
-    } else if (mcards.length >= 1) {
-      if (mcards.length > 1) {
-        setSelectedPlan(planId);
-        setIsSelectCardDialogOpen(true);
-      } else {
-        onStartCreationFlow(planId);
-      }
     } else {
+      // Permettre la création directe pour les 3 premières cartes
       onStartCreationFlow(planId);
     }
   };
