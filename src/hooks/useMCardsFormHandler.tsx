@@ -20,7 +20,7 @@ export const useMCardsFormHandler = ({
 }: UseMCardsFormHandlerProps) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMCard, setEditingMCard] = useState<MCard | null>(null);
-  const [planForNewCard, setPlanForNewCard] = useState<'free' | 'essential' | 'premium' | null>(null);
+  const [planForNewCard, setPlanForNewCard] = useState<'free' | 'essential' | 'premium' | 'ultimate' | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   
   const location = useLocation();
@@ -47,7 +47,7 @@ export const useMCardsFormHandler = ({
     }
   }, [location.state, mcards, navigate]);
 
-  const handleStartCreationFlow = (plan: 'free' | 'essential' | 'premium') => {
+  const handleStartCreationFlow = (plan: 'free' | 'essential' | 'premium' | 'ultimate') => {
     console.log('Démarrage du flux de création pour le plan:', plan);
     setEditingMCard(null);
     setPlanForNewCard(plan);

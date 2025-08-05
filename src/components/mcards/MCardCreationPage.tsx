@@ -10,7 +10,7 @@ import { useMCards } from "@/hooks/useMCards";
 import { useMCardsFormHandler } from "@/hooks/useMCardsFormHandler";
 
 export const MCardCreationPage = () => {
-  const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium'>('essential');
+  const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium' | 'ultimate'>('essential');
   const { mcards, createMCard, updateMCard, loading } = useMCards();
 
   const {
@@ -68,6 +68,28 @@ export const MCardCreationPage = () => {
       borderColor: 'border-purple-200',
       bgColor: 'bg-purple-50',
       isPopular: false
+    },
+    {
+      id: 'ultimate',
+      name: 'Ultimate',
+      price: 9900,
+      period: 'mois',
+      description: 'Pour les grandes entreprises',
+      features: [
+        'Tout du plan Premium',
+        'API personnalisée',
+        'Intégrations avancées',
+        'Support dédié 24/7',
+        'Formation personnalisée',
+        'Rapports personnalisés',
+        'Gestionnaire de compte dédié',
+        'Sauvegardes automatiques'
+      ],
+      icon: <Star className="h-6 w-6" />,
+      gradient: 'from-amber-500 to-orange-600',
+      borderColor: 'border-amber-200',
+      bgColor: 'bg-amber-50',
+      isPopular: false
     }
   ];
 
@@ -98,7 +120,7 @@ export const MCardCreationPage = () => {
           <p className="text-gray-600 text-lg">Sélectionnez le plan qui correspond à vos besoins</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
+        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mb-16">
           {plans.map((plan) => (
             <Card 
               key={plan.id}
@@ -107,7 +129,7 @@ export const MCardCreationPage = () => {
                 selectedPlan === plan.id ? `ring-2 ring-offset-2 ${plan.borderColor.replace('border-', 'ring-')} shadow-xl` : "hover:shadow-lg",
                 plan.isPopular && "border-2 border-yellow-400"
               )}
-              onClick={() => setSelectedPlan(plan.id as 'essential' | 'premium')}
+              onClick={() => setSelectedPlan(plan.id as 'essential' | 'premium' | 'ultimate')}
             >
               {plan.isPopular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -144,60 +166,20 @@ export const MCardCreationPage = () => {
           ))}
         </div>
 
-        {/* Selected Plan Preview */}
-        <div className="max-w-2xl mx-auto">
-          <Card className="bg-gradient-to-r from-white to-gray-50 border-2 border-gray-200">
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl">Plan Sélectionné: {currentPlan.name}</CardTitle>
-              <p className="text-gray-600">Récapitulatif de votre commande</p>
-            </CardHeader>
-            
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                <div className="flex items-center gap-3">
-                  <div className={cn("p-2 rounded-full bg-gradient-to-r text-white", currentPlan.gradient)}>
-                    {currentPlan.icon}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{currentPlan.name}</h3>
-                    <p className="text-sm text-gray-600">{currentPlan.description}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold">
-                    {new Intl.NumberFormat().format(currentPlan.price)} FCFA
-                  </div>
-                  <div className="text-sm text-gray-600">/{currentPlan.period}</div>
-                </div>
-              </div>
 
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <CreditCard className="h-5 w-5 text-yellow-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-yellow-800">Information importante</h4>
-                    <p className="text-yellow-700 text-sm">
-                      Votre carte sera créée mais inactive jusqu'à confirmation de paiement par notre équipe. 
-                      Vous recevrez une notification une fois votre carte activée.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <Button 
-                size="lg" 
-                className={cn("w-full text-white font-semibold py-4 text-lg", currentPlan.gradient.replace('from-', 'bg-').replace('to-purple-700', '').replace('to-blue-700', ''))}
-                onClick={handleCreateCard}
-                disabled={loading || isCreating}
-              >
-                {isCreating ? 'Création en cours...' : `Créer Ma Carte - ${new Intl.NumberFormat().format(currentPlan.price)} FCFA`}
-              </Button>
-
-              <div className="text-center text-sm text-gray-500">
-                <p>✓ Paiement sécurisé • ✓ Activation sous 24h • ✓ Support inclus</p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Create Button */}
+        <div className="text-center mt-12">
+          <Button 
+            size="lg" 
+            className={cn("text-white font-semibold px-8 py-4 text-lg bg-gradient-to-r", currentPlan.gradient)}
+            onClick={handleCreateCard}
+            disabled={loading || isCreating}
+          >
+            {isCreating ? 'Création en cours...' : `Créer Ma Carte ${currentPlan.name} - ${new Intl.NumberFormat().format(currentPlan.price)} FCFA`}
+          </Button>
+          <p className="text-sm text-gray-500 mt-3">
+            ✓ Paiement sécurisé • ✓ Activation sous 24h • ✓ Support inclus
+          </p>
         </div>
 
         {/* Stats Section */}

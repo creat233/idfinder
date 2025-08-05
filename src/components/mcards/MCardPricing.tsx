@@ -10,17 +10,17 @@ import { PricingFooter } from "./pricing/PricingFooter";
 
 interface MCardPricingProps {
   mcards: MCard[];
-  onRequestUpgrade: (mcardId: string, plan: 'essential' | 'premium') => void;
-  onStartCreationFlow: (plan: 'essential' | 'premium') => void;
+  onRequestUpgrade: (mcardId: string, plan: 'essential' | 'premium' | 'ultimate') => void;
+  onStartCreationFlow: (plan: 'essential' | 'premium' | 'ultimate') => void;
   upgradingCardId?: string | null;
 }
 
 export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, upgradingCardId }: MCardPricingProps) => {
   const { t } = useTranslation();
   const [isSelectCardDialogOpen, setIsSelectCardDialogOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium' | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium' | 'ultimate' | null>(null);
 
-  const handleSelectPlan = (planId: 'essential' | 'premium') => {
+  const handleSelectPlan = (planId: 'essential' | 'premium' | 'ultimate') => {
     if (upgradingCardId) {
       onRequestUpgrade(upgradingCardId, planId);
     } else if (mcards.length >= 3) {

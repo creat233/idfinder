@@ -23,7 +23,7 @@ interface PricingPlanCardProps {
   };
   upgradingCardId?: string | null;
   mcards?: any[];
-  onSelectPlan: (planId: 'essential' | 'premium') => void;
+  onSelectPlan: (planId: 'essential' | 'premium' | 'ultimate') => void;
 }
 
 export const PricingPlanCard = ({ plan, upgradingCardId, mcards = [], onSelectPlan }: PricingPlanCardProps) => {
@@ -93,7 +93,7 @@ export const PricingPlanCard = ({ plan, upgradingCardId, mcards = [], onSelectPl
             plan.buttonColor,
             plan.isPopular && "shadow-lg hover:shadow-xl"
           )}
-          onClick={() => onSelectPlan(plan.id as 'essential' | 'premium')}
+          onClick={() => onSelectPlan(plan.id as 'essential' | 'premium' | 'ultimate')}
           disabled={!upgradingCardId && mcards.length >= 3}
         >
           {!upgradingCardId && mcards.length >= 3 ? (
