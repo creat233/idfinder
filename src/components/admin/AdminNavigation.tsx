@@ -58,8 +58,7 @@ export const AdminNavigation = () => {
       icon: Users,
       path: "/admin/utilisateurs",
       color: "bg-green-100 text-green-800",
-      count: null,
-      disabled: true
+      count: null
     },
     {
       title: "Analytics",
@@ -67,8 +66,7 @@ export const AdminNavigation = () => {
       icon: BarChart3,
       path: "/admin/analytics",
       color: "bg-indigo-100 text-indigo-800",
-      count: null,
-      disabled: true
+      count: null
     },
     {
       title: "Paramètres",
@@ -76,8 +74,7 @@ export const AdminNavigation = () => {
       icon: Settings,
       path: "/admin/parametres",
       color: "bg-gray-100 text-gray-800",
-      count: null,
-      disabled: true
+      count: null
     }
   ];
 
@@ -94,50 +91,30 @@ export const AdminNavigation = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {adminSections.map((section, index) => (
               <div key={index} className="relative">
-                {section.disabled ? (
-                  <div className="border rounded-lg p-4 opacity-50 cursor-not-allowed">
+                <Link to={section.path}>
+                  <div className={`border rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
+                    location.pathname === section.path ? 'ring-2 ring-primary bg-primary/5' : ''
+                  }`}>
                     <div className="flex items-center justify-between mb-3">
                       <div className={`p-2 rounded-lg ${section.color}`}>
                         <section.icon className="h-5 w-5" />
                       </div>
                       {section.count && (
-                        <Badge variant="secondary">
+                        <Badge 
+                          variant={section.urgent ? "destructive" : "secondary"}
+                          className={section.urgent ? "animate-pulse" : ""}
+                        >
                           {section.count}
                         </Badge>
                       )}
                     </div>
                     <h3 className="font-semibold mb-1">{section.title}</h3>
                     <p className="text-sm text-gray-600 mb-3">{section.description}</p>
-                    <Button disabled variant="outline" className="w-full">
-                      Bientôt disponible
+                    <Button variant="outline" className="w-full">
+                      Accéder
                     </Button>
                   </div>
-                ) : (
-                  <Link to={section.path}>
-                    <div className={`border rounded-lg p-4 hover:shadow-md transition-all duration-200 ${
-                      location.pathname === section.path ? 'ring-2 ring-primary bg-primary/5' : ''
-                    }`}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className={`p-2 rounded-lg ${section.color}`}>
-                          <section.icon className="h-5 w-5" />
-                        </div>
-                        {section.count && (
-                          <Badge 
-                            variant={section.urgent ? "destructive" : "secondary"}
-                            className={section.urgent ? "animate-pulse" : ""}
-                          >
-                            {section.count}
-                          </Badge>
-                        )}
-                      </div>
-                      <h3 className="font-semibold mb-1">{section.title}</h3>
-                      <p className="text-sm text-gray-600 mb-3">{section.description}</p>
-                      <Button variant="outline" className="w-full">
-                        Accéder
-                      </Button>
-                    </div>
-                  </Link>
-                )}
+                </Link>
                 
                 {section.urgent && (
                   <div className="absolute -top-2 -right-2">
