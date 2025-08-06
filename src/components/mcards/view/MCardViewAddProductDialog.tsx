@@ -95,6 +95,15 @@ export const MCardViewAddProductDialog = ({
     setIsSubmitting(true);
 
     try {
+      let imageUrl = productImageUrl;
+      
+      if (productImage) {
+        const uploadedUrl = await uploadProductImage(productImage);
+        if (uploadedUrl) {
+          imageUrl = uploadedUrl;
+        }
+      }
+
       // Optimistic update - add immediately to UI
       const tempProduct = {
         id: `temp-${Date.now()}`,
@@ -104,7 +113,7 @@ export const MCardViewAddProductDialog = ({
         price: numericPrice,
         category,
         currency,
-        image_url: productImage ? URL.createObjectURL(productImage) : (productImageUrl || null),
+        image_url: imageUrl || null,
         is_active: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -112,15 +121,6 @@ export const MCardViewAddProductDialog = ({
       
       if (onOptimisticProductAdd) {
         onOptimisticProductAdd(tempProduct);
-      }
-
-      let imageUrl = productImageUrl;
-      
-      if (productImage) {
-        const uploadedUrl = await uploadProductImage(productImage);
-        if (uploadedUrl) {
-          imageUrl = uploadedUrl;
-        }
       }
 
       const { error } = await supabase
@@ -135,7 +135,10 @@ export const MCardViewAddProductDialog = ({
           image_url: imageUrl || null,
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       toast({
         title: "Produit ajouté !",

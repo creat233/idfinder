@@ -76,21 +76,6 @@ export const MCardViewAddStatusDialog = ({
     setIsSubmitting(true);
 
     try {
-      // Optimistic update - add immediately to UI
-      const tempStatus = {
-        id: `temp-${Date.now()}`,
-        mcard_id: mcardId,
-        status_text: statusText.trim(),
-        status_color: statusColor,
-        status_image: statusImage ? URL.createObjectURL(statusImage) : (statusImageUrl || null),
-        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        created_at: new Date().toISOString()
-      };
-      
-      if (onOptimisticStatusAdd) {
-        onOptimisticStatusAdd(tempStatus);
-      }
-
       let imageUrl = statusImageUrl;
       
       if (statusImage) {
@@ -98,6 +83,21 @@ export const MCardViewAddStatusDialog = ({
         if (uploadedUrl) {
           imageUrl = uploadedUrl;
         }
+      }
+
+      // Optimistic update - add immediately to UI
+      const tempStatus = {
+        id: `temp-${Date.now()}`,
+        mcard_id: mcardId,
+        status_text: statusText.trim(),
+        status_color: statusColor,
+        status_image: imageUrl || null,
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        created_at: new Date().toISOString()
+      };
+      
+      if (onOptimisticStatusAdd) {
+        onOptimisticStatusAdd(tempStatus);
       }
 
       const { error } = await supabase
@@ -110,7 +110,10 @@ export const MCardViewAddStatusDialog = ({
           expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24h
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       toast({
         title: "Statut ajouté !",
