@@ -19,6 +19,7 @@ interface MCardViewStatusesProps {
   mcardOwnerName?: string;
   mcardOwnerUserId?: string;
   onStatusesChange?: () => void;
+  onOptimisticStatusAdd?: (status: any) => void;
 }
 
 export const MCardViewStatuses = ({ 
@@ -29,7 +30,8 @@ export const MCardViewStatuses = ({
   mcardPlan,
   mcardOwnerName,
   mcardOwnerUserId,
-  onStatusesChange 
+  onStatusesChange,
+  onOptimisticStatusAdd 
 }: MCardViewStatusesProps) => {
   const [selectedStatus, setSelectedStatus] = useState<MCardStatus | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -174,6 +176,7 @@ export const MCardViewStatuses = ({
           onClose={() => setIsAddDialogOpen(false)}
           mcardId={mcardId}
           onStatusAdded={handleStatusAdded}
+          onOptimisticStatusAdd={onOptimisticStatusAdd}
         />
       )}
 

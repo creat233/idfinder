@@ -14,6 +14,7 @@ interface MCardViewAddStatusDialogProps {
   onClose: () => void;
   mcardId: string;
   onStatusAdded: () => void;
+  onOptimisticStatusAdd?: (status: any) => void;
 }
 
 const STATUS_COLORS = [
@@ -30,7 +31,8 @@ export const MCardViewAddStatusDialog = ({
   isOpen, 
   onClose, 
   mcardId, 
-  onStatusAdded 
+  onStatusAdded,
+  onOptimisticStatusAdd 
 }: MCardViewAddStatusDialogProps) => {
   const [statusText, setStatusText] = useState('');
   const [statusColor, setStatusColor] = useState('#22C55E');
@@ -74,6 +76,21 @@ export const MCardViewAddStatusDialog = ({
     setIsSubmitting(true);
 
     try {
+      // Optimistic update - add immediately to UI
+      const tempStatus = {
+        id: `temp-${Date.now()}`,
+        mcard_id: mcardId,
+        status_text: statusText.trim(),
+        status_color: statusColor,
+        status_image: statusImage ? URL.createObjectURL(statusImage) : (statusImageUrl || null),
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        created_at: new Date().toISOString()
+      };
+      
+      if (onOptimisticStatusAdd) {
+        onOptimisticStatusAdd(tempStatus);
+      }
+
       let imageUrl = statusImageUrl;
       
       if (statusImage) {

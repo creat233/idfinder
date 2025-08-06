@@ -14,6 +14,7 @@ interface MCardViewAddProductDialogProps {
   onClose: () => void;
   mcardId: string;
   onProductAdded: () => void;
+  onOptimisticProductAdd?: (product: any) => void;
 }
 
 const PRODUCT_CATEGORIES = [
@@ -36,7 +37,8 @@ export const MCardViewAddProductDialog = ({
   isOpen, 
   onClose, 
   mcardId, 
-  onProductAdded 
+  onProductAdded,
+  onOptimisticProductAdd 
 }: MCardViewAddProductDialogProps) => {
   const [productName, setProductName] = useState('');
   const [description, setDescription] = useState('');
@@ -93,6 +95,25 @@ export const MCardViewAddProductDialog = ({
     setIsSubmitting(true);
 
     try {
+      // Optimistic update - add immediately to UI
+      const tempProduct = {
+        id: `temp-${Date.now()}`,
+        mcard_id: mcardId,
+        name: productName.trim(),
+        description: description.trim() || null,
+        price: numericPrice,
+        category,
+        currency,
+        image_url: productImage ? URL.createObjectURL(productImage) : (productImageUrl || null),
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      if (onOptimisticProductAdd) {
+        onOptimisticProductAdd(tempProduct);
+      }
+
       let imageUrl = productImageUrl;
       
       if (productImage) {

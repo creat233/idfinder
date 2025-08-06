@@ -130,6 +130,14 @@ export const useMCardData = () => {
     setViewCount(newCount);
   };
 
+  const addStatus = (status: MCardStatus) => {
+    setStatuses(prev => [status, ...prev]);
+  };
+
+  const addProduct = (product: MCardProduct) => {
+    setProducts(prev => [product, ...prev]);
+  };
+
   return {
     mcard,
     statuses,
@@ -145,6 +153,8 @@ export const useMCardData = () => {
     setMCard,
     setStatuses,
     setProducts,
-    setReviews
+    setReviews,
+    addStatus,
+    addProduct
   };
 };

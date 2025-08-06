@@ -34,7 +34,9 @@ const MCardView = () => {
     viewCount,
     handleCopyLink,
     handleEdit,
-    refreshData
+    refreshData,
+    addStatus,
+    addProduct
   } = useMCardView();
 
   if (loading) {
@@ -108,6 +110,7 @@ const MCardView = () => {
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
               onStatusesChange={refreshData}
+              onOptimisticStatusAdd={addStatus}
             />
 
             {/* Products Section */}
@@ -118,6 +121,7 @@ const MCardView = () => {
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
               onProductsChange={refreshData}
+              onOptimisticProductAdd={addProduct}
             />
 
             {/* Physical Products Section */}

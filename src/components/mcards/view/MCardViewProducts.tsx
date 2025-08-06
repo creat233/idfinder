@@ -21,6 +21,7 @@ interface MCardViewProductsProps {
   mcardOwnerName?: string;
   mcardOwnerUserId?: string;
   onProductsChange?: () => void;
+  onOptimisticProductAdd?: (product: any) => void;
 }
 
 export const MCardViewProducts = ({ 
@@ -31,7 +32,8 @@ export const MCardViewProducts = ({
   mcardPlan,
   mcardOwnerName,
   mcardOwnerUserId,
-  onProductsChange 
+  onProductsChange,
+  onOptimisticProductAdd 
 }: MCardViewProductsProps) => {
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -312,6 +314,7 @@ export const MCardViewProducts = ({
           onClose={() => setIsAddDialogOpen(false)}
           mcardId={mcardId}
           onProductAdded={handleProductAdded}
+          onOptimisticProductAdd={onOptimisticProductAdd}
         />
       )}
 
