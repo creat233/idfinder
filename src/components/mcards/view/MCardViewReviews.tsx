@@ -222,10 +222,11 @@ export const MCardViewReviews = ({
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+                className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 text-xs sm:text-sm px-2 sm:px-3"
               >
-                <LogIn className="h-4 w-4 mr-2" />
-                Se connecter pour laisser un avis
+                <LogIn className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Se connecter pour laisser un avis</span>
+                <span className="sm:hidden">Se connecter</span>
               </Button>
             </Link>
           )}
