@@ -180,50 +180,86 @@ export const MCardStatusCarousel = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {statuses.map((status, index) => {
-            const timeRemaining = status.expires_at ? 
-              Math.max(0, Math.floor((new Date(status.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60))) : 
-              null;
+        <div className="overflow-x-auto">
+          <div className="flex gap-6 pb-4 min-w-max">
+            {statuses.map((status, index) => {
+              const timeRemaining = status.expires_at ? 
+                Math.max(0, Math.floor((new Date(status.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60))) : 
+                null;
 
-            return (
-              <div key={status.id} className="group">
-                {/* Story-style card */}
-                <div className="relative bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-                  {/* Status image */}
-                  {status.status_image && (
-                    <StatusImageModal 
-                      imageUrl={status.status_image}
-                      statusText={status.status_text}
-                    >
-                      <div className="relative h-64 overflow-hidden cursor-pointer">
-                        <img 
-                          src={status.status_image} 
-                          alt={status.status_text}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          onError={(e) => {
-                            console.error('Error loading status image:', status.status_image);
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        
-                        {/* Story badge */}
+              return (
+                <div key={status.id} className="group min-w-[300px] flex-shrink-0">
+                  {/* Story-style card */}
+                  <div className="relative bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
+                    {/* Status image */}
+                    {status.status_image && (
+                      <StatusImageModal 
+                        imageUrl={status.status_image}
+                        statusText={status.status_text}
+                      >
+                        <div className="relative h-64 overflow-hidden cursor-pointer">
+                          <img 
+                            src={status.status_image} 
+                            alt={status.status_text}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            onError={(e) => {
+                              console.error('Error loading status image:', status.status_image);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          
+                          {/* Story badge */}
+                          <div className="absolute top-4 right-4">
+                            <Badge 
+                              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-4 py-2 rounded-full border-2 border-white/30 shadow-lg"
+                            >
+                              Story
+                            </Badge>
+                          </div>
+
+                          {/* Status text overlay */}
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <p className="text-white font-bold text-lg leading-tight drop-shadow-lg">
+                              {status.status_text}
+                            </p>
+                            {timeRemaining !== null && (
+                              <div className="flex items-center gap-2 mt-2">
+                                <Clock className="h-4 w-4 text-white/80" />
+                                <span className="text-white/80 text-sm">
+                                  {timeRemaining > 0 
+                                    ? `Expire dans ${timeRemaining}h`
+                                    : 'Expiré'
+                                  }
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </StatusImageModal>
+                    )}
+
+                    {/* No image fallback */}
+                    {!status.status_image && (
+                      <div 
+                        className="relative h-64 flex items-center justify-center cursor-pointer"
+                        style={{ 
+                          background: `linear-gradient(135deg, ${status.status_color}, ${status.status_color}dd)`
+                        }}
+                        onClick={() => onStatusClick(status)}
+                      >
                         <div className="absolute top-4 right-4">
-                          <Badge 
-                            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-4 py-2 rounded-full border-2 border-white/30 shadow-lg"
-                          >
+                          <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-4 py-2 rounded-full border-2 border-white/30 shadow-lg">
                             Story
                           </Badge>
                         </div>
-
-                        {/* Status text overlay */}
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <p className="text-white font-bold text-lg leading-tight drop-shadow-lg">
+                        <div className="text-center text-white p-6">
+                          <Sparkles className="w-12 h-12 mx-auto mb-4 animate-pulse" />
+                          <p className="text-xl font-bold leading-tight drop-shadow-lg">
                             {status.status_text}
                           </p>
                           {timeRemaining !== null && (
-                            <div className="flex items-center gap-2 mt-2">
+                            <div className="flex items-center justify-center gap-2 mt-4">
                               <Clock className="h-4 w-4 text-white/80" />
                               <span className="text-white/80 text-sm">
                                 {timeRemaining > 0 
@@ -235,84 +271,50 @@ export const MCardStatusCarousel = ({
                           )}
                         </div>
                       </div>
-                    </StatusImageModal>
-                  )}
+                    )}
 
-                  {/* No image fallback */}
-                  {!status.status_image && (
-                    <div 
-                      className="relative h-64 flex items-center justify-center cursor-pointer"
-                      style={{ 
-                        background: `linear-gradient(135deg, ${status.status_color}, ${status.status_color}dd)`
-                      }}
-                      onClick={() => onStatusClick(status)}
-                    >
-                      <div className="absolute top-4 right-4">
-                        <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-4 py-2 rounded-full border-2 border-white/30 shadow-lg">
-                          Story
-                        </Badge>
-                      </div>
-                      <div className="text-center text-white p-6">
-                        <Sparkles className="w-12 h-12 mx-auto mb-4 animate-pulse" />
-                        <p className="text-xl font-bold leading-tight drop-shadow-lg">
-                          {status.status_text}
-                        </p>
-                        {timeRemaining !== null && (
-                          <div className="flex items-center justify-center gap-2 mt-4">
-                            <Clock className="h-4 w-4 text-white/80" />
-                            <span className="text-white/80 text-sm">
-                              {timeRemaining > 0 
-                                ? `Expire dans ${timeRemaining}h`
-                                : 'Expiré'
-                              }
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                    {/* Interaction buttons */}
+                    <div className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {/* J'aime button */}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleLike}
+                            className="flex items-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-red-50 rounded-full px-3 py-2"
+                          >
+                            <Heart className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-red-500'}`} />
+                            <span className="text-sm font-medium text-red-600">{likesCount}</span>
+                          </Button>
 
-                  {/* Interaction buttons */}
-                  <div className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {/* J'aime button */}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={handleLike}
-                          className="flex items-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-red-50 rounded-full px-3 py-2"
-                        >
-                          <Heart className={`h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-red-500'}`} />
-                          <span className="text-sm font-medium text-red-600">{likesCount}</span>
-                        </Button>
+                          {/* Message button */}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => onContactOwner(status)}
+                            className="flex items-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-blue-50 rounded-full px-3 py-2"
+                          >
+                            <MessageCircle className="h-5 w-5 text-blue-600" />
+                          </Button>
 
-                        {/* Message button */}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => onContactOwner(status)}
-                          className="flex items-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-blue-50 rounded-full px-3 py-2"
-                        >
-                          <MessageCircle className="h-5 w-5 text-blue-600" />
-                        </Button>
-
-                        {/* Share button */}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => onShareStatus(status)}
-                          className="flex items-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-green-50 rounded-full px-3 py-2"
-                        >
-                          <Share2 className="h-5 w-5 text-green-600" />
-                        </Button>
+                          {/* Share button */}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => onShareStatus(status)}
+                            className="flex items-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-green-50 rounded-full px-3 py-2"
+                          >
+                            <Share2 className="h-5 w-5 text-green-600" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     );
