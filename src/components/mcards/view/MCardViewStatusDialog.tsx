@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Clock, MessageCircle, Send, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface MCardViewStatusDialogProps {
   status: MCardStatus | null;
@@ -15,6 +17,10 @@ interface MCardViewStatusDialogProps {
   allStatuses?: MCardStatus[];
   currentIndex?: number;
   onNavigate?: (direction: 'prev' | 'next') => void;
+  mcardId?: string;
+  mcardOwnerName?: string;
+  mcardOwnerUserId?: string;
+  isOwner?: boolean;
 }
 
 export const MCardViewStatusDialog = ({ 
@@ -24,11 +30,26 @@ export const MCardViewStatusDialog = ({
   phoneNumber,
   allStatuses = [],
   currentIndex = 0,
-  onNavigate
+  onNavigate,
+  mcardId,
+  mcardOwnerName,
+  mcardOwnerUserId,
+  isOwner = false
 }: MCardViewStatusDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
   const [message, setMessage] = useState('');
   const [showMessageField, setShowMessageField] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   if (!status) return null;
 
@@ -63,6 +84,65 @@ export const MCardViewStatusDialog = ({
       const telegramMessage = encodeURIComponent(finalMessage);
       const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${telegramMessage}`;
       window.open(telegramUrl, '_blank');
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Connexion requise",
+        description: "Vous devez être connecté pour envoyer un message.",
+      });
+      return;
+    }
+
+    if (!message.trim() || !mcardOwnerUserId || !mcardId || !status) {
+      toast({
+        variant: "destructive",
+        title: "Message requis",
+        description: "Veuillez saisir un message.",
+      });
+      return;
+    }
+
+    setSending(true);
+    try {
+      const finalSubject = `Concernant votre statut: ${status.status_text}`;
+      const finalMessage = `${message.trim()}\n\n---\nStatut concerné: "${status.status_text}"`;
+
+      const { error } = await supabase
+        .from('mcard_messages')
+        .insert({
+          sender_id: user.id,
+          recipient_id: mcardOwnerUserId,
+          mcard_id: mcardId,
+          subject: finalSubject,
+          message: finalMessage,
+        });
+
+      if (error) {
+        console.error('Erreur envoi message:', error);
+        throw error;
+      }
+
+      toast({
+        title: "Message envoyé !",
+        description: `Votre message a été envoyé à ${mcardOwnerName || 'le propriétaire'}.`,
+      });
+
+      // Réinitialiser le formulaire
+      setMessage('');
+      setShowMessageField(false);
+    } catch (error: any) {
+      console.error('Erreur lors de l\'envoi:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur d'envoi",
+        description: error.message || "Impossible d'envoyer le message. Veuillez réessayer.",
+      });
+    } finally {
+      setSending(false);
     }
   };
 
@@ -146,30 +226,43 @@ export const MCardViewStatusDialog = ({
               </div>
             )}
 
-            {/* Champ de message personnalisé - Toujours visible */}
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowMessageField(!showMessageField)}
-                className="w-full text-blue-600 border-blue-600 hover:bg-blue-50"
-              >
-                <MessageCircle className="h-5 w-5 mr-2" />
-                {showMessageField ? 'Masquer le message' : 'Personnaliser le message'}
-              </Button>
-              
-              {showMessageField && (
-                <div className="space-y-2">
-                  <Textarea
-                    placeholder={`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    rows={3}
-                    className="resize-none"
-                  />
-                </div>
-              )}
-              
-              {phoneNumber ? (
+            {/* Champ de message - Visible seulement pour les visiteurs */}
+            {!isOwner && mcardOwnerUserId && (
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowMessageField(!showMessageField)}
+                  className="w-full text-blue-600 border-blue-600 hover:bg-blue-50"
+                >
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  {showMessageField ? 'Masquer le message' : 'Envoyer un message'}
+                </Button>
+                
+                {showMessageField && (
+                  <div className="space-y-3">
+                    <Textarea
+                      placeholder={`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      rows={3}
+                      className="resize-none"
+                    />
+                    <Button 
+                      onClick={handleSendMessage}
+                      disabled={sending || !message.trim()}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Send className="h-5 w-5 mr-2" />
+                      {sending ? 'Envoi...' : 'Envoyer le message'}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Boutons de contact externe */}
+            {phoneNumber && (
+              <div className="space-y-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Button 
                     onClick={handleWhatsAppContact}
@@ -188,14 +281,8 @@ export const MCardViewStatusDialog = ({
                     Telegram
                   </Button>
                 </div>
-              ) : (
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">
-                    Aucun numéro de téléphone disponible pour contacter cette personne.
-                  </p>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

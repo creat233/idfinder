@@ -185,6 +185,10 @@ export const MCardViewStatuses = ({
         allStatuses={activeStatuses}
         currentIndex={currentStatusIndex}
         onNavigate={handleNavigateStatus}
+        mcardId={mcardId}
+        mcardOwnerName={mcardOwnerName}
+        mcardOwnerUserId={mcardOwnerUserId}
+        isOwner={isOwner}
       />
 
       {canAddStatus && (
