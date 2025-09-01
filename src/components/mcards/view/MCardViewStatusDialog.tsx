@@ -2,39 +2,66 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, MessageCircle, Send, X, Maximize2 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Clock, MessageCircle, Send, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface MCardViewStatusDialogProps {
   status: MCardStatus | null;
   isOpen: boolean;
   onClose: () => void;
   phoneNumber?: string;
+  allStatuses?: MCardStatus[];
+  currentIndex?: number;
+  onNavigate?: (direction: 'prev' | 'next') => void;
 }
 
 export const MCardViewStatusDialog = ({ 
   status, 
   isOpen, 
   onClose, 
-  phoneNumber 
+  phoneNumber,
+  allStatuses = [],
+  currentIndex = 0,
+  onNavigate
 }: MCardViewStatusDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [showMessageField, setShowMessageField] = useState(false);
 
   if (!status) return null;
 
+  // Gestion des touches clavier pour navigation
+  useEffect(() => {
+    if (!isOpen || !onNavigate) return;
+    
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        onNavigate('prev');
+      } else if (e.key === 'ArrowRight') {
+        onNavigate('next');
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isOpen, onNavigate]);
+
   const handleWhatsAppContact = () => {
     if (phoneNumber) {
-      const message = encodeURIComponent(`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`);
-      const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+      const finalMessage = message || `Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`;
+      const whatsappMessage = encodeURIComponent(finalMessage);
+      const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
       window.open(whatsappUrl, '_blank');
     }
   };
 
   const handleTelegramContact = () => {
     if (phoneNumber) {
-      const message = encodeURIComponent(`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`);
-      const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
+      const finalMessage = message || `Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`;
+      const telegramMessage = encodeURIComponent(finalMessage);
+      const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${telegramMessage}`;
       window.open(telegramUrl, '_blank');
     }
   };
@@ -48,7 +75,31 @@ export const MCardViewStatusDialog = ({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-md sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-center text-lg md:text-xl">Détails du Statut</DialogTitle>
+            <div className="flex items-center justify-between">
+              {onNavigate && allStatuses.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate('prev')}
+                  className="hover:bg-gray-100"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+              )}
+              <DialogTitle className="text-center text-lg md:text-xl flex-1">
+                Détails du Statut {onNavigate && allStatuses.length > 1 && `(${currentIndex + 1}/${allStatuses.length})`}
+              </DialogTitle>
+              {onNavigate && allStatuses.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate('next')}
+                  className="hover:bg-gray-100"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
+              )}
+            </div>
           </DialogHeader>
           
           <div className="space-y-4 md:space-y-6">
@@ -95,25 +146,48 @@ export const MCardViewStatusDialog = ({
               </div>
             )}
 
-            {/* Boutons de contact */}
+            {/* Champ de message personnalisé */}
             {phoneNumber && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Button 
-                  onClick={handleWhatsAppContact}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowMessageField(!showMessageField)}
+                  className="w-full text-blue-600 border-blue-600 hover:bg-blue-50"
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  WhatsApp
+                  {showMessageField ? 'Masquer le message' : 'Personnaliser le message'}
                 </Button>
                 
-                <Button 
-                  onClick={handleTelegramContact}
-                  variant="outline"
-                  className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
-                >
-                  <Send className="h-5 w-5 mr-2" />
-                  Telegram
-                </Button>
+                {showMessageField && (
+                  <div className="space-y-2">
+                    <Textarea
+                      placeholder={`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      rows={3}
+                      className="resize-none"
+                    />
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Button 
+                    onClick={handleWhatsAppContact}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    WhatsApp
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleTelegramContact}
+                    variant="outline"
+                    className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
+                  >
+                    <Send className="h-5 w-5 mr-2" />
+                    Telegram
+                  </Button>
+                </div>
               </div>
             )}
           </div>

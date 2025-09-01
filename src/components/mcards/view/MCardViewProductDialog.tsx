@@ -2,9 +2,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Send, X, Maximize2, ShoppingBag } from 'lucide-react';
+import { MessageCircle, Send, X, Maximize2, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +17,9 @@ interface MCardViewProductDialogProps {
   mcardId?: string;
   mcardOwnerName?: string;
   mcardOwnerUserId?: string;
+  allProducts?: MCardProduct[];
+  currentIndex?: number;
+  onNavigate?: (direction: 'prev' | 'next') => void;
 }
 
 export const MCardViewProductDialog = ({ 
@@ -26,12 +29,31 @@ export const MCardViewProductDialog = ({
   phoneNumber,
   mcardId,
   mcardOwnerName,
-  mcardOwnerUserId
+  mcardOwnerUserId,
+  allProducts = [],
+  currentIndex = 0,
+  onNavigate
 }: MCardViewProductDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
   const { toast } = useToast();
+
+  // Gestion des touches clavier pour navigation
+  useEffect(() => {
+    if (!isOpen || !onNavigate) return;
+    
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        onNavigate('prev');
+      } else if (e.key === 'ArrowRight') {
+        onNavigate('next');
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isOpen, onNavigate]);
 
   if (!product) return null;
 
@@ -90,7 +112,31 @@ export const MCardViewProductDialog = ({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-md sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-center text-lg md:text-xl">Détails du Produit</DialogTitle>
+            <div className="flex items-center justify-between">
+              {onNavigate && allProducts.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate('prev')}
+                  className="hover:bg-gray-100"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+              )}
+              <DialogTitle className="text-center text-lg md:text-xl flex-1">
+                Détails du Produit {onNavigate && allProducts.length > 1 && `(${currentIndex + 1}/${allProducts.length})`}
+              </DialogTitle>
+              {onNavigate && allProducts.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate('next')}
+                  className="hover:bg-gray-100"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
+              )}
+            </div>
           </DialogHeader>
           
           <div className="space-y-4 md:space-y-6">

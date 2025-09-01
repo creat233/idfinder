@@ -112,6 +112,7 @@ export const useMCardData = () => {
     if (!mcard || !mcard.slug || mcard.slug === 'demo') return;
     
     try {
+      // Actualisation en arrière-plan sans loader
       const [statusesData, productsData, reviewsData] = await Promise.all([
         fetchMCardStatuses(mcard.id),
         fetchMCardProducts(mcard.id),

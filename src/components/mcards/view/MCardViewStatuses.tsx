@@ -35,12 +35,12 @@ export const MCardViewStatuses = ({
 }: MCardViewStatusesProps) => {
   const [selectedStatus, setSelectedStatus] = useState<MCardStatus | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingStatus, setEditingStatus] = useState<MCardStatus | null>(null);
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [contactContext, setContactContext] = useState<{ type: 'status' | 'product'; title: string } | undefined>();
-  const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
   const { toast } = useToast();
 
   const activeStatuses = statuses.filter(status => {
@@ -53,8 +53,22 @@ export const MCardViewStatuses = ({
   const canAddStatus = isOwner && isPremium;
 
   const handleStatusClick = (status: MCardStatus) => {
+    const index = activeStatuses.findIndex(s => s.id === status.id);
+    setCurrentStatusIndex(index);
     setSelectedStatus(status);
     setIsDialogOpen(true);
+  };
+
+  const handleNavigateStatus = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      const newIndex = currentStatusIndex > 0 ? currentStatusIndex - 1 : activeStatuses.length - 1;
+      setCurrentStatusIndex(newIndex);
+      setSelectedStatus(activeStatuses[newIndex]);
+    } else {
+      const newIndex = currentStatusIndex < activeStatuses.length - 1 ? currentStatusIndex + 1 : 0;
+      setCurrentStatusIndex(newIndex);
+      setSelectedStatus(activeStatuses[newIndex]);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -168,6 +182,9 @@ export const MCardViewStatuses = ({
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         phoneNumber={phoneNumber}
+        allStatuses={activeStatuses}
+        currentIndex={currentStatusIndex}
+        onNavigate={handleNavigateStatus}
       />
 
       {canAddStatus && (

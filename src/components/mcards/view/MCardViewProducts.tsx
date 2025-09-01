@@ -37,6 +37,7 @@ export const MCardViewProducts = ({
 }: MCardViewProductsProps) => {
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<MCardProduct | null>(null);
@@ -50,8 +51,22 @@ export const MCardViewProducts = ({
   const canAddProduct = isOwner && isPremium;
 
   const handleProductClick = (product: MCardProduct) => {
+    const index = activeProducts.findIndex(p => p.id === product.id);
+    setCurrentProductIndex(index);
     setSelectedProduct(product);
     setIsDialogOpen(true);
+  };
+
+  const handleNavigateProduct = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      const newIndex = currentProductIndex > 0 ? currentProductIndex - 1 : activeProducts.length - 1;
+      setCurrentProductIndex(newIndex);
+      setSelectedProduct(activeProducts[newIndex]);
+    } else {
+      const newIndex = currentProductIndex < activeProducts.length - 1 ? currentProductIndex + 1 : 0;
+      setCurrentProductIndex(newIndex);
+      setSelectedProduct(activeProducts[newIndex]);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -306,6 +321,9 @@ export const MCardViewProducts = ({
         mcardId={mcardId}
         mcardOwnerName={mcardOwnerName}
         mcardOwnerUserId={mcardOwnerUserId}
+        allProducts={activeProducts}
+        currentIndex={currentProductIndex}
+        onNavigate={handleNavigateProduct}
       />
 
       {canAddProduct && (
