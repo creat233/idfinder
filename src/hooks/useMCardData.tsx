@@ -112,13 +112,19 @@ export const useMCardData = () => {
     if (!mcard || !mcard.slug || mcard.slug === 'demo') return;
     
     try {
-      // Actualisation en arrière-plan sans loader
-      const [statusesData, productsData, reviewsData] = await Promise.all([
+      // Actualisation en arrière-plan sans loader ni rafraîchissement visuel
+      const [mcardData, statusesData, productsData, reviewsData] = await Promise.all([
+        fetchMCardBySlug(mcard.slug),
         fetchMCardStatuses(mcard.id),
         fetchMCardProducts(mcard.id),
         fetchAllMCardReviews(mcard.id, isOwner)
       ]);
       
+      // Mise à jour silencieuse des données, y compris le profil
+      if (mcardData) {
+        setMCard(mcardData);
+        setViewCount(mcardData.view_count || 0);
+      }
       setStatuses(statusesData);
       setProducts(productsData);
       setReviews(reviewsData);

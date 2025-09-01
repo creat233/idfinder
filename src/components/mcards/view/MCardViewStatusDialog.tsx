@@ -146,30 +146,30 @@ export const MCardViewStatusDialog = ({
               </div>
             )}
 
-            {/* Champ de message personnalisé */}
-            {phoneNumber && (
-              <div className="space-y-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowMessageField(!showMessageField)}
-                  className="w-full text-blue-600 border-blue-600 hover:bg-blue-50"
-                >
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  {showMessageField ? 'Masquer le message' : 'Personnaliser le message'}
-                </Button>
-                
-                {showMessageField && (
-                  <div className="space-y-2">
-                    <Textarea
-                      placeholder={`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      rows={3}
-                      className="resize-none"
-                    />
-                  </div>
-                )}
-                
+            {/* Champ de message personnalisé - Toujours visible */}
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowMessageField(!showMessageField)}
+                className="w-full text-blue-600 border-blue-600 hover:bg-blue-50"
+              >
+                <MessageCircle className="h-5 w-5 mr-2" />
+                {showMessageField ? 'Masquer le message' : 'Personnaliser le message'}
+              </Button>
+              
+              {showMessageField && (
+                <div className="space-y-2">
+                  <Textarea
+                    placeholder={`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows={3}
+                    className="resize-none"
+                  />
+                </div>
+              )}
+              
+              {phoneNumber ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Button 
                     onClick={handleWhatsAppContact}
@@ -188,8 +188,14 @@ export const MCardViewStatusDialog = ({
                     Telegram
                   </Button>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="text-center p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600">
+                    Aucun numéro de téléphone disponible pour contacter cette personne.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
