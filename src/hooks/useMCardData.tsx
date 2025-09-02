@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
 import { createDefaultCard, createDefaultStatuses, createDefaultProducts } from '@/utils/mcardDefaults';
@@ -19,6 +20,7 @@ export const useMCardData = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [viewCount, setViewCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchMCard = async (slug?: string) => {
     try {
@@ -109,10 +111,14 @@ export const useMCardData = () => {
   };
 
   const refreshData = async () => {
-    if (!mcard || !mcard.slug || mcard.slug === 'demo') return;
+    if (!mcard || !mcard.slug || mcard.slug === 'demo' || isRefreshing) return;
     
     try {
-      // Actualisation en arrière-plan sans loader ni rafraîchissement visuel
+      // Marquer comme en cours de rafraîchissement pour éviter les appels multiples
+      setIsRefreshing(true);
+      console.log('Silent background refresh starting...');
+      
+      // Actualisation en arrière-plan SANS loader ni indication visuelle
       const [mcardData, statusesData, productsData, reviewsData] = await Promise.all([
         fetchMCardBySlug(mcard.slug),
         fetchMCardStatuses(mcard.id),
@@ -120,21 +126,43 @@ export const useMCardData = () => {
         fetchAllMCardReviews(mcard.id, isOwner)
       ]);
       
-      // Mise à jour silencieuse des données, y compris le profil
-      if (mcardData) {
+      // Mise à jour silencieuse des données - pas de setState qui cause des re-renders
+      if (mcardData && JSON.stringify(mcardData) !== JSON.stringify(mcard)) {
+        console.log('MCard data updated silently');
         setMCard(mcardData);
-        setViewCount(mcardData.view_count || 0);
+        if (mcardData.view_count !== viewCount) {
+          setViewCount(mcardData.view_count || 0);
+        }
       }
-      setStatuses(statusesData);
-      setProducts(productsData);
-      setReviews(reviewsData);
+      
+      if (JSON.stringify(statusesData) !== JSON.stringify(statuses)) {
+        console.log('Statuses updated silently');
+        setStatuses(statusesData);
+      }
+      
+      if (JSON.stringify(productsData) !== JSON.stringify(products)) {
+        console.log('Products updated silently');
+        setProducts(productsData);
+      }
+      
+      if (JSON.stringify(reviewsData) !== JSON.stringify(reviews)) {
+        console.log('Reviews updated silently');
+        setReviews(reviewsData);
+      }
+      
+      console.log('Silent background refresh completed');
     } catch (error) {
-      console.error('Erreur lors du rafraîchissement:', error);
+      console.error('Erreur lors du rafraîchissement silencieux:', error);
+      // Ne pas afficher d'erreur pour les rafraîchissements en arrière-plan
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
   const updateViewCount = (newCount: number) => {
-    setViewCount(newCount);
+    if (newCount !== viewCount) {
+      setViewCount(newCount);
+    }
   };
 
   const addStatus = (status: MCardStatus) => {
