@@ -12,34 +12,45 @@ export interface MCardData {
 export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
   console.log('Fetching mCard by slug:', slug);
   
-  // First try with is_published = true
-  let { data, error } = await supabase
-    .from('mcards')
-    .select('*')
-    .eq('slug', slug)
-    .eq('is_published', true)
-    .single();
-
-  // If not found and published, try without is_published filter (for pending cards)
-  if (error || !data) {
-    console.log('Card not found with is_published=true, trying without filter...');
-    const { data: unpublishedData, error: unpublishedError } = await supabase
+  try {
+    // First try with is_published = true
+    let { data, error } = await supabase
       .from('mcards')
       .select('*')
       .eq('slug', slug)
+      .eq('is_published', true)
       .single();
-    
-    if (unpublishedError) {
-      console.error('Error fetching mCard (both attempts):', error, unpublishedError);
-      return null;
-    }
-    
-    data = unpublishedData;
-    console.log('Found unpublished card:', data);
-  }
 
-  console.log('MCard data retrieved:', data);
-  return data;
+    // If not found and published, try without is_published filter (for pending cards)
+    if (error || !data) {
+      console.log('Card not found with is_published=true, trying without filter...');
+      const { data: unpublishedData, error: unpublishedError } = await supabase
+        .from('mcards')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+      
+      if (unpublishedError) {
+        console.error('Error fetching mCard (both attempts):', error, unpublishedError);
+        return null;
+      }
+      
+      data = unpublishedData;
+      console.log('Found unpublished card:', data);
+    }
+
+    console.log('MCard data retrieved:', data);
+    return data;
+  } catch (networkError) {
+    console.error('Network error fetching mCard:', networkError);
+    // Return cached data if available
+    const cachedData = localStorage.getItem(`mcard_${slug}`);
+    if (cachedData) {
+      console.log('Using cached mCard data due to network error');
+      return JSON.parse(cachedData);
+    }
+    return null;
+  }
 };
 
 export const fetchMCardStatuses = async (mcardId: string): Promise<MCardStatus[]> => {

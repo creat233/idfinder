@@ -126,10 +126,20 @@ export const useMCardData = () => {
         fetchAllMCardReviews(mcard.id, isOwner)
       ]);
       
-      // Mise à jour silencieuse des données - pas de setState qui cause des re-renders
-      if (mcardData && JSON.stringify(mcardData) !== JSON.stringify(mcard)) {
-        console.log('MCard data updated silently');
-        setMCard(mcardData);
+      // Mise à jour silencieuse et intelligente des données
+      if (mcardData) {
+        // Vérifier si les données importantes ont changé (profil, etc.)
+        const profileChanged = mcardData.profile_picture_url !== mcard.profile_picture_url ||
+                              mcardData.full_name !== mcard.full_name ||
+                              mcardData.job_title !== mcard.job_title ||
+                              mcardData.company !== mcard.company ||
+                              mcardData.description !== mcard.description;
+        
+        if (profileChanged) {
+          console.log('Profile data updated, refreshing silently');
+          setMCard(mcardData);
+        }
+        
         if (mcardData.view_count !== viewCount) {
           setViewCount(mcardData.view_count || 0);
         }
