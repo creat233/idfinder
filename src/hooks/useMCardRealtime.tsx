@@ -14,6 +14,15 @@ export const useMCardRealtime = ({ mcard, slug, refreshData, onViewCountUpdate }
   useEffect(() => {
     if (!mcard || slug === 'demo') return;
 
+    // Debounce pour éviter les multiples rafraîchissements
+    let refreshTimeout: NodeJS.Timeout;
+    const debouncedRefresh = () => {
+      clearTimeout(refreshTimeout);
+      refreshTimeout = setTimeout(() => {
+        refreshData();
+      }, 1000); // Attendre 1 seconde avant de rafraîchir
+    };
+
     const statusesChannel = supabase
       .channel('mcard-statuses-realtime')
       .on('postgres_changes', {
@@ -21,9 +30,7 @@ export const useMCardRealtime = ({ mcard, slug, refreshData, onViewCountUpdate }
         schema: 'public',
         table: 'mcard_statuses',
         filter: `mcard_id=eq.${mcard.id}`
-      }, () => {
-        refreshData();
-      })
+      }, debouncedRefresh)
       .subscribe();
 
     const productsChannel = supabase
@@ -33,9 +40,7 @@ export const useMCardRealtime = ({ mcard, slug, refreshData, onViewCountUpdate }
         schema: 'public',
         table: 'mcard_products',
         filter: `mcard_id=eq.${mcard.id}`
-      }, () => {
-        refreshData();
-      })
+      }, debouncedRefresh)
       .subscribe();
 
     const reviewsChannel = supabase
@@ -45,12 +50,10 @@ export const useMCardRealtime = ({ mcard, slug, refreshData, onViewCountUpdate }
         schema: 'public',
         table: 'mcard_reviews',
         filter: `mcard_id=eq.${mcard.id}`
-      }, () => {
-        refreshData();
-      })
+      }, debouncedRefresh)
       .subscribe();
 
-    // Canal pour les vues en temps réel
+    // Canal pour les vues en temps réel - mise à jour silencieuse
     const viewsChannel = supabase
       .channel('mcard-views-realtime')
       .on('postgres_changes', {
@@ -69,6 +72,7 @@ export const useMCardRealtime = ({ mcard, slug, refreshData, onViewCountUpdate }
       .subscribe();
 
     return () => {
+      clearTimeout(refreshTimeout);
       supabase.removeChannel(statusesChannel);
       supabase.removeChannel(productsChannel);
       supabase.removeChannel(reviewsChannel);

@@ -11,6 +11,7 @@ import { MCardVerifiedBadge } from "../MCardVerifiedBadge";
 import { MCardSocialLinks } from "../MCardSocialLinks";
 import { MCardAnalyticsDashboard } from "../MCardAnalyticsDashboard";
 import { MCardMessageDialog } from "../MCardMessageDialog";
+import { MCardProfileImageDialog } from "./MCardProfileImageDialog";
 import { MCard } from "@/types/mcard";
 import { MCardInteractionButtons } from "../MCardInteractionButtons";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle } from "lucide-react";
@@ -32,6 +33,7 @@ const getInitials = (name: string): string => {
 export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardViewProfileProps) => {
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+  const [isProfileImageDialogOpen, setIsProfileImageDialogOpen] = useState(false);
   const isPendingPayment = mcard.subscription_status === 'pending_payment';
   const canRequestVerification = isOwner && !mcard.is_verified && mcard.verification_status !== 'pending';
 
@@ -69,16 +71,25 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8">
           {/* Photo de profil et informations principales - Responsive */}
           <div className="flex flex-col items-center text-center lg:text-left w-full lg:w-auto">
-            <Avatar className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mb-3 sm:mb-4 shadow-lg ring-4 ring-white">
-              <AvatarImage 
-                src={mcard.profile_picture_url || undefined} 
-                alt={mcard.full_name || 'Profile picture'}
-                className="object-cover"
-              />
-              <AvatarFallback className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                {getInitials(mcard.full_name || '')}
-              </AvatarFallback>
-            </Avatar>
+            <div 
+              className="cursor-pointer transition-transform hover:scale-105 group relative"
+              onClick={() => setIsProfileImageDialogOpen(true)}
+              title="Cliquer pour voir le profil en grand"
+            >
+              <Avatar className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mb-3 sm:mb-4 shadow-lg ring-4 ring-white group-hover:ring-blue-300 transition-all">
+                <AvatarImage 
+                  src={mcard.profile_picture_url || undefined} 
+                  alt={mcard.full_name || 'Profile picture'}
+                  className="object-cover"
+                />
+                <AvatarFallback className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                  {getInitials(mcard.full_name || '')}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute top-0 left-0 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="text-white text-xs font-medium text-center">Voir le profil</span>
+              </div>
+            </div>
             
             <div className="flex flex-col sm:flex-row items-center gap-2 mb-2">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 break-words text-center sm:text-left">{mcard.full_name}</h1>
@@ -208,6 +219,16 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
         recipientId={mcard.user_id}
         recipientName={mcard.full_name}
         mcardId={mcard.id}
+      />
+
+      {/* Dialog pour voir la photo de profil */}
+      <MCardProfileImageDialog
+        isOpen={isProfileImageDialogOpen}
+        onOpenChange={setIsProfileImageDialogOpen}
+        profileImageUrl={mcard.profile_picture_url}
+        fullName={mcard.full_name}
+        jobTitle={mcard.job_title}
+        company={mcard.company}
       />
     </Card>
   );
