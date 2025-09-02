@@ -126,17 +126,25 @@ export const useMCardData = () => {
         fetchAllMCardReviews(mcard.id, isOwner)
       ]);
       
-      // Mise à jour silencieuse et intelligente des données
+      // Mise à jour intelligente des données - toujours mettre à jour pour les propriétaires
       if (mcardData) {
         // Vérifier si les données importantes ont changé (profil, etc.)
         const profileChanged = mcardData.profile_picture_url !== mcard.profile_picture_url ||
                               mcardData.full_name !== mcard.full_name ||
                               mcardData.job_title !== mcard.job_title ||
                               mcardData.company !== mcard.company ||
-                              mcardData.description !== mcard.description;
+                              mcardData.description !== mcard.description ||
+                              mcardData.phone_number !== mcard.phone_number ||
+                              mcardData.email !== mcard.email ||
+                              mcardData.website_url !== mcard.website_url;
         
-        if (profileChanged) {
-          console.log('Profile data updated, refreshing silently');
+        const socialLinksChanged = JSON.stringify(mcardData.linkedin_url) !== JSON.stringify(mcard.linkedin_url) ||
+                                 JSON.stringify(mcardData.twitter_url) !== JSON.stringify(mcard.twitter_url) ||
+                                 JSON.stringify(mcardData.facebook_url) !== JSON.stringify(mcard.facebook_url) ||
+                                 JSON.stringify(mcardData.instagram_url) !== JSON.stringify(mcard.instagram_url);
+        
+        if (profileChanged || socialLinksChanged || isOwner) {
+          console.log('Profile data updated, refreshing for all users');
           setMCard(mcardData);
         }
         

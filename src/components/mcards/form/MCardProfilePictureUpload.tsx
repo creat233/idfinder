@@ -101,7 +101,6 @@ export const MCardProfilePictureUpload = ({ preview, onFileChange, onPreviewChan
       
       <div className="text-center text-xs text-gray-500">
         <p>Formats acceptés : JPG, PNG, GIF, WebP</p>
-        <p>Taille maximum : 5MB</p>
       </div>
     </div>
   );
