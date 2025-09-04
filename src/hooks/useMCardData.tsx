@@ -110,7 +110,7 @@ export const useMCardData = () => {
     }
   };
 
-  const refreshData = async () => {
+  const refreshData = async (forceUpdate = false) => {
     if (!mcard || !mcard.slug || mcard.slug === 'demo' || isRefreshing) return;
     
     try {
@@ -126,7 +126,7 @@ export const useMCardData = () => {
         fetchAllMCardReviews(mcard.id, isOwner)
       ]);
       
-      // Mise à jour intelligente des données - toujours mettre à jour pour les propriétaires
+      // Mise à jour intelligente des données - toujours mettre à jour pour les propriétaires ou si forcé
       if (mcardData) {
         // Vérifier si les données importantes ont changé (profil, etc.)
         const profileChanged = mcardData.profile_picture_url !== mcard.profile_picture_url ||
@@ -143,7 +143,7 @@ export const useMCardData = () => {
                                  JSON.stringify(mcardData.facebook_url) !== JSON.stringify(mcard.facebook_url) ||
                                  JSON.stringify(mcardData.instagram_url) !== JSON.stringify(mcard.instagram_url);
         
-        if (profileChanged || socialLinksChanged || isOwner) {
+        if (profileChanged || socialLinksChanged || isOwner || forceUpdate) {
           console.log('Profile data updated, refreshing for all users');
           setMCard(mcardData);
         }
@@ -191,6 +191,11 @@ export const useMCardData = () => {
     setProducts(prev => [product, ...prev]);
   };
 
+  // Fonction pour forcer le rafraîchissement immédiat (utilisée après mise à jour)
+  const forceRefresh = async () => {
+    await refreshData(true);
+  };
+
   return {
     mcard,
     statuses,
@@ -202,6 +207,7 @@ export const useMCardData = () => {
     error,
     fetchMCard,
     refreshData,
+    forceRefresh,
     updateViewCount,
     setMCard,
     setStatuses,
