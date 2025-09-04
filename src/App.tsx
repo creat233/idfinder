@@ -38,6 +38,7 @@ import Cart from "./pages/Cart";
 import { StatusView } from "./pages/StatusView";
 import VerificationRequest from "./pages/VerificationRequest";
 import Notifications from "./pages/Notifications";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 
 const queryClient = new QueryClient({
@@ -115,6 +116,8 @@ function AppContent() {
               <Route path="/panier" element={<Cart />} />
               <Route path="/status/:statusId" element={<StatusView />} />
               <Route path="/verification-request" element={<VerificationRequest />} />
+              <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Routes>
             {!isInConversation && <MobileBottomNav />}
           </BrowserRouter>
