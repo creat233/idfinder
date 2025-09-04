@@ -38,11 +38,10 @@ export const useMCardActions = () => {
     }
   };
 
-  const handleEdit = (mcardId?: string, onSuccess?: () => void) => {
+  const handleEdit = (mcardId?: string) => {
     if (mcardId) {
       // Naviguer vers la page des mCards avec l'ID à éditer
-      // Passer le callback onSuccess pour rafraîchir après mise à jour
-      navigate('/mcards', { state: { editMCardId: mcardId, onUpdateSuccess: onSuccess } });
+      navigate('/mcards', { state: { editMCardId: mcardId } });
     } else {
       console.error('ID de la mCard manquant pour l\'édition');
       toast({

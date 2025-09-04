@@ -36,18 +36,12 @@ export const useMCardsFormHandler = ({
     setIsFormOpen(true);
   };
 
-  // Stocker le callback de succès pour l'utiliser après mise à jour
-  const [onUpdateSuccess, setOnUpdateSuccess] = useState<(() => void) | null>(null);
-
   useEffect(() => {
     const editMCardId = location.state?.editMCardId;
-    const successCallback = location.state?.onUpdateSuccess;
-    
     if (editMCardId && mcards.length > 0) {
         const cardToEdit = mcards.find(m => m.id === editMCardId);
         if (cardToEdit) {
             handleOpenEdit(cardToEdit);
-            setOnUpdateSuccess(() => successCallback); // Stocker le callback
             navigate(location.pathname, { replace: true, state: {} });
         }
     }
@@ -81,14 +75,6 @@ export const useMCardsFormHandler = ({
           setIsFormOpen(false);
           setEditingMCard(null);
           setIsCreating(false);
-          
-          // Appeler le callback de succès pour rafraîchir la vue si disponible
-          if (onUpdateSuccess) {
-            console.log('Appel du callback de rafraîchissement après mise à jour');
-            onUpdateSuccess();
-            setOnUpdateSuccess(null);
-          }
-          
           return result;
         } else {
           console.error('updateMCard a retourné null');
