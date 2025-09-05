@@ -48,6 +48,14 @@ export const MCardViewProducts = ({
   const { addToCart, isInCart } = useCart();
 
   const activeProducts = products.filter(product => product.is_active);
+  
+  // Utilisation correcte du hook usePlanLimits
+  const { checkProductLimit } = usePlanLimits({ 
+    plan: mcardPlan || 'free', 
+    currentStatusesCount: 0, 
+    currentProductsCount: products.length 
+  });
+  
   const isPremiumOrUltimate = mcardPlan === 'premium' || mcardPlan === 'ultimate';
   const canAddProduct = isOwner && isPremiumOrUltimate;
 
@@ -77,11 +85,6 @@ export const MCardViewProducts = ({
 
   const handleAddProduct = () => {
     // Vérifier les limites avant d'ouvrir le dialog
-    const { checkProductLimit } = usePlanLimits({ 
-      plan: mcardPlan || 'free', 
-      currentStatusesCount: 0, 
-      currentProductsCount: products.length 
-    });
     if (checkProductLimit()) {
       setIsAddDialogOpen(true);
     }

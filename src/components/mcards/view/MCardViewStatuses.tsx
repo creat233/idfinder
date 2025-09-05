@@ -50,6 +50,13 @@ export const MCardViewStatuses = ({
     return new Date(status.expires_at) > new Date();
   });
 
+  // Utilisation correcte du hook usePlanLimits
+  const { checkStatusLimit } = usePlanLimits({ 
+    plan: mcardPlan || 'free', 
+    currentStatusesCount: statuses.length, 
+    currentProductsCount: 0 
+  });
+
   const isPremiumOrUltimate = mcardPlan === 'premium' || mcardPlan === 'ultimate';
   const canAddStatus = isOwner && isPremiumOrUltimate;
 
@@ -79,11 +86,6 @@ export const MCardViewStatuses = ({
 
   const handleAddStatus = () => {
     // Vérifier les limites avant d'ouvrir le dialog
-    const { checkStatusLimit } = usePlanLimits({ 
-      plan: mcardPlan || 'free', 
-      currentStatusesCount: statuses.length, 
-      currentProductsCount: 0 
-    });
     if (checkStatusLimit()) {
       setIsAddDialogOpen(true);
     }
