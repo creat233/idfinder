@@ -20,7 +20,6 @@ export const useMCardView = () => {
     error,
     fetchMCard,
     refreshData,
-    forceRefresh,
     updateViewCount,
     addStatus,
     addProduct
@@ -65,9 +64,8 @@ export const useMCardView = () => {
     setShowQRCode,
     viewCount,
     handleCopyLink,
-    handleEdit: () => handleEdit(mcard?.id, forceRefresh),
+    handleEdit: () => handleEdit(mcard?.id),
     refreshData,
-    forceRefresh,
     addStatus,
     addProduct
   };
