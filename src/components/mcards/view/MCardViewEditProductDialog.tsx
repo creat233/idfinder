@@ -19,7 +19,6 @@ interface MCardViewEditProductDialogProps {
 const PRODUCT_CATEGORIES = [
   'Service',
   'Produit',
-  'Article',
   'Consultation',
   'Formation',
   'Événement',

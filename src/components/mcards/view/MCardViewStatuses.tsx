@@ -9,7 +9,6 @@ import { MCardViewEditStatusDialog } from './MCardViewEditStatusDialog';
 import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { MCardStatusCarousel } from './MCardStatusCarousel';
 import { useToast } from '@/hooks/use-toast';
-import { usePlanLimits } from '@/hooks/usePlanLimits';
 
 interface MCardViewStatusesProps {
   statuses: MCardStatus[];
@@ -50,8 +49,8 @@ export const MCardViewStatuses = ({
     return new Date(status.expires_at) > new Date();
   });
 
-  const isPremiumOrUltimate = mcardPlan === 'premium' || mcardPlan === 'ultimate';
-  const canAddStatus = isOwner && isPremiumOrUltimate;
+  const isPremium = mcardPlan === 'premium';
+  const canAddStatus = isOwner && isPremium;
 
   const handleStatusClick = (status: MCardStatus) => {
     const index = activeStatuses.findIndex(s => s.id === status.id);
@@ -78,15 +77,7 @@ export const MCardViewStatuses = ({
   };
 
   const handleAddStatus = () => {
-    // Vérifier les limites avant d'ouvrir le dialog
-    const { checkStatusLimit } = usePlanLimits({ 
-      plan: mcardPlan || 'free', 
-      currentStatusesCount: statuses.length, 
-      currentProductsCount: 0 
-    });
-    if (checkStatusLimit()) {
-      setIsAddDialogOpen(true);
-    }
+    setIsAddDialogOpen(true);
   };
 
   const handleStatusAdded = () => {
