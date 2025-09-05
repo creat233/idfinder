@@ -1,51 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { MCard, MCardCreateData, MCardUpdateData } from '@/types/mcard';
-
-const uploadProfilePicture = async (file: File, userId: string): Promise<string | null> => {
-  const fileName = `${userId}-${Date.now()}.${file.name.split('.').pop()}`;
-  const filePath = `${userId}/${fileName}`;
-
-  const { error } = await supabase.storage
-    .from('mcard-profile-pictures')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
-
-  if (error) {
-    console.error('Error uploading profile picture:', error);
-    throw new Error(`Erreur lors de l'upload de la photo: ${error.message}`);
-  }
-
-  const { data } = supabase.storage
-    .from('mcard-profile-pictures')
-    .getPublicUrl(filePath);
-
-  return data.publicUrl;
-};
-
-const deleteProfilePicture = async (url: string): Promise<void> => {
-  if (!url) return;
-  
-  try {
-    // Extraire le chemin du fichier depuis l'URL
-    const urlParts = url.split('/storage/v1/object/public/mcard-profile-pictures/');
-    if (urlParts.length > 1) {
-      const filePath = urlParts[1];
-      
-      const { error } = await supabase.storage
-        .from('mcard-profile-pictures')
-        .remove([filePath]);
-        
-      if (error) {
-        console.error('Error deleting profile picture:', error);
-      }
-    }
-  } catch (error) {
-    console.error('Error parsing profile picture URL:', error);
-  }
-};
+import { uploadProfilePicture, deleteProfilePicture } from './mcardProfileService';
 
 export const fetchMCards = async (userId: string): Promise<MCard[]> => {
   const { data, error } = await supabase
@@ -116,28 +72,47 @@ export const updateMCard = async (
   originalCard: MCard,
   userId: string
 ): Promise<MCard> => {
-  let profilePictureUrl = originalCard.profile_picture_url;
+  try {
+    console.log('=== updateMCard service appelé ===');
+    console.log('ID:', id);
+    console.log('Original card:', originalCard);
+    console.log('Has profile picture file:', !!profilePictureFile);
+    
+    let profilePictureUrl = originalCard.profile_picture_url;
 
-  if (profilePictureFile) {
-    if (originalCard.profile_picture_url) {
-      await deleteProfilePicture(originalCard.profile_picture_url);
+    if (profilePictureFile) {
+      console.log('Uploading new profile picture...');
+      if (originalCard.profile_picture_url) {
+        console.log('Deleting old profile picture...');
+        await deleteProfilePicture(originalCard.profile_picture_url);
+      }
+      profilePictureUrl = await uploadProfilePicture(profilePictureFile, userId);
+      console.log('New profile picture uploaded:', profilePictureUrl);
     }
-    profilePictureUrl = await uploadProfilePicture(profilePictureFile, userId);
+
+    console.log('Updating mCard in database...');
+    const { data, error } = await supabase
+      .from('mcards')
+      .update({
+        ...mcardData,
+        profile_picture_url: profilePictureUrl,
+      })
+      .eq('id', id)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Database update error:', error);
+      throw error;
+    }
+    
+    console.log('MCard updated successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error in updateMCard service:', error);
+    throw error;
   }
-
-  const { data, error } = await supabase
-    .from('mcards')
-    .update({
-      ...mcardData,
-      profile_picture_url: profilePictureUrl,
-    })
-    .eq('id', id)
-    .eq('user_id', userId)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
 };
 
 export const deleteMCard = async (id: string, profilePictureUrl?: string | null): Promise<void> => {

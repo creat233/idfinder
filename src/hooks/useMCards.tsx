@@ -59,10 +59,23 @@ export const useMCards = () => {
   const createMCard = useCallback(async (mcardData: MCardCreateData, profilePictureFile: File | null, options?: MCardFormOptions) => {
     try {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not found");
+      console.log('=== createMCard appelé ===');
+      console.log('Data:', mcardData);
+      console.log('Profile picture file:', profilePictureFile);
+      
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Auth error:', authError);
+        throw new Error("Erreur d'authentification");
+      }
+      if (!user) {
+        console.error('No user found');
+        throw new Error("Utilisateur non trouvé. Veuillez vous reconnecter.");
+      }
 
+      console.log('User authenticated:', user.id);
       const data = await mcardService.createMCard(mcardData, profilePictureFile, user.id);
+      console.log('Card created successfully:', data);
       
       setMCards(prev => [data, ...prev]);
       if (!options?.silent) {
@@ -73,6 +86,7 @@ export const useMCards = () => {
       }
       return data;
     } catch (error: any) {
+      console.error('Error creating mCard:', error);
       toast({ variant: "destructive", title: t('mCardError'), description: error.message });
       return null;
     } finally {
@@ -83,10 +97,24 @@ export const useMCards = () => {
   const updateMCard = useCallback(async (id: string, mcardData: MCardUpdateData, profilePictureFile: File | null, originalCard: MCard, options?: MCardFormOptions) => {
     try {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not found");
+      console.log('=== updateMCard appelé ===');
+      console.log('ID:', id);
+      console.log('Data:', mcardData);
+      console.log('Profile picture file:', profilePictureFile);
+      
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Auth error:', authError);
+        throw new Error("Erreur d'authentification");
+      }
+      if (!user) {
+        console.error('No user found');
+        throw new Error("Utilisateur non trouvé. Veuillez vous reconnecter.");
+      }
 
+      console.log('User authenticated:', user.id);
       const data = await mcardService.updateMCard(id, mcardData, profilePictureFile, originalCard, user.id);
+      console.log('Card updated successfully:', data);
       
       setMCards(prev => prev.map(card => card.id === id ? data : card));
       if (!options?.silent) {
@@ -94,6 +122,7 @@ export const useMCards = () => {
       }
       return data;
     } catch (error: any) {
+      console.error('Error updating mCard:', error);
       toast({ variant: "destructive", title: t('mCardError'), description: error.message });
       return null;
     } finally {
