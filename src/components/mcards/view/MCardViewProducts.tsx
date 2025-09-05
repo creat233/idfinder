@@ -11,6 +11,7 @@ import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { ProductImageModal } from './ProductImageModal';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
+import { usePlanLimits } from '@/hooks/usePlanLimits';
 
 interface MCardViewProductsProps {
   products: MCardProduct[];
@@ -47,8 +48,8 @@ export const MCardViewProducts = ({
   const { addToCart, isInCart } = useCart();
 
   const activeProducts = products.filter(product => product.is_active);
-  const isPremium = mcardPlan === 'premium';
-  const canAddProduct = isOwner && isPremium;
+  const isPremiumOrUltimate = mcardPlan === 'premium' || mcardPlan === 'ultimate';
+  const canAddProduct = isOwner && isPremiumOrUltimate;
 
   const handleProductClick = (product: MCardProduct) => {
     const index = activeProducts.findIndex(p => p.id === product.id);
@@ -75,7 +76,15 @@ export const MCardViewProducts = ({
   };
 
   const handleAddProduct = () => {
-    setIsAddDialogOpen(true);
+    // Vérifier les limites avant d'ouvrir le dialog
+    const { checkProductLimit } = usePlanLimits({ 
+      plan: mcardPlan || 'free', 
+      currentStatusesCount: 0, 
+      currentProductsCount: products.length 
+    });
+    if (checkProductLimit()) {
+      setIsAddDialogOpen(true);
+    }
   };
 
   const handleProductAdded = () => {
@@ -142,6 +151,8 @@ export const MCardViewProducts = ({
         return 'S\'inscrire';
       case 'événement':
         return 'Réserve';
+      case 'article':
+        return 'Lire';
       case 'autre':
         return 'Contacte';
       default:
