@@ -82,9 +82,11 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   alt={mcard.full_name || 'Profile picture'}
                   className="object-cover"
                 />
-                <AvatarFallback className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                  {getInitials(mcard.full_name || '')}
-                </AvatarFallback>
+                {!mcard.profile_picture_url && (
+                  <AvatarFallback className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    {getInitials(mcard.full_name || '')}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div className="absolute top-0 left-0 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span className="text-white text-xs font-medium text-center">Voir le profil</span>

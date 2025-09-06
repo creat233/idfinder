@@ -18,7 +18,9 @@ export const ProfileLink = ({
   showName = false
 }: ProfileLinkProps) => {
   const handleProfileClick = () => {
+    console.log('ProfileLink clicked with slug:', mcardSlug);
     const url = URL_CONFIG.getMCardUrl(mcardSlug);
+    console.log('Opening URL:', url);
     window.open(url, '_blank');
   };
 
@@ -30,9 +32,11 @@ export const ProfileLink = ({
     >
       <Avatar className="h-8 w-8 ring-2 ring-transparent group-hover:ring-blue-300 transition-all duration-200">
         <AvatarImage src={profileImageUrl || ''} />
-        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm">
-          {fullName?.charAt(0) || 'U'}
-        </AvatarFallback>
+        {!profileImageUrl && (
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm">
+            {fullName?.charAt(0) || 'U'}
+          </AvatarFallback>
+        )}
       </Avatar>
       {showName && (
         <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
