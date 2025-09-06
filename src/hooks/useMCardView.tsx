@@ -65,7 +65,12 @@ export const useMCardView = () => {
     setShowQRCode,
     viewCount,
     handleCopyLink,
-    handleEdit: () => handleEdit(mcard?.id, forceRefresh),
+    handleEdit: () => {
+      if (mcard?.id) {
+        // Navigation directe vers l'édition sans passer par la page des cartes
+        window.location.href = `/mcards?edit=${mcard.id}`;
+      }
+    },
     refreshData,
     forceRefresh,
     addStatus,

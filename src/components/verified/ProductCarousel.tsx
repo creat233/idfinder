@@ -13,7 +13,7 @@ interface MCardWithProducts extends MCard {
 }
 
 interface ProductCarouselProps {
-  onImageClick?: (product: MCardProduct, mcard: MCard) => void;
+  onImageClick?: (products: MCardProduct[], mcards: MCard[], productIndex: number) => void;
   selectedCategory?: string;
 }
 
@@ -191,7 +191,18 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
-                onClick={() => onImageClick?.(currentProduct, mcard)}
+                onClick={() => {
+                  // Créer les listes globales pour le carousel
+                  const allProducts = filteredMCards.flatMap(m => 
+                    selectedCategory === "all" ? m.products : m.products.filter(p => p.category === selectedCategory)
+                  );
+                  const allMCards = filteredMCards.flatMap(m => 
+                    (selectedCategory === "all" ? m.products : m.products.filter(p => p.category === selectedCategory))
+                    .map(() => m)
+                  );
+                  const globalIndex = allProducts.findIndex(p => p.id === currentProduct.id);
+                  onImageClick?.(allProducts, allMCards, globalIndex);
+                }}
                 loading="lazy"
                 style={{ objectFit: 'cover', width: '100%', height: '100%' }}
               />

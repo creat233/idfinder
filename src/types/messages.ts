@@ -5,6 +5,7 @@ export interface Conversation {
   otherUserName: string;
   mcardId: string;
   mcardName: string;
+  mcardSlug?: string;
   messages: MCardMessage[];
   lastMessage: MCardMessage;
   unreadCount: number;

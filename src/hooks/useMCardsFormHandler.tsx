@@ -40,7 +40,9 @@ export const useMCardsFormHandler = ({
   const [onUpdateSuccess, setOnUpdateSuccess] = useState<(() => void) | null>(null);
 
   useEffect(() => {
-    const editMCardId = location.state?.editMCardId;
+    // Gérer l'édition via URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    const editMCardId = urlParams.get('edit') || location.state?.editMCardId;
     const successCallback = location.state?.onUpdateSuccess;
     
     if (editMCardId && mcards.length > 0) {
@@ -48,6 +50,10 @@ export const useMCardsFormHandler = ({
         if (cardToEdit) {
             handleOpenEdit(cardToEdit);
             setOnUpdateSuccess(() => successCallback); // Stocker le callback
+            // Nettoyer l'URL après avoir ouvert le dialog
+            if (urlParams.get('edit')) {
+              window.history.replaceState({}, '', window.location.pathname);
+            }
             navigate(location.pathname, { replace: true, state: {} });
         }
     }

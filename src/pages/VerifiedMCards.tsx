@@ -4,7 +4,7 @@ import { PublicHeader } from "@/components/PublicHeader";
 import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductCarousel } from "@/components/verified/ProductCarousel";
-import { ProductImageModal } from "@/components/verified/ProductImageModal";
+import { ProductImageCarousel } from "@/components/verified/ProductImageCarousel";
 import { StatusCarousel } from "@/components/verified/StatusCarousel";
 import { MCard, MCardProduct } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button";
 const VerifiedMCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentLanguage, setCurrentLanguage] = useState<'fr' | 'en'>('fr');
-  const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
-  const [selectedMCard, setSelectedMCard] = useState<MCard | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { toast } = useToast();
@@ -23,6 +21,7 @@ const VerifiedMCards = () => {
     { id: "all", name: "Tout" },
     { id: "Service", name: "Service" },
     { id: "Produit", name: "Produit" },
+    { id: "Article", name: "Article" },
     { id: "Menu restaurant", name: "Menu restaurant" },
     { id: "Consultation", name: "Consultation" },
     { id: "Formation", name: "Formation" },
@@ -34,9 +33,14 @@ const VerifiedMCards = () => {
     setSearchQuery(query);
   };
 
-  const handleImageClick = (product: MCardProduct, mcard: MCard) => {
-    setSelectedProduct(product);
-    setSelectedMCard(mcard);
+  const [selectedProducts, setSelectedProducts] = useState<MCardProduct[]>([]);
+  const [selectedMCards, setSelectedMCards] = useState<MCard[]>([]);
+  const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+
+  const handleImageClick = (products: MCardProduct[], mcards: MCard[], productIndex: number) => {
+    setSelectedProducts(products);
+    setSelectedMCards(mcards);
+    setSelectedProductIndex(productIndex);
     setIsModalOpen(true);
   };
 
@@ -60,7 +64,7 @@ const VerifiedMCards = () => {
       {/* Header simplifié */}
       <div className="text-center py-8 px-4">
         <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-          {getTranslatedText('MCards Vérifiées')}
+          Services & Produits
         </h1>
         
         {/* Search Bar */}
@@ -107,12 +111,13 @@ const VerifiedMCards = () => {
       {/* Carousel de produits */}
       <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
 
-      {/* Modal pour afficher l'image et le profil */}
-      <ProductImageModal
+      {/* Carousel pour afficher les images avec navigation */}
+      <ProductImageCarousel
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        product={selectedProduct}
-        mcard={selectedMCard}
+        products={selectedProducts}
+        mcards={selectedMCards}
+        initialProductIndex={selectedProductIndex}
       />
       
       {/* Bouton de traduction */}

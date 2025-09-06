@@ -50,7 +50,7 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onGetStarte
           onClick={() => { navigate("/verified-mcards"); onClose(); }}
           className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full font-medium"
         >
-          ✅ MCards Vérifiées
+          ✅ Services
         </button>
         {user && (
           <button 

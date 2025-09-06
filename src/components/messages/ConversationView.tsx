@@ -113,6 +113,7 @@ export function ConversationView({
       <ConversationHeader
         otherUserName={conversation.otherUserName}
         mcardName={conversation.mcardName}
+        mcardSlug={conversation.mcardSlug}
         isUserBlocked={isUserBlocked}
         isBlocking={isBlocking}
         onBack={onBack}

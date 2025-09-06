@@ -5,6 +5,7 @@ import { BlockingMenu } from "./BlockingMenu";
 interface ConversationHeaderProps {
   otherUserName: string;
   mcardName: string;
+  mcardSlug?: string;
   isUserBlocked: boolean;
   isBlocking: boolean;
   onBack: () => void;
@@ -16,6 +17,7 @@ interface ConversationHeaderProps {
 export function ConversationHeader({
   otherUserName,
   mcardName,
+  mcardSlug,
   isUserBlocked,
   isBlocking,
   onBack,
@@ -40,7 +42,16 @@ export function ConversationHeader({
             {otherUserName.charAt(0).toUpperCase() || 'U'}
           </div>
           <div>
-            <h2 className="font-semibold text-gray-900 text-[17px]">{otherUserName}</h2>
+            <h2 className="font-semibold text-gray-900 text-[17px] cursor-pointer hover:text-blue-600 transition-colors" 
+                onClick={() => {
+                  if (mcardSlug) {
+                    const baseUrl = window.location.origin;
+                    window.open(`${baseUrl}/mcard/${mcardSlug}`, '_blank');
+                  }
+                }}
+                title="Cliquer pour voir le profil">
+              {otherUserName}
+            </h2>
             <p className="text-sm text-gray-500">MCard: {mcardName}</p>
           </div>
         </div>
