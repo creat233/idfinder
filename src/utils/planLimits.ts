@@ -30,10 +30,14 @@ export const getPlanLimits = (plan: string) => {
 
 export const canAddStatus = (currentCount: number, plan: string): boolean => {
   const limits = getPlanLimits(plan);
+  // Les utilisateurs peuvent ajouter des statuts tant qu'ils ne dépassent pas la limite totale
+  // Les statuts expirent après 24h, permettant l'ajout de nouveaux
   return currentCount < limits.maxStatuses;
 };
 
 export const canAddProduct = (currentCount: number, plan: string): boolean => {
   const limits = getPlanLimits(plan);
+  // Les utilisateurs peuvent supprimer des produits pour en ajouter d'autres
+  // mais ne peuvent jamais dépasser la limite totale
   return currentCount < limits.maxProducts;
 };

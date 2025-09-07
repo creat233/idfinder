@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { ConversationsList } from "@/components/messages/ConversationsList";
 import { ConversationView } from "@/components/messages/ConversationView";
+import { MomoAI } from "@/components/messages/MomoAI";
 import { useConversations } from "@/hooks/useConversations";
 import { useMessageSender } from "@/hooks/useMessageSender";
 import { Conversation } from "@/types/messages";
@@ -159,25 +160,39 @@ const Messages = () => {
                   />
                 </div>
               ) : (
-                <ConversationsList
-                  conversations={conversations}
-                  selectedConversation={selectedConversation}
-                  loading={loading}
-                  searchQuery={searchQuery}
-                  currentUserId={user.id}
-                  onSearchChange={setSearchQuery}
-                  onConversationSelect={(conversation) => {
-                    setSelectedConversation(conversation);
-                    markConversationAsRead(conversation);
-                  }}
-                />
+                <div className="h-full p-4 space-y-4">
+                  <MomoAI 
+                    onStartChat={() => {
+                      // Future: Handle AI chat initiation
+                      console.log('Starting AI chat...');
+                    }}
+                  />
+                  <ConversationsList
+                    conversations={conversations}
+                    selectedConversation={selectedConversation}
+                    loading={loading}
+                    searchQuery={searchQuery}
+                    currentUserId={user.id}
+                    onSearchChange={setSearchQuery}
+                    onConversationSelect={(conversation) => {
+                      setSelectedConversation(conversation);
+                      markConversationAsRead(conversation);
+                    }}
+                  />
+                </div>
               )}
             </div>
 
             {/* Vue desktop */}
             <div className="hidden lg:grid lg:grid-cols-3 gap-6 h-full p-4" style={{ paddingTop: '80px' }}>
-              {/* Liste des conversations */}
-              <div className="lg:col-span-1">
+              {/* Liste des conversations avec Momo AI */}
+              <div className="lg:col-span-1 space-y-4">
+                <MomoAI 
+                  onStartChat={() => {
+                    // Future: Handle AI chat initiation
+                    console.log('Starting AI chat...');
+                  }}
+                />
                 <ConversationsList
                   conversations={conversations}
                   selectedConversation={selectedConversation}

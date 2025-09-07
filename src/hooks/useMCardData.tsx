@@ -145,6 +145,7 @@ export const useMCardData = () => {
         
         if (profileChanged || socialLinksChanged || isOwner || forceUpdate) {
           console.log('Profile data updated, refreshing for all users');
+          console.log('Profile picture URL changed from:', mcard.profile_picture_url, 'to:', mcardData.profile_picture_url);
           setMCard(mcardData);
         }
         
