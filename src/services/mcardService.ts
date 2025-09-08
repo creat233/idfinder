@@ -84,10 +84,24 @@ export const updateMCard = async (
       console.log('Uploading new profile picture...');
       if (originalCard.profile_picture_url) {
         console.log('Deleting old profile picture...');
-        await deleteProfilePicture(originalCard.profile_picture_url);
+        try {
+          await deleteProfilePicture(originalCard.profile_picture_url);
+        } catch (error) {
+          console.warn('Could not delete old profile picture:', error);
+        }
       }
       profilePictureUrl = await uploadProfilePicture(profilePictureFile, userId);
       console.log('New profile picture uploaded:', profilePictureUrl);
+    } else if (mcardData.profile_picture_url === null) {
+      // L'utilisateur a explicitement supprimé sa photo
+      if (originalCard.profile_picture_url) {
+        try {
+          await deleteProfilePicture(originalCard.profile_picture_url);
+        } catch (error) {
+          console.warn('Could not delete profile picture:', error);
+        }
+      }
+      profilePictureUrl = null;
     }
 
     console.log('Updating mCard in database...');
