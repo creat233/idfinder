@@ -31,10 +31,7 @@ export const useMCardFormInitializer = (
         is_published: mcard?.is_published || false,
       };
       reset(defaultValues);
-      // Forcer le refresh de la preview avec l'URL de la photo existante
-      const profileUrl = mcard?.profile_picture_url;
-      console.log('Setting preview with profile URL:', profileUrl);
-      setPreview(profileUrl || null);
+      setPreview(mcard?.profile_picture_url || null);
       setProfilePictureFile(null);
     }
   }, [isOpen, mcard, reset, setPreview, setProfilePictureFile]);

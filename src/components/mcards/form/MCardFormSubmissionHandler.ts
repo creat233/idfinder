@@ -77,12 +77,8 @@ export const useMCardFormSubmission = (
         slug 
       };
       
-      // Gérer explicitement la photo de profil
-      if (preview === null) {
+      if (!preview) {
         data.profile_picture_url = null;
-      } else if (preview) {
-        // Le preview sera géré par l'upload dans le service
-        data.profile_picture_url = preview;
       }
       
       console.log('Données à soumettre:', data);

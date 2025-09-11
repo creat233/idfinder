@@ -26,12 +26,7 @@ export const uploadProfilePicture = async (file: File, userId: string): Promise<
         .getPublicUrl(filePath);
 
     console.log('Profile picture uploaded successfully:', data.publicUrl);
-    
-    // Ajouter un timestamp pour forcer la mise à jour du cache
-    const urlWithCacheBuster = `${data.publicUrl}?t=${Date.now()}`;
-    console.log('URL with cache buster:', urlWithCacheBuster);
-    
-    return urlWithCacheBuster;
+    return data.publicUrl;
   } catch (error) {
     console.error('Error in uploadProfilePicture:', error);
     throw error;

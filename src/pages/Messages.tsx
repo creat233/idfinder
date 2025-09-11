@@ -4,14 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { ConversationsList } from "@/components/messages/ConversationsList";
 import { ConversationView } from "@/components/messages/ConversationView";
 import { MomoAI } from "@/components/messages/MomoAI";
-import { MomoAIChat } from "@/components/messages/MomoAIChat";
 import { useConversations } from "@/hooks/useConversations";
 import { useMessageSender } from "@/hooks/useMessageSender";
 import { Conversation } from "@/types/messages";
 
 const Messages = () => {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const [showMomoChat, setShowMomoChat] = useState(false);
   
   // Émettre un événement quand l'état de la conversation change
   useEffect(() => {
@@ -145,9 +143,7 @@ const Messages = () => {
                style={{ paddingBottom: selectedConversation && window.innerWidth < 1024 ? '0px' : '80px', paddingTop: selectedConversation && window.innerWidth < 1024 ? '0px' : '80px' }}>
             {/* Vue mobile */}
             <div className="lg:hidden h-full">
-              {showMomoChat ? (
-                <MomoAIChat onBack={() => setShowMomoChat(false)} />
-              ) : selectedConversation ? (
+              {selectedConversation ? (
                 <div className="h-full" style={{ paddingBottom: '0px' }}>
                   <ConversationView
                     conversation={selectedConversation}
@@ -166,7 +162,10 @@ const Messages = () => {
               ) : (
                 <div className="h-full p-4 space-y-4">
                   <MomoAI 
-                    onStartChat={() => setShowMomoChat(true)}
+                    onStartChat={() => {
+                      // Future: Handle AI chat initiation
+                      console.log('Starting AI chat...');
+                    }}
                   />
                   <ConversationsList
                     conversations={conversations}
@@ -190,8 +189,8 @@ const Messages = () => {
               <div className="lg:col-span-1 space-y-4">
                 <MomoAI 
                   onStartChat={() => {
-                    setShowMomoChat(true);
-                    setSelectedConversation(null);
+                    // Future: Handle AI chat initiation
+                    console.log('Starting AI chat...');
                   }}
                 />
                 <ConversationsList
@@ -203,7 +202,6 @@ const Messages = () => {
                   onSearchChange={setSearchQuery}
                   onConversationSelect={(conversation) => {
                     setSelectedConversation(conversation);
-                    setShowMomoChat(false);
                     markConversationAsRead(conversation);
                   }}
                 />
@@ -211,23 +209,19 @@ const Messages = () => {
 
               {/* Zone de conversation */}
               <div className="lg:col-span-2">
-                {showMomoChat ? (
-                  <MomoAIChat onBack={() => setShowMomoChat(false)} />
-                ) : (
-                  <ConversationView
-                    conversation={selectedConversation}
-                    currentUserId={user.id}
-                    replyText={replyText}
-                    sending={sending}
-                    onReplyChange={setReplyText}
-                    onSendMessage={handleSendMessage}
-                    onBack={() => setSelectedConversation(null)}
-                    onDeleteMessage={deleteMessage}
-                    onBlockUser={handleBlockUser}
-                    onUnblockUser={handleUnblockUser}
-                    onDeleteConversation={handleDeleteConversation}
-                  />
-                )}
+                <ConversationView
+                  conversation={selectedConversation}
+                  currentUserId={user.id}
+                  replyText={replyText}
+                  sending={sending}
+                  onReplyChange={setReplyText}
+                  onSendMessage={handleSendMessage}
+                  onBack={() => setSelectedConversation(null)}
+                  onDeleteMessage={deleteMessage}
+                  onBlockUser={handleBlockUser}
+                  onUnblockUser={handleUnblockUser}
+                  onDeleteConversation={handleDeleteConversation}
+                />
               </div>
             </div>
           </div>
