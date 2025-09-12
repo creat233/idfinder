@@ -89,120 +89,110 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
   const currentProduct = pinnedProducts[currentIndex];
 
   return (
-    <div className="mb-8 px-4">
-      <div className="relative bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-2xl p-6 border border-yellow-400/30 backdrop-blur-sm">
-        {/* Header */}
-        <div className="flex items-center gap-2 mb-4">
-          <Pin className="h-5 w-5 text-yellow-400" />
-          <h2 className="text-lg font-bold text-white">Produits épinglés</h2>
-          <Badge variant="secondary" className="bg-yellow-400/20 text-yellow-300">
-            {pinnedProducts.length}
-          </Badge>
+    <div className="w-full">
+      <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden group">
+        {/* Image complète en arrière-plan */}
+        <div className="absolute inset-0">
+          <img
+            src={currentProduct.image_url || ''}
+            alt={currentProduct.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+            onClick={() => {
+              const allProducts = pinnedProducts.map(p => ({ ...p, mcard: undefined }));
+              const allMCards = pinnedProducts.map(p => p.mcard);
+              onImageClick?.(allProducts, allMCards, currentIndex);
+            }}
+            onError={(e) => {
+              console.error('Image failed to load:', currentProduct.image_url);
+              e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="100%25" height="100%25" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%236b7280"%3EImage indisponible%3C/text%3E%3C/svg%3E';
+            }}
+          />
         </div>
 
-        {/* Product Card */}
-        <div className="relative bg-black/40 rounded-xl overflow-hidden group">
-          {/* Profile en haut */}
-          <div className="absolute top-0 left-0 right-0 p-4 text-white z-10 bg-gradient-to-b from-black/80 to-transparent">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div 
-                  className="cursor-pointer"
-                  onClick={() => handleProfileClick(currentProduct.mcard.slug)}
-                >
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
-                    <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
-                      {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
-                    </AvatarFallback>
-                    <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-xs">
-                      {currentProduct.mcard.full_name?.charAt(0) || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white">
-                    {currentProduct.mcard.full_name}
-                  </h3>
-                  <p className="text-xs text-gray-300">{currentProduct.mcard.company}</p>
-                  {currentProduct.mcard.is_verified && (
-                    <span className="text-xs text-blue-400 flex items-center gap-1">
-                      <span>✓</span> Vérifié
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <MCardInteractionButtons 
-                mcardId={currentProduct.mcard.id}
-                mcardOwnerId={currentProduct.mcard.user_id}
-                mcardOwnerName={currentProduct.mcard.full_name}
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+        {/* Navigation */}
+        {pinnedProducts.length > 1 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30 border border-white/20"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30 border border-white/20"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          </>
+        )}
+
+        {/* Progress indicators */}
+        {pinnedProducts.length > 1 && (
+          <div className="absolute top-6 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
+            {pinnedProducts.map((_, index) => (
+              <div
+                key={index}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentIndex ? 'bg-white' : 'bg-white/30'
+                }`}
               />
+            ))}
+          </div>
+        )}
+
+        {/* Profil en haut à droite */}
+        <div className="absolute top-6 right-6 z-20">
+          <MCardInteractionButtons 
+            mcardId={currentProduct.mcard.id}
+            mcardOwnerId={currentProduct.mcard.user_id}
+            mcardOwnerName={currentProduct.mcard.full_name}
+          />
+        </div>
+
+        {/* Informations en bas */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
+          {/* Profil */}
+          <div className="flex items-center gap-3 mb-4">
+            <div 
+              className="cursor-pointer"
+              onClick={() => handleProfileClick(currentProduct.mcard.slug)}
+            >
+              <Avatar className="w-12 h-12 border-2 border-white/20">
+                <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
+                <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-lg">
+                  {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg text-white">
+                @{currentProduct.mcard.slug}
+              </h3>
+              <p className="text-sm text-gray-300">{currentProduct.mcard.full_name}</p>
+              {currentProduct.mcard.is_verified && (
+                <span className="text-sm text-blue-400 flex items-center gap-1">
+                  <span>✓</span> Vérifié
+                </span>
+              )}
             </div>
           </div>
-
-          {/* Image complète */}
-          <div className="relative min-h-[300px] bg-gradient-to-br from-purple-900/20 to-pink-900/20">
-            <img
-              src={currentProduct.image_url || ''}
-              alt={currentProduct.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
-              onClick={() => {
-                const allProducts = pinnedProducts.map(p => ({ ...p, mcard: undefined }));
-                const allMCards = pinnedProducts.map(p => p.mcard);
-                onImageClick?.(allProducts, allMCards, currentIndex);
-              }}
-              onError={(e) => {
-                console.error('Image failed to load:', currentProduct.image_url);
-                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="100%25" height="100%25" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%236b7280"%3EImage indisponible%3C/text%3E%3C/svg%3E';
-              }}
-            />
-
-            {/* Navigation */}
-            {pinnedProducts.length > 1 && (
-              <>
-                <button
-                  onClick={handlePrev}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all z-20"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all z-20"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </>
-            )}
-
-            {/* Progress indicators */}
-            {pinnedProducts.length > 1 && (
-              <div className="absolute top-20 left-1/2 transform -translate-x-1/2 flex space-x-1 z-10">
-                {pinnedProducts.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      index === currentIndex ? 'bg-yellow-400' : 'bg-white/30'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Informations produit en bas */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/90 to-transparent">
-            <p className="font-semibold text-lg mb-2">{currentProduct.name}</p>
+          
+          {/* Informations produit */}
+          <div className="space-y-2">
+            <h2 className="font-bold text-2xl">{currentProduct.name}</h2>
             {currentProduct.description && (
-              <p className="text-sm opacity-80 line-clamp-2 mb-3">{currentProduct.description}</p>
+              <p className="text-base opacity-90 line-clamp-2">{currentProduct.description}</p>
             )}
             
-            <div className="flex items-center gap-2">
-              <span className="text-xs bg-yellow-400/20 px-2 py-1 rounded-full">
+            <div className="flex items-center gap-3 mt-4">
+              <span className="text-sm bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
                 #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
               </span>
-              <span className="text-sm bg-green-500 px-3 py-1 rounded-full font-bold">
+              <span className="text-lg bg-green-500 px-4 py-2 rounded-full font-bold">
                 {currentProduct.price.toLocaleString()} {currentProduct.currency}
               </span>
             </div>
