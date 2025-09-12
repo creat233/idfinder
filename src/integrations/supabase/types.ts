@@ -824,13 +824,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "notifications_card_id_fkey"
-            columns: ["card_id"]
-            isOneToOne: false
-            referencedRelation: "user_cards"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "notifications_reported_card_id_fkey"
             columns: ["reported_card_id"]
             isOneToOne: false
