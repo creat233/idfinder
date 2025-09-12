@@ -1,4 +1,4 @@
-import { Heart } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMCardInteractions } from '@/hooks/useMCardInteractions';
 import { motion } from 'framer-motion';
@@ -44,8 +44,8 @@ export const FavoriteButton = ({
       className={`
         ${showText ? '' : sizeClasses[size]}
         ${isFavorited 
-          ? 'bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white border-pink-500 shadow-lg' 
-          : 'border-pink-200 text-pink-500 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-600'
+          ? 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white border-amber-500 shadow-lg' 
+          : 'border-amber-200 text-amber-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-700'
         }
         transition-all duration-300 hover:scale-105 active:scale-95
         ${className}
@@ -58,13 +58,13 @@ export const FavoriteButton = ({
         }}
         transition={{ duration: 0.4, type: "spring", stiffness: 300 }}
       >
-        <Heart 
+        <Star 
           className={`${iconSizes[size]} ${isFavorited ? 'fill-current drop-shadow-sm' : ''}`} 
         />
       </motion.div>
       {showText && (
         <span className="ml-2 text-sm font-medium">
-          {isFavorited ? '❤️ Favori' : '🤍 Ajouter'}
+          {isFavorited ? '⭐ Favori' : '🌟 Ajouter'}
         </span>
       )}
     </Button>
