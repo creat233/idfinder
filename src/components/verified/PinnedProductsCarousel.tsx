@@ -92,11 +92,11 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
     <div className="w-full">
       <div className="relative w-full overflow-hidden group">
         {/* Image avec hauteur adaptative */}
-        <div className="relative w-full aspect-[4/3] max-h-[600px]">
+        <div className="relative w-full min-h-[300px] max-h-[80vh] flex items-center justify-center bg-black/20">
           <img
             src={currentProduct.image_url || ''}
             alt={currentProduct.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+            className="w-full h-auto max-h-[80vh] object-contain transition-transform duration-500 group-hover:scale-105 cursor-pointer"
             onClick={() => {
               const allProducts = pinnedProducts.map(p => ({ ...p, mcard: undefined }));
               const allMCards = pinnedProducts.map(p => p.mcard);
