@@ -232,13 +232,6 @@ export type Database = {
             referencedRelation: "mcards"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "mcard_analytics_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mcard_blocked_users: {
@@ -269,13 +262,6 @@ export type Database = {
             columns: ["mcard_id"]
             isOneToOne: false
             referencedRelation: "mcards"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mcard_blocked_users_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
             referencedColumns: ["id"]
           },
         ]
@@ -331,13 +317,6 @@ export type Database = {
             referencedRelation: "mcards"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "mcard_customization_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: true
-            referencedRelation: "mcards_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mcard_favorites: {
@@ -391,13 +370,6 @@ export type Database = {
             referencedRelation: "mcards"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "mcard_interactions_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mcard_messages: {
@@ -440,13 +412,6 @@ export type Database = {
             columns: ["mcard_id"]
             isOneToOne: false
             referencedRelation: "mcards"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mcard_messages_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
             referencedColumns: ["id"]
           },
         ]
@@ -497,13 +462,6 @@ export type Database = {
             columns: ["mcard_id"]
             isOneToOne: false
             referencedRelation: "mcards"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mcard_products_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
             referencedColumns: ["id"]
           },
         ]
@@ -622,13 +580,6 @@ export type Database = {
             referencedRelation: "mcards"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "mcard_statuses_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mcard_verification_requests: {
@@ -683,13 +634,6 @@ export type Database = {
             columns: ["mcard_id"]
             isOneToOne: false
             referencedRelation: "mcards"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mcard_verification_requests_mcard_id_fkey"
-            columns: ["mcard_id"]
-            isOneToOne: false
-            referencedRelation: "mcards_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1116,114 +1060,7 @@ export type Database = {
       }
     }
     Views: {
-      mcard_reviews_public: {
-        Row: {
-          comment: string | null
-          created_at: string | null
-          id: string | null
-          mcard_id: string | null
-          rating: number | null
-          visitor_name: string | null
-        }
-        Insert: {
-          comment?: string | null
-          created_at?: string | null
-          id?: string | null
-          mcard_id?: string | null
-          rating?: number | null
-          visitor_name?: string | null
-        }
-        Update: {
-          comment?: string | null
-          created_at?: string | null
-          id?: string | null
-          mcard_id?: string | null
-          rating?: number | null
-          visitor_name?: string | null
-        }
-        Relationships: []
-      }
-      mcards_public: {
-        Row: {
-          company: string | null
-          created_at: string | null
-          description: string | null
-          facebook_url: string | null
-          full_name: string | null
-          google_business_url: string | null
-          id: string | null
-          instagram_url: string | null
-          is_published: boolean | null
-          is_verified: boolean | null
-          job_title: string | null
-          linkedin_url: string | null
-          maps_location_url: string | null
-          plan: string | null
-          profile_picture_url: string | null
-          slug: string | null
-          snapchat_url: string | null
-          telegram_url: string | null
-          tiktok_url: string | null
-          twitter_url: string | null
-          verification_status: string | null
-          view_count: number | null
-          website_url: string | null
-          youtube_url: string | null
-        }
-        Insert: {
-          company?: string | null
-          created_at?: string | null
-          description?: string | null
-          facebook_url?: string | null
-          full_name?: string | null
-          google_business_url?: string | null
-          id?: string | null
-          instagram_url?: string | null
-          is_published?: boolean | null
-          is_verified?: boolean | null
-          job_title?: string | null
-          linkedin_url?: string | null
-          maps_location_url?: string | null
-          plan?: string | null
-          profile_picture_url?: string | null
-          slug?: string | null
-          snapchat_url?: string | null
-          telegram_url?: string | null
-          tiktok_url?: string | null
-          twitter_url?: string | null
-          verification_status?: string | null
-          view_count?: number | null
-          website_url?: string | null
-          youtube_url?: string | null
-        }
-        Update: {
-          company?: string | null
-          created_at?: string | null
-          description?: string | null
-          facebook_url?: string | null
-          full_name?: string | null
-          google_business_url?: string | null
-          id?: string | null
-          instagram_url?: string | null
-          is_published?: boolean | null
-          is_verified?: boolean | null
-          job_title?: string | null
-          linkedin_url?: string | null
-          maps_location_url?: string | null
-          plan?: string | null
-          profile_picture_url?: string | null
-          slug?: string | null
-          snapchat_url?: string | null
-          telegram_url?: string | null
-          tiktok_url?: string | null
-          twitter_url?: string | null
-          verification_status?: string | null
-          view_count?: number | null
-          website_url?: string | null
-          youtube_url?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       admin_activate_promo_code: {
@@ -1414,12 +1251,51 @@ export type Database = {
           updated_at: string
         }[]
       }
+      get_public_mcard_data: {
+        Args: { p_slug: string }
+        Returns: {
+          company: string
+          created_at: string
+          description: string
+          facebook_url: string
+          full_name: string
+          google_business_url: string
+          id: string
+          instagram_url: string
+          is_verified: boolean
+          job_title: string
+          linkedin_url: string
+          maps_location_url: string
+          plan: string
+          profile_picture_url: string
+          slug: string
+          snapchat_url: string
+          telegram_url: string
+          tiktok_url: string
+          twitter_url: string
+          verification_status: string
+          view_count: number
+          website_url: string
+          youtube_url: string
+        }[]
+      }
       get_public_profile_info: {
         Args: { p_user_id: string }
         Returns: {
           country: string
           first_name: string
           last_name: string
+        }[]
+      }
+      get_public_reviews: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          comment: string
+          created_at: string
+          id: string
+          mcard_id: string
+          rating: number
+          visitor_name: string
         }[]
       }
       increment_mcard_view_count: {
