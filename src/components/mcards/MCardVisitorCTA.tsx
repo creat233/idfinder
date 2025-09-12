@@ -57,7 +57,7 @@ export const MCardVisitorCTA = () => {
         </Button>
         
         <p className="text-xs text-gray-500 mt-4">
-          Commencez dès maintenant • Plans à partir de 2000 FCFA/mois
+          Commencez dès maintenant • Plans à partir de 3000 FCFA/mois
         </p>
       </CardContent>
     </Card>

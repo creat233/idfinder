@@ -17,8 +17,9 @@ interface PendingMCard {
 }
 
 const PLAN_PRICES = {
-  essential: { price: 2000, name: 'Essentiel' },
-  premium: { price: 5000, name: 'Premium' }
+  essential: { price: 3000, name: 'Essentiel' },
+  premium: { price: 6000, name: 'Premium' },
+  ultimate: { price: 9900, name: 'Ultimate' }
 };
 
 interface AdminPendingMCardsTableProps {

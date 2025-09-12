@@ -29,7 +29,7 @@ export const MCardCreationPage = () => {
     {
       id: 'essential',
       name: 'Essentiel',
-      price: 2000,
+      price: 3000,
       period: 'mois',
       description: 'Parfait pour les professionnels',
       features: [
@@ -50,7 +50,7 @@ export const MCardCreationPage = () => {
     {
       id: 'premium',
       name: 'Premium',
-      price: 5000,
+      price: 6000,
       period: 'mois',
       description: 'Solution complète pour entrepreneurs',
       features: [
