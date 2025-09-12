@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
 import { createDefaultCard, createDefaultStatuses, createDefaultProducts } from '@/utils/mcardDefaults';
 import { 
@@ -21,10 +21,18 @@ export const useMCardData = () => {
   const [viewCount, setViewCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const loadedSlugRef = useRef<string | null>(null);
 
   const fetchMCard = async (slug?: string) => {
     try {
+      // Éviter le rechargement si c'est le même slug
+      if (loadedSlugRef.current === slug && mcard) {
+        console.log('Slug already loaded, skipping fetch:', slug);
+        return;
+      }
+      
       console.log('Starting fetchMCard for slug:', slug);
+      setLoading(true);
       
       if (!slug) {
         console.log('No slug provided, using default card');
@@ -33,6 +41,7 @@ export const useMCardData = () => {
         setStatuses(createDefaultStatuses());
         setProducts(createDefaultProducts());
         setViewCount(defaultCard.view_count || 0);
+        loadedSlugRef.current = null;
         setLoading(false);
         return;
       }
@@ -49,6 +58,7 @@ export const useMCardData = () => {
         setViewCount(defaultCard.view_count || 0);
         setReviews([]);
         console.log('Demo products loaded:', defaultProducts);
+        loadedSlugRef.current = slug;
         setLoading(false);
         return;
       }
@@ -59,6 +69,7 @@ export const useMCardData = () => {
       if (!mcardData) {
         console.log('No mCard found for slug:', slug);
         setError(`Carte non trouvée pour le slug: ${slug}`);
+        loadedSlugRef.current = null;
         setLoading(false);
         return;
       }
@@ -102,9 +113,13 @@ export const useMCardData = () => {
           console.error('Error incrementing view count:', viewError);
         }
       }
+      
+      // Marquer le slug comme chargé
+      loadedSlugRef.current = slug;
     } catch (error: any) {
       console.error('Erreur lors de la récupération de la carte:', error);
       setError(`Erreur lors du chargement: ${error.message}`);
+      loadedSlugRef.current = null;
     } finally {
       setLoading(false);
     }

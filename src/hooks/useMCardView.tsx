@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useMCardData } from './useMCardData';
 import { useMCardRealtime } from './useMCardRealtime';
@@ -37,19 +37,28 @@ export const useMCardView = () => {
 
   useMCardRealtime({ mcard, slug, refreshData, onViewCountUpdate: updateViewCount });
 
+  const lastFetchedSlug = useRef<string | null>(null);
+
   useEffect(() => {
     // Vérifier si on a besoin de rediriger vers l'URL canonique
     const slugFromPath = ROUTING_CONFIG.extractSlugFromPath(location.pathname);
     const effectiveSlug = slug || slugFromPath;
     
+    // Éviter les rechargements inutiles
+    if (lastFetchedSlug.current === effectiveSlug) {
+      return;
+    }
+    
     if (effectiveSlug) {
       console.log('Loading MCard with slug:', effectiveSlug);
       fetchMCard(effectiveSlug);
+      lastFetchedSlug.current = effectiveSlug;
     } else {
       console.log('No slug found in URL, loading default');
       fetchMCard();
+      lastFetchedSlug.current = null;
     }
-  }, [slug, location.pathname, fetchMCard]);
+  }, [slug, location.pathname]);
 
   return {
     mcard,

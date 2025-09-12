@@ -245,9 +245,9 @@ export const MCardViewProducts = ({
                           {product.category}
                         </Badge>
                       </div>
-                    </div>
+                     </div>
                      {isOwner && (
-                       <div className="flex gap-2">
+                       <div className="flex gap-2 items-start">
                          <PinProductButton
                            productId={product.id}
                            isPinned={product.is_pinned || false}
