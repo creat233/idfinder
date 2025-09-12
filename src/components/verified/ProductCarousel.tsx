@@ -158,20 +158,10 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
   }
 
   return (
-    <div className="mb-8 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-          🛍️ Produits & Services
-        </h2>
-        <div className="text-sm text-gray-500">
-          {filteredMCards.length} professionnels
-        </div>
-      </div>
-      
-      {/* Grille responsive sans scroll */}
-      <div className="relative">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMCards.map((mcard) => {
+    <div className="px-4">
+      {/* Feed vertical style TikTok */}
+      <div className="max-w-md mx-auto space-y-6">
+        {filteredMCards.map((mcard) => {
         // Filtrer les produits selon la catégorie pour cette carte
         const filteredProducts = selectedCategory === "all" 
           ? mcard.products 
@@ -184,15 +174,14 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
         const adjustedIndex = Math.min(currentIndex, filteredProducts.length - 1);
         const currentProduct = filteredProducts[adjustedIndex];
         return (
-          <div key={mcard.id} className="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border border-gray-100 animate-fade-in hover-scale">
-            {/* Section Image du produit - Format carré pour une meilleure visibilité */}
-            <div className="relative h-64 overflow-hidden">
+          <div key={mcard.id} className="relative bg-black rounded-2xl overflow-hidden group shadow-2xl border border-white/10">
+            {/* Vidéo/Image principale style TikTok */}
+            <div className="relative aspect-[9/16] overflow-hidden bg-gradient-to-br from-purple-900/20 to-pink-900/20">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 onClick={() => {
-                  // Créer les listes globales pour le carousel
                   const allProducts = filteredMCards.flatMap(m => 
                     selectedCategory === "all" ? m.products : m.products.filter(p => p.category === selectedCategory)
                   );
@@ -204,127 +193,115 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
                   onImageClick?.(allProducts, allMCards, globalIndex);
                 }}
                 loading="lazy"
-                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
               />
               
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Overlay gradients style TikTok */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/20" />
               
-              {/* Navigation des produits */}
+              {/* Navigation produits (discrète) */}
               {filteredProducts.length > 1 && (
-                <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 flex justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="bg-white/80 hover:bg-white shadow-lg rounded-full p-2 h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrevProduct(mcard.id, filteredProducts.length);
-                    }}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="bg-white/80 hover:bg-white shadow-lg rounded-full p-2 h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNextProduct(mcard.id, filteredProducts.length);
-                    }}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
+                <div className="absolute top-1/2 right-3 transform -translate-y-1/2 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <div className="flex flex-col space-y-2">
+                    <button
+                      className="w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrevProduct(mcard.id, filteredProducts.length);
+                      }}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      className="w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNextProduct(mcard.id, filteredProducts.length);
+                      }}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               )}
               
-              {/* Indicateurs de pagination */}
+              {/* Progress indicators */}
               {filteredProducts.length > 1 && (
-                <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                <div className="absolute top-4 left-4 right-16 flex space-x-1">
                   {filteredProducts.map((_, index) => (
                     <div
                       key={index}
-                      className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                        index === adjustedIndex ? 'bg-white shadow-lg' : 'bg-white/50'
+                      className={`h-0.5 flex-1 rounded-full transition-all duration-300 ${
+                        index === adjustedIndex ? 'bg-white' : 'bg-white/30'
                       }`}
                     />
                   ))}
                 </div>
               )}
               
-              {/* Badge du produit */}
-              <div className="absolute top-3 left-3">
-                <Badge className="bg-black/70 text-white text-xs">
-                  {currentProduct.category}
-                </Badge>
-              </div>
-              
-              {/* Prix */}
-              <div className="absolute top-3 right-3">
-                <Badge className="bg-green-600 text-white font-bold">
-                  {currentProduct.price.toLocaleString()} {currentProduct.currency}
-                </Badge>
-              </div>
-            </div>
-            
-            {/* Section profil du propriétaire */}
-            <div className="p-4 pb-2">
-              <div 
-                className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors duration-200"
-                onClick={() => handleProfileClick(mcard.slug)}
-              >
-                <Avatar className="h-12 w-12 ring-2 ring-blue-100">
-                  <AvatarImage src={mcard.profile_picture_url || ''} />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
-                    {mcard.full_name?.charAt(0) || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
-                    {mcard.full_name}
-                  </h3>
-                  {mcard.job_title && (
-                    <p className="text-sm text-gray-600 truncate">{mcard.job_title}</p>
-                  )}
-                  {mcard.company && (
-                    <p className="text-xs text-gray-500 truncate">{mcard.company}</p>
-                  )}
-                </div>
-                
-                <div className="flex-shrink-0">
+              {/* Side action buttons (style TikTok) */}
+              <div className="absolute bottom-20 right-3 flex flex-col space-y-4">
+                {/* Avatar profil */}
+                <div 
+                  className="relative cursor-pointer group/avatar"
+                  onClick={() => handleProfileClick(mcard.slug)}
+                >
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-purple-500 p-0.5">
+                    <Avatar className="w-full h-full">
+                      <AvatarImage src={mcard.profile_picture_url || ''} />
+                      <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-sm">
+                        {mcard.full_name?.charAt(0) || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                   {mcard.is_verified && (
-                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-2 py-1">
-                      ✓ Vérifié
-                    </Badge>
+                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">✓</span>
+                    </div>
                   )}
+                </div>
+                
+                {/* Boutons d'interaction */}
+                <div className="space-y-3">
+                  <MCardInteractionButtons 
+                    mcardId={mcard.id}
+                    mcardOwnerId={mcard.user_id}
+                    mcardOwnerName={mcard.full_name}
+                    className="flex flex-col space-y-3 [&>button]:w-12 [&>button]:h-12 [&>button]:rounded-full [&>button]:bg-white/20 [&>button]:backdrop-blur-xl [&>button]:text-white [&>button]:border-white/20"
+                  />
                 </div>
               </div>
               
-              {/* Info produit */}
-              <div className="mt-3 pt-3 border-t border-gray-100">
-                <h4 className="font-medium text-gray-900 text-sm truncate">{currentProduct.name}</h4>
-                {currentProduct.description && (
-                  <p className="text-xs text-gray-600 mt-1 line-clamp-2">{currentProduct.description}</p>
-                )}
-              </div>
-            </div>
-            
-            {/* Boutons d'interaction */}
-            <div className="px-4 pb-4">
-              <div className="flex justify-end items-center space-x-2">
-                <MCardInteractionButtons 
-                  mcardId={mcard.id}
-                  mcardOwnerId={mcard.user_id}
-                  mcardOwnerName={mcard.full_name}
-                  className="bg-white/90 backdrop-blur-sm"
-                />
+              {/* Info overlay en bas */}
+              <div className="absolute bottom-0 left-0 right-16 p-4 text-white">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-lg leading-tight">
+                    @{mcard.full_name?.replace(/\s+/g, '').toLowerCase()}
+                  </h3>
+                  <p className="text-sm opacity-90 leading-tight">
+                    {currentProduct.name}
+                  </p>
+                  {currentProduct.description && (
+                    <p className="text-xs opacity-80 line-clamp-2 leading-tight">
+                      {currentProduct.description}
+                    </p>
+                  )}
+                  
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    <span className="text-xs bg-white/20 backdrop-blur-xl px-2 py-1 rounded-full">
+                      #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
+                    </span>
+                    <span className="text-xs bg-gradient-to-r from-green-500 to-emerald-500 px-2 py-1 rounded-full font-bold">
+                      {currentProduct.price.toLocaleString()} {currentProduct.currency}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         );
-      })}
-        </div>
+        })}
       </div>
     </div>
   );

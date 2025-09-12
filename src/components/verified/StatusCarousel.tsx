@@ -142,19 +142,22 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   }
 
   return (
-    <div className="mb-12 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Statuts Récents
+    <div className="mb-8 px-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-black text-white flex items-center gap-2">
+          <span className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+            <span className="text-xs">📱</span>
+          </span>
+          Stories
         </h2>
-        <div className="text-sm text-gray-500">
-          {mcards.length} profils actifs
+        <div className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">
+          {mcards.length} live
         </div>
       </div>
       
-      {/* Carousel horizontal avec scroll */}
+      {/* Stories horizontales style TikTok */}
       <div className="relative">
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory scroll-smooth">
           {mcards.map((mcard) => {
             const currentIndex = currentStatusIndex[mcard.id] || 0;
             const currentStatus = mcard.statuses[currentIndex];
@@ -162,114 +165,54 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
             return (
               <div 
                 key={mcard.id} 
-                className="flex-none w-80 bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border border-gray-100 snap-start animate-fade-in hover-scale"
+                className="flex-none w-28 snap-start group cursor-pointer"
+                onClick={() => handleProfileClick(mcard.slug)}
               >
-                {/* Section Image du statut - Format story */}
-                <div className="relative h-96 overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100">
-                  <StatusImageModal
-                    imageUrl={currentStatus.status_image || ''}
-                    statusText={currentStatus.status_text}
-                  >
-                    <img
-                      src={currentStatus.status_image || ''}
-                      alt={currentStatus.status_text}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
-                      loading="lazy"
-                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                    />
-                  </StatusImageModal>
-                  
-                  {/* Overlay gradient élégant */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-                  
-                  {/* Navigation des statuts - coins arrondis */}
-                  {mcard.statuses.length > 1 && (
-                    <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 flex justify-between px-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <button
-                        className="bg-white/90 hover:bg-white shadow-xl rounded-full p-3 h-12 w-12 flex items-center justify-center transition-all duration-200 hover:scale-110 backdrop-blur-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePrevStatus(mcard.id, mcard.statuses.length);
-                        }}
+                {/* Story circle style TikTok */}
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-0.5 shadow-lg">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-black">
+                      <StatusImageModal
+                        imageUrl={currentStatus.status_image || ''}
+                        statusText={currentStatus.status_text}
                       >
-                        <ChevronLeft className="h-5 w-5 text-gray-700" />
-                      </button>
-                      <button
-                        className="bg-white/90 hover:bg-white shadow-xl rounded-full p-3 h-12 w-12 flex items-center justify-center transition-all duration-200 hover:scale-110 backdrop-blur-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleNextStatus(mcard.id, mcard.statuses.length);
-                        }}
-                      >
-                        <ChevronRight className="h-5 w-5 text-gray-700" />
-                      </button>
+                        <img
+                          src={currentStatus.status_image || ''}
+                          alt={currentStatus.status_text}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      </StatusImageModal>
                     </div>
-                  )}
+                  </div>
                   
-                  {/* Indicateurs de pagination stylés */}
+                  {/* Indicateur live */}
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center shadow-lg">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                  </div>
+                  
+                  {/* Progress bars pour multiples stories */}
                   {mcard.statuses.length > 1 && (
-                    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
                       {mcard.statuses.map((_, index) => (
                         <div
                           key={index}
-                          className={`h-1 rounded-full transition-all duration-300 ${
+                          className={`h-0.5 rounded-full transition-all duration-300 ${
                             index === currentIndex 
-                              ? 'bg-white shadow-lg w-8' 
-                              : 'bg-white/50 w-4'
+                              ? 'bg-white w-4' 
+                              : 'bg-white/40 w-2'
                           }`}
                         />
                       ))}
                     </div>
                   )}
-                  
-                  {/* Badge du statut avec style premium */}
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-semibold px-3 py-1 shadow-lg">
-                      Story
-                    </Badge>
-                  </div>
-                  
-                  {/* Info statut en overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <p className="text-sm font-medium leading-tight line-clamp-2 drop-shadow-lg">
-                      {currentStatus.status_text}
-                    </p>
-                  </div>
                 </div>
                 
-                {/* Section profil compact */}
-                <div className="p-4">
-                  <div 
-                    className="flex items-center space-x-3 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 rounded-xl p-2 -m-2 transition-all duration-200"
-                    onClick={() => handleProfileClick(mcard.slug)}
-                  >
-                    <Avatar className="h-12 w-12 ring-2 ring-gradient-to-r ring-purple-200 shadow-lg">
-                      <AvatarImage src={mcard.profile_picture_url || ''} />
-                      <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold text-lg">
-                        {mcard.full_name?.charAt(0) || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-gray-900 truncate group-hover:text-purple-600 transition-colors text-lg">
-                        {mcard.full_name}
-                      </h3>
-                      {mcard.job_title && (
-                        <p className="text-sm text-gray-600 truncate font-medium">{mcard.job_title}</p>
-                      )}
-                      {mcard.company && (
-                        <p className="text-xs text-gray-500 truncate">{mcard.company}</p>
-                      )}
-                    </div>
-                    
-                    <div className="flex-shrink-0">
-                      {mcard.is_verified && (
-                        <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-bold px-2 py-1">
-                          ✓ Vérifié
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
+                {/* Nom en dessous */}
+                <div className="mt-2">
+                  <p className="text-xs text-white/90 text-center font-medium truncate">
+                    {mcard.full_name?.split(' ')[0] || 'User'}
+                  </p>
                 </div>
               </div>
             );

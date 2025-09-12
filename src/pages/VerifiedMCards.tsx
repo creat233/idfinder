@@ -60,60 +60,62 @@ const VerifiedMCards = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 pb-24 md:pb-0">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 pb-24 md:pb-0 overflow-hidden">
       <PublicHeader />
       
-      {/* Header simplifié */}
-      <div className="text-center py-8 px-4">
-        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-          Services & Produits
+      {/* Header Style TikTok */}
+      <div className="relative text-center py-6 px-4 bg-gradient-to-b from-black/20 to-transparent">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22white%22%20fill-opacity%3D%220.02%22%3E%3Cpath%20d%3D%22M20%2020c0-11.046-8.954-20-20-20v40c11.046%200%2020-8.954%2020-20z%22/%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+        
+        <h1 className="text-2xl md:text-3xl font-black text-white mb-3 tracking-tight">
+          🔥 <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">Discover</span>
         </h1>
         
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-6 px-4">
+        {/* Search Bar Style TikTok */}
+        <div className="max-w-md mx-auto mb-4 px-4">
           <div className="relative">
             <MCardSearchBar 
               onSearch={handleSearch}
-              placeholder={`🔍 ${getTranslatedText('Rechercher par nom, entreprise, secteur d\'activité, service...')}`}
-              className="shadow-xl bg-white/90 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl"
+              placeholder="🔍 Rechercher..."
+              className="bg-black/20 border-white/20 text-white placeholder:text-white/70 backdrop-blur-xl rounded-full h-12 shadow-2xl"
             />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/5 via-blue-500/5 to-purple-500/5 -z-10"></div>
           </div>
         </div>
-        
-        <p className="text-lg text-gray-600 mb-6 max-w-xl mx-auto">
-          {getTranslatedText('Découvrez les produits et services')} <span className="font-semibold text-blue-600">{getTranslatedText('des professionnels vérifiés')}</span>
-        </p>
 
-        {/* Filtres par catégorie */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex flex-wrap justify-center gap-2 px-4">
+        {/* Filtres Style TikTok */}
+        <div className="max-w-full mx-auto mb-6 overflow-hidden">
+          <div className="flex gap-2 px-4 overflow-x-auto scrollbar-hide pb-2">
             {categories.map((category) => (
-              <Button
+              <button
                 key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                size="sm"
                 onClick={() => setSelectedCategory(category.id)}
-                className={`transition-all duration-200 ${
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
                   selectedCategory === category.id 
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
-                    : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                    ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg scale-105" 
+                    : "bg-white/10 text-white/80 border border-white/20 hover:bg-white/20"
                 }`}
               >
                 {category.name}
-              </Button>
+              </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Carousel de statuts */}
-      <StatusCarousel />
+      {/* Container principal style TikTok */}
+      <div className="relative z-10">
+        {/* Stories en premier (statuts) */}
+        <div className="mb-6">
+          <StatusCarousel />
+        </div>
 
-      {/* Carousel de produits */}
-      <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
+        {/* Feed principal */}
+        <div className="relative">
+          <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
+        </div>
+      </div>
 
-      {/* Carousel pour afficher les images avec navigation */}
+      {/* Modal d'images */}
       <ProductImageCarousel
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -122,14 +124,22 @@ const VerifiedMCards = () => {
         initialProductIndex={selectedProductIndex}
       />
       
-      {/* Bouton de traduction */}
+      {/* Bouton de traduction style TikTok */}
       <div className="fixed bottom-20 right-4 z-[100]">
-        <MCardTranslateButton
-          currentLanguage={currentLanguage}
-          onLanguageChange={setCurrentLanguage}
-        />
+        <div className="bg-black/40 backdrop-blur-xl rounded-full p-2 border border-white/20">
+          <MCardTranslateButton
+            currentLanguage={currentLanguage}
+            onLanguageChange={setCurrentLanguage}
+          />
+        </div>
       </div>
       
+      {/* Particules flottantes */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-pink-400/30 rounded-full animate-pulse"></div>
+        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-purple-400/40 rounded-full animate-ping"></div>
+        <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-blue-400/20 rounded-full animate-bounce"></div>
+      </div>
     </div>
   );
 };
