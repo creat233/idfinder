@@ -24,12 +24,13 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
     try {
       setLoading(true);
       
-      // Charger toutes les cartes vérifiées et publiées
+      // Charger toutes les cartes vérifiées, publiées et non expirées
       const { data, error } = await supabase
         .from('mcards')
         .select('*')
         .eq('is_published', true)
         .eq('is_verified', true)
+        .neq('subscription_status', 'expired')
         .order('view_count', { ascending: false });
 
       if (error) throw error;
@@ -181,12 +182,17 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
                       Voir la carte
                     </Button>
 
-                    {/* Statistiques */}
+                    {/* Statistiques et statut */}
                     <div className="flex items-center justify-between w-full text-xs text-white/50 pt-2 border-t border-white/10">
                       <span>{mcard.view_count || 0} vues</span>
-                      <Badge variant="outline" className="border-white/20 text-white/70">
-                        {mcard.plan || 'free'}
-                      </Badge>
+                      <div className="flex gap-2">
+                        <Badge variant="outline" className="border-green-400/30 text-green-300 bg-green-500/10">
+                          {mcard.subscription_status === 'active' ? 'Actif' : mcard.subscription_status}
+                        </Badge>
+                        <Badge variant="outline" className="border-white/20 text-white/70">
+                          {mcard.plan || 'free'}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
