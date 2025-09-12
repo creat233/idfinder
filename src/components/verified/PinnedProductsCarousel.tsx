@@ -109,10 +109,10 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
           />
         </div>
 
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50" />
+        {/* Overlay gradient - fixé au container */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50 pointer-events-none" />
 
-        {/* Profil en haut à gauche */}
+        {/* Profil en haut à gauche - fixé au container */}
         <div className="absolute top-4 left-4 right-4 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -148,9 +148,9 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
           </div>
         </div>
 
-        {/* Progress indicators en haut */}
+        {/* Progress indicators en haut - fixé au container */}
         {pinnedProducts.length > 1 && (
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
+          <div className="absolute top-24 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
             {pinnedProducts.map((_, index) => (
               <div
                 key={index}
