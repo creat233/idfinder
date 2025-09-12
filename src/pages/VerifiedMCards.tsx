@@ -184,13 +184,13 @@ const VerifiedMCards = () => {
       <div className={`relative z-10 w-full px-0 transition-all duration-300 ${
         isHeaderVisible ? 'pt-48' : 'pt-6'
       }`}>
-        {/* Produits épinglés en premier */}
-        <PinnedProductsCarousel onImageClick={handleImageClick} />
-
-        {/* Stories en second (statuts) */}
+        {/* Stories en premier (statuts) */}
         <div className="mb-6">
           <StatusCarousel />
         </div>
+
+        {/* Produits épinglés après les statuts */}
+        <PinnedProductsCarousel onImageClick={handleImageClick} />
 
         {/* Feed principal - temporairement retiré pour mieux voir les cartes vérifiées */}
         {/* 
