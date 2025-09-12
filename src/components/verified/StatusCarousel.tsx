@@ -171,7 +171,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                 {/* Story circle style TikTok */}
                 <div className="relative">
                   <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-0.5 shadow-lg">
-                    <div className="w-full h-full rounded-full overflow-hidden bg-black">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center">
                       <StatusImageModal
                         imageUrl={currentStatus.status_image || ''}
                         statusText={currentStatus.status_text}
@@ -179,7 +179,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                         <img
                           src={currentStatus.status_image || ''}
                           alt={currentStatus.status_text}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-110 cursor-pointer"
                           loading="lazy"
                         />
                       </StatusImageModal>

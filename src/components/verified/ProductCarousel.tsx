@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { MCardInteractionButtons } from '@/components/mcards/MCardInteractionButtons';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface MCardWithProducts extends MCard {
   products: MCardProduct[];
@@ -175,14 +176,15 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
         const currentProduct = filteredProducts[adjustedIndex];
         return (
           <div key={mcard.id} className="relative bg-black rounded-2xl overflow-hidden group shadow-2xl border border-white/10">
-            {/* Vidéo/Image principale style TikTok */}
-            <div className="relative aspect-[9/16] overflow-hidden bg-gradient-to-br from-purple-900/20 to-pink-900/20">
-              <img
+            {/* Vidéo/Image principale style TikTok avec affichage complet */}
+            <div className="relative aspect-[9/16] bg-gradient-to-br from-purple-900/20 to-pink-900/20 flex items-center justify-center p-2">
+              <ImageWithFallback
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-105 cursor-pointer rounded-lg"
+                fallbackClassName="w-full h-full rounded-lg"
                 onClick={() => {
-                  const allProducts = filteredMCards.flatMap(m => 
+                  const allProducts = filteredMCards.flatMap(m =>
                     selectedCategory === "all" ? m.products : m.products.filter(p => p.category === selectedCategory)
                   );
                   const allMCards = filteredMCards.flatMap(m => 
@@ -192,7 +194,6 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
                   const globalIndex = allProducts.findIndex(p => p.id === currentProduct.id);
                   onImageClick?.(allProducts, allMCards, globalIndex);
                 }}
-                loading="lazy"
               />
               
               {/* Overlay gradients style TikTok */}
