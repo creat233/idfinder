@@ -38,8 +38,8 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         .eq('mcards.is_published', true)
         .eq('mcards.is_verified', true)
         .not('image_url', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .order('mcard_id', { ascending: false })
+        .limit(10);
 
       if (error) throw error;
 
@@ -48,7 +48,15 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         mcard: product.mcard as MCard
       })) || [];
 
-      setPinnedProducts(formattedProducts);
+      // Grouper les produits par créateur et prendre un produit par créateur
+      const uniqueCreators = new Map();
+      formattedProducts.forEach(product => {
+        if (!uniqueCreators.has(product.mcard_id)) {
+          uniqueCreators.set(product.mcard_id, product);
+        }
+      });
+
+      setPinnedProducts(Array.from(uniqueCreators.values()));
     } catch (error) {
       console.error('Erreur lors du chargement des produits épinglés:', error);
     } finally {
@@ -113,7 +121,7 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50 pointer-events-none" />
 
         {/* Profil en haut à gauche - fixé au container */}
-        <div className="absolute top-4 left-4 right-4 z-20">
+        <div className="absolute top-2 left-4 right-4 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div 
@@ -150,7 +158,7 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
         {/* Progress indicators en haut - fixé au container */}
         {pinnedProducts.length > 1 && (
-          <div className="absolute top-24 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
+          <div className="absolute top-20 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
             {pinnedProducts.map((_, index) => (
               <div
                 key={index}
