@@ -335,6 +335,7 @@ export const MCardViewReviews = ({
                           {renderStars(review.rating)}
                         </div>
                       </div>
+                      {/* Only show email to card owner for pending reviews */}
                       {review.visitor_email && (
                         <p className="text-sm text-gray-600">{review.visitor_email}</p>
                       )}

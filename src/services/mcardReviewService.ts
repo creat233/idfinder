@@ -5,20 +5,25 @@ import { MCardReview } from '@/types/mcard';
 export const fetchMCardReviews = async (mcardId: string): Promise<MCardReview[]> => {
   console.log('Fetching reviews for mCard:', mcardId);
   
+  // Use the secure database function that never exposes emails
   const { data, error } = await supabase
-    .from('mcard_reviews')
-    .select('*')
-    .eq('mcard_id', mcardId)
-    .eq('is_approved', true)
-    .order('created_at', { ascending: false });
+    .rpc('get_public_reviews', { p_mcard_id: mcardId });
   
   if (error) {
     console.error('Error fetching reviews:', error);
     return [];
   }
   
-  console.log('Reviews retrieved:', data);
-  return data || [];
+  // Map the response to include required fields with safe defaults
+  const reviews = (data || []).map(review => ({
+    ...review,
+    visitor_email: null, // Never expose emails in public reviews
+    updated_at: review.created_at, // Use created_at as fallback
+    is_approved: true // All returned reviews are approved
+  }));
+  
+  console.log('Reviews retrieved (emails filtered):', reviews);
+  return reviews;
 };
 
 export const createMCardReview = async (reviewData: {
