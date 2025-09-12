@@ -7,19 +7,32 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuthState } from "@/hooks/useAuthState";
 
 const Notifications = () => {
   const { notifications, loading } = useNotifications();
   const { t } = useTranslation();
   const [isAdmin, setIsAdmin] = useState(false);
+  const { isAuthenticated, loading: authLoading } = useAuthState();
+  const navigate = useNavigate();
+
+  // Rediriger vers la page de connexion si non authentifié
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      navigate("/auth");
+    }
+  }, [isAuthenticated, authLoading, navigate]);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      const { data: adminStatus } = await supabase.rpc('is_admin');
-      setIsAdmin(adminStatus || false);
+      if (isAuthenticated) {
+        const { data: adminStatus } = await supabase.rpc('is_admin');
+        setIsAdmin(adminStatus || false);
+      }
     };
     checkAdminStatus();
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">
