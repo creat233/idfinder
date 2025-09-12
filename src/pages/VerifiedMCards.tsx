@@ -189,14 +189,14 @@ const VerifiedMCards = () => {
           <StatusCarousel />
         </div>
 
+        {/* Produits épinglés des MCards vérifiées */}
+        <div className="mb-6">
+          <PinnedProductsCarousel onImageClick={handleImageClick} />
+        </div>
+
         {/* Grille des MCards vérifiées */}
         <div className="relative mt-8">
           <VerifiedMCardsGrid searchQuery={searchQuery} selectedCategory={selectedCategory} />
-        </div>
-
-        {/* Produits épinglés en bas de page */}
-        <div className="mt-12">
-          <PinnedProductsCarousel onImageClick={handleImageClick} />
         </div>
       </div>
 
