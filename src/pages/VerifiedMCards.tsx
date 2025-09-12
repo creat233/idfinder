@@ -189,19 +189,14 @@ const VerifiedMCards = () => {
           <StatusCarousel />
         </div>
 
-        {/* Produits épinglés après les statuts */}
-        <PinnedProductsCarousel onImageClick={handleImageClick} />
-
-        {/* Feed principal - temporairement retiré pour mieux voir les cartes vérifiées */}
-        {/* 
-        <div className="relative">
-          <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
-        </div>
-        */}
-
         {/* Grille des MCards vérifiées */}
         <div className="relative mt-8">
           <VerifiedMCardsGrid searchQuery={searchQuery} selectedCategory={selectedCategory} />
+        </div>
+
+        {/* Produits épinglés en bas de page */}
+        <div className="mt-12">
+          <PinnedProductsCarousel onImageClick={handleImageClick} />
         </div>
       </div>
 
