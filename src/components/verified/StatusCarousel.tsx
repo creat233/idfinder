@@ -141,15 +141,15 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   }
 
   return (
-    <div className="mb-8 px-0 w-full">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-black text-white flex items-center gap-2">
-          <span className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
-            <span className="text-xs">📱</span>
+    <div className="mb-8 px-0 w-full mt-8">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-black text-white flex items-center gap-3">
+          <span className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+            <span className="text-sm">📱</span>
           </span>
           Stories
         </h2>
-        <div className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">
+        <div className="text-sm text-white/60 bg-white/10 px-3 py-1.5 rounded-full">
           {mcards.length} live
         </div>
       </div>
