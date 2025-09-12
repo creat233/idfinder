@@ -263,15 +263,13 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
                   )}
                 </div>
                 
-                {/* Boutons d'interaction */}
-                <div className="space-y-3">
-                  <MCardInteractionButtons 
-                    mcardId={mcard.id}
-                    mcardOwnerId={mcard.user_id}
-                    mcardOwnerName={mcard.full_name}
-                    className="flex flex-col space-y-3 [&>button]:w-12 [&>button]:h-12 [&>button]:rounded-full [&>button]:bg-white/20 [&>button]:backdrop-blur-xl [&>button]:text-white [&>button]:border-white/20"
-                  />
-                </div>
+                 <div className="space-y-4">
+                   <MCardInteractionButtons 
+                     mcardId={mcard.id}
+                     mcardOwnerId={mcard.user_id}
+                     mcardOwnerName={mcard.full_name}
+                   />
+                 </div>
               </div>
               
               {/* Info overlay en bas */}
