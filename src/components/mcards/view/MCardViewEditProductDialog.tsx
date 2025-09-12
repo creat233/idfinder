@@ -20,9 +20,11 @@ const PRODUCT_CATEGORIES = [
   'Service',
   'Produit',
   'Article',
+  'Menu restaurant',
   'Consultation',
   'Formation',
   'Événement',
+  'Offre d\'emploi',
   'Autre'
 ];
 

@@ -26,6 +26,7 @@ const VerifiedMCards = () => {
     { id: "Consultation", name: "Consultation" },
     { id: "Formation", name: "Formation" },
     { id: "Événement", name: "Événement" },
+    { id: "Offre d'emploi", name: "Offre d'emploi" },
     { id: "Autre", name: "Autre" }
   ];
 

@@ -25,6 +25,7 @@ const PRODUCT_CATEGORIES = [
   'Consultation',
   'Formation',
   'Événement',
+  'Offre d\'emploi',
   'Autre'
 ];
 
