@@ -102,11 +102,51 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
         {/* Product Card */}
         <div className="relative bg-black/40 rounded-xl overflow-hidden group">
-          <div className="relative aspect-[4/3] bg-gradient-to-br from-purple-900/20 to-pink-900/20">
+          {/* Profile en haut */}
+          <div className="absolute top-0 left-0 right-0 p-4 text-white z-10 bg-gradient-to-b from-black/80 to-transparent">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div 
+                  className="cursor-pointer"
+                  onClick={() => handleProfileClick(currentProduct.mcard.slug)}
+                >
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
+                    <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
+                      {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                    </AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-xs">
+                      {currentProduct.mcard.full_name?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-white">
+                    {currentProduct.mcard.full_name}
+                  </h3>
+                  <p className="text-xs text-gray-300">{currentProduct.mcard.company}</p>
+                  {currentProduct.mcard.is_verified && (
+                    <span className="text-xs text-blue-400 flex items-center gap-1">
+                      <span>✓</span> Vérifié
+                    </span>
+                  )}
+                </div>
+              </div>
+              
+              <MCardInteractionButtons 
+                mcardId={currentProduct.mcard.id}
+                mcardOwnerId={currentProduct.mcard.user_id}
+                mcardOwnerName={currentProduct.mcard.full_name}
+              />
+            </div>
+          </div>
+
+          {/* Image complète */}
+          <div className="relative min-h-[300px] bg-gradient-to-br from-purple-900/20 to-pink-900/20">
             <img
               src={currentProduct.image_url || ''}
               alt={currentProduct.name}
-              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
               onClick={() => {
                 const allProducts = pinnedProducts.map(p => ({ ...p, mcard: undefined }));
                 const allMCards = pinnedProducts.map(p => p.mcard);
@@ -118,21 +158,18 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
               }}
             />
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
             {/* Navigation */}
             {pinnedProducts.length > 1 && (
               <>
                 <button
                   onClick={handlePrev}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all z-20"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={handleNext}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all z-20"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
@@ -141,7 +178,7 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
             {/* Progress indicators */}
             {pinnedProducts.length > 1 && (
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1">
+              <div className="absolute top-20 left-1/2 transform -translate-x-1/2 flex space-x-1 z-10">
                 {pinnedProducts.map((_, index) => (
                   <div
                     key={index}
@@ -152,62 +189,22 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
                 ))}
               </div>
             )}
+          </div>
 
-            {/* Product info */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div 
-                      className="cursor-pointer"
-                      onClick={() => handleProfileClick(currentProduct.mcard.slug)}
-                    >
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
-                        <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
-                          {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
-                        </AvatarFallback>
-                        <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-xs">
-                          {currentProduct.mcard.full_name?.charAt(0) || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white">
-                        {currentProduct.mcard.full_name}
-                      </h3>
-                      <p className="text-xs text-gray-300">{currentProduct.mcard.company}</p>
-                      {currentProduct.mcard.is_verified && (
-                        <span className="text-xs text-blue-400 flex items-center gap-1">
-                          <span>✓</span> Vérifié
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <p className="font-semibold text-sm mb-1">{currentProduct.name}</p>
-                  {currentProduct.description && (
-                    <p className="text-xs opacity-80 line-clamp-2">{currentProduct.description}</p>
-                  )}
-                  
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-xs bg-yellow-400/20 px-2 py-1 rounded-full">
-                      #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
-                    </span>
-                    <span className="text-xs bg-green-500 px-2 py-1 rounded-full font-bold">
-                      {currentProduct.price.toLocaleString()} {currentProduct.currency}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="ml-4">
-                  <MCardInteractionButtons 
-                    mcardId={currentProduct.mcard.id}
-                    mcardOwnerId={currentProduct.mcard.user_id}
-                    mcardOwnerName={currentProduct.mcard.full_name}
-                  />
-                </div>
-              </div>
+          {/* Informations produit en bas */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/90 to-transparent">
+            <p className="font-semibold text-lg mb-2">{currentProduct.name}</p>
+            {currentProduct.description && (
+              <p className="text-sm opacity-80 line-clamp-2 mb-3">{currentProduct.description}</p>
+            )}
+            
+            <div className="flex items-center gap-2">
+              <span className="text-xs bg-yellow-400/20 px-2 py-1 rounded-full">
+                #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
+              </span>
+              <span className="text-sm bg-green-500 px-3 py-1 rounded-full font-bold">
+                {currentProduct.price.toLocaleString()} {currentProduct.currency}
+              </span>
             </div>
           </div>
         </div>
