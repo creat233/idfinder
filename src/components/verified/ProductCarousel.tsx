@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { MCardInteractionButtons } from '@/components/mcards/MCardInteractionButtons';
 import { ImageWithFallback } from './ImageWithFallback';
+import { MCardComments } from './MCardComments';
 
 interface MCardWithProducts extends MCard {
   products: MCardProduct[];
@@ -299,6 +300,15 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
                   </div>
                 </div>
               </div>
+            </div>
+            
+            {/* Section commentaires */}
+            <div className="mt-4">
+              <MCardComments 
+                mcardId={mcard.id}
+                mcardOwnerName={mcard.full_name}
+                className="w-full"
+              />
             </div>
           </div>
         );

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { MCard, MCardProduct } from '@/types/mcard';
 import { ChevronLeft, ChevronRight, User, Building, Phone, Mail, ExternalLink, X } from 'lucide-react';
 import { URL_CONFIG } from '@/utils/urlConfig';
+import { MCardComments } from './MCardComments';
 
 interface ProductImageCarouselProps {
   isOpen: boolean;
@@ -222,6 +223,15 @@ export const ProductImageCarousel = ({ isOpen, onClose, products, mcards, initia
                   {currentProduct.category}
                 </Badge>
               </div>
+            </div>
+            
+            {/* Section commentaires */}
+            <div className="mt-6">
+              <MCardComments 
+                mcardId={currentMCard.id}
+                mcardOwnerName={currentMCard.full_name}
+                className="w-full"
+              />
             </div>
           </div>
         </div>
