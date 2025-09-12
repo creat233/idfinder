@@ -142,6 +142,9 @@ export const ProductImageCarousel = ({ isOpen, onClose, products, mcards, initia
               <div className="flex items-center space-x-4 mb-4 p-3 rounded-lg border-2 border-transparent group-hover:border-blue-200 group-hover:bg-blue-50 transition-all duration-200">
                 <Avatar className="h-16 w-16 ring-2 ring-blue-100 group-hover:ring-blue-300 transition-all duration-200">
                   <AvatarImage src={currentMCard.profile_picture_url || ''} />
+                  <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
+                    {currentMCard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                  </AvatarFallback>
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg">
                     {currentMCard.full_name?.charAt(0) || 'U'}
                   </AvatarFallback>

@@ -251,6 +251,9 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
                   <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-purple-500 p-0.5">
                     <Avatar className="w-full h-full">
                       <AvatarImage src={mcard.profile_picture_url || ''} />
+                      <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
+                        {mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                      </AvatarFallback>
                       <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-sm">
                         {mcard.full_name?.charAt(0) || 'U'}
                       </AvatarFallback>

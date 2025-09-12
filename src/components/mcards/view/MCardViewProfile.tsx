@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RobustAvatar } from "@/components/ui/robust-avatar";
 import { MCardViewContactInfo } from "./MCardViewContactInfo";
 import { MCardViewQuickActions } from "./MCardViewQuickActions";
 import { MCardVerificationDialog } from "../MCardVerificationDialog";
@@ -23,12 +23,6 @@ interface MCardViewProfileProps {
   isOwner: boolean;
 }
 
-const getInitials = (name: string): string => {
-  if (!name) return "NN";
-  const names = name.split(' ');
-  const initials = names.map(n => n[0]).join('');
-  return (initials.length > 2 ? initials.substring(0, 2) : initials).toUpperCase();
-};
 
 export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardViewProfileProps) => {
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
@@ -94,18 +88,12 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   {/* Ring animé */}
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse" />
                   
-                  <Avatar className="relative w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 shadow-2xl ring-4 ring-white group-hover:ring-6 transition-all duration-300">
-                    <AvatarImage 
-                      src={mcard.profile_picture_url || undefined} 
-                      alt={mcard.full_name || 'Profile picture'}
-                      className="object-cover"
-                    />
-                    {!mcard.profile_picture_url && (
-                      <AvatarFallback className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white">
-                        {getInitials(mcard.full_name || '')}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
+                  <RobustAvatar 
+                    src={mcard.profile_picture_url} 
+                    alt={mcard.full_name || 'Profile picture'}
+                    fallbackText={mcard.full_name || ''}
+                    className="relative w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 shadow-2xl ring-4 ring-white group-hover:ring-6 transition-all duration-300 text-2xl sm:text-3xl lg:text-4xl"
+                  />
                   
                   {/* Overlay au hover */}
                   <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">

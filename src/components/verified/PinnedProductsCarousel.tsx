@@ -162,6 +162,9 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
                     >
                       <Avatar className="w-8 h-8">
                         <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
+                        <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
+                          {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                        </AvatarFallback>
                         <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-xs">
                           {currentProduct.mcard.full_name?.charAt(0) || 'U'}
                         </AvatarFallback>

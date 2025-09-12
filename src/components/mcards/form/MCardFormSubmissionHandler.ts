@@ -78,11 +78,22 @@ export const useMCardFormSubmission = (
       };
       
       // Gérer explicitement la photo de profil
-      if (preview === null) {
+      if (profilePictureFile) {
+        // Un nouveau fichier a été uploadé, le service s'occupera de l'upload
+        console.log('Nouveau fichier photo détecté');
+        // Ne pas définir profile_picture_url, le service le fera
+      } else if (preview === null || preview === '') {
+        // Suppression explicite de la photo
+        console.log('Suppression de la photo de profil');
         data.profile_picture_url = null;
-      } else if (preview) {
-        // Le preview sera géré par l'upload dans le service
+      } else if (preview && mcard && preview !== mcard.profile_picture_url) {
+        // Une nouvelle URL de preview (différente de l'originale)
+        console.log('Nouvelle URL de photo détectée');
         data.profile_picture_url = preview;
+      } else if (mcard && mcard.profile_picture_url) {
+        // Garder l'URL existante si pas de changement
+        console.log('Conservation de la photo existante');
+        // Ne pas modifier profile_picture_url
       }
       
       console.log('Données à soumettre:', data);

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
@@ -17,8 +17,11 @@ const VerifiedMCards = () => {
   const [currentLanguage, setCurrentLanguage] = useState<'fr' | 'en'>('fr');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const lastScrollY = useRef(0);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const categories = [
     { id: "all", name: "Tout" },
@@ -49,6 +52,46 @@ const VerifiedMCards = () => {
     setIsModalOpen(true);
   };
 
+  // Gestion du scroll pour masquer/afficher le header
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollThreshold = 100;
+
+      if (currentScrollY > scrollThreshold) {
+        if (currentScrollY > lastScrollY.current) {
+          // Scroll vers le bas - masquer le header
+          setIsHeaderVisible(false);
+        } else {
+          // Scroll vers le haut - afficher le header
+          setIsHeaderVisible(true);
+        }
+      } else {
+        // En haut de la page - toujours afficher
+        setIsHeaderVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+
+      // Debounce pour éviter trop d'updates
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+      scrollTimeout.current = setTimeout(() => {
+        // Réafficher après inactivité
+        setIsHeaderVisible(true);
+      }, 3000);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+    };
+  }, []);
+
   const getTranslatedText = (text: string) => {
     if (currentLanguage === 'fr') return text;
     
@@ -66,8 +109,10 @@ const VerifiedMCards = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 pb-24 md:pb-0 overflow-hidden w-full">
       {!isMobile && <PublicHeader />}
       
-      {/* Header Style TikTok - Fixe en haut */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 border-b border-white/10 backdrop-blur-xl">
+      {/* Header Style TikTok - Fixe en haut avec animation */}
+      <div className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 border-b border-white/10 backdrop-blur-xl transition-transform duration-300 ${
+        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="relative text-center py-4 px-0 bg-gradient-to-b from-black/20 to-transparent w-full">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22white%22%20fill-opacity%3D%220.02%22%3E%3Cpath%20d%3D%22M20%2020c0-11.046-8.954-20-20-20v40c11.046%200%2020-8.954%2020-20z%22/%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
         
@@ -134,8 +179,10 @@ const VerifiedMCards = () => {
       </div>
       </div>
 
-      {/* Container principal style TikTok avec margin top pour header fixe */}
-      <div className="relative z-10 w-full px-0 pt-48">
+      {/* Container principal style TikTok avec margin top dynamique */}
+      <div className={`relative z-10 w-full px-0 transition-all duration-300 ${
+        isHeaderVisible ? 'pt-48' : 'pt-6'
+      }`}>
         {/* Produits épinglés en premier */}
         <PinnedProductsCarousel onImageClick={handleImageClick} />
 

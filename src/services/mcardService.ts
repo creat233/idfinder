@@ -102,7 +102,11 @@ export const updateMCard = async (
         }
       }
       profilePictureUrl = null;
+    } else if (mcardData.profile_picture_url && mcardData.profile_picture_url !== originalCard.profile_picture_url) {
+      // Une nouvelle URL a été fournie (différente de l'originale)
+      profilePictureUrl = mcardData.profile_picture_url;
     }
+    // Sinon, on garde l'ancienne URL (pas de changement)
 
     console.log('Updating mCard in database...');
     const { data, error } = await supabase
