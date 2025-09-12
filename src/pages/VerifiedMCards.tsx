@@ -192,10 +192,12 @@ const VerifiedMCards = () => {
           <StatusCarousel />
         </div>
 
-        {/* Feed principal */}
+        {/* Feed principal - temporairement retiré pour mieux voir les cartes vérifiées */}
+        {/* 
         <div className="relative">
           <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
         </div>
+        */}
 
         {/* Grille des MCards vérifiées */}
         <div className="relative mt-8">
