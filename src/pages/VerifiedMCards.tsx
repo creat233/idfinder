@@ -82,22 +82,49 @@ const VerifiedMCards = () => {
           </div>
         </div>
 
-        {/* Filtres Style TikTok */}
-        <div className="max-w-full mx-auto mb-6 overflow-hidden">
-          <div className="flex gap-2 px-4 overflow-x-auto scrollbar-hide pb-2">
-            {categories.map((category) => (
+        {/* Filtres Style TikTok avec scroll amélioré */}
+        <div className="relative mb-6">
+          {/* Gradient gauche */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none"></div>
+          {/* Gradient droit */}
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none"></div>
+          
+          <div className="flex gap-3 px-4 overflow-x-auto pb-2 scroll-smooth" 
+               style={{ 
+                 scrollbarWidth: 'none',
+                 msOverflowStyle: 'none'
+               }}>
+            <style>{`
+              .flex::-webkit-scrollbar {
+                display: none;
+              }
+            `}</style>
+            {categories.map((category, index) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
+                className={`px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-500 flex-shrink-0 transform hover:scale-110 animate-fade-in ${
                   selectedCategory === category.id 
-                    ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg scale-105" 
-                    : "bg-white/10 text-white/80 border border-white/20 hover:bg-white/20"
+                    ? "bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white shadow-2xl shadow-purple-500/50 scale-110 animate-pulse" 
+                    : "bg-white/10 text-white/90 border border-white/30 hover:bg-white/20 hover:border-white/50 backdrop-blur-sm"
                 }`}
+                style={{ 
+                  animationDelay: `${index * 100}ms`,
+                  minWidth: 'fit-content'
+                }}
               >
                 {category.name}
               </button>
             ))}
+          </div>
+          
+          {/* Indicateur de scroll */}
+          <div className="text-center mt-2">
+            <div className="inline-flex items-center gap-1 text-white/50 text-xs">
+              <span>←</span>
+              <span>Glissez pour voir plus</span>
+              <span>→</span>
+            </div>
           </div>
         </div>
       </div>
