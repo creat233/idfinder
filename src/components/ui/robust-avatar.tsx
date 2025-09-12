@@ -18,18 +18,6 @@ const getInitials = (name: string): string => {
   return initials.length > 2 ? initials.substring(0, 2) : initials || "NN";
 };
 
-const isValidImageUrl = (url: string): boolean => {
-  if (!url || url.trim() === '') return false;
-  
-  // Vérifier que c'est une URL valide
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
 export const RobustAvatar = ({ 
   src, 
   alt, 
@@ -37,58 +25,42 @@ export const RobustAvatar = ({
   className = "", 
   onClick 
 }: RobustAvatarProps) => {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [imageKey, setImageKey] = useState(0);
 
+  // Reset error state and force reload when src changes
   useEffect(() => {
-    console.log('RobustAvatar: src changed to:', src);
-    setImageError(false);
-    setIsLoading(false);
-    
-    if (src && isValidImageUrl(src)) {
-      console.log('RobustAvatar: Setting valid image src to:', src);
-      setImageSrc(src);
-      setIsLoading(true);
-    } else {
-      console.log('RobustAvatar: Invalid or empty src, using fallback');
-      setImageSrc(null);
+    if (src) {
+      setImageError(false);
+      // Force refresh of the image by changing key
+      setImageKey(prev => prev + 1);
     }
   }, [src]);
 
   const handleImageLoad = () => {
-    console.log('RobustAvatar: Image loaded successfully:', imageSrc);
-    setIsLoading(false);
     setImageError(false);
   };
 
   const handleImageError = () => {
-    console.error('RobustAvatar: Image failed to load:', imageSrc);
     setImageError(true);
-    setIsLoading(false);
-    setImageSrc(null);
   };
 
   const initials = getInitials(fallbackText || alt);
+  const shouldShowImage = src && src.trim() !== '' && !imageError;
   
-  console.log('RobustAvatar render:', { 
-    src, 
-    imageSrc, 
-    imageError, 
-    isLoading, 
-    initials,
-    isValidUrl: src ? isValidImageUrl(src) : false
-  });
+  // Add timestamp to image URL to prevent caching issues
+  const imageSrc = shouldShowImage && src ? `${src}?t=${imageKey}` : src;
 
   return (
     <Avatar className={className} onClick={onClick}>
-      {imageSrc && !imageError && (
+      {shouldShowImage && (
         <AvatarImage 
+          key={imageKey}
           src={imageSrc} 
           alt={alt}
           onLoad={handleImageLoad}
           onError={handleImageError}
-          className="object-cover"
+          className="object-cover w-full h-full"
         />
       )}
       <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold">

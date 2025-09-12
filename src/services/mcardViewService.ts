@@ -39,8 +39,6 @@ export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
       console.log('Found unpublished card:', data);
     }
 
-    console.log('MCard data retrieved:', data);
-    console.log('Profile picture URL in retrieved data:', data?.profile_picture_url);
     return data;
   } catch (networkError) {
     console.error('Network error fetching mCard:', networkError);
