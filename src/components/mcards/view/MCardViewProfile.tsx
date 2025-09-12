@@ -54,157 +54,204 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
   };
 
   return (
-    <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-gray-50">
-      <CardContent className="p-4 sm:p-6 lg:p-8">
-        {/* Message d'avertissement pour carte en attente */}
-        {isPendingPayment && (
-          <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-orange-50 border border-orange-200 rounded-lg">
-            <div className="flex items-center gap-2">
-              <span className="text-orange-600 font-medium text-sm sm:text-base">⏳ Carte en attente d'activation</span>
-            </div>
-            <p className="text-xs sm:text-sm text-orange-700 mt-1">
-              Votre carte est visible mais le partage et le QR code seront disponibles après validation par un administrateur.
-            </p>
-          </div>
-        )}
-
-        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8">
-          {/* Photo de profil et informations principales - Responsive */}
-          <div className="flex flex-col items-center text-center lg:text-left w-full lg:w-auto">
-            <div 
-              className="cursor-pointer transition-transform hover:scale-105 group relative"
-              onClick={() => setIsProfileImageDialogOpen(true)}
-              title="Cliquer pour voir le profil en grand"
-            >
-              <Avatar className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mb-3 sm:mb-4 shadow-lg ring-4 ring-white group-hover:ring-blue-300 transition-all">
-                <AvatarImage 
-                  src={mcard.profile_picture_url || undefined} 
-                  alt={mcard.full_name || 'Profile picture'}
-                  className="object-cover"
-                />
-                {!mcard.profile_picture_url && (
-                  <AvatarFallback className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    {getInitials(mcard.full_name || '')}
-                  </AvatarFallback>
-                )}
-              </Avatar>
-              <div className="absolute top-0 left-0 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <span className="text-white text-xs font-medium text-center">Voir le profil</span>
+    <div className="relative">
+      {/* Background décoratif */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-pink-600/5 rounded-3xl" />
+      <div className="absolute inset-0 opacity-10 rounded-3xl" style={{backgroundImage: "url('data:image/svg+xml;utf8,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><g fill=\"%236366f1\" fill-opacity=\"0.4\"><circle cx=\"30\" cy=\"30\" r=\"2\"/></g></g></svg>')"}} />
+      
+      <Card className="relative shadow-2xl border-0 bg-white/95 backdrop-blur-xl rounded-3xl overflow-hidden">
+        {/* Gradient border effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 rounded-3xl" />
+        <div className="absolute inset-[1px] bg-white rounded-3xl" />
+        
+        <CardContent className="relative p-6 sm:p-8 lg:p-10">
+          {/* Message d'avertissement pour carte en attente */}
+          {isPendingPayment && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <span className="text-orange-600 text-lg">⏳</span>
+                </div>
+                <div>
+                  <h4 className="text-orange-800 font-semibold text-sm sm:text-base">Carte en attente d'activation</h4>
+                  <p className="text-xs sm:text-sm text-orange-700 mt-1">
+                    Votre carte est visible mais le partage et le QR code seront disponibles après validation par un administrateur.
+                  </p>
+                </div>
               </div>
             </div>
-            
-            <div className="flex flex-col sm:flex-row items-center gap-2 mb-2">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 break-words text-center sm:text-left">{mcard.full_name}</h1>
-              <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
-            </div>
-            
-            {mcard.job_title && (
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-gray-600 mb-2">
-                <Briefcase className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                <span className="text-sm sm:text-base lg:text-lg text-center lg:text-left break-words">{mcard.job_title}</span>
-              </div>
-            )}
-            
-            {mcard.company && (
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-gray-600 mb-3 sm:mb-4">
-                <Building className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                <span className="text-sm sm:text-base lg:text-lg text-center lg:text-left break-words">{mcard.company}</span>
-              </div>
-            )}
+          )}
 
-            <div className="flex flex-wrap justify-center lg:justify-start gap-1 sm:gap-2 mb-3 sm:mb-4">
-              <Badge variant="outline" className="px-2 py-1 text-xs sm:text-sm">
-                Plan {mcard.plan === 'essential' ? 'Essentiel' : mcard.plan === 'premium' ? 'Premium' : mcard.plan}
-              </Badge>
-              {mcard.subscription_status && (
-                <Badge 
-                  variant={mcard.subscription_status === 'active' ? 'default' : 'secondary'}
-                  className="px-2 py-1 text-xs sm:text-sm"
-                >
-                  {mcard.subscription_status === 'active' ? 'Actif' : 
-                   mcard.subscription_status === 'pending_payment' ? 'En attente' : 
-                   mcard.subscription_status}
-                </Badge>
-              )}
-              {mcard.verification_status === 'pending' && (
-                <Badge variant="secondary" className="px-2 py-1 text-xs sm:text-sm text-orange-600">
-                  Vérification en cours
-                </Badge>
-              )}
-            </div>
-
-            {/* Bouton de demande de vérification - Responsive */}
-            {canRequestVerification && (
-              <Button
-                onClick={() => setIsVerificationDialogOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white mb-3 sm:mb-4 w-full sm:w-auto"
-                size="sm"
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
+            {/* Photo de profil et informations principales */}
+            <div className="flex flex-col items-center text-center lg:text-left w-full lg:w-auto">
+              <div 
+                className="cursor-pointer transition-all duration-300 hover:scale-105 group relative mb-6"
+                onClick={() => setIsProfileImageDialogOpen(true)}
+                title="Cliquer pour voir le profil en grand"
               >
-                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                <span className="text-xs sm:text-sm">Demander la vérification (5 000 FCFA)</span>
-              </Button>
-            )}
-          </div>
-
-          {/* Informations de contact - Responsive */}
-          <div className="flex-1 w-full min-w-0">
-            <MCardViewContactInfo mcard={mcard} />
-            
-            {mcard.description && (
-              <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">À propos</h3>
-                <p className="text-gray-700 leading-relaxed text-sm sm:text-base break-words">{mcard.description}</p>
+                <div className="relative">
+                  {/* Ring animé */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse" />
+                  
+                  <Avatar className="relative w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 shadow-2xl ring-4 ring-white group-hover:ring-6 transition-all duration-300">
+                    <AvatarImage 
+                      src={mcard.profile_picture_url || undefined} 
+                      alt={mcard.full_name || 'Profile picture'}
+                      className="object-cover"
+                    />
+                    {!mcard.profile_picture_url && (
+                      <AvatarFallback className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 text-white">
+                        {getInitials(mcard.full_name || '')}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  
+                  {/* Overlay au hover */}
+                  <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">Voir le profil</span>
+                  </div>
+                </div>
               </div>
-            )}
+              
+              {/* Nom et badge de vérification */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-center sm:text-left leading-tight">
+                  {mcard.full_name}
+                </h1>
+                <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
+              </div>
+              
+              {/* Titre du poste */}
+              {mcard.job_title && (
+                <div className="flex items-center justify-center lg:justify-start gap-3 text-gray-600 mb-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <span className="text-base sm:text-lg font-medium text-center lg:text-left">{mcard.job_title}</span>
+                </div>
+              )}
+              
+              {/* Entreprise */}
+              {mcard.company && (
+                <div className="flex items-center justify-center lg:justify-start gap-3 text-gray-600 mb-6">
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <Building className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <span className="text-base sm:text-lg font-medium text-center lg:text-left">{mcard.company}</span>
+                </div>
+              )}
 
-            {/* Actions rapides - désactivées si en attente de paiement */}
-            <MCardViewQuickActions 
-              onCopyLink={handleCopyLink} 
-              onShare={handleShare}
-              disabled={isPendingPayment}
-            />
+              {/* Badges de statut */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-6">
+                <Badge variant="outline" className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 text-blue-700">
+                  Plan {mcard.plan === 'essential' ? 'Essentiel' : mcard.plan === 'premium' ? 'Premium' : mcard.plan}
+                </Badge>
+                {mcard.subscription_status && (
+                  <Badge 
+                    variant={mcard.subscription_status === 'active' ? 'default' : 'secondary'}
+                    className={`px-4 py-2 text-sm font-medium ${
+                      mcard.subscription_status === 'active' 
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg' 
+                        : 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-200'
+                    }`}
+                  >
+                    {mcard.subscription_status === 'active' ? '✅ Actif' : 
+                     mcard.subscription_status === 'pending_payment' ? '⏳ En attente' : 
+                     mcard.subscription_status}
+                  </Badge>
+                )}
+                {mcard.verification_status === 'pending' && (
+                  <Badge className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 border-orange-200">
+                    🔄 Vérification en cours
+                  </Badge>
+                )}
+              </div>
 
-            {/* Boutons d'interaction (favoris, partage, message) */}
-            {!isOwner && !isPendingPayment && (
-              <div className="mt-3 sm:mt-4">
-                <MCardInteractionButtons
-                  mcardId={mcard.id}
-                  mcardOwnerId={mcard.user_id}
-                  mcardOwnerName={mcard.full_name}
-                  className="justify-center"
+              {/* Bouton de demande de vérification */}
+              {canRequestVerification && (
+                <Button
+                  onClick={() => setIsVerificationDialogOpen(true)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 mb-6 w-full sm:w-auto"
+                  size="lg"
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Demander la vérification (5 000 FCFA)
+                </Button>
+              )}
+            </div>
+
+            {/* Informations de contact et actions */}
+            <div className="flex-1 w-full min-w-0 space-y-6">
+              {/* Informations de contact avec design amélioré */}
+              <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <MCardViewContactInfo mcard={mcard} />
+              </div>
+              
+              {/* Description */}
+              {mcard.description && (
+                <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-2xl p-6 border border-purple-100 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span className="text-purple-600 text-lg">📝</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">À propos</h3>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{mcard.description}</p>
+                </div>
+              )}
+
+              {/* Actions rapides */}
+              <div className="bg-gradient-to-br from-blue-50/30 to-indigo-50/30 rounded-2xl p-6 border border-blue-100 shadow-sm">
+                <MCardViewQuickActions 
+                  onCopyLink={handleCopyLink} 
+                  onShare={handleShare}
+                  disabled={isPendingPayment}
                 />
               </div>
-            )}
 
-            {/* Bouton pour envoyer un message (seulement pour les propriétaires en attente) - Responsive */}
-            {!isOwner && isPendingPayment && (
-              <div className="mt-3 sm:mt-4">
-                <Button
-                  onClick={() => setIsMessageDialogOpen(true)}
-                  variant="outline"
-                  className="w-full text-sm sm:text-base"
-                  size="sm"
-                >
-                  <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                  Envoyer un message
-                </Button>
-              </div>
-            )}
+              {/* Boutons d'interaction */}
+              {!isOwner && !isPendingPayment && (
+                <div className="bg-gradient-to-br from-pink-50/30 to-rose-50/30 rounded-2xl p-6 border border-pink-100 shadow-sm">
+                  <MCardInteractionButtons
+                    mcardId={mcard.id}
+                    mcardOwnerId={mcard.user_id}
+                    mcardOwnerName={mcard.full_name}
+                    className="justify-center"
+                  />
+                </div>
+              )}
+
+              {/* Bouton pour envoyer un message (cartes en attente) */}
+              {!isOwner && isPendingPayment && (
+                <div className="bg-gradient-to-br from-orange-50/30 to-amber-50/30 rounded-2xl p-6 border border-orange-100 shadow-sm">
+                  <Button
+                    onClick={() => setIsMessageDialogOpen(true)}
+                    variant="outline"
+                    className="w-full bg-white/80 hover:bg-white border-orange-200 text-orange-700 hover:text-orange-800 shadow-sm"
+                    size="lg"
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Envoyer un message
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Réseaux sociaux - Responsive */}
-        <div className="mt-6 sm:mt-8">
-          <MCardSocialLinks mcard={mcard} />
-        </div>
-
-        {/* Analytics Dashboard pour les propriétaires vérifiés - Responsive */}
-        {isOwner && (
-          <div className="mt-6 sm:mt-8">
-            <MCardAnalyticsDashboard mcardId={mcard.id} isVerified={mcard.is_verified || false} />
+          {/* Réseaux sociaux */}
+          <div className="mt-8 bg-gradient-to-br from-indigo-50/30 to-blue-50/30 rounded-2xl p-6 border border-indigo-100 shadow-sm">
+            <MCardSocialLinks mcard={mcard} />
           </div>
-        )}
-      </CardContent>
+
+          {/* Analytics Dashboard pour les propriétaires */}
+          {isOwner && (
+            <div className="mt-8 bg-gradient-to-br from-emerald-50/30 to-green-50/30 rounded-2xl p-6 border border-emerald-100 shadow-sm">
+              <MCardAnalyticsDashboard mcardId={mcard.id} isVerified={mcard.is_verified || false} />
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Dialog de demande de vérification */}
       <MCardVerificationDialog
@@ -232,6 +279,6 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
         jobTitle={mcard.job_title}
         company={mcard.company}
       />
-    </Card>
+    </div>
   );
 };
