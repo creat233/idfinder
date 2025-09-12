@@ -53,6 +53,15 @@ export const AdminNavigation = () => {
       urgent: true
     },
     {
+      title: "Signalements",
+      description: "Gérer les signalements de cartes",
+      icon: AlertTriangle,
+      path: "/admin/signalements",
+      color: "bg-red-100 text-red-800",
+      count: "Nouveau",
+      urgent: true
+    },
+    {
       title: "Utilisateurs",
       description: "Gestion des comptes utilisateurs",
       icon: Users,

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Share2, MessageCircle, Heart } from "lucide-react";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
+import { ReportButton } from "@/components/mcards/ReportButton";
 import { useState, useEffect } from "react";
 import { MCardMessageDialog } from "./MCardMessageDialog";
 import { supabase } from "@/integrations/supabase/client";
@@ -197,6 +198,15 @@ export const MCardInteractionButtons = ({
               {analytics.shares_count}
             </span>
           )}
+        </div>
+
+        {/* Bouton Signalement */}
+        <div className="flex flex-col items-center">
+          <ReportButton 
+            mcardId={mcardId}
+            size="sm"
+            className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-xl text-white border-white/20 hover:bg-white/30"
+          />
         </div>
 
         {/* Bouton Message */}

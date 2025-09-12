@@ -29,6 +29,7 @@ import AdminExpiredCards from "./pages/AdminExpiredCards";
 import AdminLegal from "./pages/AdminLegal";
 import AdminMessages from "./pages/AdminMessages";
 import AdminUsers from "./pages/AdminUsers";
+import AdminReports from "./pages/admin/AdminReports";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSettings from "./pages/AdminSettings";
 import VerifiedMCards from "./pages/VerifiedMCards";
@@ -108,6 +109,7 @@ function AppContent() {
               <Route path="/admin/juridique" element={<AdminLegal />} />
               <Route path="/admin/messages" element={<AdminMessages />} />
               <Route path="/admin/utilisateurs" element={<AdminUsers />} />
+              <Route path="/admin/signalements" element={<AdminReports />} />
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
               <Route path="/admin/parametres" element={<AdminSettings />} />
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />

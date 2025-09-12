@@ -502,6 +502,48 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_reports: {
+        Row: {
+          created_at: string
+          id: string
+          mcard_id: string
+          processed_at: string | null
+          processed_by: string | null
+          report_description: string | null
+          report_reason: string
+          reporter_email: string | null
+          reporter_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mcard_id: string
+          processed_at?: string | null
+          processed_by?: string | null
+          report_description?: string | null
+          report_reason: string
+          reporter_email?: string | null
+          reporter_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mcard_id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          report_description?: string | null
+          report_reason?: string
+          reporter_email?: string | null
+          reporter_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mcard_reviews: {
         Row: {
           comment: string | null
