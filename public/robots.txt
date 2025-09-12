@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# Optimisation pour les moteurs de recherche
+Allow: /mcard/
+Allow: /mcards
+Allow: /about
+Allow: /demo
+
+# Bloquer les pages admin et privées
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /my-cards
+Disallow: /mes-cartes
+Disallow: /messages
+Disallow: /notifications
+Disallow: /panier
+
+# Bloquer les pages de connexion
+Disallow: /auth
+Disallow: /login
+
+# Bloquer les pages temporaires
+Disallow: /signaler
+Disallow: /signaler-carte
+
+# Sitemap
+Sitemap: https://www.finderid.info/sitemap.xml
+
+# Fréquence de crawl
+Crawl-delay: 1

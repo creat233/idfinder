@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
+import { MCardsSEO } from "@/components/seo/MCardsSEO";
 import { MCardsList } from "@/components/mcards/MCardsList";
 import { MCardFeatures } from '@/components/mcards/MCardFeatures';
 import { MCardFeaturesDetailed } from '@/components/mcards/MCardFeaturesDetailed';
@@ -79,9 +80,11 @@ const MCards = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24 md:pb-0">
-      <Header />
-      <main className="w-full">
+    <>
+      <MCardsSEO />
+      <div className="min-h-screen bg-background pb-24 md:pb-0">
+        <Header />
+        <main className="w-full">
         {/* Hero Section - Responsive */}
         <div className="px-3 sm:px-4 lg:px-6 xl:px-8">
           <MCardsHeader />
@@ -133,8 +136,9 @@ const MCards = () => {
           loading={formLoading}
           mcard={editingMCard}
         />
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 

@@ -26,7 +26,7 @@ interface MCardSEOProps {
 export const MCardSEO = ({ mcard, products = [], statuses = [] }: MCardSEOProps) => {
   const title = `${mcard.full_name}${mcard.job_title ? ` - ${mcard.job_title}` : ''}${mcard.company ? ` chez ${mcard.company}` : ''} | FinderID`;
   const description = mcard.description || 
-    `Découvrez le profil professionnel de ${mcard.full_name}${mcard.job_title ? `, ${mcard.job_title}` : ''}${mcard.company ? ` chez ${mcard.company}` : ''}. Contactez-les directement via FinderID.`;
+    `Découvrez le profil professionnel de ${mcard.full_name}${mcard.job_title ? `, ${mcard.job_title}` : ''}${mcard.company ? ` chez ${mcard.company}` : ''}. Contactez-les directement via FinderID - Carte de visite digitale professionnelle.`;
   
   const cardUrl = `https://www.finderid.info/mcard/${mcard.slug}`;
   const imageUrl = mcard.profile_picture_url || 'https://www.finderid.info/og-image.png';
@@ -48,22 +48,60 @@ export const MCardSEO = ({ mcard, products = [], statuses = [] }: MCardSEOProps)
     .filter(Boolean)
     .join(', ');
 
-  // Données structurées JSON-LD pour le SEO
+  // Données structurées JSON-LD enrichies pour le SEO
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "name": mcard.full_name,
-    "jobTitle": mcard.job_title,
-    "worksFor": mcard.company ? {
-      "@type": "Organization",
-      "name": mcard.company
-    } : undefined,
-    "description": description,
-    "image": imageUrl,
-    "url": cardUrl,
-    "email": mcard.email,
-    "telephone": mcard.phone_number,
-    "sameAs": mcard.website_url ? [mcard.website_url] : undefined
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": `${cardUrl}#person`,
+        "name": mcard.full_name,
+        "jobTitle": mcard.job_title,
+        "worksFor": mcard.company ? {
+          "@type": "Organization",
+          "name": mcard.company
+        } : undefined,
+        "description": description,
+        "image": {
+          "@type": "ImageObject",
+          "url": imageUrl,
+          "caption": `Photo de profil de ${mcard.full_name}`
+        },
+        "url": cardUrl,
+        "email": mcard.email,
+        "telephone": mcard.phone_number,
+        "sameAs": mcard.website_url ? [mcard.website_url] : undefined,
+        "knowsAbout": products?.map(p => p.name) || [],
+        "makesOffer": products?.map(product => ({
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": product.name,
+            "description": product.description,
+            "category": product.category
+          }
+        })) || []
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": cardUrl,
+        "url": cardUrl,
+        "name": title,
+        "description": description,
+        "about": {
+          "@id": `${cardUrl}#person`
+        },
+        "mainEntity": {
+          "@id": `${cardUrl}#person`
+        },
+        "inLanguage": "fr-FR",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "FinderID",
+          "url": "https://www.finderid.info"
+        }
+      }
+    ]
   };
 
   return (
@@ -100,9 +138,31 @@ export const MCardSEO = ({ mcard, products = [], statuses = [] }: MCardSEOProps)
       </script>
       
       {/* Meta tags additionnels pour l'indexation */}
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
       <meta name="author" content={mcard.full_name} />
-      <meta name="google-site-verification" content="" />
+      <meta name="language" content="French" />
+      <meta httpEquiv="content-language" content="fr" />
+      
+      {/* Performance et mobile */}
+      <meta name="theme-color" content="#9b87f5" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      
+      {/* Preload critique */}
+      <link rel="preload" href={imageUrl} as="image" />
+      
+      {/* Dublin Core Metadata */}
+      <meta name="DC.title" content={title} />
+      <meta name="DC.description" content={description} />
+      <meta name="DC.creator" content={mcard.full_name} />
+      <meta name="DC.subject" content={allKeywords} />
+      <meta name="DC.language" content="fr" />
+      
+      {/* vCard microformat dans les métadonnées */}
+      <meta property="contact:name" content={mcard.full_name} />
+      {mcard.job_title && <meta property="contact:job_title" content={mcard.job_title} />}
+      {mcard.company && <meta property="contact:company" content={mcard.company} />}
+      {mcard.email && <meta property="contact:email" content={mcard.email} />}
+      {mcard.phone_number && <meta property="contact:phone" content={mcard.phone_number} />}
       
       {/* Liens vers les réseaux sociaux si disponibles */}
       {mcard.website_url && <link rel="me" href={mcard.website_url} />}

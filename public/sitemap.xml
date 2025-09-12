@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Page d'accueil -->
+  <url>
+    <loc>https://www.finderid.info/</loc>
+    <lastmod>2024-12-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.finderid.info/og-image.png</image:loc>
+      <image:title>FinderID - Cartes de visite digitales</image:title>
+      <image:caption>Service de cartes de visite digitales et récupération de cartes d'identité</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Pages principales -->
+  <url>
+    <loc>https://www.finderid.info/mcards</loc>
+    <lastmod>2024-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://www.finderid.info/about</loc>
+    <lastmod>2024-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.finderid.info/demo</loc>
+    <lastmod>2024-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.finderid.info/mcard/demo</loc>
+    <lastmod>2024-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.finderid.info/mcards-verifiees</loc>
+    <lastmod>2024-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.finderid.info/politique-confidentialite</loc>
+    <lastmod>2024-10-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
