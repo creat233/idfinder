@@ -21,8 +21,20 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
     onClose();
   };
 
-  const renderLink = (to: string, text: string) => (
-    <Link to={to} className="block px-4 py-2 text-sm text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg mx-2 transition-colors" onClick={onClose}>
+  const renderLink = (to: string, text: string, requiresAuth = false) => (
+    <Link 
+      to={to} 
+      className="block px-4 py-2 text-sm text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg mx-2 transition-colors" 
+      onClick={(e) => {
+        if (requiresAuth && !user) {
+          e.preventDefault();
+          navigate("/auth");
+          onClose();
+          return;
+        }
+        onClose();
+      }}
+    >
       {text}
     </Link>
   );
@@ -50,7 +62,8 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
     <>
       {renderLink("/mcards-verifiees", "MCards Vérifiées")}
       {renderLink("/codes-promo", "Codes promo")}
-      {renderLink("/messages", "Messages")}
+      {renderLink("/messages", "Messages", true)}
+      {renderLink("/notifications", "Notifications", true)}
       {renderLink("/mes-favoris", "Mes favoris")}
       {renderLink("/panier", "Panier")}
       {renderLink("/demo", "Démo")}

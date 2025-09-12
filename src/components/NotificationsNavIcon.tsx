@@ -1,7 +1,8 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FC } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useAuthState } from "@/hooks/useAuthState";
 
 type Props = {
   isMobile?: boolean;
@@ -10,12 +11,23 @@ type Props = {
 
 export const NotificationsNavIcon: FC<Props> = ({ isMobile = false, onClick }) => {
   const { unreadCount } = useNotifications();
+  const { isAuthenticated } = useAuthState();
+  const navigate = useNavigate();
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      navigate("/auth");
+      return;
+    }
+    onClick?.();
+  };
 
   return (
     <Link
       to="/notifications"
       className={`text-gray-700 hover:text-primary relative${isMobile ? " block py-2" : ""}`}
-      onClick={onClick}
+      onClick={handleClick}
       aria-label="Notifications"
     >
       <span className="sr-only">Notifications</span>
