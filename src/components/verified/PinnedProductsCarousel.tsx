@@ -102,16 +102,19 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
         {/* Product Card */}
         <div className="relative bg-black/40 rounded-xl overflow-hidden group">
-          <div className="relative aspect-[16/9] bg-gradient-to-br from-purple-900/20 to-pink-900/20">
-            <ImageWithFallback
+          <div className="relative min-h-[200px] bg-gradient-to-br from-purple-900/20 to-pink-900/20">
+            <img
               src={currentProduct.image_url || ''}
               alt={currentProduct.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
-              fallbackClassName="w-full h-full"
+              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 cursor-pointer"
               onClick={() => {
                 const allProducts = pinnedProducts.map(p => ({ ...p, mcard: undefined }));
                 const allMCards = pinnedProducts.map(p => p.mcard);
                 onImageClick?.(allProducts, allMCards, currentIndex);
+              }}
+              onError={(e) => {
+                console.error('Image failed to load:', currentProduct.image_url);
+                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="100%25" height="100%25" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%236b7280"%3EImage indisponible%3C/text%3E%3C/svg%3E';
               }}
             />
 
@@ -170,11 +173,14 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
                       </Avatar>
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm">
-                        @{currentProduct.mcard.full_name?.replace(/\s+/g, '').toLowerCase()}
+                      <h3 className="font-bold text-sm text-white">
+                        {currentProduct.mcard.full_name}
                       </h3>
+                      <p className="text-xs text-gray-300">{currentProduct.mcard.company}</p>
                       {currentProduct.mcard.is_verified && (
-                        <span className="text-xs text-blue-400">✓ Vérifié</span>
+                        <span className="text-xs text-blue-400 flex items-center gap-1">
+                          <span>✓</span> Vérifié
+                        </span>
                       )}
                     </div>
                   </div>
