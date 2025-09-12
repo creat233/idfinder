@@ -79,6 +79,12 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
           <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
             {/* Photo de profil et informations principales */}
             <div className="flex flex-col items-center text-center lg:text-left w-full lg:w-auto">
+              {/* Debug log */}
+              {(() => {
+                console.log('MCardViewProfile render - profile_picture_url:', mcard.profile_picture_url);
+                return null;
+              })()}
+              
               <div 
                 className="cursor-pointer transition-all duration-300 hover:scale-105 group relative mb-6"
                 onClick={() => setIsProfileImageDialogOpen(true)}
