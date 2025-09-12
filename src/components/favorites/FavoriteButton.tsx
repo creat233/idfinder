@@ -1,6 +1,6 @@
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useFavorites } from '@/hooks/useFavorites';
+import { useMCardInteractions } from '@/hooks/useMCardInteractions';
 import { motion } from 'framer-motion';
 
 interface FavoriteButtonProps {
@@ -16,12 +16,11 @@ export const FavoriteButton = ({
   size = 'md',
   showText = false
 }: FavoriteButtonProps) => {
-  const { isFavorite, toggleFavorite, loading } = useFavorites();
-  const isInFavorites = isFavorite(mcardId);
+  const { isFavorited, handleFavorite, loading } = useMCardInteractions(mcardId);
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    await toggleFavorite(mcardId);
+    await handleFavorite();
   };
 
   const sizeClasses = {
@@ -38,15 +37,15 @@ export const FavoriteButton = ({
 
   return (
     <Button
-      variant={isInFavorites ? "default" : "outline"}
+      variant={isFavorited ? "default" : "outline"}
       size={showText ? "sm" : "icon"}
       onClick={handleClick}
       disabled={loading}
       className={`
         ${showText ? '' : sizeClasses[size]}
-        ${isInFavorites 
-          ? 'bg-red-500 hover:bg-red-600 text-white border-red-500' 
-          : 'border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300'
+        ${isFavorited 
+          ? 'bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white border-pink-500 shadow-lg' 
+          : 'border-pink-200 text-pink-500 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-600'
         }
         transition-all duration-300 hover:scale-105 active:scale-95
         ${className}
@@ -54,18 +53,18 @@ export const FavoriteButton = ({
     >
       <motion.div
         animate={{ 
-          scale: isInFavorites ? [1, 1.2, 1] : 1,
-          rotate: isInFavorites ? [0, 10, -10, 0] : 0
+          scale: isFavorited ? [1, 1.3, 1] : 1,
+          rotate: isFavorited ? [0, 15, -15, 0] : 0
         }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4, type: "spring", stiffness: 300 }}
       >
         <Heart 
-          className={`${iconSizes[size]} ${isInFavorites ? 'fill-current' : ''}`} 
+          className={`${iconSizes[size]} ${isFavorited ? 'fill-current drop-shadow-sm' : ''}`} 
         />
       </motion.div>
       {showText && (
         <span className="ml-2 text-sm font-medium">
-          {isInFavorites ? 'Favori' : 'Ajouter'}
+          {isFavorited ? '❤️ Favori' : '🤍 Ajouter'}
         </span>
       )}
     </Button>
