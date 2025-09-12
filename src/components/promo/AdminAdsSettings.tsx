@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminAdsManager } from "./AdminAdsManager";
 import { AdminSettings } from "./AdminSettings";
 import { PartnerEmailTemplates } from "./PartnerEmailTemplates";
+import { AdminMessages } from "@/components/admin/AdminMessages";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, Settings, Megaphone } from "lucide-react";
 
@@ -26,7 +27,7 @@ export const AdminAdsSettings = () => {
       </div>
 
       <Tabs defaultValue="settings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             Paramètres
@@ -38,6 +39,10 @@ export const AdminAdsSettings = () => {
           <TabsTrigger value="emails" className="flex items-center gap-2">
             <Mail className="h-4 w-4" />
             Emails Partenaires
+          </TabsTrigger>
+          <TabsTrigger value="messages" className="flex items-center gap-2">
+            <Mail className="h-4 w-4" />
+            Messages
           </TabsTrigger>
         </TabsList>
 
@@ -51,6 +56,10 @@ export const AdminAdsSettings = () => {
 
         <TabsContent value="emails">
           <PartnerEmailTemplates />
+        </TabsContent>
+
+        <TabsContent value="messages">
+          <AdminMessages />
         </TabsContent>
       </Tabs>
     </div>
