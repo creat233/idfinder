@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star, Send, ShoppingBag } from 'lucide-react';
+import { PinProductButton } from '@/components/mcards/PinProductButton';
 import { MCardProduct } from '@/types/mcard';
 import { MCardViewProductDialog } from './MCardViewProductDialog';
 import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
@@ -245,19 +246,26 @@ export const MCardViewProducts = ({
                         </Badge>
                       </div>
                     </div>
-                    {isOwner && (
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditProduct(product);
-                        }}
-                        className="hover:bg-gray-100 hover:scale-105 transition-all"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    )}
+                     {isOwner && (
+                       <div className="flex gap-2">
+                         <PinProductButton
+                           productId={product.id}
+                           isPinned={product.is_pinned || false}
+                           onPinToggle={() => onProductsChange?.()}
+                         />
+                         <Button 
+                           size="sm" 
+                           variant="ghost" 
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             handleEditProduct(product);
+                           }}
+                           className="hover:bg-gray-100 hover:scale-105 transition-all"
+                         >
+                           <Edit className="h-4 w-4" />
+                         </Button>
+                       </div>
+                     )}
                   </div>
                   
                   {product.description && (

@@ -425,6 +425,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          is_pinned: boolean
           mcard_id: string
           name: string
           price: number
@@ -438,6 +439,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_pinned?: boolean
           mcard_id: string
           name: string
           price?: number
@@ -451,6 +453,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_pinned?: boolean
           mcard_id?: string
           name?: string
           price?: number

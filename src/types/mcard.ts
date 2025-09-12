@@ -33,6 +33,7 @@ export type MCardProduct = {
   category: string;
   image_url: string | null;
   is_active: boolean;
+  is_pinned?: boolean;
   created_at: string;
   updated_at: string;
 };
