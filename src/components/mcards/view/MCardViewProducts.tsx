@@ -53,7 +53,7 @@ export const MCardViewProducts = ({
   // Utilisation correcte du hook usePlanLimits
   const { checkProductLimit } = usePlanLimits({ 
     plan: mcardPlan || 'free', 
-    currentStatusesCount: 0, 
+    statusesCreatedToday: 0, 
     currentProductsCount: products.length 
   });
   

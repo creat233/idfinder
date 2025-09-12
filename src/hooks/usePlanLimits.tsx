@@ -4,25 +4,25 @@ import { PLAN_LIMITS, canAddStatus, canAddProduct } from '@/utils/planLimits';
 
 interface UsePlanLimitsProps {
   plan: string;
-  currentStatusesCount: number;
+  statusesCreatedToday: number;
   currentProductsCount: number;
 }
 
 export const usePlanLimits = ({ 
   plan, 
-  currentStatusesCount, 
+  statusesCreatedToday, 
   currentProductsCount 
 }: UsePlanLimitsProps) => {
   const { toast } = useToast();
   const planLimits = PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
 
   const checkStatusLimit = (): boolean => {
-    const canAdd = canAddStatus(currentStatusesCount, plan);
+    const canAdd = canAddStatus(statusesCreatedToday, plan);
     if (!canAdd) {
       toast({
         variant: "destructive",
-        title: "Limite atteinte",
-        description: `Votre plan ${planLimits.name} permet un maximum de ${planLimits.maxStatuses} statuts. Vous avez atteint cette limite.`,
+        title: "Limite quotidienne atteinte",
+        description: `Votre plan ${planLimits.name} permet un maximum de ${planLimits.maxStatuses} statuts par jour. Vous avez atteint cette limite aujourd'hui.`,
       });
     }
     return canAdd;
@@ -41,7 +41,7 @@ export const usePlanLimits = ({
   };
 
   const getStatusesRemaining = (): number => {
-    return Math.max(0, planLimits.maxStatuses - currentStatusesCount);
+    return Math.max(0, planLimits.maxStatuses - statusesCreatedToday);
   };
 
   const getProductsRemaining = (): number => {
@@ -54,7 +54,7 @@ export const usePlanLimits = ({
     checkProductLimit,
     getStatusesRemaining,
     getProductsRemaining,
-    canAddStatus: canAddStatus(currentStatusesCount, plan),
+    canAddStatus: canAddStatus(statusesCreatedToday, plan),
     canAddProduct: canAddProduct(currentProductsCount, plan),
   };
 };

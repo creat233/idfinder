@@ -10,6 +10,7 @@ import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { MCardStatusCarousel } from './MCardStatusCarousel';
 import { useToast } from '@/hooks/use-toast';
 import { usePlanLimits } from '@/hooks/usePlanLimits';
+import { countStatusesCreatedToday } from '@/utils/planLimits';
 
 interface MCardViewStatusesProps {
   statuses: MCardStatus[];
@@ -50,10 +51,13 @@ export const MCardViewStatuses = ({
     return new Date(status.expires_at) > new Date();
   });
 
+  // Calculer les statuts créés aujourd'hui pour la limite journalière
+  const statusesCreatedToday = countStatusesCreatedToday(statuses);
+  
   // Utilisation correcte du hook usePlanLimits
   const { checkStatusLimit } = usePlanLimits({ 
     plan: mcardPlan || 'free', 
-    currentStatusesCount: statuses.length, 
+    statusesCreatedToday, 
     currentProductsCount: 0 
   });
 
