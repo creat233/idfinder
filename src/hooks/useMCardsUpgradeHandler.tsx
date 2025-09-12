@@ -12,8 +12,8 @@ export const useMCardsUpgradeHandler = () => {
 
   const handleRequestUpgrade = async (
     mcardId: string, 
-    plan: 'essential' | 'premium',
-    requestPlanUpgrade: (id: string, plan: 'essential' | 'premium') => Promise<any>
+    plan: 'essential' | 'premium' | 'ultimate',
+    requestPlanUpgrade: (id: string, plan: 'essential' | 'premium' | 'ultimate') => Promise<any>
   ) => {
     await requestPlanUpgrade(mcardId, plan);
     setUpgradingCardId(null);
