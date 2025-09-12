@@ -90,9 +90,9 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
   return (
     <div className="w-full">
-      <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden group">
-        {/* Image complète en arrière-plan */}
-        <div className="absolute inset-0">
+      <div className="relative w-full overflow-hidden group">
+        {/* Image avec hauteur adaptative */}
+        <div className="relative w-full aspect-[4/3] max-h-[600px]">
           <img
             src={currentProduct.image_url || ''}
             alt={currentProduct.name}
@@ -110,29 +110,47 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         </div>
 
         {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50" />
 
-        {/* Navigation */}
-        {pinnedProducts.length > 1 && (
-          <>
-            <button
-              onClick={handlePrev}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30 border border-white/20"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button
-              onClick={handleNext}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30 border border-white/20"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          </>
-        )}
+        {/* Profil en haut à gauche */}
+        <div className="absolute top-4 left-4 right-4 z-20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div 
+                className="cursor-pointer"
+                onClick={() => handleProfileClick(currentProduct.mcard.slug)}
+              >
+                <Avatar className="w-12 h-12 border-2 border-white/30">
+                  <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
+                  <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-lg">
+                    {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-white drop-shadow-lg">
+                  @{currentProduct.mcard.slug}
+                </h3>
+                <p className="text-sm text-gray-200 drop-shadow-lg">{currentProduct.mcard.full_name}</p>
+                {currentProduct.mcard.is_verified && (
+                  <span className="text-sm text-blue-400 flex items-center gap-1 drop-shadow-lg">
+                    <span>✓</span> Vérifié
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <MCardInteractionButtons 
+              mcardId={currentProduct.mcard.id}
+              mcardOwnerId={currentProduct.mcard.user_id}
+              mcardOwnerName={currentProduct.mcard.full_name}
+            />
+          </div>
+        </div>
 
-        {/* Progress indicators */}
+        {/* Progress indicators en haut */}
         {pinnedProducts.length > 1 && (
-          <div className="absolute top-6 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
+          <div className="absolute top-20 left-1/2 transform -translate-x-1/2 flex space-x-1 z-20">
             {pinnedProducts.map((_, index) => (
               <div
                 key={index}
@@ -144,55 +162,37 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
           </div>
         )}
 
-        {/* Profil en haut à droite */}
-        <div className="absolute top-6 right-6 z-20">
-          <MCardInteractionButtons 
-            mcardId={currentProduct.mcard.id}
-            mcardOwnerId={currentProduct.mcard.user_id}
-            mcardOwnerName={currentProduct.mcard.full_name}
-          />
-        </div>
-
-        {/* Informations en bas */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-white z-20">
-          {/* Profil */}
-          <div className="flex items-center gap-3 mb-4">
-            <div 
-              className="cursor-pointer"
-              onClick={() => handleProfileClick(currentProduct.mcard.slug)}
+        {/* Navigation */}
+        {pinnedProducts.length > 1 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30"
             >
-              <Avatar className="w-12 h-12 border-2 border-white/20">
-                <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
-                <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-lg">
-                  {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg text-white">
-                @{currentProduct.mcard.slug}
-              </h3>
-              <p className="text-sm text-gray-300">{currentProduct.mcard.full_name}</p>
-              {currentProduct.mcard.is_verified && (
-                <span className="text-sm text-blue-400 flex items-center gap-1">
-                  <span>✓</span> Vérifié
-                </span>
-              )}
-            </div>
-          </div>
-          
-          {/* Informations produit */}
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-30"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </>
+        )}
+
+        {/* Informations produit en bas */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-20">
           <div className="space-y-2">
-            <h2 className="font-bold text-2xl">{currentProduct.name}</h2>
+            <h2 className="font-bold text-xl drop-shadow-lg">{currentProduct.name}</h2>
             {currentProduct.description && (
-              <p className="text-base opacity-90 line-clamp-2">{currentProduct.description}</p>
+              <p className="text-sm opacity-90 line-clamp-2 drop-shadow-lg">{currentProduct.description}</p>
             )}
             
-            <div className="flex items-center gap-3 mt-4">
+            <div className="flex items-center gap-3 mt-3">
               <span className="text-sm bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
                 #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
               </span>
-              <span className="text-lg bg-green-500 px-4 py-2 rounded-full font-bold">
+              <span className="text-base bg-green-500 px-3 py-2 rounded-full font-bold">
                 {currentProduct.price.toLocaleString()} {currentProduct.currency}
               </span>
             </div>
