@@ -86,8 +86,32 @@ export const MCardComments = ({ mcardId, mcardOwnerName, className = "" }: MCard
 
       toast({
         title: "✅ Commentaire envoyé !",
-        description: "Votre commentaire sera visible après validation par le propriétaire de la carte."
+        description: "Votre commentaire a été envoyé au propriétaire de la carte."
       });
+
+      // Créer une notification pour le propriétaire
+      try {
+        const { data: mcardData } = await supabase
+          .from('mcards')
+          .select('user_id, full_name')
+          .eq('id', mcardId)
+          .single();
+
+        if (mcardData) {
+          await supabase
+            .from('notifications')
+            .insert({
+              user_id: mcardData.user_id,
+              type: 'new_review',
+              title: '💬 Nouveau commentaire reçu',
+              message: `${visitorName} a laissé un commentaire sur votre carte "${mcardData.full_name}".`,
+              is_read: false
+            });
+        }
+      } catch (notificationError) {
+        console.error('Error creating notification:', notificationError);
+        // Ne pas faire échouer l'opération si la notification échoue
+      }
 
       // Reset form
       setNewComment('');
@@ -126,30 +150,13 @@ export const MCardComments = ({ mcardId, mcardOwnerName, className = "" }: MCard
     );
   };
 
-  const averageRating = reviews.length > 0 
-    ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
-    : 0;
-
   return (
     <Card className={`${className} bg-white/10 backdrop-blur-xl border-white/20`}>
       <CardHeader className="pb-4">
         <CardTitle className="text-white flex items-center gap-2">
           <MessageCircle className="h-5 w-5" />
-          Avis et commentaires
-          {reviews.length > 0 && (
-            <Badge className="bg-white/20 text-white">
-              {reviews.length} avis
-            </Badge>
-          )}
+          Laisser un avis
         </CardTitle>
-        
-        {reviews.length > 0 && (
-          <div className="flex items-center gap-2 text-white/80">
-            {renderStars(Math.round(Number(averageRating)))}
-            <span className="font-medium">{averageRating}/5</span>
-            <span className="text-sm">({reviews.length} avis)</span>
-          </div>
-        )}
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -161,7 +168,7 @@ export const MCardComments = ({ mcardId, mcardOwnerName, className = "" }: MCard
             variant="outline"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
-            Laisser un avis
+            Laisser un avis à {mcardOwnerName}
           </Button>
         )}
 
@@ -233,58 +240,6 @@ export const MCardComments = ({ mcardId, mcardOwnerName, className = "" }: MCard
                 Annuler
               </Button>
             </div>
-          </div>
-        )}
-
-        {/* Reviews list */}
-        {isLoading ? (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white/5 rounded-lg p-4 border border-white/10 animate-pulse">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-white/20 rounded w-1/4"></div>
-                    <div className="h-3 bg-white/20 rounded w-1/3"></div>
-                    <div className="h-16 bg-white/20 rounded"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : reviews.length === 0 ? (
-          <div className="text-center py-8 text-white/60">
-            <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Aucun avis pour le moment</p>
-            <p className="text-sm">Soyez le premier à laisser un commentaire !</p>
-          </div>
-        ) : (
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {reviews.map((review) => (
-              <div key={review.id} className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <div className="flex items-start gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-500 text-white">
-                      {review.visitor_name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-white">{review.visitor_name}</h4>
-                      <span className="text-xs text-white/60">
-                        {new Date(review.created_at).toLocaleDateString('fr-FR')}
-                      </span>
-                    </div>
-                    <div className="mb-2">
-                      {renderStars(review.rating)}
-                    </div>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      {review.comment}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         )}
       </CardContent>
