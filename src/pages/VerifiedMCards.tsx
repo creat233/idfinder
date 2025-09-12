@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductCarousel } from "@/components/verified/ProductCarousel";
@@ -16,6 +17,7 @@ const VerifiedMCards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const categories = [
     { id: "all", name: "Tout" },
@@ -61,7 +63,7 @@ const VerifiedMCards = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 pb-24 md:pb-0 overflow-hidden w-full">
-      <PublicHeader />
+      {!isMobile && <PublicHeader />}
       
       {/* Header Style TikTok */}
       <div className="relative text-center py-6 px-0 bg-gradient-to-b from-black/20 to-transparent w-full">
