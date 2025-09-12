@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -1068,61 +1068,61 @@ export type Database = {
         Returns: boolean
       }
       admin_approve_mcard_renewal: {
-        Args: { p_renewal_id: string; p_mcard_id: string }
+        Args: { p_mcard_id: string; p_renewal_id: string }
         Returns: {
-          success: boolean
           message: string
+          success: boolean
         }[]
       }
       admin_approve_mcard_subscription: {
         Args: { p_mcard_id: string }
         Returns: {
-          success: boolean
           message: string
+          success: boolean
         }[]
       }
       admin_approve_mcard_verification: {
         Args: { p_request_id: string }
         Returns: {
-          success: boolean
           message: string
+          success: boolean
         }[]
       }
       admin_deactivate_mcard: {
         Args: { p_mcard_id: string }
         Returns: {
-          success: boolean
           message: string
+          success: boolean
         }[]
       }
       admin_get_all_mcards: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          user_id: string
-          full_name: string
-          plan: string
           created_at: string
-          user_email: string
-          user_phone: string
+          full_name: string
+          id: string
+          plan: string
           slug: string
-          subscription_status: string
           subscription_expires_at: string
+          subscription_status: string
+          user_email: string
+          user_id: string
+          user_phone: string
         }[]
       }
       admin_get_all_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          user_id: string
           code: string
-          is_active: boolean
-          is_paid: boolean
           created_at: string
           expires_at: string
+          id: string
+          is_active: boolean
+          is_paid: boolean
           total_earnings: number
           usage_count: number
           user_email: string
+          user_id: string
           user_name: string
           user_phone: string
         }[]
@@ -1130,63 +1130,63 @@ export type Database = {
       admin_get_all_users: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          email: string
+          country: string
           created_at: string
+          email: string
           first_name: string
+          id: string
           last_name: string
           phone: string
-          country: string
         }[]
       }
       admin_get_expired_mcards: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          user_id: string
-          full_name: string
-          plan: string
-          user_email: string
-          user_phone: string
-          subscription_expires_at: string
-          days_expired: number
           created_at: string
+          days_expired: number
+          full_name: string
+          id: string
+          plan: string
+          subscription_expires_at: string
+          user_email: string
+          user_id: string
+          user_phone: string
         }[]
       }
       admin_get_pending_mcards: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          user_id: string
-          full_name: string
-          plan: string
           created_at: string
-          user_email: string
-          user_phone: string
+          full_name: string
+          id: string
+          plan: string
           slug: string
+          user_email: string
+          user_id: string
+          user_phone: string
         }[]
       }
       admin_get_pending_renewals: {
         Args: Record<PropertyKey, never>
         Returns: {
+          current_plan: string
+          days_remaining: number
           id: string
           mcard_id: string
-          current_plan: string
+          mcard_name: string
           requested_at: string
           status: string
-          mcard_name: string
+          subscription_expires_at: string
           user_email: string
           user_phone: string
-          subscription_expires_at: string
-          days_remaining: number
         }[]
       }
       admin_send_renewal_notifications: {
         Args: Record<PropertyKey, never>
         Returns: {
-          success: boolean
           message: string
           notifications_sent: number
+          success: boolean
         }[]
       }
       can_activate_promo_codes: {
@@ -1204,19 +1204,19 @@ export type Database = {
       get_audit_logs: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          created_at: string
-          user_email: string
           action: string
+          created_at: string
           details: Json
+          id: string
           ip_address: string
+          user_email: string
         }[]
       }
       get_daily_user_signups: {
         Args: Record<PropertyKey, never>
         Returns: {
-          signup_date: string
           count: number
+          signup_date: string
         }[]
       }
       get_or_create_mcard_customization: {
