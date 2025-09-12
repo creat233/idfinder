@@ -182,17 +182,19 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
                       Voir la carte
                     </Button>
 
-                    {/* Statistiques et statut */}
-                    <div className="flex items-center justify-between w-full text-xs text-white/50 pt-2 border-t border-white/10">
+                    {/* Statut de l'abonnement - bien visible */}
+                    <div className="flex items-center justify-center gap-2 w-full mb-3">
+                      <Badge variant="outline" className="border-green-400/50 text-green-300 bg-green-500/20 text-sm font-medium px-3 py-1">
+                        ✓ {mcard.subscription_status === 'active' ? 'Actif' : mcard.subscription_status}
+                      </Badge>
+                      <Badge variant="outline" className="border-purple-400/50 text-purple-300 bg-purple-500/20 text-sm font-medium px-3 py-1">
+                        {mcard.plan === 'premium' ? '⭐ Premium' : mcard.plan === 'pro' ? '💎 Pro' : '🆓 Gratuit'}
+                      </Badge>
+                    </div>
+
+                    {/* Statistiques */}
+                    <div className="flex items-center justify-center w-full text-sm text-white/60 pt-2 border-t border-white/10">
                       <span>{mcard.view_count || 0} vues</span>
-                      <div className="flex gap-2">
-                        <Badge variant="outline" className="border-green-400/30 text-green-300 bg-green-500/10">
-                          {mcard.subscription_status === 'active' ? 'Actif' : mcard.subscription_status}
-                        </Badge>
-                        <Badge variant="outline" className="border-white/20 text-white/70">
-                          {mcard.plan || 'free'}
-                        </Badge>
-                      </div>
                     </div>
                   </div>
                 </CardContent>
