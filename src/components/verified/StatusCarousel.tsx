@@ -142,7 +142,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   }
 
   return (
-    <div className="mb-8 px-4">
+    <div className="mb-8 px-0 w-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-black text-white flex items-center gap-2">
           <span className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">

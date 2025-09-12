@@ -160,9 +160,9 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
   }
 
   return (
-    <div className="px-4">
+    <div className="px-0 w-full">
       {/* Feed vertical style TikTok */}
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="w-full mx-auto space-y-6 px-1">
         {filteredMCards.map((mcard) => {
         // Filtrer les produits selon la catégorie pour cette carte
         const filteredProducts = selectedCategory === "all" 
