@@ -120,6 +120,8 @@ const MCardView = () => {
               isOwner={isOwner}
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
+              mcardOwnerName={mcard.full_name}
+              mcardOwnerUserId={mcard.user_id}
               onProductsChange={refreshData}
               onOptimisticProductAdd={addProduct}
             />
