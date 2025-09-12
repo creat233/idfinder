@@ -8,6 +8,7 @@ import { ProductCarousel } from "@/components/verified/ProductCarousel";
 import { ProductImageCarousel } from "@/components/verified/ProductImageCarousel";
 import { StatusCarousel } from "@/components/verified/StatusCarousel";
 import { PinnedProductsCarousel } from "@/components/verified/PinnedProductsCarousel";
+import { VerifiedMCardsGrid } from "@/components/verified/VerifiedMCardsGrid";
 import { MCard, MCardProduct } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -194,6 +195,11 @@ const VerifiedMCards = () => {
         {/* Feed principal */}
         <div className="relative">
           <ProductCarousel onImageClick={handleImageClick} selectedCategory={selectedCategory} />
+        </div>
+
+        {/* Grille des MCards vérifiées */}
+        <div className="relative mt-8">
+          <VerifiedMCardsGrid searchQuery={searchQuery} selectedCategory={selectedCategory} />
         </div>
       </div>
 
