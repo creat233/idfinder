@@ -77,15 +77,6 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
   return (
     <div className="px-4 py-12 mt-16 mb-16 bg-slate-900/50 backdrop-blur-sm rounded-t-3xl">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-8 justify-center">
-          <Verified className="h-7 w-7 text-blue-400" />
-          <h2 className="text-2xl font-bold text-white">
-            Professionnels Vérifiés
-          </h2>
-          <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-400/30 text-lg px-4 py-2">
-            {filteredMCards.length} {filteredMCards.length === 1 ? 'carte' : 'cartes'}
-          </Badge>
-        </div>
 
         {filteredMCards.length === 0 ? (
           <div className="text-center py-12">
