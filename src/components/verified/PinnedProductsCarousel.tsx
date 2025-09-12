@@ -100,9 +100,9 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
           </Badge>
         </div>
 
-        {/* Product Image */}
-        <div className="relative bg-black/20 rounded-xl overflow-hidden group">
-          <div className="relative aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200">
+        {/* Product Card */}
+        <div className="relative bg-black/40 rounded-xl overflow-hidden group">
+          <div className="relative aspect-[4/3] bg-gradient-to-br from-purple-900/20 to-pink-900/20">
             <img
               src={currentProduct.image_url || ''}
               alt={currentProduct.name}
@@ -117,6 +117,9 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
                 e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="100%25" height="100%25" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%236b7280"%3EImage indisponible%3C/text%3E%3C/svg%3E';
               }}
             />
+
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
             {/* Navigation */}
             {pinnedProducts.length > 1 && (
@@ -150,17 +153,59 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
               </div>
             )}
 
-            {/* Simple product info overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
-              <div className="text-white">
-                <p className="font-semibold text-sm mb-1">{currentProduct.name}</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs bg-yellow-400/20 px-2 py-1 rounded-full">
-                    #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
-                  </span>
-                  <span className="text-xs bg-green-500 px-2 py-1 rounded-full font-bold">
-                    {currentProduct.price.toLocaleString()} {currentProduct.currency}
-                  </span>
+            {/* Product info */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div 
+                      className="cursor-pointer"
+                      onClick={() => handleProfileClick(currentProduct.mcard.slug)}
+                    >
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
+                        <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
+                          {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                        </AvatarFallback>
+                        <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white text-xs">
+                          {currentProduct.mcard.full_name?.charAt(0) || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-white">
+                        {currentProduct.mcard.full_name}
+                      </h3>
+                      <p className="text-xs text-gray-300">{currentProduct.mcard.company}</p>
+                      {currentProduct.mcard.is_verified && (
+                        <span className="text-xs text-blue-400 flex items-center gap-1">
+                          <span>✓</span> Vérifié
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <p className="font-semibold text-sm mb-1">{currentProduct.name}</p>
+                  {currentProduct.description && (
+                    <p className="text-xs opacity-80 line-clamp-2">{currentProduct.description}</p>
+                  )}
+                  
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-xs bg-yellow-400/20 px-2 py-1 rounded-full">
+                      #{currentProduct.category.replace(/\s+/g, '').toLowerCase()}
+                    </span>
+                    <span className="text-xs bg-green-500 px-2 py-1 rounded-full font-bold">
+                      {currentProduct.price.toLocaleString()} {currentProduct.currency}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="ml-4">
+                  <MCardInteractionButtons 
+                    mcardId={currentProduct.mcard.id}
+                    mcardOwnerId={currentProduct.mcard.user_id}
+                    mcardOwnerName={currentProduct.mcard.full_name}
+                  />
                 </div>
               </div>
             </div>
