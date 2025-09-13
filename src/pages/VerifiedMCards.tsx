@@ -104,49 +104,64 @@ const VerifiedMCards = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 pb-24 md:pb-0 overflow-hidden w-full">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 overflow-hidden">
+      {/* Header pour desktop uniquement */}
       {!isMobile && <PublicHeader />}
       
-      {/* Header Professionnel - Fixe en haut avec animation */}
-      <div className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900/95 via-purple-900/95 to-slate-900/95 border-b border-white/10 backdrop-blur-xl transition-transform duration-300 ${
+      {/* Header style Instagram/TikTok - Responsive */}
+      <div className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
         isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
       }`}>
-        <div className="relative text-center py-6 px-6">
-          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent"></div>
-          
-          <div className="relative z-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
-              <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent">
-                MCards Vérifiées
-              </span>
-            </h1>
-            <p className="text-purple-200/80 text-sm md:text-base font-light tracking-wide">
-              Découvrez les professionnels certifiés
-            </p>
+        {/* Background avec glassmorphisme */}
+        <div className="bg-black/40 backdrop-blur-xl border-b border-white/10">
+          <div className="px-4 sm:px-6 lg:px-8">
+            {/* Mobile/Tablet Design */}
+            <div className="lg:hidden">
+              <div className="py-4 text-center">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                    MCards Vérifiées
+                  </span>
+                </h1>
+                <p className="text-xs sm:text-sm text-white/70 mt-1">
+                  Professionnels certifiés
+                </p>
+              </div>
+            </div>
             
-            {/* Ligne décorative */}
-            <div className="mt-4 mx-auto w-24 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent"></div>
+            {/* Desktop Design */}
+            <div className="hidden lg:block">
+              <div className="py-6 text-center">
+                <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
+                  <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent">
+                    MCards Vérifiées
+                  </span>
+                </h1>
+                <p className="text-purple-200/80 text-base font-light tracking-wide">
+                  Découvrez les professionnels certifiés
+                </p>
+                <div className="mt-4 mx-auto w-24 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Container principal avec margin top dynamique */}
-      <div className={`relative z-10 w-full px-0 transition-all duration-300 ${
-        isHeaderVisible ? 'pt-32' : 'pt-6'
+      {/* Container principal - Responsive padding */}
+      <div className={`relative z-10 w-full transition-all duration-300 ${
+        isHeaderVisible 
+          ? 'pt-20 sm:pt-24 lg:pt-32' 
+          : 'pt-2 sm:pt-4 lg:pt-6'
       }`}>
-        {/* Stories en premier (statuts) */}
-        <div className="mb-6">
+        
+        {/* Stories Section - Style Instagram */}
+        <div className="mb-4 sm:mb-6">
           <StatusCarousel />
         </div>
 
-        {/* Produits épinglés des MCards vérifiées */}
-        <div className="mb-6">
+        {/* Produits épinglés - Style TikTok Feed */}
+        <div className="px-2 sm:px-4 lg:px-6">
           <PinnedProductsCarousel onImageClick={handleImageClick} />
-        </div>
-
-        {/* Grille des MCards vérifiées */}
-        <div className="relative mt-8">
-          <VerifiedMCardsGrid searchQuery={searchQuery} selectedCategory="all" />
         </div>
       </div>
 
@@ -159,9 +174,9 @@ const VerifiedMCards = () => {
         initialProductIndex={selectedProductIndex}
       />
       
-      {/* Bouton de traduction style TikTok */}
-      <div className="fixed bottom-20 right-4 z-[100]">
-        <div className="bg-black/40 backdrop-blur-xl rounded-full p-2 border border-white/20">
+      {/* Bouton de traduction style TikTok - Responsive */}
+      <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-6 lg:bottom-12 lg:right-8 z-[100]">
+        <div className="bg-black/40 backdrop-blur-xl rounded-full p-2 lg:p-3 border border-white/20 shadow-lg">
           <MCardTranslateButton
             currentLanguage={currentLanguage}
             onLanguageChange={setCurrentLanguage}
