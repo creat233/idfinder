@@ -2,16 +2,13 @@
 import { useState, useEffect, useRef } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { MCardSearchBar } from "@/components/mcards/MCardSearchBar";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
-import { ProductCarousel } from "@/components/verified/ProductCarousel";
 import { ProductImageCarousel } from "@/components/verified/ProductImageCarousel";
 import { StatusCarousel } from "@/components/verified/StatusCarousel";
 import { PinnedProductsCarousel } from "@/components/verified/PinnedProductsCarousel";
 import { VerifiedMCardsGrid } from "@/components/verified/VerifiedMCardsGrid";
 import { MCard, MCardProduct } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 
 const VerifiedMCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -110,33 +107,32 @@ const VerifiedMCards = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 pb-24 md:pb-0 overflow-hidden w-full">
       {!isMobile && <PublicHeader />}
       
-      {/* Header Style TikTok - Fixe en haut avec animation */}
-      <div className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 border-b border-white/10 backdrop-blur-xl transition-transform duration-300 ${
+      {/* Header Professionnel - Fixe en haut avec animation */}
+      <div className={`fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900/95 via-purple-900/95 to-slate-900/95 border-b border-white/10 backdrop-blur-xl transition-transform duration-300 ${
         isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
       }`}>
-        <div className="relative text-center py-4 px-0 bg-gradient-to-b from-black/20 to-transparent w-full">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22white%22%20fill-opacity%3D%220.02%22%3E%3Cpath%20d%3D%22M20%2020c0-11.046-8.954-20-20-20v40c11.046%200%2020-8.954%2020-20z%22/%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-        
-        <h1 className="text-2xl md:text-3xl font-black text-white mb-3 tracking-tight">
-          <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">Mcard vérifier</span>
-        </h1>
-        
-        {/* Search Bar Style TikTok */}
-        <div className="max-w-md mx-auto mb-4 px-2">
-          <div className="relative">
-            <MCardSearchBar 
-              onSearch={handleSearch}
-              placeholder="🔍 Rechercher..."
-              className="bg-black/20 border-white/20 text-white placeholder:text-white/70 backdrop-blur-xl rounded-full h-12 shadow-2xl"
-            />
+        <div className="relative text-center py-6 px-6">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent"></div>
+          
+          <div className="relative z-10">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
+              <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent">
+                MCards Vérifiées
+              </span>
+            </h1>
+            <p className="text-purple-200/80 text-sm md:text-base font-light tracking-wide">
+              Découvrez les professionnels certifiés
+            </p>
+            
+            {/* Ligne décorative */}
+            <div className="mt-4 mx-auto w-24 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent"></div>
           </div>
         </div>
       </div>
-      </div>
 
-      {/* Container principal style TikTok avec margin top dynamique */}
+      {/* Container principal avec margin top dynamique */}
       <div className={`relative z-10 w-full px-0 transition-all duration-300 ${
-        isHeaderVisible ? 'pt-48' : 'pt-6'
+        isHeaderVisible ? 'pt-32' : 'pt-6'
       }`}>
         {/* Stories en premier (statuts) */}
         <div className="mb-6">
