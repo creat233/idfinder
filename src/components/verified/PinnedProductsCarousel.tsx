@@ -155,40 +155,40 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
             {/* Overlay gradient - fixé au container */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50 pointer-events-none" />
 
-            {/* Profil en haut à gauche - fixé au container */}
-            <div className="absolute top-4 left-4 right-4 z-20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="cursor-pointer"
-                    onClick={() => handleProfileClick(currentProduct.mcard.slug)}
-                  >
-                    <Avatar className="w-12 h-12 border-2 border-white/30">
-                      <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
-                      <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-lg">
-                        {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-white drop-shadow-lg">
-                      @{currentProduct.mcard.slug}
-                    </h3>
-                    <p className="text-sm text-gray-200 drop-shadow-lg">{currentProduct.mcard.full_name}</p>
-                    {currentProduct.mcard.is_verified && (
-                      <span className="text-sm text-blue-400 flex items-center gap-1 drop-shadow-lg">
-                        <span>✓</span> Vérifié
-                      </span>
-                    )}
-                  </div>
+            {/* Profil créateur - Style Instagram Stories */}
+            <div className="absolute top-4 left-4 z-20">
+              <div 
+                className="flex items-center gap-3 bg-black/30 backdrop-blur-sm rounded-full p-2 cursor-pointer hover:bg-black/40 transition-all duration-200"
+                onClick={() => handleProfileClick(currentProduct.mcard.slug)}
+              >
+                <div className="relative">
+                  <Avatar className="w-10 h-10 border-2 border-white/80 ring-2 ring-gradient-to-r from-pink-500 to-yellow-500">
+                    <AvatarImage src={currentProduct.mcard.profile_picture_url || ''} />
+                    <AvatarFallback className="text-white bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 font-bold text-sm">
+                      {currentProduct.mcard.full_name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NN'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {currentProduct.mcard.is_verified && (
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-xs text-white">✓</span>
+                    </div>
+                  )}
                 </div>
-                
-                <MCardInteractionButtons 
-                  mcardId={currentProduct.mcard.id}
-                  mcardOwnerId={currentProduct.mcard.user_id}
-                  mcardOwnerName={currentProduct.mcard.full_name}
-                />
+                <div className="text-white">
+                  <h3 className="font-semibold text-sm drop-shadow-lg">
+                    @{currentProduct.mcard.slug}
+                  </h3>
+                </div>
               </div>
+            </div>
+
+            {/* Boutons d'interaction en haut à droite */}
+            <div className="absolute top-4 right-4 z-20">
+              <MCardInteractionButtons 
+                mcardId={currentProduct.mcard.id}
+                mcardOwnerId={currentProduct.mcard.user_id}
+                mcardOwnerName={currentProduct.mcard.full_name}
+              />
             </div>
 
             {/* Informations produit en bas */}
