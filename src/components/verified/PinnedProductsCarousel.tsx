@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Pin } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Pin, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { MCard, MCardProduct } from '@/types/mcard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,12 +20,16 @@ interface GroupedProduct {
   mcardId: string;
   products: PinnedProductWithMCard[];
   currentIndex: number;
+  isPaused: boolean;
 }
 
 export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselProps) => {
   const [pinnedProducts, setPinnedProducts] = useState<PinnedProductWithMCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [groupedProducts, setGroupedProducts] = useState<GroupedProduct[]>([]);
+  const [fullscreenImage, setFullscreenImage] = useState<{ src: string; alt: string } | null>(null);
+  const [globalPause, setGlobalPause] = useState(false);
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     loadPinnedProducts();
@@ -33,15 +37,15 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
   // Rotation automatique des images
   useEffect(() => {
-    if (groupedProducts.length === 0) return;
+    if (groupedProducts.length === 0 || globalPause) return;
 
     const intervals = groupedProducts.map((group, groupIndex) => {
-      if (group.products.length <= 1) return null;
+      if (group.products.length <= 1 || group.isPaused) return null;
 
       return setInterval(() => {
         setGroupedProducts(prev => 
           prev.map((g, index) => 
-            index === groupIndex 
+            index === groupIndex && !g.isPaused
               ? { ...g, currentIndex: (g.currentIndex + 1) % g.products.length }
               : g
           )
@@ -54,7 +58,60 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         if (interval) clearInterval(interval);
       });
     };
-  }, [groupedProducts.length]);
+  }, [groupedProducts.length, globalPause, groupedProducts.map(g => g.isPaused).join(',')]);
+
+  // Gestion des interactions
+  const pauseGroup = (groupIndex: number) => {
+    setGroupedProducts(prev => 
+      prev.map((g, index) => 
+        index === groupIndex ? { ...g, isPaused: true } : g
+      )
+    );
+  };
+
+  const resumeGroup = (groupIndex: number) => {
+    setGroupedProducts(prev => 
+      prev.map((g, index) => 
+        index === groupIndex ? { ...g, isPaused: false } : g
+      )
+    );
+  };
+
+  const handleLongPressStart = (groupIndex: number) => {
+    longPressTimer.current = setTimeout(() => {
+      pauseGroup(groupIndex);
+    }, 500);
+  };
+
+  const handleLongPressEnd = (groupIndex: number) => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleImageClick = (product: PinnedProductWithMCard, groupIndex: number) => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+      return;
+    }
+
+    setFullscreenImage({
+      src: product.image_url || '',
+      alt: product.name
+    });
+  };
+
+  const handleMessageClick = (groupIndex: number) => {
+    setGlobalPause(true);
+    pauseGroup(groupIndex);
+  };
+
+  const handleMessageDialogClose = (groupIndex: number) => {
+    setGlobalPause(false);
+    resumeGroup(groupIndex);
+  };
 
   const loadPinnedProducts = async () => {
     try {
@@ -92,7 +149,8 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
       const grouped = Array.from(groupedByCreator.entries()).map(([mcardId, products]) => ({
         mcardId,
         products,
-        currentIndex: 0
+        currentIndex: 0,
+        isPaused: false
       }));
 
       setGroupedProducts(grouped);
@@ -127,24 +185,25 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
   }
 
   return (
-    <div className="w-full space-y-0">
-      {groupedProducts.map((group, groupIndex) => {
-        const currentProduct = group.products[group.currentIndex];
-        return (
-        <div key={currentProduct.id} className="w-full">
-          <div className="relative w-full overflow-hidden group">
+    <>
+      <div className="w-full space-y-4 pt-20 pb-4">
+        {groupedProducts.map((group, groupIndex) => {
+          const currentProduct = group.products[group.currentIndex];
+          return (
+          <div key={currentProduct.id} className="w-full">
+            <div className="relative w-full overflow-hidden group rounded-2xl mx-2 shadow-lg">
             {/* Image avec hauteur adaptative */}
             <div className="relative w-full min-h-[300px] max-h-[80vh] flex items-center justify-center bg-black/20">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
-                className="w-full h-auto max-h-[80vh] object-contain transition-transform duration-500 group-hover:scale-105 cursor-pointer"
-                onClick={() => {
-                  const allProducts = pinnedProducts.map(p => ({ ...p, mcard: undefined }));
-                  const allMCards = pinnedProducts.map(p => p.mcard);
-                  const globalIndex = pinnedProducts.findIndex(p => p.id === currentProduct.id);
-                  onImageClick?.(allProducts, allMCards, globalIndex);
-                }}
+                className="w-full h-auto max-h-[80vh] object-contain transition-transform duration-500 group-hover:scale-105 cursor-pointer select-none"
+                onClick={() => handleImageClick(currentProduct, groupIndex)}
+                onMouseDown={() => handleLongPressStart(groupIndex)}
+                onMouseUp={() => handleLongPressEnd(groupIndex)}
+                onMouseLeave={() => handleLongPressEnd(groupIndex)}
+                onTouchStart={() => handleLongPressStart(groupIndex)}
+                onTouchEnd={() => handleLongPressEnd(groupIndex)}
                 onError={(e) => {
                   console.error('Image failed to load:', currentProduct.image_url);
                   e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="100%25" height="100%25" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%236b7280"%3EImage indisponible%3C/text%3E%3C/svg%3E';
@@ -183,7 +242,11 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
             </div>
 
             {/* Boutons d'interaction en haut à droite */}
-            <div className="absolute top-4 right-4 z-20">
+            <div 
+              className="absolute top-4 right-4 z-20"
+              onMouseDown={() => handleMessageClick(groupIndex)}
+              onTouchStart={() => handleMessageClick(groupIndex)}
+            >
               <MCardInteractionButtons 
                 mcardId={currentProduct.mcard.id}
                 mcardOwnerId={currentProduct.mcard.user_id}
@@ -214,5 +277,27 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         );
       })}
     </div>
+
+    {/* Modal plein écran pour les images */}
+    {fullscreenImage && (
+      <div 
+        className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+        onClick={() => setFullscreenImage(null)}
+      >
+        <button
+          className="absolute top-4 right-4 text-white bg-black/50 rounded-full p-2 hover:bg-black/70 transition-colors"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <X className="w-6 h-6" />
+        </button>
+        <img
+          src={fullscreenImage.src}
+          alt={fullscreenImage.alt}
+          className="max-w-full max-h-full object-contain"
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
+    )}
+  </>
   );
 };
