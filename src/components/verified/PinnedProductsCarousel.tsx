@@ -186,18 +186,18 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
   return (
     <>
-      <div className="w-full space-y-4 pt-20 pb-4">
+      <div className="w-full pt-16 snap-y snap-mandatory overflow-y-auto h-screen">
         {groupedProducts.map((group, groupIndex) => {
           const currentProduct = group.products[group.currentIndex];
           return (
-          <div key={currentProduct.id} className="w-full">
-            <div className="relative w-full overflow-hidden group rounded-2xl mx-2 shadow-lg">
-            {/* Image avec hauteur adaptative */}
-            <div className="relative w-full min-h-[300px] max-h-[80vh] flex items-center justify-center bg-black/20">
+          <div key={currentProduct.id} className="w-full h-screen snap-start flex items-center justify-center p-2">
+            <div className="relative w-full h-full max-w-sm mx-auto overflow-hidden group rounded-3xl shadow-2xl">
+            {/* Image avec hauteur pleine */}
+            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
-                className="w-full h-auto max-h-[80vh] object-contain transition-transform duration-500 group-hover:scale-105 cursor-pointer select-none"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer select-none"
                 onClick={() => handleImageClick(currentProduct, groupIndex)}
                 onMouseDown={() => handleLongPressStart(groupIndex)}
                 onMouseUp={() => handleLongPressEnd(groupIndex)}
