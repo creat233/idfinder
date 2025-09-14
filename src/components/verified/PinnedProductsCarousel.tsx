@@ -186,14 +186,14 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
 
   return (
     <>
-      <div className="w-full pt-16 snap-y snap-mandatory overflow-y-auto h-screen">
+      <div className="w-full snap-y snap-mandatory overflow-y-auto h-screen">
         {groupedProducts.map((group, groupIndex) => {
           const currentProduct = group.products[group.currentIndex];
           return (
           <div key={currentProduct.id} className="w-full h-screen snap-start flex items-center justify-center">
             <div className="relative w-full h-full overflow-hidden group shadow-2xl">
-            {/* Image avec hauteur pleine */}
-            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+            {/* Image avec hauteur ajustée pour la navigation */}
+            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black pb-20">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
