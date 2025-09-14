@@ -143,15 +143,9 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   return (
     <div className="mb-8 px-0 w-full mt-16 pt-4">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-black text-white flex items-center gap-3">
-          <span className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
-            <span className="text-sm">📱</span>
-          </span>
+        <h2 className="text-xl font-black text-white">
           Stories
         </h2>
-        <div className="text-sm text-white/60 bg-white/10 px-3 py-1.5 rounded-full">
-          {mcards.length} live
-        </div>
       </div>
       
       {/* Stories horizontales style TikTok */}
@@ -185,10 +179,6 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                     </div>
                   </div>
                   
-                  {/* Indicateur live */}
-                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center shadow-lg">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                  </div>
                   
                   {/* Progress bars pour multiples stories */}
                   {mcard.statuses.length > 1 && (

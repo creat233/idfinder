@@ -193,7 +193,7 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
           <div key={currentProduct.id} className="w-full h-screen snap-start flex items-center justify-center">
             <div className="relative w-full h-full overflow-hidden group shadow-2xl">
             {/* Image avec hauteur ajustée pour la navigation */}
-            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black pb-20">
+            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black pb-32">
               <img
                 src={currentProduct.image_url || ''}
                 alt={currentProduct.name}
@@ -255,7 +255,7 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
             </div>
 
             {/* Informations produit en bas */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-20">
+            <div className="absolute bottom-0 left-0 right-0 p-4 pb-24 text-white z-20">
               <div className="space-y-2">
                 <h2 className="font-bold text-xl drop-shadow-lg">{currentProduct.name}</h2>
                 {currentProduct.description && (
