@@ -117,31 +117,12 @@ const VerifiedMCards = () => {
           <div className="px-4 sm:px-6 lg:px-8">
             {/* Mobile/Tablet Design */}
             <div className="lg:hidden">
-              <div className="py-4 text-center">
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                  <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                    MCards Vérifiées
-                  </span>
-                </h1>
-                <p className="text-xs sm:text-sm text-white/70 mt-1">
-                  Professionnels certifiés
-                </p>
-              </div>
+              {/* Texte retiré comme demandé */}
             </div>
             
             {/* Desktop Design */}
             <div className="hidden lg:block">
-              <div className="py-6 text-center">
-                <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-                  <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent">
-                    MCards Vérifiées
-                  </span>
-                </h1>
-                <p className="text-purple-200/80 text-base font-light tracking-wide">
-                  Découvrez les professionnels certifiés
-                </p>
-                <div className="mt-4 mx-auto w-24 h-0.5 bg-gradient-to-r from-transparent via-purple-400 to-transparent"></div>
-              </div>
+              {/* Texte retiré comme demandé */}
             </div>
           </div>
         </div>
