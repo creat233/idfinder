@@ -190,8 +190,8 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         {groupedProducts.map((group, groupIndex) => {
           const currentProduct = group.products[group.currentIndex];
           return (
-          <div key={currentProduct.id} className="w-full h-screen snap-start flex items-center justify-center p-2">
-            <div className="relative w-full h-full max-w-sm mx-auto overflow-hidden group rounded-3xl shadow-2xl">
+          <div key={currentProduct.id} className="w-full h-screen snap-start flex items-center justify-center">
+            <div className="relative w-full h-full overflow-hidden group shadow-2xl">
             {/* Image avec hauteur pleine */}
             <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
               <img
