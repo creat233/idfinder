@@ -65,7 +65,12 @@ export const MCardProfilePictureUpload = ({ preview, onFileChange, onPreviewChan
                     variant="secondary" 
                     size="sm"
                     className="rounded-full bg-white text-gray-700 hover:bg-gray-100"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Déclencher une nouvelle sélection de fichier
+                      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+                      fileInput?.click();
+                    }}
                   >
                     <Camera className="h-4 w-4" />
                   </Button>
