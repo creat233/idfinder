@@ -48,8 +48,8 @@ export const RobustAvatar = ({
   const initials = getInitials(fallbackText || alt);
   const shouldShowImage = src && src.trim() !== '' && !imageError;
   
-  // Add timestamp to image URL to prevent caching issues
-  const imageSrc = shouldShowImage && src ? `${src}?t=${imageKey}` : src;
+  // Add timestamp to image URL to prevent caching issues and force refresh
+  const imageSrc = shouldShowImage && src ? `${src}?t=${Date.now()}` : src;
 
   return (
     <Avatar className={className} onClick={onClick}>
