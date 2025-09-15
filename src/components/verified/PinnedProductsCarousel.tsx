@@ -121,13 +121,12 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
           *,
           mcard:mcards!inner(*)
         `)
-        .eq('is_pinned', true)
         .eq('is_active', true)
         .eq('mcards.is_published', true)
         .eq('mcards.is_verified', true)
         .not('image_url', 'is', null)
         .order('mcard_id', { ascending: false })
-        .limit(10);
+        .limit(20);
 
       if (error) throw error;
 
@@ -241,9 +240,9 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
               </div>
             </div>
 
-            {/* Boutons d'interaction en haut à droite */}
+            {/* Boutons d'interaction sur le côté droit */}
             <div 
-              className="absolute top-4 right-4 z-20"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20"
               onMouseDown={() => handleMessageClick(groupIndex)}
               onTouchStart={() => handleMessageClick(groupIndex)}
             >

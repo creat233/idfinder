@@ -150,7 +150,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
       
       {/* Stories horizontales style TikTok */}
       <div className="relative">
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory scroll-smooth">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory scroll-smooth">
           {mcards.map((mcard) => {
             const currentIndex = currentStatusIndex[mcard.id] || 0;
             const currentStatus = mcard.statuses[currentIndex];
@@ -211,8 +211,6 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
           <div className="flex-none w-4"></div>
         </div>
         
-        {/* Indicateur de scroll */}
-        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-white via-white to-transparent w-8 h-full pointer-events-none"></div>
       </div>
     </div>
   );
