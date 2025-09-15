@@ -53,8 +53,7 @@ const queryClient = new QueryClient({
 });
 
 function AutoRefreshWrapper() {
-  // Auto-refresh toutes les 2 minutes pour maintenir l'app à jour
-  useAutoRefresh(120000);
+  // Auto-refresh désactivé pour une meilleure expérience utilisateur
   return null;
 }
 
