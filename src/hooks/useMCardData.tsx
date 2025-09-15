@@ -75,6 +75,10 @@ export const useMCardData = () => {
       }
 
       console.log('MCard found:', mcardData);
+      // Force refresh profile picture to avoid cache issues
+      if (mcardData.profile_picture_url) {
+        mcardData.profile_picture_url = `${mcardData.profile_picture_url}?t=${Date.now()}`;
+      }
       setMCard(mcardData);
       setViewCount(mcardData.view_count || 0);
       setError(null);

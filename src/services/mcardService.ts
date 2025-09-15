@@ -126,6 +126,10 @@ export const updateMCard = async (
     }
     
     console.log('MCard updated successfully:', data);
+    // Add timestamp to profile picture URL to force refresh and avoid cache
+    if (data.profile_picture_url) {
+      data.profile_picture_url = `${data.profile_picture_url}?t=${Date.now()}`;
+    }
     return data;
   } catch (error) {
     console.error('Error in updateMCard service:', error);

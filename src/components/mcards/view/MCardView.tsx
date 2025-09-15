@@ -12,9 +12,7 @@ import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
 import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
 import { MCardCustomized } from '@/components/mcards/MCardCustomized';
-import { MCardTranslateButton } from '@/components/mcards/translate/MCardTranslateButton';
 import { useMCardView } from '@/hooks/useMCardView';
-import { useMCardTranslation } from '@/hooks/useMCardTranslation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { URL_CONFIG } from '@/utils/urlConfig';
@@ -38,7 +36,7 @@ const MCardView = () => {
     refreshData
   } = useMCardView();
 
-  const { currentLanguage, setCurrentLanguage, translatedContent } = useMCardTranslation(mcard);
+  
 
   if (loading) {
     return <MCardViewLoading />;
