@@ -372,6 +372,101 @@ export type Database = {
           },
         ]
       }
+      mcard_invoice_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          total_price?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          total_price?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "mcard_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_invoices: {
+        Row: {
+          amount: number
+          client_email: string | null
+          client_name: string
+          client_phone: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          issued_date: string | null
+          mcard_id: string
+          notes: string | null
+          paid_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          client_email?: string | null
+          client_name: string
+          client_phone?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          issued_date?: string | null
+          mcard_id: string
+          notes?: string | null
+          paid_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_email?: string | null
+          client_name?: string
+          client_phone?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          issued_date?: string | null
+          mcard_id?: string
+          notes?: string | null
+          paid_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mcard_messages: {
         Row: {
           created_at: string | null
@@ -1234,6 +1329,10 @@ export type Database = {
       deactivate_expired_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      generate_invoice_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       generate_promo_code: {
         Args: Record<PropertyKey, never>

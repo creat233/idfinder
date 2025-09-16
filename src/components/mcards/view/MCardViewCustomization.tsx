@@ -114,6 +114,8 @@ export const MCardViewCustomization = ({
               loading={loading}
               onPreview={handlePreview}
               onSave={handleSaveChanges}
+              mcardSlug={mcard.slug}
+              mcardPlan={mcard.plan}
             />
           </div>
         )}

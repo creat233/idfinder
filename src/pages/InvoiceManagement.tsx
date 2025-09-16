@@ -1,0 +1,199 @@
+import { useState } from 'react';
+import { useParams, Navigate } from 'react-router-dom';
+import { Header } from '@/components/Header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, FileText, BarChart3, ArrowLeft } from 'lucide-react';
+import { InvoiceCreateForm } from '@/components/mcards/invoices/InvoiceCreateForm';
+import { InvoiceList } from '@/components/mcards/invoices/InvoiceList';
+import { InvoiceDashboard } from '@/components/mcards/invoices/InvoiceDashboard';
+import { useInvoices } from '@/hooks/useInvoices';
+import { useMCards } from '@/hooks/useMCards';
+import { Invoice } from '@/types/invoice';
+import { Link } from 'react-router-dom';
+
+export default function InvoiceManagement() {
+  const { slug } = useParams<{ slug: string }>();
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoices' | 'create'>('dashboard');
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
+
+  const { mcards } = useMCards();
+  const mcard = mcards.find(m => m.slug === slug);
+
+  const {
+    invoices,
+    stats,
+    loading,
+    addInvoice,
+    editInvoice,
+    removeInvoice,
+    getAnalytics
+  } = useInvoices(mcard?.id || '');
+
+  if (!slug) {
+    return <Navigate to="/mcards" replace />;
+  }
+
+  if (!mcard) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">MCard introuvable</h3>
+              <p className="text-muted-foreground text-center mb-4">
+                La carte de visite demandée n'existe pas ou vous n'y avez pas accès.
+              </p>
+              <Link to="/mcards">
+                <Button>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Retour aux MCards
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  // Vérifier que la MCard a un plan payant
+  if (mcard.plan === 'free') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">Fonctionnalité Premium</h3>
+              <p className="text-muted-foreground text-center mb-4">
+                La gestion des factures est disponible uniquement avec les plans Essentiel et Premium.
+              </p>
+              <Link to={`/mcards/${slug}/upgrade`}>
+                <Button>
+                  Mettre à niveau
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  const handleCreateInvoice = async (data: any) => {
+    await addInvoice(data);
+    setActiveTab('invoices');
+  };
+
+  const handleEditInvoice = (invoice: Invoice) => {
+    setEditingInvoice(invoice);
+    setActiveTab('create');
+  };
+
+  const handleViewInvoice = (invoice: Invoice) => {
+    // TODO: Implémenter la vue détaillée de la facture
+    console.log('View invoice:', invoice);
+  };
+
+  const handleDeleteInvoice = async (invoiceId: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
+      await removeInvoice(invoiceId);
+    }
+  };
+
+  if (loading && !stats) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-muted-foreground">Chargement...</div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* En-tête */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">Gestion des Factures</h1>
+            <p className="text-muted-foreground">
+              {mcard.full_name} - {mcard.company}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link to={`/mcards/${slug}`}>
+              <Button variant="outline">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Retour à la MCard
+              </Button>
+            </Link>
+            {activeTab !== 'create' && (
+              <Button onClick={() => setActiveTab('create')}>
+                <Plus className="h-4 w-4 mr-2" />
+                Nouvelle Facture
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Onglets */}
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="invoices" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Factures ({invoices.length})
+            </TabsTrigger>
+            <TabsTrigger value="create" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              {editingInvoice ? 'Modifier' : 'Créer'}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            {stats && (
+              <InvoiceDashboard 
+                stats={stats} 
+                getAnalytics={getAnalytics}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="invoices" className="space-y-6">
+            <InvoiceList 
+              invoices={invoices}
+              onEdit={handleEditInvoice}
+              onDelete={handleDeleteInvoice}
+              onView={handleViewInvoice}
+            />
+          </TabsContent>
+
+          <TabsContent value="create" className="space-y-6">
+            <InvoiceCreateForm
+              mcardId={mcard.id}
+              onSubmit={handleCreateInvoice}
+              onCancel={() => {
+                setActiveTab('invoices');
+                setEditingInvoice(null);
+              }}
+            />
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+}
