@@ -20,37 +20,46 @@ export const VisualEffects = ({
   onShadowsChange
 }: VisualEffectsProps) => {
   return (
-    <div className="p-4 bg-gray-50 rounded-lg space-y-4">
-      <h4 className="font-medium text-gray-900 flex items-center gap-2">
-        <Sparkles className="h-5 w-5 text-green-600" />
-        Effets visuels
-      </h4>
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <Sparkles className="h-5 w-5 text-blue-600" />
+        Effets visuels avancés
+      </h3>
       
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <Label>Particules flottantes</Label>
-          <Switch 
-            checked={particlesEnabled}
-            onCheckedChange={onParticlesChange}
-          />
+        <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-medium">Particules animées</Label>
+              <p className="text-xs text-gray-500">Ajoute des particules flottantes en arrière-plan</p>
+            </div>
+            <Switch
+              checked={particlesEnabled}
+              onCheckedChange={onParticlesChange}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-medium">Dégradés colorés</Label>
+              <p className="text-xs text-gray-500">Active les dégradés de couleurs</p>
+            </div>
+            <Switch
+              checked={gradientsEnabled}
+              onCheckedChange={onGradientsChange}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-medium">Ombres élégantes</Label>
+              <p className="text-xs text-gray-500">Ajoute des ombres sophistiquées</p>
+            </div>
+            <Switch
+              checked={shadowsEnabled}
+              onCheckedChange={onShadowsChange}
+            />
+          </div>
         </div>
-        
-        <div className="flex items-center justify-between">
-          <Label>Dégradés avancés</Label>
-          <Switch 
-            checked={gradientsEnabled}
-            onCheckedChange={onGradientsChange}
-          />
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <Label>Ombres dynamiques</Label>
-          <Switch 
-            checked={shadowsEnabled}
-            onCheckedChange={onShadowsChange}
-          />
-        </div>
-      </div>
     </div>
   );
 };

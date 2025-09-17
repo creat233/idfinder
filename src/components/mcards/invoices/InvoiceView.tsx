@@ -118,35 +118,63 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* En-tête avec actions */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <FileText className="h-6 w-6" />
-          <div>
-            <h1 className="text-2xl font-bold">{invoice.invoice_number}</h1>
-            <Badge className={getStatusColor(invoice.status)}>
-              {getStatusLabel(invoice.status)}
-            </Badge>
+      <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 rounded-lg">
+                <FileText className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">{invoice.invoice_number}</h1>
+                <Badge 
+                  variant="secondary"
+                  className="bg-white/20 text-white border-white/30 mt-2"
+                >
+                  {getStatusLabel(invoice.status)}
+                </Badge>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleShare}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+                {copied ? 'Copié!' : 'Partager'}
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handlePrint}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+              >
+                <Printer className="h-4 w-4" />
+                Imprimer
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleDownload}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+              >
+                <Download className="h-4 w-4" />
+                Télécharger
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={onClose}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+              >
+                Fermer
+              </Button>
+            </div>
           </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleShare}>
-            {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-            {copied ? 'Copié!' : 'Partager'}
-          </Button>
-          <Button variant="outline" size="sm" onClick={handlePrint}>
-            <Printer className="h-4 w-4" />
-            Imprimer
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleDownload}>
-            <Download className="h-4 w-4" />
-            Télécharger
-          </Button>
-          <Button variant="outline" onClick={onClose}>
-            Fermer
-          </Button>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Contenu de la facture */}
       <Card>

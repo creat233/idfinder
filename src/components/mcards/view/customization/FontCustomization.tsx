@@ -14,31 +14,40 @@ export const FontCustomization = ({ selectedFont, onFontChange }: FontCustomizat
   ];
 
   return (
-    <div className="p-4 bg-gray-50 rounded-lg space-y-4">
-      <h4 className="font-medium text-gray-900 flex items-center gap-2">
-        <Type className="h-5 w-5 text-indigo-600" />
-        Police personnalisée
-      </h4>
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <Type className="h-5 w-5 text-green-600" />
+        Typographie personnalisée
+      </h3>
       
-      <div>
-        <Label>Famille de police</Label>
-        <Select 
-          value={selectedFont} 
-          onValueChange={onFontChange}
-        >
-          <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder="Choisir une police" />
-          </SelectTrigger>
-          <SelectContent>
-            {fontOptions.map(font => (
-              <SelectItem key={font} value={font} style={{ fontFamily: font }}>
-                {font}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="text-xs text-gray-500 mt-1" style={{ fontFamily: selectedFont }}>
-          Aperçu avec la police sélectionnée: {selectedFont}
+      <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Police de caractères</Label>
+          <Select value={selectedFont} onValueChange={onFontChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choisir une police" />
+            </SelectTrigger>
+            <SelectContent>
+              {fontOptions.map((font) => (
+                <SelectItem 
+                  key={font} 
+                  value={font}
+                  style={{ fontFamily: font }}
+                >
+                  {font}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-gray-500">
+            La police sera appliquée à tous les textes de votre carte
+          </p>
+        </div>
+
+        <div className="p-3 bg-white rounded border">
+          <p className="text-sm" style={{ fontFamily: selectedFont }}>
+            Aperçu : Voici comment apparaîtra le texte avec la police {selectedFont}
+          </p>
         </div>
       </div>
     </div>
