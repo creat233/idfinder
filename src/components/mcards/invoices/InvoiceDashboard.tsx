@@ -11,8 +11,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { InvoiceStats, InvoiceAnalytics } from '@/types/invoice';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, LineChart, Line } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, LineChart, Line, Tooltip } from 'recharts';
 
 interface InvoiceDashboardProps {
   stats: InvoiceStats;
@@ -154,13 +153,12 @@ export const InvoiceDashboard = ({ stats, getAnalytics }: InvoiceDashboardProps)
               </TabsList>
 
               <TabsContent value="amount">
-                <ChartContainer config={chartConfig} className="h-80">
+                <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={analytics}>
                       <XAxis dataKey="period" />
                       <YAxis />
-                      <ChartTooltip 
-                        content={<ChartTooltipContent />}
+                      <Tooltip 
                         formatter={(value: number) => [`${value.toLocaleString()} FCFA`, 'Montant']}
                       />
                       <Bar 
@@ -170,17 +168,16 @@ export const InvoiceDashboard = ({ stats, getAnalytics }: InvoiceDashboardProps)
                       />
                     </BarChart>
                   </ResponsiveContainer>
-                </ChartContainer>
+                </div>
               </TabsContent>
 
               <TabsContent value="count">
-                <ChartContainer config={chartConfig} className="h-80">
+                <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={analytics}>
                       <XAxis dataKey="period" />
                       <YAxis />
-                      <ChartTooltip 
-                        content={<ChartTooltipContent />}
+                      <Tooltip 
                         formatter={(value: number) => [value, 'Factures']}
                       />
                       <Line 
@@ -192,7 +189,7 @@ export const InvoiceDashboard = ({ stats, getAnalytics }: InvoiceDashboardProps)
                       />
                     </LineChart>
                   </ResponsiveContainer>
-                </ChartContainer>
+                </div>
               </TabsContent>
             </Tabs>
           )}

@@ -8,6 +8,7 @@ import { Plus, FileText, BarChart3, ArrowLeft } from 'lucide-react';
 import { InvoiceCreateForm } from '@/components/mcards/invoices/InvoiceCreateForm';
 import { InvoiceList } from '@/components/mcards/invoices/InvoiceList';
 import { InvoiceDashboard } from '@/components/mcards/invoices/InvoiceDashboard';
+import { InvoiceView } from '@/components/mcards/invoices/InvoiceView';
 import { useInvoices } from '@/hooks/useInvoices';
 import { useMCards } from '@/hooks/useMCards';
 import { Invoice } from '@/types/invoice';
@@ -15,8 +16,9 @@ import { Link } from 'react-router-dom';
 
 export default function InvoiceManagement() {
   const { slug } = useParams<{ slug: string }>();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoices' | 'create'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoices' | 'create' | 'view'>('dashboard');
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
+  const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
 
   const { mcards } = useMCards();
   const mcard = mcards.find(m => m.slug === slug);
@@ -96,8 +98,8 @@ export default function InvoiceManagement() {
   };
 
   const handleViewInvoice = (invoice: Invoice) => {
-    // TODO: Implémenter la vue détaillée de la facture
-    console.log('View invoice:', invoice);
+    setViewingInvoice(invoice);
+    setActiveTab('view');
   };
 
   const handleDeleteInvoice = async (invoiceId: string) => {
@@ -138,7 +140,7 @@ export default function InvoiceManagement() {
                 Retour à la MCard
               </Button>
             </Link>
-            {activeTab !== 'create' && (
+            {activeTab !== 'create' && activeTab !== 'view' && (
               <Button onClick={() => setActiveTab('create')}>
                 <Plus className="h-4 w-4 mr-2" />
                 Nouvelle Facture
@@ -149,20 +151,22 @@ export default function InvoiceManagement() {
 
         {/* Onglets */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="invoices" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Factures ({invoices.length})
-            </TabsTrigger>
-            <TabsTrigger value="create" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              {editingInvoice ? 'Modifier' : 'Créer'}
-            </TabsTrigger>
-          </TabsList>
+          {activeTab !== 'view' && (
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="dashboard" className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="invoices" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Factures ({invoices.length})
+              </TabsTrigger>
+              <TabsTrigger value="create" className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                {editingInvoice ? 'Modifier' : 'Créer'}
+              </TabsTrigger>
+            </TabsList>
+          )}
 
           <TabsContent value="dashboard" className="space-y-6">
             {stats && (
@@ -191,6 +195,18 @@ export default function InvoiceManagement() {
                 setEditingInvoice(null);
               }}
             />
+          </TabsContent>
+
+          <TabsContent value="view" className="space-y-6">
+            {viewingInvoice && (
+              <InvoiceView
+                invoice={viewingInvoice}
+                onClose={() => {
+                  setViewingInvoice(null);
+                  setActiveTab('invoices');
+                }}
+              />
+            )}
           </TabsContent>
         </Tabs>
       </main>
