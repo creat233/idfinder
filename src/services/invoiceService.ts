@@ -31,13 +31,18 @@ export const createInvoice = async (invoiceData: InvoiceCreateData): Promise<Inv
     sum + (item.quantity * item.unit_price), 0
   );
 
+  // Préparer les données de la facture sans les items
+  const { items, ...invoiceDataWithoutItems } = invoiceData;
+
   // Créer la facture
   const { data: invoice, error: invoiceError } = await supabase
     .from('mcard_invoices')
     .insert({
-      ...invoiceData,
+      ...invoiceDataWithoutItems,
       invoice_number: invoiceNumber,
-      amount: totalAmount
+      amount: totalAmount,
+      status: 'pending',
+      currency: 'FCFA'
     })
     .select()
     .single();
@@ -45,13 +50,13 @@ export const createInvoice = async (invoiceData: InvoiceCreateData): Promise<Inv
   if (invoiceError) throw invoiceError;
 
   // Créer les lignes de facture
-  const itemsWithInvoiceId = invoiceData.items.map(item => ({
+  const itemsWithInvoiceId = items.map(item => ({
     ...item,
     invoice_id: invoice.id,
     total_price: item.quantity * item.unit_price
   }));
 
-  const { data: items, error: itemsError } = await supabase
+  const { data: invoiceItems, error: itemsError } = await supabase
     .from('mcard_invoice_items')
     .insert(itemsWithInvoiceId)
     .select();
@@ -60,7 +65,7 @@ export const createInvoice = async (invoiceData: InvoiceCreateData): Promise<Inv
 
   return {
     ...invoice,
-    items: items || []
+    items: invoiceItems || []
   };
 };
 
@@ -142,11 +147,30 @@ export const getInvoiceAnalytics = async (
       break;
   }
 
+  // Calculer la date limite selon l'intervalle
+  const now = new Date();
+  let startDate: Date;
+
+  switch (period) {
+    case 'day':
+      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 jours
+      break;
+    case 'week':
+      startDate = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000); // 12 semaines
+      break;
+    case 'month':
+      startDate = new Date(now.getFullYear(), now.getMonth() - 12, now.getDate()); // 12 mois
+      break;
+    case 'year':
+      startDate = new Date(now.getFullYear() - 5, now.getMonth(), now.getDate()); // 5 ans
+      break;
+  }
+
   const { data, error } = await supabase
     .from('mcard_invoices')
     .select('amount, status, created_at')
     .eq('mcard_id', mcardId)
-    .gte('created_at', `now() - interval '${interval}'`);
+    .gte('created_at', startDate.toISOString());
 
   if (error) throw error;
 
