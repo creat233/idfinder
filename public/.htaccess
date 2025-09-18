@@ -1,6 +1,14 @@
 Options -MultiViews
 RewriteEngine On
 
+# Force HTTPS redirection
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Force www subdomain for SSL compatibility
+RewriteCond %{HTTP_HOST} ^finderid\.info$ [NC]
+RewriteRule ^(.*)$ https://www.finderid.info%{REQUEST_URI} [L,R=301]
+
 # Handle Angular and React routes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -18,7 +26,11 @@ RewriteRule ^(.*)$ index.html [QSA,L]
   ExpiresByType image/svg+xml "access plus 1 year"
 </IfModule>
 
-# Security headers
+# Enhanced Security headers
 Header always set X-Frame-Options "SAMEORIGIN"
 Header always set X-Content-Type-Options "nosniff"
 Header always set X-XSS-Protection "1; mode=block"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://jrnznosfclfepqdxyhjh.supabase.co wss://jrnznosfclfepqdxyhjh.supabase.co; frame-ancestors 'self'"

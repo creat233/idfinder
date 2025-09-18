@@ -25,10 +25,38 @@ export const URL_CONFIG = {
     const protocol = window.location.protocol;
     
     // Rediriger vers HTTPS avec www si nécessaire
-    if (hostname === 'finderid.info' && protocol === 'http:') {
+    if (protocol === 'http:') {
       window.location.replace(`https://www.finderid.info${window.location.pathname}${window.location.search}`);
-    } else if (hostname === 'finderid.info' && protocol === 'https:') {
+    } else if (hostname === 'finderid.info') {
       window.location.replace(`https://www.finderid.info${window.location.pathname}${window.location.search}`);
+    }
+  },
+
+  // Vérifier la sécurité de la connexion
+  checkSecureConnection: () => {
+    if (typeof window === 'undefined') return true;
+    
+    const isSecure = window.location.protocol === 'https:' || 
+                    window.location.hostname === 'localhost' ||
+                    window.location.hostname.includes('lovable.app');
+    
+    return isSecure;
+  },
+
+  // Initialiser la sécurité
+  initSecurity: () => {
+    if (typeof window === 'undefined') return;
+    
+    // Forcer HTTPS en production
+    if (URL_CONFIG.isProduction() && !URL_CONFIG.checkSecureConnection()) {
+      URL_CONFIG.ensureSecureDomain();
+    }
+    
+    // Désactiver le clic droit en production pour plus de sécurité
+    if (URL_CONFIG.isProduction()) {
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+      document.addEventListener('selectstart', (e) => e.preventDefault());
+      document.addEventListener('dragstart', (e) => e.preventDefault());
     }
   },
   
