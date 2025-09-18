@@ -16,6 +16,21 @@ export const URL_CONFIG = {
     return window.location.hostname === 'www.finderid.info' || 
            window.location.hostname === 'finderid.info';
   },
+
+  // Rediriger vers www si nécessaire pour éviter les erreurs SSL
+  ensureSecureDomain: () => {
+    if (typeof window === 'undefined') return;
+    
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    // Rediriger vers HTTPS avec www si nécessaire
+    if (hostname === 'finderid.info' && protocol === 'http:') {
+      window.location.replace(`https://www.finderid.info${window.location.pathname}${window.location.search}`);
+    } else if (hostname === 'finderid.info' && protocol === 'https:') {
+      window.location.replace(`https://www.finderid.info${window.location.pathname}${window.location.search}`);
+    }
+  },
   
   // Obtenir le domaine actuel
   getCurrentDomain: () => {
