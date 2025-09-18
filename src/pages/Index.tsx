@@ -1,18 +1,11 @@
 
-import { useEffect } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
 import { PublicHero } from "@/components/public/PublicHero";
 import { PublicFeatures } from "@/components/public/PublicFeatures";
 import { PublicPricing } from "@/components/public/PublicPricing";
 import { PublicCTA } from "@/components/public/PublicCTA";
 import { HomeSEO } from "@/components/seo/HomeSEO";
-import { URL_CONFIG } from "@/utils/urlConfig";
 const Index = () => {
-  useEffect(() => {
-    // Assurer que l'utilisateur est sur le domaine sécurisé
-    URL_CONFIG.ensureSecureDomain();
-  }, []);
-
   return (
     <>
       <HomeSEO />
