@@ -52,12 +52,93 @@ export const URL_CONFIG = {
       URL_CONFIG.ensureSecureDomain();
     }
     
+    // Ajouter des headers de sécurité via meta tags
+    URL_CONFIG.addSecurityHeaders();
+    
     // Désactiver le clic droit en production pour plus de sécurité
     if (URL_CONFIG.isProduction()) {
       document.addEventListener('contextmenu', (e) => e.preventDefault());
       document.addEventListener('selectstart', (e) => e.preventDefault());
       document.addEventListener('dragstart', (e) => e.preventDefault());
     }
+    
+    // Surveiller les changements de protocole
+    URL_CONFIG.monitorSecurity();
+  },
+
+  // Ajouter des headers de sécurité
+  addSecurityHeaders: () => {
+    if (typeof document === 'undefined') return;
+    
+    // Supprimer les anciens headers de sécurité
+    const existingMetas = document.querySelectorAll('meta[name="security"], meta[http-equiv*="Security"], meta[http-equiv*="Content-Security"]');
+    existingMetas.forEach(meta => meta.remove());
+    
+    // Content Security Policy renforcée
+    const csp = document.createElement('meta');
+    csp.httpEquiv = 'Content-Security-Policy';
+    csp.content = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https://jrnznosfclfepqdxyhjh.supabase.co wss://jrnznosfclfepqdxyhjh.supabase.co https:; frame-ancestors 'self'; upgrade-insecure-requests";
+    document.head.appendChild(csp);
+
+    // Strict Transport Security
+    const hsts = document.createElement('meta');
+    hsts.httpEquiv = 'Strict-Transport-Security';
+    hsts.content = 'max-age=31536000; includeSubDomains; preload';
+    document.head.appendChild(hsts);
+
+    // X-Frame-Options
+    const frameOptions = document.createElement('meta');
+    frameOptions.httpEquiv = 'X-Frame-Options';
+    frameOptions.content = 'SAMEORIGIN';
+    document.head.appendChild(frameOptions);
+
+    // X-Content-Type-Options
+    const contentType = document.createElement('meta');
+    contentType.httpEquiv = 'X-Content-Type-Options';
+    contentType.content = 'nosniff';
+    document.head.appendChild(contentType);
+
+    // Referrer Policy
+    const referrer = document.createElement('meta');
+    referrer.name = 'referrer';
+    referrer.content = 'strict-origin-when-cross-origin';
+    document.head.appendChild(referrer);
+
+    // Permissions Policy
+    const permissions = document.createElement('meta');
+    permissions.httpEquiv = 'Permissions-Policy';
+    permissions.content = 'geolocation=(), microphone=(), camera=()';
+    document.head.appendChild(permissions);
+  },
+
+  // Surveiller la sécurité
+  monitorSecurity: () => {
+    if (typeof window === 'undefined') return;
+    
+    // Vérifier périodiquement la sécurité
+    const securityInterval = setInterval(() => {
+      // Vérifier le protocole
+      if (window.location.protocol !== 'https:' && URL_CONFIG.isProduction()) {
+        console.warn('🔒 Protocole non sécurisé détecté, redirection...');
+        URL_CONFIG.ensureSecureDomain();
+      }
+      
+      // Vérifier les ressources mixtes
+      const mixedContent = Array.from(document.querySelectorAll('img, script, link')).filter(el => {
+        const element = el as HTMLImageElement | HTMLScriptElement | HTMLLinkElement;
+        const src = ('src' in element ? element.src : null) || ('href' in element ? element.href : null);
+        return src && src.startsWith('http:') && window.location.protocol === 'https:';
+      });
+      
+      if (mixedContent.length > 0) {
+        console.warn('🔒 Contenu mixte détecté:', mixedContent);
+      }
+    }, 10000);
+
+    // Nettoyer lors du déchargement de la page
+    window.addEventListener('beforeunload', () => {
+      clearInterval(securityInterval);
+    });
   },
   
   // Obtenir le domaine actuel
