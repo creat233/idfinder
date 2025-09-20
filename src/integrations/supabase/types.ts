@@ -1463,6 +1463,14 @@ export type Database = {
         Args: { password: string }
         Returns: boolean
       }
+      validate_promo_code_secure: {
+        Args: { code_to_validate: string }
+        Returns: {
+          discount_amount: number
+          is_valid: boolean
+          user_id: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

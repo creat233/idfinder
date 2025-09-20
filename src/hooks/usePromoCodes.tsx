@@ -61,51 +61,42 @@ export const usePromoCodes = () => {
 
   const validatePromoCode = async (code: string) => {
     try {
-      console.log("🔍 Validation du code promo:", code);
+      console.log("🔍 Validation sécurisée du code promo:", code);
       
-      // Rechercher le code dans la base de données avec is_active = true
-      const { data, error } = await supabase
-        .from("promo_codes")
-        .select("*")
-        .eq("code", code.toUpperCase().trim())
-        .eq("is_active", true)
-        .maybeSingle();
+      // Utiliser la fonction sécurisée de validation
+      const { data: validation, error } = await supabase
+        .rpc('validate_promo_code_secure', { 
+          code_to_validate: code.toUpperCase().trim() 
+        });
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error("❌ Erreur lors de la validation:", error);
         throw error;
       }
 
-      if (!data) {
-        console.log("❌ Code promo non trouvé ou inactif:", code);
+      if (!validation || validation.length === 0 || !validation[0].is_valid) {
+        console.log("❌ Code promo non trouvé, inactif ou expiré:", code);
         return null;
       }
 
-      console.log("✅ Code promo actif trouvé:", {
-        code: data.code,
-        is_active: data.is_active,
-        is_paid: data.is_paid,
-        expires_at: data.expires_at,
-        user_id: data.user_id
-      });
-
-      // Vérifier si le code a expiré
-      const now = new Date();
-      const expiresAt = new Date(data.expires_at);
-      
-      if (expiresAt < now) {
-        console.log("⏰ Code promo expiré:", code, "Expire le:", expiresAt);
-        return null;
-      }
-
+      const validationResult = validation[0];
       console.log("✅ Code promo validé avec succès:", {
-        code: data.code,
-        is_active: data.is_active,
-        expires_at: data.expires_at,
-        user_id: data.user_id
+        code: code,
+        is_valid: validationResult.is_valid,
+        discount_amount: validationResult.discount_amount,
+        user_id: validationResult.user_id
       });
       
-      return data;
+      // Retourner un objet compatible avec l'ancienne structure
+      return {
+        id: code, // On utilise le code comme identifiant temporaire
+        code: code,
+        user_id: validationResult.user_id,
+        discount_amount: validationResult.discount_amount,
+        is_active: true,
+        is_paid: true,
+        is_valid: validationResult.is_valid
+      };
     } catch (error) {
       console.error("❌ Erreur validatePromoCode:", error);
       return null;
