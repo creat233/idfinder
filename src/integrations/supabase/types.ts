@@ -1326,6 +1326,14 @@ export type Database = {
         Args: { user_email: string }
         Returns: boolean
       }
+      create_card_search_secure: {
+        Args: {
+          p_card_number: string
+          p_searcher_email?: string
+          p_searcher_phone?: string
+        }
+        Returns: string
+      }
       deactivate_expired_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -1433,6 +1441,13 @@ export type Database = {
           mcard_id: string
           rating: number
           visitor_name: string
+        }[]
+      }
+      get_safe_profile_info: {
+        Args: { p_user_id: string }
+        Returns: {
+          country: string
+          first_name: string
         }[]
       }
       increment_mcard_view_count: {
