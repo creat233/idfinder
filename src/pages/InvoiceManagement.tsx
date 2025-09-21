@@ -4,11 +4,13 @@ import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, FileText, BarChart3, ArrowLeft } from 'lucide-react';
+import { Plus, FileText, BarChart3, ArrowLeft, Palette } from 'lucide-react';
 import { InvoiceCreateForm } from '@/components/mcards/invoices/InvoiceCreateForm';
 import { InvoiceList } from '@/components/mcards/invoices/InvoiceList';
 import { InvoiceDashboard } from '@/components/mcards/invoices/InvoiceDashboard';
 import { InvoiceView } from '@/components/mcards/invoices/InvoiceView';
+import { InvoiceTemplateSelector } from '@/components/mcards/invoices/InvoiceTemplateSelector';
+import { StyledInvoiceView } from '@/components/mcards/invoices/StyledInvoiceView';
 import { useInvoices } from '@/hooks/useInvoices';
 import { useMCards } from '@/hooks/useMCards';
 import { Invoice } from '@/types/invoice';
@@ -16,9 +18,10 @@ import { Link } from 'react-router-dom';
 
 export default function InvoiceManagement() {
   const { slug } = useParams<{ slug: string }>();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoices' | 'create' | 'view'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'invoices' | 'create' | 'view' | 'templates'>('dashboard');
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
 
   const { mcards } = useMCards();
   const mcard = mcards.find(m => m.slug === slug);
@@ -152,7 +155,7 @@ export default function InvoiceManagement() {
         {/* Onglets */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
           {activeTab !== 'view' && (
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="dashboard" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Dashboard
@@ -164,6 +167,10 @@ export default function InvoiceManagement() {
               <TabsTrigger value="create" className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
                 {editingInvoice ? 'Modifier' : 'Créer'}
+              </TabsTrigger>
+              <TabsTrigger value="templates" className="flex items-center gap-2">
+                <Palette className="h-4 w-4" />
+                Modèles
               </TabsTrigger>
             </TabsList>
           )}
@@ -197,10 +204,18 @@ export default function InvoiceManagement() {
             />
           </TabsContent>
 
+          <TabsContent value="templates" className="space-y-6">
+            <InvoiceTemplateSelector 
+              selectedTemplate={selectedTemplate}
+              onTemplateSelect={setSelectedTemplate}
+            />
+          </TabsContent>
+
           <TabsContent value="view" className="space-y-6">
             {viewingInvoice && (
-              <InvoiceView
+              <StyledInvoiceView
                 invoice={viewingInvoice}
+                templateId={selectedTemplate}
                 onClose={() => {
                   setViewingInvoice(null);
                   setActiveTab('invoices');
