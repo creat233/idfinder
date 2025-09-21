@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Invoice } from '@/types/invoice';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
 import { supabase } from '@/integrations/supabase/client';
+import html2canvas from 'html2canvas';
 
 interface InvoiceViewProps {
   invoice: Invoice;
@@ -70,6 +71,7 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
   const [copied, setCopied] = useState(false);
   const [mcardOwner, setMcardOwner] = useState<MCardOwner | null>(null);
   const { showSuccess } = useToast();
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchMCardOwner = async () => {
@@ -115,40 +117,39 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
     window.print();
   };
 
-  const handleDownload = () => {
-    // Créer un élément temporaire pour le téléchargement
-    const element = document.createElement('a');
-    const content = `
-      FACTURE ${invoice.invoice_number}
-      
-      Client: ${invoice.client_name}
-      ${invoice.client_email ? `Email: ${invoice.client_email}` : ''}
-      ${invoice.client_phone ? `Téléphone: ${invoice.client_phone}` : ''}
-      
-      Date de création: ${new Date(invoice.created_at).toLocaleDateString('fr-FR')}
-      ${invoice.due_date ? `Date d'échéance: ${new Date(invoice.due_date).toLocaleDateString('fr-FR')}` : ''}
-      
-      Articles:
-      ${invoice.items?.map(item => 
-        `- ${item.description}: ${item.quantity} x ${item.unit_price.toLocaleString()} FCFA = ${item.total_price.toLocaleString()} FCFA`
-      ).join('\n') || ''}
-      
-      TOTAL: ${invoice.amount.toLocaleString()} ${invoice.currency}
-      
-      ${invoice.description ? `Description: ${invoice.description}` : ''}
-      ${invoice.notes ? `Notes: ${invoice.notes}` : ''}
-    `;
+  const handleDownload = async () => {
+    if (!invoiceRef.current) return;
     
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `facture-${invoice.invoice_number}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    try {
+      const canvas = await html2canvas(invoiceRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      
+      // Convertir le canvas en blob
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const element = document.createElement('a');
+          element.href = url;
+          element.download = `facture-${invoice.invoice_number}.png`;
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+          URL.revokeObjectURL(url);
+          showSuccess('Succès', 'Facture téléchargée en tant qu\'image');
+        }
+      }, 'image/png', 1.0);
+    } catch (error) {
+      console.error('Erreur lors du téléchargement:', error);
+      showSuccess('Erreur', 'Erreur lors du téléchargement de la facture');
+    }
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6" ref={invoiceRef}>
       {/* En-tête avec actions */}
       <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <CardContent className="p-6">
