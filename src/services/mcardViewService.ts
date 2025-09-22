@@ -13,33 +13,40 @@ export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
   console.log('Fetching mCard by slug:', slug);
   
   try {
-    // First try with is_published = true
-    let { data, error } = await supabase
-      .from('mcards')
-      .select('*')
-      .eq('slug', slug)
-      .eq('is_published', true)
-      .single();
+    // Use the secure function that only returns safe public data
+    const { data: publicData, error: publicError } = await supabase
+      .rpc('get_public_mcard_data', { p_slug: slug });
 
-    // If not found and published, try without is_published filter (for pending cards)
-    if (error || !data) {
-      console.log('Card not found with is_published=true, trying without filter...');
-      const { data: unpublishedData, error: unpublishedError } = await supabase
+    if (publicError) {
+      console.error('Error fetching public MCard data:', publicError);
+    }
+
+    if (publicData && publicData.length > 0) {
+      const mcard = publicData[0];
+      console.log('Public MCard found:', mcard.full_name);
+      return mcard as MCard;
+    }
+
+    // If no public data found, check if user owns this card (for owners to see unpublished cards)
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: ownedCard, error: ownedError } = await supabase
         .from('mcards')
         .select('*')
         .eq('slug', slug)
+        .eq('user_id', user.id)
         .single();
-      
-      if (unpublishedError) {
-        console.error('Error fetching mCard (both attempts):', error, unpublishedError);
-        return null;
+
+      if (ownedError) {
+        console.error('Error fetching owned MCard:', ownedError);
+      } else if (ownedCard) {
+        console.log('Owned MCard found:', ownedCard.full_name);
+        return ownedCard;
       }
-      
-      data = unpublishedData;
-      console.log('Found unpublished card:', data);
     }
 
-    return data;
+    console.log('No MCard found with slug:', slug);
+    return null;
   } catch (networkError) {
     console.error('Network error fetching mCard:', networkError);
     // Return cached data if available
