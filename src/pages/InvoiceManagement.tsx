@@ -127,50 +127,55 @@ export default function InvoiceManagement() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* En-tête */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Gestion des Factures</h1>
-            <p className="text-muted-foreground">
+      <main className="container mx-auto px-4 py-4 sm:py-8 max-w-6xl">
+        {/* En-tête - Responsive */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold truncate">Gestion des Factures</h1>
+            <p className="text-muted-foreground text-sm sm:text-base truncate">
               {mcard.full_name} - {mcard.company}
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link to={`/mcards/${slug}`}>
-              <Button variant="outline">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <Link to={`/mcards/${slug}`} className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Retour à la MCard
+                <span className="hidden sm:inline">Retour à la MCard</span>
+                <span className="sm:hidden">Retour</span>
               </Button>
             </Link>
             {activeTab !== 'create' && activeTab !== 'view' && (
-              <Button onClick={() => setActiveTab('create')}>
+              <Button onClick={() => setActiveTab('create')} className="w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
-                Nouvelle Facture
+                <span className="hidden sm:inline">Nouvelle Facture</span>
+                <span className="sm:hidden">Nouveau</span>
               </Button>
             )}
           </div>
         </div>
 
-        {/* Onglets */}
+        {/* Onglets - Responsive */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
           {activeTab !== 'view' && (
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="dashboard" className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Dashboard
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+              <TabsTrigger value="dashboard" className="flex items-center gap-1 sm:gap-2 p-2 sm:p-3">
+                <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm">Dashboard</span>
               </TabsTrigger>
-              <TabsTrigger value="invoices" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Factures ({invoices.length})
+              <TabsTrigger value="invoices" className="flex items-center gap-1 sm:gap-2 p-2 sm:p-3">
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm">
+                  <span className="hidden sm:inline">Factures </span>
+                  ({invoices.length})
+                </span>
               </TabsTrigger>
-              <TabsTrigger value="create" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                {editingInvoice ? 'Modifier' : 'Créer'}
+              <TabsTrigger value="create" className="flex items-center gap-1 sm:gap-2 p-2 sm:p-3">
+                <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm">{editingInvoice ? 'Modifier' : 'Créer'}</span>
               </TabsTrigger>
-              <TabsTrigger value="templates" className="flex items-center gap-2">
-                <Palette className="h-4 w-4" />
-                Modèles
+              <TabsTrigger value="templates" className="flex items-center gap-1 sm:gap-2 p-2 sm:p-3">
+                <Palette className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm">Modèles</span>
               </TabsTrigger>
             </TabsList>
           )}

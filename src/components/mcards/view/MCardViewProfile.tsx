@@ -236,7 +236,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
           {/* Analytics Dashboard pour les propriétaires */}
           {isOwner && (
             <div className="mt-8 bg-gradient-to-br from-emerald-50/30 to-green-50/30 rounded-2xl p-6 border border-emerald-100 shadow-sm">
-              <MCardAnalyticsDashboard mcardId={mcard.id} isVerified={mcard.is_verified || false} />
+              <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
             </div>
           )}
         </CardContent>
