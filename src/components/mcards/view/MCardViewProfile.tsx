@@ -15,7 +15,13 @@ import { MCardProfileImageDialog } from "./MCardProfileImageDialog";
 import { MCardProfileEditor } from "../MCardProfileEditor";
 import { MCard } from "@/types/mcard";
 import { MCardInteractionButtons } from "../MCardInteractionButtons";
+import { MCardRealtimeChat } from "../features/MCardRealtimeChat";
+import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
+import { MCardRecommendations } from "../features/MCardRecommendations";
+import { MCardAdvancedCustomization } from "../features/MCardAdvancedCustomization";
+import { MCardAIAssistant } from "../features/MCardAIAssistant";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface MCardViewProfileProps {
   mcard: MCard;
@@ -26,6 +32,7 @@ interface MCardViewProfileProps {
 
 
 export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardViewProfileProps) => {
+  const { user } = useAuth();
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [isProfileImageDialogOpen, setIsProfileImageDialogOpen] = useState(false);
@@ -216,15 +223,35 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 />
               </div>
 
-              {/* Boutons d'interaction */}
+              {/* Boutons d'interaction et nouvelles fonctionnalités */}
               {!isOwner && !isPendingPayment && (
-                <div className="bg-gradient-to-br from-pink-50/30 to-rose-50/30 rounded-2xl p-6 border border-pink-100 shadow-sm">
-                  <MCardInteractionButtons
-                    mcardId={mcard.id}
-                    mcardOwnerId={mcard.user_id}
-                    mcardOwnerName={mcard.full_name}
-                    className="justify-center"
-                  />
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-br from-pink-50/30 to-rose-50/30 rounded-2xl p-6 border border-pink-100 shadow-sm">
+                    <MCardInteractionButtons
+                      mcardId={mcard.id}
+                      mcardOwnerId={mcard.user_id}
+                      mcardOwnerName={mcard.full_name}
+                      className="justify-center"
+                    />
+                  </div>
+                  
+                  {/* Nouvelles fonctionnalités pour visiteurs */}
+                  {user && (
+                    <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-6 border border-green-100 shadow-sm">
+                      <h4 className="font-semibold text-gray-900 mb-4">🚀 Actions disponibles</h4>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <MCardAppointmentBooking
+                          mcardId={mcard.id}
+                          mcardOwnerId={mcard.user_id}
+                          mcardOwnerName={mcard.full_name}
+                          phoneNumber={mcard.phone_number}
+                        />
+                        <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                          💾 Sauvegarder hors-ligne
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -250,9 +277,26 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
             <MCardSocialLinks mcard={mcard} />
           </div>
 
-          {/* Analytics Dashboard pour les propriétaires */}
+          {/* Fonctionnalités avancées pour les propriétaires */}
           {isOwner && (
-            <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
+            <div className="space-y-6">
+              <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
+              
+              <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-2xl p-6 border border-purple-100 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">🚀 Fonctionnalités avancées</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <MCardAdvancedCustomization mcardId={mcard.id} isOwner={isOwner} />
+                  <MCardAIAssistant mcard={mcard} isOwner={isOwner} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Recommandations pour les visiteurs */}
+          {!isOwner && !isPendingPayment && (
+            <div className="mt-8">
+              <MCardRecommendations currentMCardId={mcard.id} />
+            </div>
           )}
         </CardContent>
       </Card>
@@ -292,6 +336,17 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
         currentImageUrl={currentProfileImage}
         onImageUpdated={setCurrentProfileImage}
       />
+
+      {/* Chat en temps réel pour les visiteurs connectés */}
+      {!isOwner && user && !isPendingPayment && (
+        <MCardRealtimeChat
+          mcardId={mcard.id}
+          mcardOwnerId={mcard.user_id}
+          mcardOwnerName={mcard.full_name}
+          currentUserId={user.id}
+          currentUserName={user.user_metadata?.first_name || 'Visiteur'}
+        />
+      )}
     </div>
   );
 };
