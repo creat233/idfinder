@@ -58,6 +58,7 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     loadAnalytics();
@@ -170,9 +171,35 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
   const deviceColors = ['#3B82F6', '#10B981', '#F59E0B'];
 
   return (
-    <div className="space-y-6">
-      {/* En-tête avec export */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="mt-8 bg-gradient-to-br from-emerald-50/30 to-green-50/30 rounded-2xl border border-emerald-100 shadow-sm">
+      {/* Bouton pour afficher/masquer */}
+      <div className="p-6 border-b border-emerald-200">
+        <Button
+          onClick={() => setIsExpanded(!isExpanded)}
+          variant="ghost"
+          className="w-full flex items-center justify-between hover:bg-emerald-100/50"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-emerald-600" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-lg font-semibold text-gray-900">Analyses détaillées</h3>
+              <p className="text-sm text-gray-600">Suivez les performances de votre MCard</p>
+            </div>
+          </div>
+          {isExpanded ? (
+            <TrendingDown className="h-5 w-5 text-gray-500" />
+          ) : (
+            <TrendingUp className="h-5 w-5 text-gray-500" />
+          )}
+        </Button>
+      </div>
+
+      {isExpanded && (
+        <div className="p-6 space-y-6">
+          {/* En-tête avec export */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold">Analyses détaillées</h2>
           <p className="text-muted-foreground">Suivez les performances de votre MCard</p>
@@ -394,6 +421,8 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
           </div>
         </CardContent>
       </Card>
+        </div>
+      )}
     </div>
   );
 }

@@ -12,9 +12,10 @@ import { MCardSocialLinks } from "../MCardSocialLinks";
 import { MCardAnalyticsDashboard } from "../MCardAnalyticsDashboard";
 import { MCardMessageDialog } from "../MCardMessageDialog";
 import { MCardProfileImageDialog } from "./MCardProfileImageDialog";
+import { MCardProfileEditor } from "../MCardProfileEditor";
 import { MCard } from "@/types/mcard";
 import { MCardInteractionButtons } from "../MCardInteractionButtons";
-import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit } from "lucide-react";
 
 interface MCardViewProfileProps {
   mcard: MCard;
@@ -28,6 +29,8 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [isProfileImageDialogOpen, setIsProfileImageDialogOpen] = useState(false);
+  const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
+  const [currentProfileImage, setCurrentProfileImage] = useState(mcard.profile_picture_url);
   const isPendingPayment = mcard.subscription_status === 'pending_payment';
   const canRequestVerification = isOwner && !mcard.is_verified && mcard.verification_status !== 'pending';
 
@@ -90,7 +93,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full opacity-30 group-hover:opacity-60 transition-all duration-300 animate-pulse" />
                   
                   <RobustAvatar 
-                    src={mcard.profile_picture_url} 
+                    src={currentProfileImage} 
                     alt={mcard.full_name || 'Profile picture'}
                     fallbackText={mcard.full_name || ''}
                     className="relative w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 shadow-2xl ring-4 ring-white group-hover:ring-6 transition-all duration-300 text-2xl sm:text-3xl lg:text-4xl"
@@ -98,8 +101,22 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   
                   {/* Overlay au hover */}
                   <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">Voir le profil</span>
+                    <span className="text-white text-sm font-medium">{isOwner ? 'Modifier' : 'Voir le profil'}</span>
                   </div>
+                  
+                  {/* Bouton d'édition pour le propriétaire */}
+                  {isOwner && (
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsProfileEditorOpen(true);
+                      }}
+                      className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0 bg-blue-600 hover:bg-blue-700 shadow-lg"
+                    >
+                      <Edit className="h-4 w-4 text-white" />
+                    </Button>
+                  )}
                 </div>
               </div>
               
@@ -235,9 +252,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
           {/* Analytics Dashboard pour les propriétaires */}
           {isOwner && (
-            <div className="mt-8 bg-gradient-to-br from-emerald-50/30 to-green-50/30 rounded-2xl p-6 border border-emerald-100 shadow-sm">
-              <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
-            </div>
+            <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
           )}
         </CardContent>
       </Card>
@@ -263,10 +278,19 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       <MCardProfileImageDialog
         isOpen={isProfileImageDialogOpen}
         onOpenChange={setIsProfileImageDialogOpen}
-        profileImageUrl={mcard.profile_picture_url}
+        profileImageUrl={currentProfileImage}
         fullName={mcard.full_name}
         jobTitle={mcard.job_title}
         company={mcard.company}
+      />
+
+      {/* Dialog pour modifier la photo de profil */}
+      <MCardProfileEditor
+        isOpen={isProfileEditorOpen}
+        onOpenChange={setIsProfileEditorOpen}
+        mcardId={mcard.id}
+        currentImageUrl={currentProfileImage}
+        onImageUpdated={setCurrentProfileImage}
       />
     </div>
   );
