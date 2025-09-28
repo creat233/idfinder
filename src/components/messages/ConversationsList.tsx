@@ -84,8 +84,13 @@ export function ConversationsList({
                               {conversation.unreadCount}
                             </div>
                           )}
-                          <span className="text-xs text-gray-500">
-                            {formatMessageDate(conversation.lastMessage.created_at)}
+                           <span className="text-xs text-gray-500">
+                            {new Date(conversation.lastMessage.created_at).toLocaleDateString('fr-FR', { 
+                              hour: '2-digit', 
+                              minute: '2-digit',
+                              day: '2-digit',
+                              month: '2-digit'
+                            })}
                           </span>
                         </div>
                       </div>
