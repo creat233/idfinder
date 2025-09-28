@@ -175,94 +175,94 @@ export const MyMCardsView = ({ mcards, loading, onEdit, onShare, onView }: MyMCa
         {mcards.map((mcard) => (
           <Card key={mcard.id} className="hover:shadow-lg transition-shadow duration-200">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-4 flex-1">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src={mcard.profile_picture_url || ''} alt={mcard.full_name} />
-                    <AvatarFallback className="text-lg font-semibold">
-                      {mcard.full_name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900 truncate">
-                        {mcard.full_name}
-                      </h3>
-                      {mcard.is_verified && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-800">
-                          Vérifié
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    {mcard.job_title && (
-                      <p className="text-gray-600 mb-1">{mcard.job_title}</p>
-                    )}
-                    
-                    {mcard.company && (
-                      <p className="text-gray-500 text-sm mb-2">{mcard.company}</p>
-                    )}
-                    
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <div className="flex items-center space-x-1">
-                        <Eye className="w-4 h-4" />
-                        <span>{mcard.view_count || 0} vues</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>
-                          Créé {formatDistanceToNow(new Date(mcard.created_at), { 
-                            addSuffix: true, 
-                            locale: fr 
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col items-end space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Badge className={getPlanColor(mcard.plan)}>
-                      {getPlanText(mcard.plan)}
-                    </Badge>
-                    <Badge className={getStatusColor(mcard.subscription_status)}>
-                      {getStatusText(mcard.subscription_status)}
-                    </Badge>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onView(mcard)}
-                      className="h-8"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-1" />
-                      Voir
-                    </Button>
-                    
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onShare(mcard)}
-                      className="h-8"
-                    >
-                      <Share2 className="w-4 h-4 mr-1" />
-                      Partager
-                    </Button>
-                    
-                    <Button
-                      size="sm"
-                      onClick={() => onEdit(mcard)}
-                      className="h-8"
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Modifier
-                    </Button>
-                  </div>
-                </div>
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+                 <div className="flex items-center space-x-4 flex-1 min-w-0">
+                   <Avatar className="w-16 h-16 flex-shrink-0">
+                     <AvatarImage src={mcard.profile_picture_url || ''} alt={mcard.full_name} />
+                     <AvatarFallback className="text-lg font-semibold">
+                       {mcard.full_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                     </AvatarFallback>
+                   </Avatar>
+                   
+                   <div className="flex-1 min-w-0">
+                     <div className="flex items-center space-x-2 mb-2">
+                       <h3 className="text-lg font-semibold text-gray-900 truncate">
+                         {mcard.full_name}
+                       </h3>
+                       {mcard.is_verified && (
+                         <Badge variant="secondary" className="bg-green-100 text-green-800">
+                           Vérifié
+                         </Badge>
+                       )}
+                     </div>
+                     
+                     {mcard.job_title && (
+                       <p className="text-gray-600 mb-1">{mcard.job_title}</p>
+                     )}
+                     
+                     {mcard.company && (
+                       <p className="text-gray-500 text-sm mb-2">{mcard.company}</p>
+                     )}
+                     
+                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                       <div className="flex items-center space-x-1">
+                         <Eye className="w-4 h-4" />
+                         <span>{mcard.view_count || 0} vues</span>
+                       </div>
+                       <div className="flex items-center space-x-1">
+                         <Calendar className="w-4 h-4" />
+                         <span>
+                           Créé {formatDistanceToNow(new Date(mcard.created_at), { 
+                             addSuffix: true, 
+                             locale: fr 
+                           })}
+                         </span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div className="flex flex-col items-start lg:items-end space-y-3 flex-shrink-0">
+                   <div className="flex flex-wrap items-center gap-2">
+                     <Badge className={getPlanColor(mcard.plan)}>
+                       {getPlanText(mcard.plan)}
+                     </Badge>
+                     <Badge className={getStatusColor(mcard.subscription_status)}>
+                       {getStatusText(mcard.subscription_status)}
+                     </Badge>
+                   </div>
+                   
+                   <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                     <Button
+                       size="sm"
+                       variant="outline"
+                       onClick={() => onView(mcard)}
+                       className="h-9 px-3 flex-1 lg:flex-none"
+                     >
+                       <ExternalLink className="w-4 h-4 mr-2" />
+                       Voir
+                     </Button>
+                     
+                     <Button
+                       size="sm"
+                       variant="outline"
+                       onClick={() => onShare(mcard)}
+                       className="h-9 px-3 flex-1 lg:flex-none"
+                     >
+                       <Share2 className="w-4 h-4 mr-2" />
+                       Partager
+                     </Button>
+                     
+                     <Button
+                       size="sm"
+                       onClick={() => onEdit(mcard)}
+                       className="h-9 px-3 flex-1 lg:flex-none"
+                     >
+                       <Edit className="w-4 h-4 mr-2" />
+                       Modifier
+                     </Button>
+                   </div>
+                 </div>
               </div>
             </CardContent>
           </Card>
