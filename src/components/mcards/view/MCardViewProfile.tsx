@@ -223,10 +223,14 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 />
               </div>
 
-              {/* Boutons d'interaction et nouvelles fonctionnalités */}
-              {!isOwner && !isPendingPayment && (
+              {/* Boutons d'interaction (visibles pour tous les visiteurs) */}
+              {!isOwner && (
                 <div className="space-y-4">
                   <div className="bg-gradient-to-br from-pink-50/30 to-rose-50/30 rounded-2xl p-6 border border-pink-100 shadow-sm">
+                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <span className="text-pink-600">💕</span>
+                      Interactions
+                    </h4>
                     <MCardInteractionButtons
                       mcardId={mcard.id}
                       mcardOwnerId={mcard.user_id}
@@ -236,22 +240,20 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   </div>
                   
                   {/* Actions disponibles pour tous les visiteurs */}
-                  {!isOwner && (
-                    <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-6 border border-green-100 shadow-sm">
-                      <h4 className="font-semibold text-gray-900 mb-4">🚀 Actions disponibles</h4>
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <MCardAppointmentBooking
-                          mcardId={mcard.id}
-                          mcardOwnerId={mcard.user_id}
-                          mcardOwnerName={mcard.full_name}
-                          phoneNumber={mcard.phone_number}
-                        />
-                        <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                          💾 Sauvegarder hors-ligne
-                        </Button>
-                      </div>
+                  <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-6 border border-green-100 shadow-sm">
+                    <h4 className="font-semibold text-gray-900 mb-4">🚀 Actions disponibles</h4>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <MCardAppointmentBooking
+                        mcardId={mcard.id}
+                        mcardOwnerId={mcard.user_id}
+                        mcardOwnerName={mcard.full_name}
+                        phoneNumber={mcard.phone_number}
+                      />
+                      <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                        💾 Sauvegarder hors-ligne
+                      </Button>
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
 
