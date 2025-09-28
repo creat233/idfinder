@@ -235,8 +235,8 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                     />
                   </div>
                   
-                  {/* Nouvelles fonctionnalités pour visiteurs */}
-                  {user && (
+                  {/* Actions disponibles pour tous les visiteurs */}
+                  {!isOwner && (
                     <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-6 border border-green-100 shadow-sm">
                       <h4 className="font-semibold text-gray-900 mb-4">🚀 Actions disponibles</h4>
                       <div className="flex flex-col sm:flex-row gap-3">
@@ -246,7 +246,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                           mcardOwnerName={mcard.full_name}
                           phoneNumber={mcard.phone_number}
                         />
-                        <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
+                        <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg">
                           💾 Sauvegarder hors-ligne
                         </Button>
                       </div>
