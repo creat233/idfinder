@@ -20,7 +20,7 @@ import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
 import { MCardAdvancedCustomization } from "../features/MCardAdvancedCustomization";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
-import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface MCardViewProfileProps {
@@ -285,7 +285,38 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
               
               <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-2xl p-6 border border-purple-100 shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">🚀 Fonctionnalités avancées</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                  🚀 <span>Fonctionnalités avancées</span>
+                </h3>
+                
+                {/* Bouton de gestion des factures avec design élégant */}
+                <div className="mb-6">
+                  <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                          <FileText className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-1">Gestion des factures</h4>
+                          <p className="text-sm text-gray-600">Créez et gérez vos factures professionnelles</p>
+                        </div>
+                      </div>
+                      <Button 
+                        className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        onClick={() => {
+                          // Navigation vers la page de factures
+                          window.location.href = `/mcard/${mcard.slug}/invoices`;
+                        }}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Créer une facture
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Autres fonctionnalités */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <MCardAdvancedCustomization mcardId={mcard.id} isOwner={isOwner} />
                   <MCardAIAssistant mcard={mcard} isOwner={isOwner} />
