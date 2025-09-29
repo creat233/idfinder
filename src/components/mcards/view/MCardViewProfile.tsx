@@ -111,19 +111,37 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                     <span className="text-white text-sm font-medium">{isOwner ? 'Modifier' : 'Voir le profil'}</span>
                   </div>
                   
-                  {/* Bouton d'édition pour le propriétaire */}
-                  {isOwner && (
-                    <Button
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsProfileEditorOpen(true);
-                      }}
-                      className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0 bg-blue-600 hover:bg-blue-700 shadow-lg"
-                    >
-                      <Edit className="h-4 w-4 text-white" />
-                    </Button>
-                  )}
+              {/* Bouton d'édition pour le propriétaire */}
+              {isOwner && (
+                <Button
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsProfileEditorOpen(true);
+                  }}
+                  className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0 bg-blue-600 hover:bg-blue-700 shadow-lg"
+                >
+                  <Edit className="h-4 w-4 text-white" />
+                </Button>
+              )}
+              
+              {/* Bouton principal d'édition pour le propriétaire */}
+              {isOwner && (
+                <div className="mt-4">
+                  <Button
+                    onClick={() => {
+                      if (mcard?.id) {
+                        window.location.href = `/mcards?edit=${mcard.id}`;
+                      }
+                    }}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                    size="lg"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Modifier ma carte
+                  </Button>
+                </div>
+              )}
                 </div>
               </div>
               
