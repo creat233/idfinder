@@ -292,25 +292,27 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 {/* Bouton de gestion des factures avec design élégant */}
                 <div className="mb-6">
                   <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 group">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-                          <FileText className="h-6 w-6 text-white" />
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0">
+                          <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                         </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">Gestion des factures</h4>
-                          <p className="text-sm text-gray-600">Créez et gérez vos factures professionnelles</p>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Gestion des factures</h4>
+                          <p className="text-xs sm:text-sm text-gray-600">Créez et gérez vos factures professionnelles</p>
                         </div>
                       </div>
                       <Button 
-                        className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+                        size="sm"
                         onClick={() => {
                           // Navigation vers la page de factures
                           window.location.href = `/mcard/${mcard.slug}/invoices`;
                         }}
                       >
                         <FileText className="h-4 w-4 mr-2" />
-                        Créer une facture
+                        <span className="hidden xs:inline">Créer une facture</span>
+                        <span className="xs:hidden">Créer facture</span>
                       </Button>
                     </div>
                   </div>
