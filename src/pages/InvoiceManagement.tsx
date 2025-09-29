@@ -137,7 +137,7 @@ export default function InvoiceManagement() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-            <Link to={`/mcards/${slug}`} className="w-full sm:w-auto">
+            <Link to={`/mcard/${slug}`} className="w-full sm:w-auto">
               <Button variant="outline" className="w-full sm:w-auto">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Retour à la MCard</span>
