@@ -83,9 +83,20 @@ export const useMCardData = () => {
       setViewCount(mcardData.view_count || 0);
       setError(null);
       
+      // Vérifier la propriété immédiatement
       const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
+      console.log('Checking ownership for MCard user_id:', mcardData.user_id);
       setIsOwner(ownershipStatus);
-      console.log('Is owner:', ownershipStatus);
+      console.log('Is owner result:', ownershipStatus);
+      
+      // Refaire la vérification après un petit délai pour s'assurer que l'auth est stable
+      setTimeout(async () => {
+        const secondOwnershipCheck = await checkMCardOwnership(mcardData.user_id);
+        if (secondOwnershipCheck !== ownershipStatus) {
+          console.log('Ownership status changed on second check:', secondOwnershipCheck);
+          setIsOwner(secondOwnershipCheck);
+        }
+      }, 500);
       
       try {
         const [statusesData, productsData, reviewsData] = await Promise.all([

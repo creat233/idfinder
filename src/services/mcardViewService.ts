@@ -178,20 +178,26 @@ export const incrementViewCount = async (slug: string, currentCount: number): Pr
 
 export const checkMCardOwnership = async (userId: string): Promise<boolean> => {
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    // Vérifier d'abord la session active
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     
-    if (error) {
-      console.error('Error getting user:', error);
+    if (sessionError) {
+      console.error('Error getting session:', sessionError);
       return false;
     }
     
-    if (!user) {
-      console.log('No authenticated user found');
+    if (!session || !session.user) {
+      console.log('No active session or user found');
       return false;
     }
     
-    const isOwner = user.id === userId;
-    console.log('Checking ownership - user ID:', user.id, 'mCard user ID:', userId, 'is owner:', isOwner);
+    const isOwner = session.user.id === userId;
+    console.log('🔍 Checking ownership:');
+    console.log('  - Authenticated user ID:', session.user.id);
+    console.log('  - MCard owner ID:', userId);
+    console.log('  - Is owner:', isOwner);
+    console.log('  - User email:', session.user.email);
+    
     return isOwner;
   } catch (error) {
     console.error('Error checking ownership:', error);
