@@ -18,7 +18,7 @@ import { MCardInteractionButtons } from "../MCardInteractionButtons";
 import { MCardRealtimeChat } from "../features/MCardRealtimeChat";
 import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
-import { MCardAdvancedCustomization } from "../features/MCardAdvancedCustomization";
+import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -322,7 +322,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
                 {/* Autres fonctionnalités */}
                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                  <MCardAdvancedCustomization mcardId={mcard.id} isOwner={isOwner} />
+                  <MCardAvailabilityManager mcardId={mcard.id} isOwner={isOwner} />
                   <MCardAIAssistant mcard={mcard} isOwner={isOwner} />
                 </div>
               </div>

@@ -14,6 +14,19 @@ export const fetchMCards = async (userId: string): Promise<MCard[]> => {
   return data || [];
 };
 
+export const fetchActiveMCards = async (userId: string): Promise<MCard[]> => {
+  const { data, error } = await supabase
+    .from('mcards')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('subscription_status', 'active')
+    .eq('is_published', true)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+};
+
 export const createMCard = async (
   mcardData: MCardCreateData, 
   profilePictureFile: File | null, 

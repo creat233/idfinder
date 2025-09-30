@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Calendar, Clock, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import { AvailabilitySelector } from './AvailabilitySelector';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -154,44 +155,14 @@ Merci de confirmer ou proposer un autre créneau.
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Sélection de la date */}
-          <div className="space-y-2">
-            <Label htmlFor="date">Date souhaitée *</Label>
-            <Input
-              id="date"
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              min={getMinDate()}
-              max={getMaxDate()}
-              className="w-full"
-            />
-          </div>
-
-          {/* Sélection de l'heure */}
-          {selectedDate && (
-            <div className="space-y-2">
-              <Label>Créneaux disponibles *</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {timeSlots.map((slot) => (
-                  <Button
-                    key={slot.id}
-                    variant={selectedTime === slot.time ? "default" : "outline"}
-                    size="sm"
-                    disabled={!slot.available}
-                    onClick={() => setSelectedTime(slot.time)}
-                    className="text-xs"
-                  >
-                    <Clock className="h-3 w-3 mr-1" />
-                    {slot.time}
-                  </Button>
-                ))}
-              </div>
-              <p className="text-xs text-gray-500">
-                Les créneaux grisés ne sont pas disponibles
-              </p>
-            </div>
-          )}
+          {/* Sélection de date et heure avec créneaux configurés */}
+          <AvailabilitySelector
+            mcardId={mcardId}
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            onDateChange={setSelectedDate}
+            onTimeChange={setSelectedTime}
+          />
 
           {/* Informations client */}
           <div className="space-y-3">
