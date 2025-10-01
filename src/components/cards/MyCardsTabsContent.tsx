@@ -83,8 +83,8 @@ export const MyCardsTabsContent = ({
   };
 
   const handleViewMCard = (mcard: MCard) => {
-    // Ouvrir la MCard dans un nouvel onglet
-    window.open(`/m/${mcard.slug}`, '_blank');
+    // Navigation vers la vue de gestion pour les propriétaires
+    window.location.href = `/mcard/${mcard.slug}`;
   };
 
   return (
