@@ -13,39 +13,42 @@ export const fetchMCardBySlug = async (slug: string): Promise<MCard | null> => {
   console.log('Fetching mCard by slug:', slug);
   
   try {
-    // Use the secure function that only returns safe public data
-    const { data: publicData, error: publicError } = await supabase
-      .rpc('get_public_mcard_data', { p_slug: slug });
-
-    if (publicError) {
-      console.error('Error fetching public MCard data:', publicError);
-    }
-
-    if (publicData && publicData.length > 0) {
-      const mcard = publicData[0];
-      console.log('Public MCard found:', mcard.full_name);
-      return mcard as MCard;
-    }
-
-    // If no public data found, check if user owns this card (for owners to see unpublished cards)
+    // IMPORTANT: Always check if current user owns this card FIRST
     const { data: { user } } = await supabase.auth.getUser();
+    
     if (user) {
+      // Try to fetch as owner first to get complete data
       const { data: ownedCard, error: ownedError } = await supabase
         .from('mcards')
         .select('*')
         .eq('slug', slug)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (ownedError) {
-        console.error('Error fetching owned MCard:', ownedError);
-      } else if (ownedCard) {
-        console.log('Owned MCard found:', ownedCard.full_name);
+      if (!ownedError && ownedCard) {
+        console.log('✅ Owned MCard found with full data:', ownedCard.full_name);
+        console.log('   Owner will see management interface');
         return ownedCard;
       }
     }
 
-    console.log('No MCard found with slug:', slug);
+    // Not the owner or not logged in - use public data function
+    const { data: publicData, error: publicError } = await supabase
+      .rpc('get_public_mcard_data', { p_slug: slug });
+
+    if (publicError) {
+      console.error('Error fetching public MCard data:', publicError);
+      return null;
+    }
+
+    if (publicData && publicData.length > 0) {
+      const mcard = publicData[0];
+      console.log('👁️ Public MCard found:', mcard.full_name);
+      console.log('   Visitor will see public interface');
+      return mcard as MCard;
+    }
+
+    console.log('❌ No MCard found with slug:', slug);
     return null;
   } catch (networkError) {
     console.error('Network error fetching mCard:', networkError);
