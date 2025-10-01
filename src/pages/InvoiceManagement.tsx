@@ -33,6 +33,7 @@ export default function InvoiceManagement() {
     addInvoice,
     editInvoice,
     removeInvoice,
+    validateInvoice,
     getAnalytics
   } = useInvoices(mcard?.id || '');
 
@@ -108,6 +109,12 @@ export default function InvoiceManagement() {
   const handleDeleteInvoice = async (invoiceId: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
       await removeInvoice(invoiceId);
+    }
+  };
+
+  const handleValidateInvoice = async (invoiceId: string) => {
+    if (confirm('Valider cette facture ? Une fois validée, elle ne pourra plus être modifiée ni supprimée.')) {
+      await validateInvoice(invoiceId);
     }
   };
 
@@ -195,6 +202,7 @@ export default function InvoiceManagement() {
               onEdit={handleEditInvoice}
               onDelete={handleDeleteInvoice}
               onView={handleViewInvoice}
+              onValidate={handleValidateInvoice}
             />
           </TabsContent>
 

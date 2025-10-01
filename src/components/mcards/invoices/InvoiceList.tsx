@@ -12,7 +12,9 @@ import {
   MoreVertical,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  CheckCircle,
+  Lock
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -28,6 +30,7 @@ interface InvoiceListProps {
   onEdit: (invoice: Invoice) => void;
   onDelete: (invoiceId: string) => void;
   onView: (invoice: Invoice) => void;
+  onValidate: (invoiceId: string) => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -62,7 +65,7 @@ const getStatusLabel = (status: string) => {
   }
 };
 
-export const InvoiceList = ({ invoices, onEdit, onDelete, onView }: InvoiceListProps) => {
+export const InvoiceList = ({ invoices, onEdit, onDelete, onView, onValidate }: InvoiceListProps) => {
   if (invoices.length === 0) {
     return (
       <Card>
@@ -85,7 +88,7 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView }: InvoiceListP
             <div className="flex items-start justify-between">
               <div className="flex-1 space-y-3">
                 {/* En-tête */}
-                <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <h3 className="font-semibold text-lg">
                       {invoice.invoice_number}
@@ -93,6 +96,12 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView }: InvoiceListP
                     <Badge className={getStatusColor(invoice.status)}>
                       {getStatusLabel(invoice.status)}
                     </Badge>
+                    {invoice.is_validated && (
+                      <Badge variant="outline" className="gap-1">
+                        <Lock className="h-3 w-3" />
+                        Validée
+                      </Badge>
+                    )}
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-primary">
@@ -166,17 +175,25 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView }: InvoiceListP
                       <Eye className="h-4 w-4 mr-2" />
                       Voir
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onEdit(invoice)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Modifier
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => onDelete(invoice.id)}
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Supprimer
-                    </DropdownMenuItem>
+                    {!invoice.is_validated && (
+                      <>
+                        <DropdownMenuItem onClick={() => onValidate(invoice.id)}>
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Valider
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onEdit(invoice)}>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Modifier
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => onDelete(invoice.id)}
+                          className="text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Supprimer
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

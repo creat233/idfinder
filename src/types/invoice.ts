@@ -23,6 +23,8 @@ export interface Invoice {
   notes?: string;
   created_at: string;
   updated_at: string;
+  is_validated: boolean;
+  validated_at?: string;
   items?: InvoiceItem[];
 }
 

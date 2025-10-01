@@ -463,12 +463,14 @@ export type Database = {
           due_date: string | null
           id: string
           invoice_number: string
+          is_validated: boolean
           issued_date: string | null
           mcard_id: string
           notes: string | null
           paid_date: string | null
           status: string
           updated_at: string
+          validated_at: string | null
         }
         Insert: {
           amount?: number
@@ -481,12 +483,14 @@ export type Database = {
           due_date?: string | null
           id?: string
           invoice_number: string
+          is_validated?: boolean
           issued_date?: string | null
           mcard_id: string
           notes?: string | null
           paid_date?: string | null
           status?: string
           updated_at?: string
+          validated_at?: string | null
         }
         Update: {
           amount?: number
@@ -499,12 +503,14 @@ export type Database = {
           due_date?: string | null
           id?: string
           invoice_number?: string
+          is_validated?: boolean
           issued_date?: string | null
           mcard_id?: string
           notes?: string | null
           paid_date?: string | null
           status?: string
           updated_at?: string
+          validated_at?: string | null
         }
         Relationships: []
       }

@@ -73,6 +73,20 @@ export const useInvoices = (mcardId: string) => {
     }
   };
 
+  const validateInvoice = async (id: string) => {
+    try {
+      const validatedInvoice = await import('@/services/invoiceService').then(m => m.validateInvoice(id));
+      setInvoices(prev => prev.map(inv => inv.id === id ? validatedInvoice : inv));
+      await loadInvoices(); // Recharger pour mettre à jour les stats
+      showSuccess('Succès', 'Facture validée et verrouillée');
+      return validatedInvoice;
+    } catch (error: any) {
+      console.error('Error validating invoice:', error);
+      showError('Erreur', 'Impossible de valider la facture');
+      throw error;
+    }
+  };
+
   const getAnalytics = async (period: 'day' | 'week' | 'month' | 'year'): Promise<InvoiceAnalytics[]> => {
     try {
       return await getInvoiceAnalytics(mcardId, period);
@@ -96,6 +110,7 @@ export const useInvoices = (mcardId: string) => {
     addInvoice,
     editInvoice,
     removeInvoice,
+    validateInvoice,
     getAnalytics,
     refetch: loadInvoices
   };

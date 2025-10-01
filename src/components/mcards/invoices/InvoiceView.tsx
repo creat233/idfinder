@@ -122,10 +122,13 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
     
     try {
       const canvas = await html2canvas(invoiceRef.current, {
-        scale: 2,
+        scale: 3, // Haute résolution pour une meilleure qualité d'image
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        logging: false,
+        imageTimeout: 0,
+        removeContainer: true
       });
       
       // Convertir le canvas en blob

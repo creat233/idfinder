@@ -90,6 +90,32 @@ export const deleteInvoice = async (id: string): Promise<void> => {
   if (error) throw error;
 };
 
+export const validateInvoice = async (id: string): Promise<Invoice> => {
+  const { data, error } = await supabase
+    .from('mcard_invoices')
+    .update({ 
+      is_validated: true,
+      validated_at: new Date().toISOString(),
+      status: 'sent'
+    })
+    .eq('id', id)
+    .select(`
+      *,
+      mcard_invoice_items (*)
+    `)
+    .single();
+
+  if (error) {
+    console.error('Error validating invoice:', error);
+    throw new Error('Erreur lors de la validation de la facture');
+  }
+
+  return {
+    ...data,
+    items: data.mcard_invoice_items || []
+  };
+};
+
 export const getInvoiceStats = async (mcardId: string): Promise<InvoiceStats> => {
   const { data, error } = await supabase
     .from('mcard_invoices')
