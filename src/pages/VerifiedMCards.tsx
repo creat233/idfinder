@@ -130,6 +130,12 @@ const VerifiedMCards = () => {
         mcards={selectedMCards}
         initialProductIndex={selectedProductIndex}
       />
+
+      {/* Grille des MCards vérifiées et actives */}
+      <VerifiedMCardsGrid 
+        searchQuery={searchQuery}
+        selectedCategory={selectedCategory}
+      />
       
       {/* Bouton de traduction style TikTok - Responsive */}
       <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-6 lg:bottom-12 lg:right-8 z-[100]">
