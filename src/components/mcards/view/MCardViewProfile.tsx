@@ -14,7 +14,8 @@ import { MCardMessageDialog } from "../MCardMessageDialog";
 import { MCardProfileImageDialog } from "./MCardProfileImageDialog";
 import { MCardProfileEditor } from "../MCardProfileEditor";
 import { MCard } from "@/types/mcard";
-import { MCardInteractionButtons } from "../MCardInteractionButtons";
+import { MCardInteractionsSection } from "./MCardInteractionsSection";
+import { generateVCard, downloadVCard } from "@/utils/vcardGenerator";
 import { MCardRealtimeChat } from "../features/MCardRealtimeChat";
 import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
@@ -22,6 +23,7 @@ import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 interface MCardViewProfileProps {
   mcard: MCard;
@@ -33,6 +35,7 @@ interface MCardViewProfileProps {
 
 export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardViewProfileProps) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const [isProfileImageDialogOpen, setIsProfileImageDialogOpen] = useState(false);
@@ -43,7 +46,6 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
   const handleCopyLink = () => {
     if (isPendingPayment) {
-      // Ne pas permettre de copier le lien si en attente de paiement
       return;
     }
     onCopyLink();
@@ -51,10 +53,31 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
   const handleShare = () => {
     if (isPendingPayment) {
-      // Ne pas permettre de partager si en attente de paiement
       return;
     }
     onShare();
+  };
+
+  const handleSaveOffline = () => {
+    const vcard = generateVCard({
+      full_name: mcard.full_name,
+      job_title: mcard.job_title || undefined,
+      company: mcard.company || undefined,
+      phone_number: mcard.phone_number || undefined,
+      email: mcard.email || undefined,
+      website_url: mcard.website_url || undefined,
+      linkedin_url: mcard.linkedin_url || undefined,
+      twitter_url: mcard.twitter_url || undefined,
+      facebook_url: mcard.facebook_url || undefined,
+      instagram_url: mcard.instagram_url || undefined,
+    });
+    
+    downloadVCard(vcard, mcard.full_name);
+    
+    toast({
+      title: "Contact enregistré",
+      description: "La carte de visite a été téléchargée avec succès"
+    });
   };
 
   return (
@@ -224,23 +247,16 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 />
               </div>
 
-              {/* Boutons d'interaction (visibles pour tous les visiteurs) */}
+              {/* Section Interactions améliorée */}
               {!isOwner && (
                 <div className="space-y-4">
-                  <div className="bg-gradient-to-br from-pink-50/30 to-rose-50/30 rounded-2xl p-6 border border-pink-100 shadow-sm">
-                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <span className="text-pink-600">💕</span>
-                      Interactions
-                    </h4>
-                    <MCardInteractionButtons
-                      mcardId={mcard.id}
-                      mcardOwnerId={mcard.user_id}
-                      mcardOwnerName={mcard.full_name}
-                      className="justify-center"
-                    />
-                  </div>
+                  <MCardInteractionsSection
+                    mcardId={mcard.id}
+                    mcardOwnerId={mcard.user_id}
+                    mcardOwnerName={mcard.full_name}
+                  />
                   
-                  {/* Actions disponibles pour tous les visiteurs */}
+                  {/* Actions disponibles */}
                   <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-6 border border-green-100 shadow-sm">
                     <h4 className="font-semibold text-gray-900 mb-4">🚀 Actions disponibles</h4>
                     <div className="flex flex-col sm:flex-row gap-3">
@@ -250,7 +266,10 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                         mcardOwnerName={mcard.full_name}
                         phoneNumber={mcard.phone_number}
                       />
-                      <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                      <Button 
+                        onClick={handleSaveOffline}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                      >
                         💾 Sauvegarder hors-ligne
                       </Button>
                     </div>

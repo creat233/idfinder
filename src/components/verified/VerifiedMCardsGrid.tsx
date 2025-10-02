@@ -24,13 +24,13 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
     try {
       setLoading(true);
       
-      // Charger toutes les cartes vérifiées et actives (avec subscription_status = 'active')
+      // Charger toutes les cartes actives (avec subscription_status = 'active')
       const { data, error } = await supabase
         .from('mcards')
         .select('*')
         .eq('is_published', true)
-        .eq('is_verified', true)
         .eq('subscription_status', 'active')
+        .order('is_verified', { ascending: false })
         .order('view_count', { ascending: false });
 
       if (error) throw error;
@@ -93,18 +93,20 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
               <Card key={mcard.id} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105 group backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="flex flex-col items-center text-center space-y-4">
-                    {/* Avatar et badge vérifié */}
-                    <div className="relative">
-                      <RobustAvatar
-                        src={mcard.profile_picture_url}
-                        alt={mcard.full_name}
-                        fallbackText={mcard.full_name}
-                        className="h-16 w-16 border-2 border-white/20 group-hover:border-blue-400/50 transition-colors"
-                      />
-                      <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
-                        <Verified className="h-4 w-4 text-white" />
-                      </div>
-                    </div>
+                     {/* Avatar et badge vérifié (seulement si vérifié) */}
+                     <div className="relative">
+                       <RobustAvatar
+                         src={mcard.profile_picture_url}
+                         alt={mcard.full_name}
+                         fallbackText={mcard.full_name}
+                         className="h-16 w-16 border-2 border-white/20 group-hover:border-blue-400/50 transition-colors"
+                       />
+                       {mcard.is_verified && (
+                         <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
+                           <Verified className="h-4 w-4 text-white" />
+                         </div>
+                       )}
+                     </div>
 
                     {/* Informations principales */}
                     <div className="space-y-2 w-full">
