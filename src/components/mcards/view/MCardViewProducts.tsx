@@ -187,17 +187,26 @@ export const MCardViewProducts = ({
         </div>
 
         {activeProducts.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-12">
             {canAddProduct ? (
-              <div>
-                <p className="mb-4">Aucun produit ou service disponible</p>
-                <Button onClick={handleAddProduct} className="bg-blue-600 hover:bg-blue-700">
+              <div className="space-y-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-2">
+                  <ShoppingCart className="h-8 w-8 text-blue-600" />
+                </div>
+                <p className="text-gray-600 text-lg font-medium">Pas encore de produits</p>
+                <p className="text-gray-500 text-sm">Ajoutez votre premier produit ou service pour commencer</p>
+                <Button onClick={handleAddProduct} className="bg-blue-600 hover:bg-blue-700 mt-4">
                   <Plus className="h-4 w-4 mr-2" />
                   Ajouter votre premier produit
                 </Button>
               </div>
             ) : (
-              <p>Aucun produit ou service disponible</p>
+              <div className="space-y-2">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-2">
+                  <ShoppingCart className="h-8 w-8 text-gray-400" />
+                </div>
+                <p className="text-gray-500 text-lg">Pas encore de produits</p>
+              </div>
             )}
           </div>
         ) : (

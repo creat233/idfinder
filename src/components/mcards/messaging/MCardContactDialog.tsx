@@ -86,7 +86,15 @@ export const MCardContactDialog = ({
         finalSubject = "Message depuis votre mCard";
       }
 
-      const { error } = await supabase
+      console.log('Tentative d\'envoi de message:', {
+        sender_id: user.id,
+        recipient_id: recipientId,
+        mcard_id: mcardId,
+        subject: finalSubject,
+        message: finalMessage.substring(0, 50) + '...'
+      });
+
+      const { data, error } = await supabase
         .from('mcard_messages')
         .insert({
           sender_id: user.id,
@@ -94,12 +102,31 @@ export const MCardContactDialog = ({
           mcard_id: mcardId,
           subject: finalSubject,
           message: finalMessage,
-        });
+        })
+        .select();
 
       if (error) {
-        console.error('Erreur envoi message:', error);
-        throw error;
+        console.error('Erreur détaillée lors de l\'envoi du message:', {
+          error,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        
+        // Messages d'erreur plus spécifiques
+        let errorMessage = "Impossible d'envoyer le message.";
+        
+        if (error.code === '42501' || error.message.includes('policy')) {
+          errorMessage = "Vous n'avez pas la permission d'envoyer ce message. Vous pourriez être bloqué ou déconnecté.";
+        } else if (error.code === '23503') {
+          errorMessage = "Les informations du destinataire sont invalides.";
+        }
+        
+        throw new Error(errorMessage);
       }
+
+      console.log('Message envoyé avec succès:', data);
 
       toast({
         title: "Message envoyé !",
