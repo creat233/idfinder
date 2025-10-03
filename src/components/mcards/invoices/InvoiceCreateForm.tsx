@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Trash2, Calculator } from 'lucide-react';
 import { InvoiceCreateData } from '@/types/invoice';
 
@@ -17,6 +18,7 @@ const invoiceSchema = z.object({
   due_date: z.string().optional(),
   description: z.string().optional(),
   notes: z.string().optional(),
+  currency: z.enum(['FCFA', 'EUR', 'USD']).default('FCFA'),
   items: z.array(z.object({
     description: z.string().min(1, 'Description requise'),
     quantity: z.number().min(1, 'Quantité minimum 1'),
@@ -34,6 +36,12 @@ interface InvoiceCreateFormProps {
 
 export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreateFormProps) => {
   const [loading, setLoading] = useState(false);
+  
+  const currencySymbols = {
+    'FCFA': 'FCFA',
+    'EUR': '€',
+    'USD': '$'
+  };
 
   const form = useForm<InvoiceFormData>({
     resolver: zodResolver(invoiceSchema),
@@ -44,6 +52,7 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
       due_date: '',
       description: '',
       notes: '',
+      currency: 'FCFA',
       items: [{ description: '', quantity: 1, unit_price: 0 }]
     }
   });
@@ -54,6 +63,7 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
   });
 
   const watchedItems = form.watch('items');
+  const watchedCurrency = form.watch('currency');
   const totalAmount = watchedItems.reduce((sum, item) => 
     sum + (item.quantity || 0) * (item.unit_price || 0), 0
   );
@@ -69,6 +79,7 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
         due_date: data.due_date || undefined,
         description: data.description || undefined,
         notes: data.notes || undefined,
+        currency: data.currency,
         items: data.items.map(item => ({
           description: item.description!,
           quantity: item.quantity!,
@@ -105,6 +116,23 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
                     {form.formState.errors.client_name.message}
                   </p>
                 )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="currency">Devise *</Label>
+                <Select
+                  value={watchedCurrency}
+                  onValueChange={(value) => form.setValue('currency', value as 'FCFA' | 'EUR' | 'USD')}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner une devise" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="FCFA">FCFA (CFA Franc)</SelectItem>
+                    <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                    <SelectItem value="USD">USD (Dollar)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -178,7 +206,7 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
                       </div>
 
                       <div className="space-y-2">
-                        <Label>Prix unitaire (FCFA)</Label>
+                        <Label>Prix unitaire ({currencySymbols[watchedCurrency]})</Label>
                         <Input
                           type="number"
                           min="0"
@@ -188,7 +216,7 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
 
                       <div className="flex items-center gap-2">
                         <div className="text-sm font-medium">
-                          {((watchedItems[index]?.quantity || 0) * (watchedItems[index]?.unit_price || 0)).toLocaleString()} FCFA
+                          {((watchedItems[index]?.quantity || 0) * (watchedItems[index]?.unit_price || 0)).toLocaleString()} {currencySymbols[watchedCurrency]}
                         </div>
                         {fields.length > 1 && (
                           <Button
@@ -214,7 +242,7 @@ export const InvoiceCreateForm = ({ mcardId, onSubmit, onCancel }: InvoiceCreate
               <div className="flex justify-end">
                 <div className="bg-primary/10 p-4 rounded-lg">
                   <div className="text-lg font-bold">
-                    Total: {totalAmount.toLocaleString()} FCFA
+                    Total: {totalAmount.toLocaleString()} {currencySymbols[watchedCurrency]}
                   </div>
                 </div>
               </div>

@@ -42,7 +42,7 @@ export const createInvoice = async (invoiceData: InvoiceCreateData): Promise<Inv
       invoice_number: invoiceNumber,
       amount: totalAmount,
       status: 'pending',
-      currency: 'FCFA'
+      currency: invoiceData.currency || 'FCFA'
     })
     .select()
     .single();

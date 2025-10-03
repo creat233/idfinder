@@ -47,8 +47,9 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
         <>
           {renderLink("/signaler", "Signaler une carte")}
           {renderLink("/mes-cartes", "Mes cartes")}
-          {renderLink("/mcards-verifiees", "MCards Vérifiées")}
+          {renderLink("/mcards-verifiees", "Vues MCard")}
           {renderLink("/codes-promo", "Codes promo")}
+          {renderLink("/mcards", "Abonnement")}
           {renderLink("/messages", "Messages")}
           {renderLink("/mes-favoris", "Mes favoris")}
           {renderLink("/panier", "Panier")}
@@ -60,7 +61,7 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
 
   const loggedOutNav = (
     <>
-      {renderLink("/mcards-verifiees", "MCards Vérifiées")}
+      {renderLink("/mcards-verifiees", "Vues MCard")}
       {renderLink("/codes-promo", "Codes promo")}
       {renderLink("/messages", "Messages", true)}
       {renderLink("/notifications", "Notifications", true)}

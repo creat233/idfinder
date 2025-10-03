@@ -36,6 +36,7 @@ export interface InvoiceCreateData {
   due_date?: string;
   description?: string;
   notes?: string;
+  currency?: string;
   items: { description: string; quantity: number; unit_price: number; }[];
 }
 

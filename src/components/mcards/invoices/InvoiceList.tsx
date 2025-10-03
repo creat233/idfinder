@@ -81,16 +81,16 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView, onValidate }: 
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {invoices.map((invoice) => (
         <Card key={invoice.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1 space-y-3">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+              <div className="flex-1 space-y-3 w-full">
                 {/* En-tête */}
-                  <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-semibold text-lg">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-semibold text-base sm:text-lg">
                       {invoice.invoice_number}
                     </h3>
                     <Badge className={getStatusColor(invoice.status)}>
@@ -103,40 +103,40 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView, onValidate }: 
                       </Badge>
                     )}
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">
+                  <div className="text-left sm:text-right w-full sm:w-auto">
+                    <div className="text-xl sm:text-2xl font-bold text-primary">
                       {invoice.amount.toLocaleString()} {invoice.currency}
                     </div>
                   </div>
                 </div>
 
                 {/* Informations client */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <span>{invoice.client_name}</span>
+                    <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <span className="truncate">{invoice.client_name}</span>
                   </div>
                   
                   {invoice.client_email && (
                     <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span>{invoice.client_email}</span>
+                      <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate">{invoice.client_email}</span>
                     </div>
                   )}
                   
                   {invoice.client_phone && (
                     <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      <span>{invoice.client_phone}</span>
+                      <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate">{invoice.client_phone}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Dates */}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    <span>
+                    <Calendar className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">
                       Créée {formatDistance(new Date(invoice.created_at), new Date(), { 
                         addSuffix: true, 
                         locale: fr 
@@ -146,8 +146,8 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView, onValidate }: 
                   
                   {invoice.due_date && (
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>
+                      <Calendar className="h-4 w-4 flex-shrink-0" />
+                      <span className="text-xs sm:text-sm">
                         Échéance: {new Date(invoice.due_date).toLocaleDateString('fr-FR')}
                       </span>
                     </div>
@@ -163,10 +163,10 @@ export const InvoiceList = ({ invoices, onEdit, onDelete, onView, onValidate }: 
               </div>
 
               {/* Actions */}
-              <div className="ml-4">
+              <div className="sm:ml-4 w-full sm:w-auto">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="w-full sm:w-auto">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>

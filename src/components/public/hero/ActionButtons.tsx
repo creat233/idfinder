@@ -109,7 +109,7 @@ export const ActionButtons = ({ user, isLoading }: ActionButtonsProps) => {
           className="border-2 border-white text-white hover:bg-white hover:text-[#9b87f5] font-semibold px-8 py-4 text-lg bg-transparent"
         >
           <CheckCircle className="mr-2 h-5 w-5" />
-          MCards Vérifiées
+          Vues MCard
         </Button>
       )}
       {user && (

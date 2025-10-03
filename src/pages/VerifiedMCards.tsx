@@ -137,16 +137,6 @@ const VerifiedMCards = () => {
         selectedCategory={selectedCategory}
       />
       
-      {/* Bouton de traduction style TikTok - Responsive */}
-      <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-6 lg:bottom-12 lg:right-8 z-[100]">
-        <div className="bg-black/40 backdrop-blur-xl rounded-full p-2 lg:p-3 border border-white/20 shadow-lg">
-          <MCardTranslateButton
-            currentLanguage={currentLanguage}
-            onLanguageChange={setCurrentLanguage}
-          />
-        </div>
-      </div>
-      
       {/* Particules flottantes */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-pink-400/30 rounded-full animate-pulse"></div>

@@ -49,9 +49,9 @@ export const InvoiceDashboard = ({ stats, getAnalytics }: InvoiceDashboardProps)
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
       {/* Statistiques principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Factures</CardTitle>
@@ -130,18 +130,18 @@ export const InvoiceDashboard = ({ stats, getAnalytics }: InvoiceDashboardProps)
 
       {/* Graphiques d'analyse */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
+        <CardHeader className="pb-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5" />
               Analyse des Ventes
             </CardTitle>
-            <Tabs value={selectedPeriod} onValueChange={(value) => setSelectedPeriod(value as any)}>
-              <TabsList>
-                <TabsTrigger value="day">Jour</TabsTrigger>
-                <TabsTrigger value="week">Semaine</TabsTrigger>
-                <TabsTrigger value="month">Mois</TabsTrigger>
-                <TabsTrigger value="year">Année</TabsTrigger>
+            <Tabs value={selectedPeriod} onValueChange={(value) => setSelectedPeriod(value as any)} className="w-full sm:w-auto">
+              <TabsList className="grid grid-cols-4 w-full sm:w-auto">
+                <TabsTrigger value="day" className="text-xs sm:text-sm px-2 sm:px-3">Jour</TabsTrigger>
+                <TabsTrigger value="week" className="text-xs sm:text-sm px-2 sm:px-3">Semaine</TabsTrigger>
+                <TabsTrigger value="month" className="text-xs sm:text-sm px-2 sm:px-3">Mois</TabsTrigger>
+                <TabsTrigger value="year" className="text-xs sm:text-sm px-2 sm:px-3">Année</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
