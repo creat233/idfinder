@@ -21,6 +21,7 @@ import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
 import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
+import { OnlineStatusIndicator } from "../OnlineStatusIndicator";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -59,6 +60,9 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
   };
 
   const handleSaveOffline = () => {
+    // Générer le lien de la carte
+    const mcardUrl = `${window.location.origin}/mcard/${mcard.slug}`;
+    
     const vcard = generateVCard({
       full_name: mcard.full_name,
       job_title: mcard.job_title || undefined,
@@ -70,13 +74,14 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       twitter_url: mcard.twitter_url || undefined,
       facebook_url: mcard.facebook_url || undefined,
       instagram_url: mcard.instagram_url || undefined,
+      note: `Carte digitale: ${mcardUrl}`,
     });
     
     downloadVCard(vcard, mcard.full_name);
     
     toast({
       title: "Contact enregistré",
-      description: "La carte de visite a été téléchargée avec succès"
+      description: "La carte de visite avec le lien a été téléchargée avec succès"
     });
   };
 
@@ -155,7 +160,12 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-center leading-tight break-words max-w-full">
                   {mcard.full_name}
                 </h1>
-                <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
+                <div className="flex items-center gap-3">
+                  <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
+                  {!isOwner && (
+                    <OnlineStatusIndicator userId={mcard.user_id} showText={true} />
+                  )}
+                </div>
               </div>
               
               {/* Titre du poste */}

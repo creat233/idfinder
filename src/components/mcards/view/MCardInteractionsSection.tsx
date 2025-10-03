@@ -184,51 +184,60 @@ export const MCardInteractionsSection = ({
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-pink-50/50 via-white to-purple-50/50 border-pink-100 shadow-lg overflow-hidden">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white" />
-            </div>
-            <h4 className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              Interactions
-            </h4>
+      <div className="bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30 rounded-2xl p-6 sm:p-8 border border-purple-100 shadow-xl">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+            <Heart className="w-6 h-6 text-white" />
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {interactionButtons.map((button, index) => (
-              <motion.div
-                key={button.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                {button.component ? (
-                  <div className={`${button.bgColor} rounded-xl p-4 h-full flex flex-col items-center justify-center gap-2 border border-gray-100 hover:shadow-md transition-all`}>
-                    {button.component}
-                  </div>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    onClick={button.onClick}
-                    className={`${button.bgColor} ${button.textColor} rounded-xl p-4 h-full flex flex-col items-center justify-center gap-2 hover:shadow-md transition-all border border-gray-100 ${
-                      button.active ? `bg-gradient-to-r ${button.color} text-white` : ''
-                    }`}
-                  >
-                    <button.icon className={`w-6 h-6 ${button.active ? 'fill-current' : ''}`} />
-                    <span className="text-xs font-semibold">{button.label}</span>
-                    {button.count !== undefined && button.count > 0 && (
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/50">
-                        {button.count}
-                      </span>
-                    )}
-                  </Button>
-                )}
-              </motion.div>
-            ))}
+          <div>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Interactions
+            </h3>
+            <p className="text-sm text-gray-600">Interagissez avec cette carte</p>
           </div>
         </div>
-      </Card>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {interactionButtons.map((button, index) => (
+            <motion.div
+              key={button.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.05, type: "spring", stiffness: 200 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {button.component ? (
+                <div className={`${button.bgColor} rounded-2xl p-5 h-full flex flex-col items-center justify-center gap-3 border-2 border-gray-200/50 hover:border-gray-300 hover:shadow-xl transition-all duration-300`}>
+                  {button.component}
+                  <span className="text-sm font-bold ${button.textColor}">{button.label}</span>
+                  {button.count !== undefined && button.count > 0 && (
+                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md">
+                      {button.count}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <Button
+                  variant="ghost"
+                  onClick={button.onClick}
+                  className={`${button.bgColor} ${button.textColor} rounded-2xl p-5 h-full w-full flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all duration-300 border-2 border-gray-200/50 hover:border-gray-300 ${
+                    button.active ? `bg-gradient-to-br ${button.color} text-white shadow-lg border-transparent` : ''
+                  }`}
+                >
+                  <button.icon className={`w-7 h-7 ${button.active ? 'fill-current' : ''}`} />
+                  <span className="text-sm font-bold">{button.label}</span>
+                  {button.count !== undefined && button.count > 0 && (
+                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${button.active ? 'bg-white/20' : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'} shadow-md`}>
+                      {button.count}
+                    </span>
+                  )}
+                </Button>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
       <MCardMessageDialog
         isOpen={isMessageDialogOpen}

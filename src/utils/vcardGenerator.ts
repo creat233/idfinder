@@ -9,6 +9,7 @@ export const generateVCard = (mcard: {
   twitter_url?: string;
   facebook_url?: string;
   instagram_url?: string;
+  note?: string;
 }) => {
   const vcard = [
     'BEGIN:VCARD',
@@ -23,6 +24,7 @@ export const generateVCard = (mcard: {
     mcard.twitter_url ? `X-SOCIALPROFILE;TYPE=twitter:${mcard.twitter_url}` : '',
     mcard.facebook_url ? `X-SOCIALPROFILE;TYPE=facebook:${mcard.facebook_url}` : '',
     mcard.instagram_url ? `X-SOCIALPROFILE;TYPE=instagram:${mcard.instagram_url}` : '',
+    mcard.note ? `NOTE:${mcard.note}` : '',
     'END:VCARD'
   ].filter(line => line).join('\n');
 

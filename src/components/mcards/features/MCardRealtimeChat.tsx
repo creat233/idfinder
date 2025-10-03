@@ -277,8 +277,11 @@ export const MCardRealtimeChat = ({
               </Button>
             </div>
           </div>
-          <div className="text-xs text-gray-500">
-            {isOnline ? 'En ligne' : 'Hors ligne'}
+          <div className="flex items-center gap-1.5 text-xs">
+            <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+            <span className={isOnline ? 'text-green-600 font-medium' : 'text-gray-500'}>
+              {isOnline ? 'En ligne' : 'Hors ligne'}
+            </span>
           </div>
         </CardHeader>
         

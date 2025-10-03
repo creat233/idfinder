@@ -122,16 +122,17 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
     
     try {
       const canvas = await html2canvas(invoiceRef.current, {
-        scale: 3, // Haute résolution pour une meilleure qualité d'image
+        scale: 3,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
         imageTimeout: 0,
-        removeContainer: true
+        removeContainer: true,
+        windowWidth: 1200,
+        windowHeight: 1600
       });
       
-      // Convertir le canvas en blob
       canvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
@@ -142,7 +143,7 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
           element.click();
           document.body.removeChild(element);
           URL.revokeObjectURL(url);
-          showSuccess('Succès', 'Facture téléchargée en tant qu\'image');
+          showSuccess('Succès', 'Facture téléchargée au format PNG');
         }
       }, 'image/png', 1.0);
     } catch (error) {
@@ -214,27 +215,41 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
 
       {/* Contenu de la facture */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Facture {invoice.invoice_number}</span>
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              {/* Logo FinderID */}
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-2xl">F</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">FinderID</h1>
+                <p className="text-sm text-gray-600">Facture professionnelle</p>
+              </div>
+            </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-primary">
+              <p className="text-sm text-gray-600 mb-1">Facture N°</p>
+              <p className="text-xl font-bold text-gray-900">{invoice.invoice_number}</p>
+              <div className="mt-2 text-3xl font-bold text-primary">
                 {invoice.amount.toLocaleString()} {invoice.currency}
               </div>
             </div>
-          </CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           {/* Informations du propriétaire */}
           {mcardOwner && (
             <div className="border-b pb-6">
-              <h3 className="font-semibold mb-4 text-lg">Émetteur</h3>
+              <h3 className="font-semibold mb-4 text-lg flex items-center gap-2">
+                <User className="h-5 w-5 text-primary" />
+                Émetteur
+              </h3>
               <div className="flex items-start gap-4">
                 {mcardOwner.profile_picture_url && (
                   <img 
                     src={mcardOwner.profile_picture_url} 
                     alt={mcardOwner.full_name}
-                    className="w-16 h-16 rounded-lg object-cover border"
+                    className="w-16 h-16 rounded-lg object-cover border-2 border-gray-200"
                   />
                 )}
                 <div className="flex-1 space-y-2">

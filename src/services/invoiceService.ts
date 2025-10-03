@@ -119,7 +119,7 @@ export const validateInvoice = async (id: string): Promise<Invoice> => {
 export const getInvoiceStats = async (mcardId: string): Promise<InvoiceStats> => {
   const { data, error } = await supabase
     .from('mcard_invoices')
-    .select('amount, status')
+    .select('amount, status, is_validated')
     .eq('mcard_id', mcardId);
 
   if (error) throw error;
@@ -129,11 +129,16 @@ export const getInvoiceStats = async (mcardId: string): Promise<InvoiceStats> =>
     total_amount: 0,
     paid_amount: 0,
     pending_amount: 0,
-    overdue_amount: 0
+    overdue_amount: 0,
+    validated_amount: 0
   };
 
   data?.forEach(invoice => {
     stats.total_amount += invoice.amount;
+    
+    if (invoice.is_validated) {
+      stats.validated_amount += invoice.amount;
+    }
     
     if (invoice.status === 'paid') {
       stats.paid_amount += invoice.amount;

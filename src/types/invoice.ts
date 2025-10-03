@@ -45,6 +45,7 @@ export interface InvoiceStats {
   paid_amount: number;
   pending_amount: number;
   overdue_amount: number;
+  validated_amount: number;
 }
 
 export interface InvoiceAnalytics {

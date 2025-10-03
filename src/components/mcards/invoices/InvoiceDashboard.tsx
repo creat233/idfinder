@@ -99,16 +99,31 @@ export const InvoiceDashboard = ({ stats, getAnalytics }: InvoiceDashboardProps)
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">En Attente</CardTitle>
-            <AlertCircle className="h-4 w-4 text-warning" />
+            <CardTitle className="text-sm font-medium">
+              {stats.validated_amount > 0 ? 'Paiement validé' : 'En Attente'}
+            </CardTitle>
+            <AlertCircle className={`h-4 w-4 ${stats.validated_amount > 0 ? 'text-success' : 'text-warning'}`} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning">
-              {stats.pending_amount.toLocaleString()} FCFA
-            </div>
-            <p className="text-xs text-muted-foreground">
-              En attente de paiement
-            </p>
+            {stats.validated_amount > 0 ? (
+              <>
+                <div className="text-2xl font-bold text-success">
+                  {stats.validated_amount.toLocaleString()} FCFA
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Factures validées
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-warning">
+                  {stats.pending_amount.toLocaleString()} FCFA
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  En attente de paiement
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
