@@ -11,11 +11,24 @@ export const useMessageSender = (user: any, onMessageSent: () => void) => {
     replyText: string, 
     selectedConversation: Conversation | null
   ) => {
-    if (!replyText.trim() || !user || !selectedConversation) return;
+    if (!replyText.trim() || !user || !selectedConversation) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Message vide ou conversation non sélectionnée"
+      });
+      return;
+    }
 
     setSending(true);
     try {
-      const { error } = await supabase
+      console.log('Envoi de message:', {
+        sender_id: user.id,
+        recipient_id: selectedConversation.otherUserId,
+        mcard_id: selectedConversation.mcardId
+      });
+
+      const { data, error } = await supabase
         .from('mcard_messages')
         .insert({
           sender_id: user.id,
@@ -23,17 +36,36 @@ export const useMessageSender = (user: any, onMessageSent: () => void) => {
           mcard_id: selectedConversation.mcardId,
           subject: selectedConversation.messages.length === 0 ? 'Nouveau message' : `Re: ${selectedConversation.messages[0]?.subject || 'Message'}`,
           message: replyText
-        });
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur envoi message:', error);
+        
+        let errorMessage = "Impossible d'envoyer le message";
+        if (error.code === '42501' || error.message.includes('policy')) {
+          errorMessage = "Vous n'avez pas la permission d'envoyer ce message. Vous êtes peut-être bloqué.";
+        } else if (error.code === '23503') {
+          errorMessage = "Destinataire invalide.";
+        }
+        
+        throw new Error(errorMessage);
+      }
 
-      // Pas de notification - le message apparaît automatiquement
+      console.log('Message envoyé avec succès:', data);
+      
+      toast({
+        title: "✅ Message envoyé",
+        description: "Votre message a été envoyé avec succès"
+      });
+
       onMessageSent();
     } catch (error: any) {
+      console.error('Erreur complète:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible d'envoyer le message"
+        description: error.message || "Impossible d'envoyer le message"
       });
     } finally {
       setSending(false);

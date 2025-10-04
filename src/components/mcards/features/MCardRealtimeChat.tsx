@@ -131,6 +131,12 @@ export const MCardRealtimeChat = ({
 
     setSending(true);
     try {
+      console.log('Envoi message chat en temps réel:', {
+        sender_id: currentUserId,
+        recipient_id: mcardOwnerId,
+        mcard_id: mcardId
+      });
+
       const message: ChatMessage = {
         id: crypto.randomUUID(),
         sender_id: currentUserId,
@@ -140,7 +146,7 @@ export const MCardRealtimeChat = ({
       };
 
       // Envoyer via Supabase
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('mcard_messages')
         .insert({
           sender_id: currentUserId,
@@ -148,9 +154,21 @@ export const MCardRealtimeChat = ({
           mcard_id: mcardId,
           message: newMessage.trim(),
           subject: 'Chat en temps réel'
-        });
+        })
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur envoi message chat:', error);
+        
+        let errorMessage = "Impossible d'envoyer le message";
+        if (error.code === '42501' || error.message.includes('policy')) {
+          errorMessage = "Vous êtes peut-être bloqué par ce propriétaire.";
+        }
+        
+        throw new Error(errorMessage);
+      }
+
+      console.log('Message chat envoyé:', data);
 
       // Broadcast le message
       const channel = supabase.channel(`chat_${mcardId}`);
@@ -161,11 +179,17 @@ export const MCardRealtimeChat = ({
       });
 
       setNewMessage('');
-    } catch (error) {
+      
+      toast({
+        title: "Message envoyé",
+        description: "Votre message a été envoyé"
+      });
+    } catch (error: any) {
+      console.error('Erreur complète chat:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible d'envoyer le message"
+        description: error.message || "Impossible d'envoyer le message"
       });
     } finally {
       setSending(false);
