@@ -7,11 +7,14 @@ export const useOnlineStatus = (userId: string) => {
   useEffect(() => {
     if (!userId) return;
 
+    const channelName = `user-presence-${userId}`;
+    
     const channel = supabase
-      .channel(`presence-${userId}`)
+      .channel(channelName)
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
-        setIsOnline(Object.keys(state).includes(userId));
+        const presenceData = state[userId];
+        setIsOnline(!!presenceData && presenceData.length > 0);
       })
       .on('presence', { event: 'join' }, ({ key }) => {
         if (key === userId) setIsOnline(true);
@@ -19,7 +22,15 @@ export const useOnlineStatus = (userId: string) => {
       .on('presence', { event: 'leave' }, ({ key }) => {
         if (key === userId) setIsOnline(false);
       })
-      .subscribe();
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          // Track initial presence
+          await channel.track({ 
+            user_id: userId, 
+            online_at: new Date().toISOString() 
+          });
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);

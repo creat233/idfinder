@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { MessageCircle, Search } from "lucide-react";
 import { formatMessageDate } from "@/utils/dateUtils";
 import { Conversation } from "@/types/messages";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ConversationsListProps {
   conversations: Conversation[];
@@ -67,7 +68,23 @@ export function ConversationsList({
                       ? 'bg-blue-50 border-l-blue-500' 
                       : 'border-l-transparent'
                   }`}
-                  onClick={() => onConversationSelect(conversation)}
+                  onClick={async () => {
+                    onConversationSelect(conversation);
+                    // Marquer comme lu automatiquement lors de la sélection
+                    if (conversation.unreadCount > 0) {
+                      try {
+                        await supabase
+                          .from('mcard_messages')
+                          .update({ is_read: true })
+                          .eq('sender_id', conversation.otherUserId)
+                          .eq('recipient_id', currentUserId)
+                          .eq('mcard_id', conversation.mcardId)
+                          .eq('is_read', false);
+                      } catch (error) {
+                        console.error('Erreur marquage messages:', error);
+                      }
+                    }
+                  }}
                 >
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">

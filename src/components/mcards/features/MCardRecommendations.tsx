@@ -37,15 +37,34 @@ export const MCardRecommendations = ({
     try {
       setLoading(true);
       
-      // Récupérer les cartes populaires et tendances
-      const { data: mcards, error } = await supabase
+      // Si currentMCardId est fourni, récupérer d'abord le user_id du propriétaire
+      let ownerUserId = null;
+      if (currentMCardId) {
+        const { data: currentMCard } = await supabase
+          .from('mcards')
+          .select('user_id')
+          .eq('id', currentMCardId)
+          .single();
+        
+        ownerUserId = currentMCard?.user_id;
+      }
+      
+      // Récupérer uniquement les cartes du même propriétaire si on est sur une MCard
+      let query = supabase
         .from('mcards')
         .select(`
           *,
           mcard_analytics (likes_count, favorites_count, shares_count)
         `)
         .eq('is_published', true)
-        .neq('id', currentMCardId || '')
+        .neq('id', currentMCardId || '');
+      
+      // Filtrer par propriétaire si on est sur une MCard spécifique
+      if (ownerUserId) {
+        query = query.eq('user_id', ownerUserId);
+      }
+      
+      const { data: mcards, error } = await query
         .order('view_count', { ascending: false })
         .limit(6);
 

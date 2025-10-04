@@ -10,6 +10,7 @@ import { PublicAdsDisplay } from "./ads/PublicAdsDisplay";
 import { AppMobileNav } from "./AppMobileNav";
 import { useAuthState } from "@/hooks/useAuthState";
 import { robustSignOut } from "@/utils/authCleanup";
+import { useUserPresence } from "@/hooks/useUserPresence";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,6 +18,9 @@ export const Header = () => {
   const { user, isAuthenticated } = useAuthState();
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Track user presence when logged in
+  useUserPresence(user?.id);
 
   useEffect(() => {
     const checkIsAdmin = async () => {

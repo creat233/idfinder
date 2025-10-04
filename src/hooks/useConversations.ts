@@ -111,15 +111,30 @@ export const useConversations = (user: any) => {
     if (!user) return;
 
     try {
-      // Marquer tous les messages non lus de cet utilisateur comme lus
-      await supabase
+      console.log('Marquage des messages comme lus:', {
+        sender_id: conversation.otherUserId,
+        recipient_id: user.id,
+        mcard_id: conversation.mcardId
+      });
+
+      // Marquer tous les messages non lus de cette conversation comme lus
+      const { error } = await supabase
         .from('mcard_messages')
         .update({ is_read: true })
         .eq('sender_id', conversation.otherUserId)
         .eq('recipient_id', user.id)
+        .eq('mcard_id', conversation.mcardId)
         .eq('is_read', false);
       
-      loadConversations();
+      if (error) {
+        console.error('Erreur RLS lors du marquage:', error);
+        throw error;
+      }
+
+      console.log('Messages marqués comme lus avec succès');
+      
+      // Recharger les conversations pour mettre à jour le compteur
+      await loadConversations();
     } catch (error) {
       console.error('Erreur lors du marquage:', error);
     }

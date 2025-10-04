@@ -97,17 +97,37 @@ ${formData.message || 'Aucun message supplémentaire'}
 Merci de confirmer ou proposer un autre créneau.
       `.trim();
 
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Vous devez être connecté pour prendre rendez-vous"
+        });
+        return;
+      }
+
+      console.log('Envoi demande de rendez-vous:', {
+        sender_id: user.id,
+        recipient_id: mcardOwnerId,
+        mcard_id: mcardId
+      });
+
       const { error } = await supabase
         .from('mcard_messages')
         .insert({
-          sender_id: (await supabase.auth.getUser()).data.user?.id || '',
+          sender_id: user.id,
           recipient_id: mcardOwnerId,
           mcard_id: mcardId,
           subject: `Demande de rendez-vous - ${new Date(selectedDate).toLocaleDateString('fr-FR')} à ${selectedTime}`,
           message: appointmentMessage
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur envoi rendez-vous:', error);
+        throw error;
+      }
 
       toast({
         title: "Demande envoyée !",
