@@ -27,23 +27,33 @@ export const MCardMessageDialog = ({
   const { toast } = useToast();
 
   const handleSendMessage = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !message.trim()) {
+    if (!message.trim()) {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Vous devez être connecté pour envoyer un message"
+        description: "Veuillez saisir un message"
       });
       return;
     }
 
     setSending(true);
     try {
-      console.log('Sending message:', {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Vous devez être connecté pour envoyer un message"
+        });
+        setSending(false);
+        return;
+      }
+
+      console.log('📤 Envoi de message:', {
         sender_id: user.id,
         recipient_id: recipientId,
-        mcard_id: mcardId,
-        message: message.trim().substring(0, 50) + '...'
+        mcard_id: mcardId
       });
 
       const { data, error } = await supabase
@@ -53,31 +63,29 @@ export const MCardMessageDialog = ({
           recipient_id: recipientId,
           mcard_id: mcardId,
           subject: `Message concernant ${recipientName}`,
-          message: message.trim()
+          message: message.trim(),
+          is_read: false
         })
-        .select();
+        .select()
+        .single();
 
       if (error) {
-        console.error('Error sending message:', {
-          error,
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
+        console.error('❌ Erreur lors de l\'envoi:', error);
         
         let errorMessage = "Impossible d'envoyer le message";
         
-        if (error.code === '42501' || error.message.includes('policy')) {
-          errorMessage = "Vous n'avez pas la permission d'envoyer ce message. Vous pourriez être bloqué.";
+        if (error.code === '42501') {
+          errorMessage = "Vous n'avez pas la permission d'envoyer ce message. Vous êtes peut-être bloqué par ce propriétaire.";
         } else if (error.code === '23503') {
-          errorMessage = "Les informations du destinataire sont invalides.";
+          errorMessage = "Le destinataire n'existe pas ou est invalide.";
+        } else if (error.message?.includes('policy')) {
+          errorMessage = "Accès refusé. Vérifiez que vous êtes autorisé à contacter ce propriétaire.";
         }
         
         throw new Error(errorMessage);
       }
 
-      console.log('Message sent successfully:', data);
+      console.log('✅ Message envoyé avec succès:', data);
 
       toast({
         title: "✅ Message envoyé !",
@@ -86,17 +94,13 @@ export const MCardMessageDialog = ({
 
       setMessage("");
       onOpenChange(false);
-      
-      // Recharger la page des messages si l'utilisateur y est
-      if (window.location.pathname === '/messages') {
-        window.location.reload();
-      }
+
     } catch (error: any) {
-      console.error('Full error:', error);
+      console.error('❌ Erreur complète:', error);
       toast({
         variant: "destructive", 
-        title: "Erreur",
-        description: error.message || "Impossible d'envoyer le message"
+        title: "Erreur d'envoi",
+        description: error.message || "Une erreur s'est produite lors de l'envoi du message"
       });
     } finally {
       setSending(false);

@@ -70,68 +70,100 @@ export const MCardAppointmentBooking = ({
     if (!selectedDate || !selectedTime || !formData.clientName || !formData.clientEmail) {
       toast({
         variant: "destructive",
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires"
+        title: "Champs manquants",
+        description: "Veuillez remplir tous les champs obligatoires (nom, email, date et heure)"
+      });
+      return;
+    }
+
+    // Validation email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.clientEmail)) {
+      toast({
+        variant: "destructive",
+        title: "Email invalide",
+        description: "Veuillez saisir une adresse email valide"
       });
       return;
     }
 
     setLoading(true);
     try {
-      // Créer un message avec les détails du rendez-vous
-      const appointmentMessage = `
-📅 DEMANDE DE RENDEZ-VOUS
-
-Date: ${new Date(selectedDate).toLocaleDateString('fr-FR')}
-Heure: ${selectedTime}
-Sujet: ${formData.subject || 'Non spécifié'}
-
-Client: ${formData.clientName}
-Email: ${formData.clientEmail}
-Téléphone: ${formData.clientPhone || 'Non fourni'}
-
-Message:
-${formData.message || 'Aucun message supplémentaire'}
-
----
-Merci de confirmer ou proposer un autre créneau.
-      `.trim();
-
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         toast({
           variant: "destructive",
-          title: "Erreur",
+          title: "Authentification requise",
           description: "Vous devez être connecté pour prendre rendez-vous"
         });
+        setLoading(false);
         return;
       }
 
-      console.log('Envoi demande de rendez-vous:', {
+      // Créer un message avec les détails du rendez-vous
+      const appointmentMessage = `📅 DEMANDE DE RENDEZ-VOUS
+
+📆 Date: ${new Date(selectedDate).toLocaleDateString('fr-FR', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })}
+⏰ Heure: ${selectedTime}
+${formData.subject ? `📋 Sujet: ${formData.subject}` : ''}
+
+👤 COORDONNÉES DU CLIENT
+Nom: ${formData.clientName}
+✉️ Email: ${formData.clientEmail}
+${formData.clientPhone ? `📞 Téléphone: ${formData.clientPhone}` : ''}
+
+${formData.message ? `💬 MESSAGE:\n${formData.message}\n` : ''}
+---
+⚠️ Merci de confirmer ce rendez-vous ou de proposer un autre créneau.`.trim();
+
+      console.log('📅 Envoi demande de rendez-vous:', {
         sender_id: user.id,
         recipient_id: mcardOwnerId,
-        mcard_id: mcardId
+        mcard_id: mcardId,
+        date: selectedDate,
+        time: selectedTime
       });
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('mcard_messages')
         .insert({
           sender_id: user.id,
           recipient_id: mcardOwnerId,
           mcard_id: mcardId,
-          subject: `Demande de rendez-vous - ${new Date(selectedDate).toLocaleDateString('fr-FR')} à ${selectedTime}`,
-          message: appointmentMessage
-        });
+          subject: `🗓️ Demande de rendez-vous - ${new Date(selectedDate).toLocaleDateString('fr-FR')} à ${selectedTime}`,
+          message: appointmentMessage,
+          is_read: false
+        })
+        .select()
+        .single();
 
       if (error) {
-        console.error('Erreur envoi rendez-vous:', error);
-        throw error;
+        console.error('❌ Erreur lors de l\'envoi du rendez-vous:', error);
+        
+        let errorMessage = "Impossible d'envoyer la demande de rendez-vous";
+        
+        if (error.code === '42501') {
+          errorMessage = "Vous n'êtes pas autorisé à envoyer une demande à ce propriétaire.";
+        } else if (error.code === '23503') {
+          errorMessage = "Le propriétaire de la carte n'existe pas.";
+        } else if (error.message?.includes('policy')) {
+          errorMessage = "Accès refusé. Vous êtes peut-être bloqué par ce propriétaire.";
+        }
+        
+        throw new Error(errorMessage);
       }
 
+      console.log('✅ Rendez-vous envoyé avec succès:', data);
+
       toast({
-        title: "Demande envoyée !",
-        description: "Votre demande de rendez-vous a été envoyée avec succès."
+        title: "✅ Demande envoyée !",
+        description: `Votre demande de rendez-vous a été envoyée à ${mcardOwnerName}`
       });
 
       // Reset form
@@ -146,11 +178,12 @@ Merci de confirmer ou proposer un autre créneau.
       });
       setIsOpen(false);
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error('❌ Erreur complète:', error);
       toast({
         variant: "destructive",
-        title: "Erreur",
-        description: "Impossible d'envoyer la demande"
+        title: "Erreur d'envoi",
+        description: error.message || "Une erreur s'est produite lors de l'envoi de la demande"
       });
     } finally {
       setLoading(false);
