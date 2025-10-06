@@ -10,17 +10,17 @@ import { PricingFooter } from "./pricing/PricingFooter";
 
 interface MCardPricingProps {
   mcards: MCard[];
-  onRequestUpgrade: (mcardId: string, plan: 'essential' | 'premium' | 'ultimate') => void;
-  onStartCreationFlow: (plan: 'essential' | 'premium' | 'ultimate') => void;
+  onRequestUpgrade: (mcardId: string, plan: 'free' | 'essential' | 'premium' | 'ultimate') => void;
+  onStartCreationFlow: (plan: 'free' | 'essential' | 'premium' | 'ultimate') => void;
   upgradingCardId?: string | null;
 }
 
 export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, upgradingCardId }: MCardPricingProps) => {
   const { t } = useTranslation();
   const [isSelectCardDialogOpen, setIsSelectCardDialogOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium' | 'ultimate' | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'essential' | 'premium' | 'ultimate' | null>(null);
 
-  const handleSelectPlan = (planId: 'essential' | 'premium' | 'ultimate') => {
+  const handleSelectPlan = (planId: 'free' | 'essential' | 'premium' | 'ultimate') => {
     if (upgradingCardId) {
       onRequestUpgrade(upgradingCardId, planId);
     } else if (mcards.length >= 3) {
@@ -50,7 +50,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <PricingHeader />
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-7xl mx-auto">
               {pricingPlans.map((plan, index) => (
                 <PricingPlanCard
                   key={index}

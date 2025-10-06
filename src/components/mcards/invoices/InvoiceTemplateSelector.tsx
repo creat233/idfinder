@@ -15,7 +15,7 @@ export const InvoiceTemplateSelector = ({
   onTemplateSelect 
 }: InvoiceTemplateSelectorProps) => {
   return (
-    <Card>
+    <Card className="mb-24">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Palette className="h-5 w-5" />

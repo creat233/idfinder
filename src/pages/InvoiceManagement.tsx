@@ -69,9 +69,9 @@ export default function InvoiceManagement() {
   // Vérifier que la MCard a un plan payant (Essential ou Premium)
   if (mcard.plan !== 'essential' && mcard.plan !== 'premium') {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background pb-24">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pb-24">
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
               <FileText className="h-12 w-12 text-muted-foreground mb-4" />
@@ -132,9 +132,9 @@ export default function InvoiceManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <Header />
-      <main className="container mx-auto px-4 py-4 sm:py-8 max-w-6xl">
+      <main className="container mx-auto px-4 py-4 sm:py-8 max-w-6xl pb-24">
         {/* En-tête - Responsive */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="min-w-0 flex-1">

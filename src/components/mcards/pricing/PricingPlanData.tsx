@@ -1,7 +1,30 @@
 
-import { Zap, Crown, Star, Sparkles } from "lucide-react";
+import { Zap, Crown, Sparkles, Gift } from "lucide-react";
 
 export const pricingPlans = [
+  {
+    id: 'free',
+    name: 'Gratuit',
+    price: 0,
+    monthlyPrice: 0,
+    description: 'Pour découvrir mCard',
+    features: [
+      'Carte de visite digitale basique',
+      'Informations de contact',
+      'Réseaux sociaux',
+      'Partage via QR code et lien',
+      'Aucun produit/service',
+      'Aucun statut',
+      'Aucune facture'
+    ],
+    isPopular: false,
+    icon: <Gift className="h-5 w-5 sm:h-6 sm:w-6" />,
+    gradient: 'from-green-100 to-emerald-200',
+    buttonColor: 'bg-green-600 hover:bg-green-700',
+    period: 'gratuit',
+    badge: 'GRATUIT',
+    paymentInfo: 'Activation instantanée'
+  },
   {
     id: 'essential',
     name: 'Essentiel',

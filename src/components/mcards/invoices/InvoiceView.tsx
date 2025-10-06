@@ -137,7 +137,7 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
       document.body.appendChild(elementToCapture);
       
       const canvas = await html2canvas(elementToCapture, {
-        scale: 3,
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
