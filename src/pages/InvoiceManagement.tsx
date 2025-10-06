@@ -66,8 +66,8 @@ export default function InvoiceManagement() {
     );
   }
 
-  // Vérifier que la MCard a un plan payant
-  if (mcard.plan === 'free') {
+  // Vérifier que la MCard a un plan payant (Essential ou Premium)
+  if (mcard.plan !== 'essential' && mcard.plan !== 'premium') {
     return (
       <div className="min-h-screen bg-background">
         <Header />

@@ -88,8 +88,8 @@ export const mcardsTranslations = {
     fr: "Partager la carte"
   },
   myMCards: {
-    en: "My mCards",
-    fr: "Mes mCards"
+    en: "MCard Subscription",
+    fr: "Abonnement MCard"
   },
   noMCards: {
     en: "No mCards created yet",

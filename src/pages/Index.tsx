@@ -13,7 +13,7 @@ const Index = () => {
       <HomeSEO />
       <div className="flex flex-col min-h-screen">
         <PublicHeader />
-        <main className="flex-grow pt-16 pb-20 md:pb-0">
+        <main className="flex-grow pt-16 pb-24 md:pb-0">
           <PublicHero />
           <PublicFeatures />
           <PublicPricing />

@@ -121,17 +121,34 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
     if (!invoiceRef.current) return;
     
     try {
-      const canvas = await html2canvas(invoiceRef.current, {
+      // Créer un clone pour le rendu
+      const elementToCapture = invoiceRef.current.cloneNode(true) as HTMLElement;
+      
+      // Cacher temporairement les boutons d'action dans le clone
+      const actionButtons = elementToCapture.querySelector('[data-action-buttons]');
+      if (actionButtons) {
+        (actionButtons as HTMLElement).style.display = 'none';
+      }
+      
+      // Ajouter le clone au DOM temporairement
+      elementToCapture.style.position = 'absolute';
+      elementToCapture.style.left = '-9999px';
+      elementToCapture.style.width = '1200px';
+      document.body.appendChild(elementToCapture);
+      
+      const canvas = await html2canvas(elementToCapture, {
         scale: 3,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
         imageTimeout: 0,
-        removeContainer: true,
-        windowWidth: 1200,
-        windowHeight: 1600
+        width: 1200,
+        height: elementToCapture.scrollHeight,
       });
+      
+      // Nettoyer
+      document.body.removeChild(elementToCapture);
       
       canvas.toBlob((blob) => {
         if (blob) {
@@ -156,14 +173,14 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
     <div className="max-w-4xl mx-auto space-y-6" ref={invoiceRef}>
       {/* En-tête avec actions */}
       <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-lg">
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">{invoice.invoice_number}</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-white">{invoice.invoice_number}</h1>
                 <Badge 
                   variant="secondary"
                   className="bg-white/20 text-white border-white/30 mt-2"
@@ -173,38 +190,38 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div data-action-buttons className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleShare}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 flex-1 sm:flex-none"
               >
                 {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-                {copied ? 'Copié!' : 'Partager'}
+                <span className="ml-1 sm:ml-2">{copied ? 'Copié!' : 'Partager'}</span>
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handlePrint}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 hidden sm:flex"
               >
-                <Printer className="h-4 w-4" />
+                <Printer className="h-4 w-4 mr-2" />
                 Imprimer
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleDownload}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 flex-1 sm:flex-none"
               >
                 <Download className="h-4 w-4" />
-                Télécharger
+                <span className="ml-1 sm:ml-2">Télécharger</span>
               </Button>
               <Button
                 variant="secondary"
                 onClick={onClose}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 w-full sm:w-auto"
               >
                 Fermer
               </Button>
@@ -298,7 +315,7 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
           )}
 
           {/* Informations client */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <h3 className="font-semibold mb-3">Informations client</h3>
               <div className="space-y-2">
@@ -353,30 +370,30 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
           {invoice.items && invoice.items.length > 0 && (
             <div>
               <h3 className="font-semibold mb-3">Articles</h3>
-              <div className="border rounded-lg overflow-hidden">
-                <table className="w-full">
+              <div className="border rounded-lg overflow-x-auto">
+                <table className="w-full text-sm sm:text-base">
                   <thead className="bg-muted/50">
                     <tr>
-                      <th className="text-left p-3">Description</th>
-                      <th className="text-center p-3">Quantité</th>
-                      <th className="text-right p-3">Prix unitaire</th>
-                      <th className="text-right p-3">Total</th>
+                      <th className="text-left p-2 sm:p-3">Description</th>
+                      <th className="text-center p-2 sm:p-3">Qté</th>
+                      <th className="text-right p-2 sm:p-3 hidden sm:table-cell">Prix unit.</th>
+                      <th className="text-right p-2 sm:p-3">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoice.items.map((item, index) => (
                       <tr key={index} className="border-t">
-                        <td className="p-3">{item.description}</td>
-                        <td className="p-3 text-center">{item.quantity}</td>
-                        <td className="p-3 text-right">{item.unit_price.toLocaleString()} FCFA</td>
-                        <td className="p-3 text-right font-medium">{item.total_price.toLocaleString()} FCFA</td>
+                        <td className="p-2 sm:p-3">{item.description}</td>
+                        <td className="p-2 sm:p-3 text-center">{item.quantity}</td>
+                        <td className="p-2 sm:p-3 text-right hidden sm:table-cell">{item.unit_price.toLocaleString()} FCFA</td>
+                        <td className="p-2 sm:p-3 text-right font-medium">{item.total_price.toLocaleString()} FCFA</td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot className="bg-muted/50 border-t-2">
                     <tr>
-                      <td colSpan={3} className="p-3 text-right font-semibold">Total général:</td>
-                      <td className="p-3 text-right font-bold text-lg">{invoice.amount.toLocaleString()} {invoice.currency}</td>
+                      <td colSpan={3} className="p-2 sm:p-3 text-right font-semibold text-sm sm:text-base">Total général:</td>
+                      <td className="p-2 sm:p-3 text-right font-bold text-base sm:text-lg">{invoice.amount.toLocaleString()} {invoice.currency}</td>
                     </tr>
                   </tfoot>
                 </table>
