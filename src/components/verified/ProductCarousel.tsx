@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { MCard, MCardProduct } from '@/types/mcard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { URL_CONFIG } from '@/utils/urlConfig';
+import { useNavigate } from 'react-router-dom';
 import { MCardInteractionButtons } from '@/components/mcards/MCardInteractionButtons';
 import { ImageWithFallback } from './ImageWithFallback';
 import { MCardComments } from './MCardComments';
@@ -20,6 +18,7 @@ interface ProductCarouselProps {
 }
 
 export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: ProductCarouselProps) => {
+  const navigate = useNavigate();
   const [mcards, setMCards] = useState<MCardWithProducts[]>([]);
   const [currentProductIndex, setCurrentProductIndex] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
@@ -118,8 +117,7 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
   };
 
   const handleProfileClick = (slug: string) => {
-    const url = URL_CONFIG.getMCardUrl(slug);
-    window.open(url, '_blank');
+    navigate(`/mcard/${slug}`);
   };
 
   if (loading) {

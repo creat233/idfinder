@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
-import { URL_CONFIG } from '@/utils/urlConfig';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfileLinkProps {
   profileImageUrl?: string | null;
@@ -17,11 +17,11 @@ export const ProfileLink = ({
   className = "",
   showName = false
 }: ProfileLinkProps) => {
+  const navigate = useNavigate();
+  
   const handleProfileClick = () => {
     console.log('ProfileLink clicked with slug:', mcardSlug);
-    const url = URL_CONFIG.getMCardUrl(mcardSlug);
-    console.log('Opening URL:', url);
-    window.open(url, '_blank');
+    navigate(`/mcard/${mcardSlug}`);
   };
 
   return (

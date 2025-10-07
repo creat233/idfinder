@@ -3,8 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MCard, MCardProduct } from '@/types/mcard';
-import { User, Building, Phone, Mail, ExternalLink } from 'lucide-react';
-import { URL_CONFIG } from '@/utils/urlConfig';
+import { User, Building, Phone, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProductImageModalProps {
   isOpen: boolean;
@@ -14,11 +14,12 @@ interface ProductImageModalProps {
 }
 
 export const ProductImageModal = ({ isOpen, onClose, product, mcard }: ProductImageModalProps) => {
+  const navigate = useNavigate();
+  
   if (!product || !mcard) return null;
 
   const handleProfileClick = () => {
-    const url = URL_CONFIG.getMCardUrl(mcard.slug);
-    window.open(url, '_blank');
+    navigate(`/mcard/${mcard.slug}`);
     onClose();
   };
 
@@ -103,7 +104,6 @@ export const ProductImageModal = ({ isOpen, onClose, product, mcard }: ProductIm
               >
                 <User className="h-4 w-4 mr-2" />
                 Voir le profil complet
-                <ExternalLink className="h-4 w-4 ml-2" />
               </Button>
             </div>
             

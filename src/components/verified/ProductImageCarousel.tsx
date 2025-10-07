@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MCard, MCardProduct } from '@/types/mcard';
-import { ChevronLeft, ChevronRight, User, Building, Phone, Mail, ExternalLink, X } from 'lucide-react';
-import { URL_CONFIG } from '@/utils/urlConfig';
+import { ChevronLeft, ChevronRight, Building, Phone, Mail, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { MCardComments } from './MCardComments';
 
 interface ProductImageCarouselProps {
@@ -17,6 +17,7 @@ interface ProductImageCarouselProps {
 }
 
 export const ProductImageCarousel = ({ isOpen, onClose, products, mcards, initialProductIndex }: ProductImageCarouselProps) => {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(initialProductIndex);
 
   useEffect(() => {
@@ -39,8 +40,7 @@ export const ProductImageCarousel = ({ isOpen, onClose, products, mcards, initia
   };
 
   const handleProfileClick = () => {
-    const url = URL_CONFIG.getMCardUrl(currentMCard.slug);
-    window.open(url, '_blank');
+    navigate(`/mcard/${currentMCard.slug}`);
     onClose();
   };
 
@@ -164,7 +164,6 @@ export const ProductImageCarousel = ({ isOpen, onClose, products, mcards, initia
                     </div>
                   )}
                   <div className="flex items-center gap-2 text-xs text-blue-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ExternalLink className="h-3 w-3" />
                     <span>Cliquez pour voir le profil complet</span>
                   </div>
                 </div>
