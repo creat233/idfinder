@@ -6,6 +6,7 @@ import { RobustAvatar } from '@/components/ui/robust-avatar';
 import { Badge } from '@/components/ui/badge';
 import { Verified, MapPin, Briefcase, Phone, Mail, Globe, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface VerifiedMCardsGridProps {
   searchQuery: string;
@@ -13,6 +14,7 @@ interface VerifiedMCardsGridProps {
 }
 
 export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMCardsGridProps) => {
+  const navigate = useNavigate();
   const [mcards, setMcards] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,7 +62,7 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
   });
 
   const handleViewCard = (slug: string) => {
-    window.open(`/${slug}`, '_blank');
+    navigate(`/mcard/${slug}`);
   };
 
   if (loading) {
