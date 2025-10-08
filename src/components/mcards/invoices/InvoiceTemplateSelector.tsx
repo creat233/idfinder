@@ -1,28 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Palette, Check } from 'lucide-react';
 import { InvoiceTemplate, invoiceTemplates } from '@/types/invoiceTemplate';
+import { TemplateColorPicker } from './TemplateColorPicker';
 
 interface InvoiceTemplateSelectorProps {
   selectedTemplate: string;
   onTemplateSelect: (templateId: string) => void;
+  customColors?: string[];
+  onCustomColorsChange?: (colors: string[]) => void;
 }
 
 export const InvoiceTemplateSelector = ({ 
   selectedTemplate, 
-  onTemplateSelect 
+  onTemplateSelect,
+  customColors = [],
+  onCustomColorsChange
 }: InvoiceTemplateSelectorProps) => {
+  const [localColors, setLocalColors] = useState<string[]>(customColors);
+
+  useEffect(() => {
+    setLocalColors(customColors);
+  }, [customColors]);
+
+  const handleColorsChange = (colors: string[]) => {
+    setLocalColors(colors);
+    onCustomColorsChange?.(colors);
+  };
+
   return (
-    <Card className="mb-24">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Palette className="h-5 w-5" />
-          Modèles de factures
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="space-y-6 mb-24">
+      {/* Sélecteur de couleurs personnalisées */}
+      {onCustomColorsChange && (
+        <TemplateColorPicker 
+          colors={localColors}
+          onChange={handleColorsChange}
+          maxColors={5}
+        />
+      )}
+
+      {/* Modèles de factures */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5" />
+            Modèles de factures
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {invoiceTemplates.map((template) => (
             <div
@@ -83,11 +110,12 @@ export const InvoiceTemplateSelector = ({
         
         <div className="mt-4 p-3 bg-muted/50 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            💡 Chaque modèle peut être personnalisé avec vos couleurs et votre logo. 
+            💡 Chaque modèle peut être personnalisé avec vos couleurs personnalisées. 
             Le modèle sélectionné s'appliquera à toutes vos nouvelles factures.
           </p>
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 };

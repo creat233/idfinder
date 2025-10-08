@@ -22,6 +22,7 @@ export default function InvoiceManagement() {
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
+  const [customColors, setCustomColors] = useState<string[]>([]);
 
   const { mcards } = useMCards();
   const mcard = mcards.find(m => m.slug === slug);
@@ -221,6 +222,8 @@ export default function InvoiceManagement() {
             <InvoiceTemplateSelector 
               selectedTemplate={selectedTemplate}
               onTemplateSelect={setSelectedTemplate}
+              customColors={customColors}
+              onCustomColorsChange={setCustomColors}
             />
           </TabsContent>
 

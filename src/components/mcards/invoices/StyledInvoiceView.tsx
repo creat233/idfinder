@@ -120,40 +120,43 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
     window.print();
   };
 
-  const handleDownload = () => {
-    const element = document.createElement('a');
-    const content = `
-      FACTURE ${invoice.invoice_number}
-      
-      Émetteur: ${mcardOwner?.full_name || ''}
-      ${mcardOwner?.company ? `Entreprise: ${mcardOwner.company}` : ''}
-      ${mcardOwner?.email ? `Email: ${mcardOwner.email}` : ''}
-      ${mcardOwner?.phone_number ? `Téléphone: ${mcardOwner.phone_number}` : ''}
-      
-      Client: ${invoice.client_name}
-      ${invoice.client_email ? `Email: ${invoice.client_email}` : ''}
-      ${invoice.client_phone ? `Téléphone: ${invoice.client_phone}` : ''}
-      
-      Date de création: ${new Date(invoice.created_at).toLocaleDateString('fr-FR')}
-      ${invoice.due_date ? `Date d'échéance: ${new Date(invoice.due_date).toLocaleDateString('fr-FR')}` : ''}
-      
-      Articles:
-      ${invoice.items?.map(item => 
-        `- ${item.description}: ${item.quantity} x ${item.unit_price.toLocaleString()} FCFA = ${item.total_price.toLocaleString()} FCFA`
-      ).join('\n') || ''}
-      
-      TOTAL: ${invoice.amount.toLocaleString()} ${invoice.currency}
-      
-      ${invoice.description ? `Description: ${invoice.description}` : ''}
-      ${invoice.notes ? `Notes: ${invoice.notes}` : ''}
-    `;
+  const handleDownload = async () => {
+    const html2canvas = (await import('html2canvas')).default;
     
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `facture-${invoice.invoice_number}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    // Trouver l'élément de la facture
+    const invoiceElement = document.getElementById('invoice-content');
+    if (!invoiceElement) {
+      showSuccess('Erreur', 'Impossible de trouver le contenu de la facture');
+      return;
+    }
+
+    try {
+      // Créer le canvas
+      const canvas = await html2canvas(invoiceElement, {
+        backgroundColor: template.styles.backgroundColor,
+        scale: 2, // Meilleure qualité
+        logging: false,
+        useCORS: true,
+      });
+
+      // Convertir en blob et télécharger
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `facture-${invoice.invoice_number}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          showSuccess('Succès', 'Facture téléchargée avec succès');
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Erreur lors du téléchargement:', error);
+      showSuccess('Erreur', 'Erreur lors du téléchargement de la facture');
+    }
   };
 
   const headerStyle = {
@@ -171,7 +174,7 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
   return (
     <div className="max-w-4xl mx-auto space-y-6" style={{ fontFamily: template.styles.fontFamily }}>
       {/* En-tête avec actions */}
-      <Card className="shadow-xl border-0" style={headerStyle}>
+      <Card className="shadow-xl border-0 print:hidden" style={headerStyle}>
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -230,7 +233,7 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
       </Card>
 
       {/* Contenu de la facture */}
-      <Card style={cardStyle}>
+      <Card id="invoice-content" style={cardStyle}>
         <CardHeader style={{ borderBottomColor: template.styles.borderColor }}>
           <CardTitle className="flex items-center justify-between">
             <span>Facture {invoice.invoice_number}</span>

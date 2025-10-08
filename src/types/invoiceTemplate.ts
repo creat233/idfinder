@@ -12,6 +12,7 @@ export interface InvoiceTemplate {
     layout: 'standard' | 'compact' | 'detailed';
     fontFamily: string;
   };
+  customColors?: string[]; // Max 5 couleurs personnalisées
 }
 
 export const invoiceTemplates: InvoiceTemplate[] = [
