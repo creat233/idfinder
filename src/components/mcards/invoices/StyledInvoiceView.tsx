@@ -176,13 +176,13 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
       {/* En-tête avec actions */}
       <Card className="shadow-xl border-0 print:hidden" style={headerStyle}>
         <CardContent className="p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-lg">
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">{invoice.invoice_number}</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-white">{invoice.invoice_number}</h1>
                 <Badge 
                   variant="secondary"
                   className="bg-white/20 text-white border-white/30 mt-2"
@@ -192,38 +192,39 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleShare}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 flex-1 sm:flex-none min-w-[40px]"
               >
                 {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-                {copied ? 'Copié!' : 'Partager'}
+                <span className="hidden sm:inline ml-2">{copied ? 'Copié!' : 'Partager'}</span>
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handlePrint}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 flex-1 sm:flex-none min-w-[40px]"
               >
                 <Printer className="h-4 w-4" />
-                Imprimer
+                <span className="hidden sm:inline ml-2">Imprimer</span>
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleDownload}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 flex-1 sm:flex-none min-w-[40px]"
               >
                 <Download className="h-4 w-4" />
-                Télécharger
+                <span className="hidden sm:inline ml-2">Télécharger</span>
               </Button>
               <Button
                 variant="secondary"
+                size="sm"
                 onClick={onClose}
-                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 flex-1 sm:flex-none"
               >
                 Fermer
               </Button>
