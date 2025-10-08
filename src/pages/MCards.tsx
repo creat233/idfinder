@@ -52,12 +52,26 @@ const MCards = () => {
   });
 
   // Wrapper function to handle the upgrade request with the correct signature
-  const handleUpgradeRequest = async (mcardId: string, plan: 'essential' | 'premium') => {
-    await handleRequestUpgrade(mcardId, plan, requestPlanUpgrade);
+  const handleUpgradeRequest = async (mcardId: string, plan: 'free' | 'essential' | 'premium' | 'ultimate') => {
+    // Le plan gratuit n'a pas besoin de demande d'upgrade, créer directement
+    if (plan === 'free') {
+      handleFormCreationFlow(plan);
+      return;
+    }
+    // Pour les autres plans, suivre le processus normal
+    if (plan === 'essential' || plan === 'premium' || plan === 'ultimate') {
+      await handleRequestUpgrade(mcardId, plan, requestPlanUpgrade);
+    }
   };
 
-  const handleStartCreationFlow = (plan: 'essential' | 'premium') => {
-    setShowCreationPage(true);
+  const handleStartCreationFlow = (plan: 'free' | 'essential' | 'premium' | 'ultimate') => {
+    // Le plan gratuit démarre directement le formulaire
+    if (plan === 'free') {
+      handleFormCreationFlow(plan);
+    } else {
+      // Les plans payants affichent la page de création
+      setShowCreationPage(true);
+    }
   };
 
   if (showCreationPage) {
