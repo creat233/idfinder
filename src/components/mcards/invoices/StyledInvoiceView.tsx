@@ -72,7 +72,7 @@ const getStatusLabel = (status: string) => {
 export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoiceViewProps) => {
   const [copied, setCopied] = useState(false);
   const [mcardOwner, setMcardOwner] = useState<MCardOwner | null>(null);
-  const { showSuccess } = useToast();
+  const { toast } = useToast();
 
   const template = invoiceTemplates.find(t => t.id === templateId) || invoiceTemplates[0];
 
@@ -96,26 +96,38 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
   }, [invoice.mcard_id]);
 
   const handleShare = async () => {
-    const html2canvas = (await import('html2canvas')).default;
-    const invoiceElement = document.getElementById('invoice-content');
-    
-    if (!invoiceElement) {
-      showSuccess('Erreur', 'Impossible de trouver le contenu de la facture');
-      return;
-    }
-
     try {
+      const html2canvas = (await import('html2canvas')).default;
+      const invoiceElement = document.getElementById('invoice-content');
+      
+      if (!invoiceElement) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de trouver le contenu de la facture",
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Créer le canvas pour partager l'image
       const canvas = await html2canvas(invoiceElement, {
         backgroundColor: template.styles.backgroundColor,
         scale: 2,
         logging: false,
         useCORS: true,
+        allowTaint: true,
       });
 
       // Convertir en blob
       canvas.toBlob(async (blob) => {
-        if (!blob) return;
+        if (!blob) {
+          toast({
+            title: "Erreur",
+            description: "Impossible de créer l'image",
+            variant: "destructive"
+          });
+          return;
+        }
 
         const file = new File([blob], `facture-${invoice.invoice_number}.png`, { type: 'image/png' });
         
@@ -127,8 +139,19 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
               title: `Facture ${invoice.invoice_number}`,
               text: `Facture de ${invoice.amount.toLocaleString()} ${invoice.currency} pour ${invoice.client_name}`,
             });
+            toast({
+              title: "Succès",
+              description: "Facture partagée avec succès"
+            });
           } catch (error) {
-            console.log('Partage annulé');
+            if ((error as Error).name !== 'AbortError') {
+              console.error('Erreur lors du partage:', error);
+              toast({
+                title: "Erreur",
+                description: "Erreur lors du partage",
+                variant: "destructive"
+              });
+            }
           }
         } else {
           // Fallback: télécharger l'image
@@ -140,12 +163,19 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
           link.click();
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
-          showSuccess('Succès', 'Facture téléchargée avec succès');
+          toast({
+            title: "Succès",
+            description: "Facture téléchargée avec succès"
+          });
         }
       }, 'image/png');
     } catch (error) {
       console.error('Erreur lors du partage:', error);
-      showSuccess('Erreur', 'Erreur lors du partage de la facture');
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du partage de la facture",
+        variant: "destructive"
+      });
     }
   };
 
@@ -154,22 +184,27 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
   };
 
   const handleDownload = async () => {
-    const html2canvas = (await import('html2canvas')).default;
-    
-    // Trouver l'élément de la facture
-    const invoiceElement = document.getElementById('invoice-content');
-    if (!invoiceElement) {
-      showSuccess('Erreur', 'Impossible de trouver le contenu de la facture');
-      return;
-    }
-
     try {
+      const html2canvas = (await import('html2canvas')).default;
+      
+      // Trouver l'élément de la facture
+      const invoiceElement = document.getElementById('invoice-content');
+      if (!invoiceElement) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de trouver le contenu de la facture",
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Créer le canvas
       const canvas = await html2canvas(invoiceElement, {
         backgroundColor: template.styles.backgroundColor,
-        scale: 2, // Meilleure qualité
+        scale: 2,
         logging: false,
         useCORS: true,
+        allowTaint: true,
       });
 
       // Convertir en blob et télécharger
@@ -183,12 +218,25 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
           link.click();
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
-          showSuccess('Succès', 'Facture téléchargée avec succès');
+          toast({
+            title: "Succès",
+            description: "Facture téléchargée avec succès"
+          });
+        } else {
+          toast({
+            title: "Erreur",
+            description: "Impossible de créer l'image",
+            variant: "destructive"
+          });
         }
       }, 'image/png');
     } catch (error) {
       console.error('Erreur lors du téléchargement:', error);
-      showSuccess('Erreur', 'Erreur lors du téléchargement de la facture');
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du téléchargement de la facture",
+        variant: "destructive"
+      });
     }
   };
 
