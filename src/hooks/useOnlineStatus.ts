@@ -5,32 +5,37 @@ export const useOnlineStatus = (userId: string) => {
   const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      setIsOnline(false);
+      return;
+    }
 
     const channelName = `user-presence-${userId}`;
     
     const channel = supabase
-      .channel(channelName)
+      .channel(channelName, {
+        config: {
+          presence: {
+            key: userId,
+          },
+        },
+      })
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
-        const presenceData = state[userId];
-        setIsOnline(!!presenceData && presenceData.length > 0);
+        console.log('Presence state:', state);
+        // Vérifier si l'utilisateur est présent dans l'état
+        const isUserOnline = Object.keys(state).length > 0;
+        setIsOnline(isUserOnline);
       })
-      .on('presence', { event: 'join' }, ({ key }) => {
-        if (key === userId) setIsOnline(true);
+      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+        console.log('User joined:', key);
+        setIsOnline(true);
       })
-      .on('presence', { event: 'leave' }, ({ key }) => {
-        if (key === userId) setIsOnline(false);
+      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+        console.log('User left:', key);
+        setIsOnline(false);
       })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          // Track initial presence
-          await channel.track({ 
-            user_id: userId, 
-            online_at: new Date().toISOString() 
-          });
-        }
-      });
+      .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
