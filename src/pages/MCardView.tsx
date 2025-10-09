@@ -13,12 +13,15 @@ import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalPro
 import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
 import { MCardCustomized } from '@/components/mcards/MCardCustomized';
 import { useMCardView } from '@/hooks/useMCardView';
+import { useUserPresence } from '@/hooks/useUserPresence';
+import { useAuth } from '@/hooks/useAuth';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { MCardSEO } from '@/components/seo/MCardSEO';
 
 const MCardView = () => {
+  const { user } = useAuth();
   const {
     mcard,
     statuses,
@@ -38,6 +41,9 @@ const MCardView = () => {
     addStatus,
     addProduct
   } = useMCardView();
+
+  // Activer la présence pour l'utilisateur connecté
+  useUserPresence(user?.id);
 
   if (loading) {
     return <MCardViewLoading />;

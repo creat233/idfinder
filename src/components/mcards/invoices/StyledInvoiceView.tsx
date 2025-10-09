@@ -96,23 +96,56 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
   }, [invoice.mcard_id]);
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/invoice/${invoice.id}`;
+    const html2canvas = (await import('html2canvas')).default;
+    const invoiceElement = document.getElementById('invoice-content');
     
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Facture ${invoice.invoice_number}`,
-          text: `Facture de ${invoice.amount.toLocaleString()} ${invoice.currency} pour ${invoice.client_name}`,
-          url: shareUrl,
-        });
-      } catch (error) {
-        console.log('Partage annulé');
-      }
-    } else {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      showSuccess('Succès', 'Lien copié dans le presse-papiers');
-      setTimeout(() => setCopied(false), 2000);
+    if (!invoiceElement) {
+      showSuccess('Erreur', 'Impossible de trouver le contenu de la facture');
+      return;
+    }
+
+    try {
+      // Créer le canvas pour partager l'image
+      const canvas = await html2canvas(invoiceElement, {
+        backgroundColor: template.styles.backgroundColor,
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      });
+
+      // Convertir en blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+
+        const file = new File([blob], `facture-${invoice.invoice_number}.png`, { type: 'image/png' });
+        
+        // Partager l'image si l'API de partage est disponible
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: `Facture ${invoice.invoice_number}`,
+              text: `Facture de ${invoice.amount.toLocaleString()} ${invoice.currency} pour ${invoice.client_name}`,
+            });
+          } catch (error) {
+            console.log('Partage annulé');
+          }
+        } else {
+          // Fallback: télécharger l'image
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `facture-${invoice.invoice_number}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          showSuccess('Succès', 'Facture téléchargée avec succès');
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Erreur lors du partage:', error);
+      showSuccess('Erreur', 'Erreur lors du partage de la facture');
     }
   };
 
