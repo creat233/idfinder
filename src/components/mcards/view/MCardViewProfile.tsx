@@ -162,9 +162,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 </h1>
                 <div className="flex items-center gap-3">
                   <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
-                  {!isOwner && (
-                    <OnlineStatusIndicator userId={mcard.user_id} showText={true} />
-                  )}
+                  <OnlineStatusIndicator userId={mcard.user_id} showText={true} />
                 </div>
               </div>
               

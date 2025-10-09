@@ -109,13 +109,20 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
         return;
       }
 
-      // Créer le canvas pour partager l'image
+      // Créer le canvas pour partager l'image avec un fond blanc fixe
       const canvas = await html2canvas(invoiceElement, {
-        backgroundColor: template.styles.backgroundColor,
+        backgroundColor: '#ffffff',
         scale: 2,
         logging: false,
         useCORS: true,
         allowTaint: true,
+        onclone: (clonedDoc) => {
+          // Nettoyer les styles HSL qui causent des problèmes
+          const clonedElement = clonedDoc.getElementById('invoice-content');
+          if (clonedElement) {
+            clonedElement.style.backgroundColor = '#ffffff';
+          }
+        }
       });
 
       // Convertir en blob
@@ -198,13 +205,20 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
         return;
       }
 
-      // Créer le canvas
+      // Créer le canvas avec un fond blanc fixe
       const canvas = await html2canvas(invoiceElement, {
-        backgroundColor: template.styles.backgroundColor,
+        backgroundColor: '#ffffff',
         scale: 2,
         logging: false,
         useCORS: true,
         allowTaint: true,
+        onclone: (clonedDoc) => {
+          // Nettoyer les styles HSL qui causent des problèmes
+          const clonedElement = clonedDoc.getElementById('invoice-content');
+          if (clonedElement) {
+            clonedElement.style.backgroundColor = '#ffffff';
+          }
+        }
       });
 
       // Convertir en blob et télécharger
