@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { MCard, MCardProduct } from '@/types/mcard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { URL_CONFIG } from '@/utils/urlConfig';
+import { useNavigate } from 'react-router-dom';
 import { MCardInteractionButtons } from '@/components/mcards/MCardInteractionButtons';
 import { ImageWithFallback } from './ImageWithFallback';
 
@@ -24,6 +24,7 @@ interface GroupedProduct {
 }
 
 export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselProps) => {
+  const navigate = useNavigate();
   const [pinnedProducts, setPinnedProducts] = useState<PinnedProductWithMCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [groupedProducts, setGroupedProducts] = useState<GroupedProduct[]>([]);
@@ -162,8 +163,7 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
   };
 
   const handleProfileClick = (slug: string) => {
-    const url = URL_CONFIG.getMCardUrl(slug);
-    window.open(url, '_blank');
+    navigate(`/mcard/${slug}`);
   };
 
   if (loading) {

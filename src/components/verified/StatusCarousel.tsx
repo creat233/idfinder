@@ -5,7 +5,7 @@ import { MCard, MCardStatus } from '@/types/mcard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { URL_CONFIG } from '@/utils/urlConfig';
+import { useNavigate } from 'react-router-dom';
 import { StatusImageModal } from '@/components/mcards/view/StatusImageModal';
 
 interface MCardWithStatus extends MCard {
@@ -17,6 +17,7 @@ interface StatusCarouselProps {
 }
 
 export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
+  const navigate = useNavigate();
   const [mcards, setMCards] = useState<MCardWithStatus[]>([]);
   const [currentStatusIndex, setCurrentStatusIndex] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
@@ -116,8 +117,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   };
 
   const handleProfileClick = (slug: string) => {
-    const url = URL_CONFIG.getMCardUrl(slug);
-    window.open(url, '_blank');
+    navigate(`/mcard/${slug}`);
   };
 
   if (loading) {
