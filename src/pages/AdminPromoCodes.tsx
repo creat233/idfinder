@@ -1,6 +1,9 @@
 
 import { AdminRoute } from "@/components/AdminRoute";
 import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminPromoCodesList } from "@/components/promo/AdminPromoCodesList";
 import { AdminPendingCodes } from "@/components/promo/AdminPendingCodes";
@@ -22,14 +25,30 @@ import { SystemStatusChecker } from "@/components/admin/SystemStatusChecker";
 import { AdminMCardVerifications } from "@/components/promo/AdminMCardVerifications";
 
 const AdminPromoCodes = () => {
+  const navigate = useNavigate();
+
+  const handleExit = () => {
+    navigate('/');
+  };
+
   return (
     <AdminRoute>
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Administration FinderID
-          </h1>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Administration FinderID
+            </h1>
+            <Button 
+              onClick={handleExit}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Quitter l'admin
+            </Button>
+          </div>
           
           <Tabs defaultValue="status" className="w-full">
             <TabsList className="grid w-full grid-cols-6 lg:grid-cols-14 mb-8">

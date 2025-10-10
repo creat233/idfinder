@@ -41,24 +41,27 @@ export const SearchSection = ({ user }: SearchSectionProps) => {
     setShowNotFoundAction(false);
 
     try {
-      // Recherche dans la base de données
+      // Recherche dans la base de données - utilisation sans RLS restrictive
       const { data, error } = await supabase
         .from('reported_cards')
         .select('*')
-        .eq('card_number', searchQuery.trim())
-        .maybeSingle();
+        .ilike('card_number', `%${searchQuery.trim()}%`)
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
+        console.error('Erreur lors de la recherche:', error);
         throw error;
       }
 
-      if (data) {
+      if (data && data.length > 0) {
+        const foundCard = data[0];
         toast({
           title: t("toast_card_found_title"),
           description: t("toast_card_found_desc_redirecting"),
         });
         // Rediriger vers une page de détails ou afficher les résultats
-        navigate(`/recherche/${data.card_number}`);
+        navigate(`/recherche/${foundCard.card_number}`);
       } else {
         setShowNotFoundAction(true);
         toast({
