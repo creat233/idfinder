@@ -22,6 +22,7 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
   const { slots, loading, saveSlot, deleteSlot, DAYS_OF_WEEK } = useMCardAvailability(mcardId);
   const [isOpen, setIsOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState<AvailabilitySlot | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleSaveSlot = async (slotData: AvailabilitySlot) => {
     await saveSlot(slotData);
@@ -53,34 +54,46 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
             <CalendarClock className="h-5 w-5 text-blue-600" />
             Horaires de disponibilité
           </div>
-          {isOwner && (
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Ajouter
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Gestion des créneaux horaires</DialogTitle>
-                </DialogHeader>
-                <SlotForm 
-                  mcardId={mcardId}
-                  slot={editingSlot}
-                  onSave={handleSaveSlot}
-                  onCancel={() => setEditingSlot(null)}
-                  DAYS_OF_WEEK={DAYS_OF_WEEK}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
+          <div className="flex items-center gap-2">
+            {!isOwner && (
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => setIsVisible(!isVisible)}
+              >
+                {isVisible ? 'Masquer' : 'Afficher'}
+              </Button>
+            )}
+            {isOwner && (
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    Ajouter
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Gestion des créneaux horaires</DialogTitle>
+                  </DialogHeader>
+                  <SlotForm 
+                    mcardId={mcardId}
+                    slot={editingSlot}
+                    onSave={handleSaveSlot}
+                    onCancel={() => setEditingSlot(null)}
+                    DAYS_OF_WEEK={DAYS_OF_WEEK}
+                  />
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        {loading ? (
-          <div className="text-center py-4">Chargement...</div>
-        ) : slots.length === 0 ? (
+      {isVisible && (
+        <CardContent>
+          {loading ? (
+            <div className="text-center py-4">Chargement...</div>
+          ) : slots.length === 0 ? (
           <div className="text-center py-4 text-muted-foreground">
             {isOwner ? "Aucun créneau configuré" : "Horaires non disponibles"}
           </div>
@@ -137,7 +150,8 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
             })}
           </div>
         )}
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 };

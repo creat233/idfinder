@@ -22,18 +22,19 @@ export const useOnlineStatus = (userId: string) => {
       })
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
-        console.log('Presence state:', state);
-        // Vérifier si l'utilisateur est présent dans l'état
-        const isUserOnline = Object.keys(state).length > 0;
+        // Vérifier si l'utilisateur spécifique est dans l'état de présence
+        const isUserOnline = state[userId] && state[userId].length > 0;
         setIsOnline(isUserOnline);
       })
-      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-        console.log('User joined:', key);
-        setIsOnline(true);
+      .on('presence', { event: 'join' }, ({ key }) => {
+        if (key === userId) {
+          setIsOnline(true);
+        }
       })
-      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-        console.log('User left:', key);
-        setIsOnline(false);
+      .on('presence', { event: 'leave' }, ({ key }) => {
+        if (key === userId) {
+          setIsOnline(false);
+        }
       })
       .subscribe();
 

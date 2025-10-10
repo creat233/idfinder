@@ -30,9 +30,12 @@ import {
   Globe,
   Smartphone,
   Monitor,
-  Download
+  Download,
+  FileDown
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface AnalyticsData {
   views_today: number;
@@ -126,7 +129,7 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
     }
   };
 
-  const exportData = () => {
+  const exportDataJSON = () => {
     if (!analytics) return;
     
     const dataToExport = {
@@ -142,6 +145,60 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
     a.download = `mcard-analytics-${mcardSlug}-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const exportDataPDF = () => {
+    if (!analytics) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // En-tête
+    doc.setFontSize(20);
+    doc.text('Analyses détaillées MCard', pageWidth / 2, 20, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text(`MCard: ${mcardSlug}`, pageWidth / 2, 28, { align: 'center' });
+    doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, pageWidth / 2, 34, { align: 'center' });
+
+    // Métriques principales
+    doc.setFontSize(14);
+    doc.text('Métriques principales', 14, 45);
+    
+    autoTable(doc, {
+      startY: 50,
+      head: [['Métrique', 'Valeur']],
+      body: [
+        ['Vues (7 jours)', analytics.views_week.toLocaleString()],
+        ['Vues (30 jours)', analytics.views_month.toLocaleString()],
+        ['Likes', analytics.likes_count.toString()],
+        ['Favoris', analytics.favorites_count.toString()],
+        ['Messages', analytics.messages_count.toString()],
+        ['Taux de croissance', `+${analytics.growth_rate}%`],
+      ],
+    });
+
+    // Sources de trafic
+    doc.setFontSize(14);
+    doc.text('Sources de trafic', 14, (doc as any).lastAutoTable.finalY + 15);
+    
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 20,
+      head: [['Source', 'Visites']],
+      body: analytics.top_referrers.map(r => [r.source, r.count.toString()]),
+    });
+
+    // Appareils
+    doc.setFontSize(14);
+    doc.text('Répartition par appareil', 14, (doc as any).lastAutoTable.finalY + 15);
+    
+    autoTable(doc, {
+      startY: (doc as any).lastAutoTable.finalY + 20,
+      head: [['Appareil', 'Nombre', 'Pourcentage']],
+      body: analytics.device_stats.map(d => [d.device, d.count.toString(), `${d.percentage}%`]),
+    });
+
+    // Sauvegarde
+    doc.save(`mcard-analytics-${mcardSlug}-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   if (loading) {
@@ -212,9 +269,13 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
               <TabsTrigger value="30d">30j</TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button onClick={exportData} variant="outline" size="sm">
+          <Button onClick={exportDataPDF} variant="default" size="sm">
+            <FileDown className="h-4 w-4 mr-2" />
+            PDF
+          </Button>
+          <Button onClick={exportDataJSON} variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
-            Exporter
+            JSON
           </Button>
         </div>
       </div>
