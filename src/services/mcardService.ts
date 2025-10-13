@@ -62,8 +62,8 @@ export const createMCard = async (
     subscriptionExpiresAt = new Date();
     subscriptionExpiresAt.setDate(subscriptionExpiresAt.getDate() + 30); // 30 jours
   } 
-  // Pour les plans payants : en attente de paiement
-  else if (mcardData.plan === 'essential' || mcardData.plan === 'premium') {
+  // Pour les plans payants (essential, premium, ultimate) : en attente de paiement
+  else if (mcardData.plan === 'essential' || mcardData.plan === 'premium' || mcardData.plan === 'ultimate') {
     subscriptionStatus = 'pending_payment';
     isPublished = false;
     // La date d'expiration sera définie après confirmation du paiement par l'admin
