@@ -1465,6 +1465,7 @@ export type Database = {
           telegram_url: string
           tiktok_url: string
           twitter_url: string
+          user_id: string
           verification_status: string
           view_count: number
           website_url: string
