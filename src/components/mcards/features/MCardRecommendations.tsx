@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,7 @@ export const MCardRecommendations = ({
   userInterests = [],
   className = ''
 }: MCardRecommendationsProps) => {
+  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -222,7 +224,7 @@ export const MCardRecommendations = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => window.open(`/${rec.mcard.slug}`, '_blank')}
+                  onClick={() => navigate(`/mcard/${rec.mcard.slug}`)}
                   className="opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   Voir
@@ -236,7 +238,7 @@ export const MCardRecommendations = ({
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => window.open('/explore', '_blank')}
+            onClick={() => navigate('/verified-mcards')}
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Découvrir plus de profils
