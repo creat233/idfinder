@@ -173,7 +173,7 @@ export const deleteMCard = async (id: string, profilePictureUrl?: string | null)
   if (error) throw error;
 };
 
-export const requestPlanUpgrade = async (id: string, plan: 'essential' | 'premium'): Promise<MCard> => {
+export const requestPlanUpgrade = async (id: string, plan: 'essential' | 'premium' | 'ultimate'): Promise<MCard> => {
   const { data, error } = await supabase
     .from('mcards')
     .update({ 
