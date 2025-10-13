@@ -33,7 +33,6 @@ import AdminReports from "./pages/admin/AdminReports";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSettings from "./pages/AdminSettings";
 import VerifiedMCards from "./pages/VerifiedMCards";
-import UnverifiedMCards from "./pages/UnverifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
 import Messages from "./pages/Messages";
 import Cart from "./pages/Cart";
@@ -115,7 +114,6 @@ function AppContent() {
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
               <Route path="/admin/parametres" element={<AdminSettings />} />
               <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
-              <Route path="/mcards-non-verifiees" element={<UnverifiedMCards />} />
               <Route path="/mes-favoris" element={<MyFavorites />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/panier" element={<Cart />} />
