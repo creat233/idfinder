@@ -70,6 +70,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       phone_number: mcard.phone_number || undefined,
       email: mcard.email || undefined,
       website_url: mcard.website_url || undefined,
+      profile_picture_url: mcard.profile_picture_url || undefined,
       linkedin_url: mcard.linkedin_url || undefined,
       twitter_url: mcard.twitter_url || undefined,
       facebook_url: mcard.facebook_url || undefined,

@@ -10,6 +10,7 @@ export const generateVCard = (mcard: {
   facebook_url?: string;
   instagram_url?: string;
   note?: string;
+  profile_picture_url?: string;
 }) => {
   const vcard = [
     'BEGIN:VCARD',
@@ -20,6 +21,7 @@ export const generateVCard = (mcard: {
     mcard.phone_number ? `TEL;TYPE=WORK,VOICE:${mcard.phone_number}` : '',
     mcard.email ? `EMAIL;TYPE=INTERNET:${mcard.email}` : '',
     mcard.website_url ? `URL:${mcard.website_url}` : '',
+    mcard.profile_picture_url ? `PHOTO;VALUE=URL;TYPE=JPEG:${mcard.profile_picture_url}` : '',
     mcard.linkedin_url ? `X-SOCIALPROFILE;TYPE=linkedin:${mcard.linkedin_url}` : '',
     mcard.twitter_url ? `X-SOCIALPROFILE;TYPE=twitter:${mcard.twitter_url}` : '',
     mcard.facebook_url ? `X-SOCIALPROFILE;TYPE=facebook:${mcard.facebook_url}` : '',
