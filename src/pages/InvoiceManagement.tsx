@@ -67,8 +67,8 @@ export default function InvoiceManagement() {
     );
   }
 
-  // Vérifier que la MCard a un plan payant (Essential ou Premium)
-  if (mcard.plan !== 'essential' && mcard.plan !== 'premium') {
+  // Vérifier que la MCard a un plan payant (Essential, Premium ou Ultimate)
+  if (mcard.plan !== 'essential' && mcard.plan !== 'premium' && mcard.plan !== 'ultimate') {
     return (
       <div className="min-h-screen bg-background pb-24">
         <Header />

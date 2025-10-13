@@ -144,14 +144,14 @@ export const useMCards = () => {
     }
   }, [t, toast, mcards]);
 
-  const requestPlanUpgrade = useCallback(async (id: string, plan: 'essential' | 'premium') => {
+  const requestPlanUpgrade = useCallback(async (id: string, plan: 'essential' | 'premium' | 'ultimate') => {
     try {
       setLoading(true);
       const data = await mcardService.requestPlanUpgrade(id, plan);
       
       setMCards(prev => prev.map(card => card.id === id ? data : card));
       
-      const planName = plan === 'essential' ? t('planEssential') : t('planPremium');
+      const planName = plan === 'essential' ? t('planEssential') : plan === 'premium' ? t('planPremium') : 'Ultimate';
       toast({ 
         title: t('planUpgradeRequestSent'),
         description: t('planUpgradeRequestSentDescription').replace('{planName}', planName)
