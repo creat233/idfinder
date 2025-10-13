@@ -83,9 +83,14 @@ const UnverifiedMCards = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 overflow-hidden">
       {!isMobile && <PublicHeader />}
       
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full pt-4">
+        <div className="text-center mb-6 px-4">
+          <h1 className="text-3xl font-bold text-white mb-2">Produits & Services</h1>
+          <p className="text-gray-300">Découvrez les produits et services proposés</p>
+        </div>
+
         {/* Produits non vérifiés - Style TikTok Feed */}
-        <div className="px-2 sm:px-4 lg:px-6 mb-8">
+        <div className="mb-8">
           <ProductCarousel 
             onImageClick={handleImageClick}
             selectedCategory={selectedCategory === "all" ? undefined : selectedCategory}
@@ -102,11 +107,13 @@ const UnverifiedMCards = () => {
         initialProductIndex={selectedProductIndex}
       />
 
-      {/* Grille des MCards non vérifiées */}
-      <UnverifiedMCardsGrid 
-        searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
-      />
+      {/* Grille des MCards non vérifiées - Cachée pour le moment */}
+      {searchQuery && (
+        <UnverifiedMCardsGrid 
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+        />
+      )}
       
       {/* Particules flottantes */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
