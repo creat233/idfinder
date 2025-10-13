@@ -238,7 +238,7 @@ export const MCardRecommendations = ({
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => navigate('/verified-mcards')}
+            onClick={() => navigate('/mcards-verifiees')}
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Découvrir plus de profils
