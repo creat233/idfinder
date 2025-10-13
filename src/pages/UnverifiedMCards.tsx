@@ -5,6 +5,8 @@ import { ProductImageCarousel } from "@/components/verified/ProductImageCarousel
 import { ProductCarousel } from "@/components/verified/ProductCarousel";
 import { UnverifiedMCardsGrid } from "@/components/verified/UnverifiedMCardsGrid";
 import { MCard, MCardProduct } from "@/types/mcard";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 const UnverifiedMCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -86,17 +88,33 @@ const UnverifiedMCards = () => {
       <div className="relative z-10 w-full pt-4">
         <div className="text-center mb-6 px-4">
           <h1 className="text-3xl font-bold text-white mb-2">Produits & Services</h1>
-          <p className="text-gray-300">Découvrez les produits et services proposés</p>
+          <p className="text-gray-300 mb-4">Découvrez les produits et services proposés</p>
+          
+          {/* Barre de recherche */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Rechercher par nom, entreprise, produit, service..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 py-6 text-lg bg-white/10 backdrop-blur border-white/20 text-white placeholder:text-gray-400 focus:bg-white/20"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Produits non vérifiés - Style TikTok Feed */}
-        <div className="mb-8">
-          <ProductCarousel 
-            onImageClick={handleImageClick}
-            selectedCategory={selectedCategory === "all" ? undefined : selectedCategory}
-            showVerified={false}
-          />
-        </div>
+        {/* Produits non vérifiés - Style TikTok Feed - Seulement si pas de recherche */}
+        {!searchQuery && (
+          <div className="mb-8">
+            <ProductCarousel 
+              onImageClick={handleImageClick}
+              selectedCategory={selectedCategory === "all" ? undefined : selectedCategory}
+              showVerified={false}
+            />
+          </div>
+        )}
       </div>
 
       {/* Modal d'images */}
@@ -108,7 +126,7 @@ const UnverifiedMCards = () => {
         initialProductIndex={selectedProductIndex}
       />
 
-      {/* Grille des MCards non vérifiées - Cachée pour le moment */}
+      {/* Grille des MCards non vérifiées - Affichée quand il y a une recherche */}
       {searchQuery && (
         <UnverifiedMCardsGrid 
           searchQuery={searchQuery}

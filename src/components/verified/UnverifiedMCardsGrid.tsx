@@ -53,6 +53,31 @@ export const UnverifiedMCardsGrid = ({ searchQuery, selectedCategory }: Unverifi
     return matchesSearch;
   });
 
+  // Charger aussi les produits pour afficher dans la recherche
+  useEffect(() => {
+    const loadProducts = async () => {
+      if (!searchQuery) return;
+      
+      try {
+        const { data: productsData, error } = await supabase
+          .from('mcard_products')
+          .select(`
+            *,
+            mcards!inner(*)
+          `)
+          .eq('is_active', true)
+          .or('is_verified.is.null,is_verified.eq.false', { foreignTable: 'mcards' })
+          .or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`);
+
+        if (error) throw error;
+      } catch (error) {
+        console.error('Erreur lors de la recherche de produits:', error);
+      }
+    };
+
+    loadProducts();
+  }, [searchQuery]);
+
   const handleViewCard = (slug: string) => {
     navigate(`/m/${slug}`);
   };
