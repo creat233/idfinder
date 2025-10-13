@@ -26,6 +26,12 @@ export const MobileBottomNav = () => {
       label: "Accueil" 
     },
     { 
+      name: "Produits", 
+      icon: CheckCircle, 
+      path: "/mcards-non-verifiees", 
+      label: "Produits" 
+    },
+    { 
       name: "Messages", 
       icon: MessageCircle, 
       path: "/messages", 

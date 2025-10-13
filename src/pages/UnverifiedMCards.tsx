@@ -85,29 +85,35 @@ const UnverifiedMCards = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 overflow-hidden">
       {!isMobile && <PublicHeader />}
       
-      <div className="relative z-10 w-full pt-4">
-        <div className="text-center mb-6 px-4">
-          <h1 className="text-3xl font-bold text-white mb-2">Produits & Services</h1>
-          <p className="text-gray-300 mb-4">Découvrez les produits et services proposés</p>
-          
-          {/* Barre de recherche */}
-          <div className="max-w-2xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Rechercher par nom, entreprise, produit, service..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 py-6 text-lg bg-white/10 backdrop-blur border-white/20 text-white placeholder:text-gray-400 focus:bg-white/20"
-              />
+      <div className="relative z-10 w-full pt-20 pb-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+              Produits & Services
+            </h1>
+            <p className="text-lg text-gray-300 mb-6">
+              Découvrez les produits et services proposés par nos membres
+            </p>
+            
+            {/* Barre de recherche */}
+            <div className="max-w-3xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Rechercher par nom, entreprise, produit, service..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 pr-4 py-7 text-lg bg-white/10 backdrop-blur-md border-2 border-white/20 text-white placeholder:text-gray-400 focus:bg-white/20 focus:border-white/40 rounded-2xl transition-all"
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Produits non vérifiés - Style TikTok Feed - Seulement si pas de recherche */}
+        {/* Produits non vérifiés - Style TikTok Feed */}
         {!searchQuery && (
-          <div className="mb-8">
+          <div className="w-full">
             <ProductCarousel 
               onImageClick={handleImageClick}
               selectedCategory={selectedCategory === "all" ? undefined : selectedCategory}
