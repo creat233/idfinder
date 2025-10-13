@@ -49,12 +49,12 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
 
   const loadMCardsWithProducts = async () => {
     try {
-      // Charger toutes les cartes vérifiées et publiées (sans restriction d'abonnement)
+      // Charger toutes les cartes non vérifiées et publiées
       const { data: mcardsData, error: mcardsError } = await supabase
         .from('mcards')
         .select('*')
         .eq('is_published', true)
-        .eq('is_verified', true)
+        .or('is_verified.is.null,is_verified.eq.false')
         .order('view_count', { ascending: false })
         .limit(20);
 
