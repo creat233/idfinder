@@ -15,9 +15,10 @@ interface MCardWithProducts extends MCard {
 interface ProductCarouselProps {
   onImageClick?: (products: MCardProduct[], mcards: MCard[], productIndex: number) => void;
   selectedCategory?: string;
+  showVerified?: boolean;
 }
 
-export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: ProductCarouselProps) => {
+export const ProductCarousel = ({ onImageClick, selectedCategory = "all", showVerified = true }: ProductCarouselProps) => {
   const navigate = useNavigate();
   const [mcards, setMCards] = useState<MCardWithProducts[]>([]);
   const [currentProductIndex, setCurrentProductIndex] = useState<{ [key: string]: number }>({});
@@ -25,7 +26,7 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
 
   useEffect(() => {
     loadMCardsWithProducts();
-  }, []);
+  }, [showVerified]);
 
   useEffect(() => {
     // Auto-slide pour chaque carte toutes les 3 secondes
@@ -49,12 +50,19 @@ export const ProductCarousel = ({ onImageClick, selectedCategory = "all" }: Prod
 
   const loadMCardsWithProducts = async () => {
     try {
-      // Charger toutes les cartes non vérifiées et publiées
-      const { data: mcardsData, error: mcardsError } = await supabase
+      // Charger les cartes selon le filtre de vérification
+      let query = supabase
         .from('mcards')
         .select('*')
-        .eq('is_published', true)
-        .or('is_verified.is.null,is_verified.eq.false')
+        .eq('is_published', true);
+      
+      if (showVerified) {
+        query = query.eq('is_verified', true);
+      } else {
+        query = query.or('is_verified.is.null,is_verified.eq.false');
+      }
+      
+      const { data: mcardsData, error: mcardsError } = await query
         .order('view_count', { ascending: false })
         .limit(20);
 

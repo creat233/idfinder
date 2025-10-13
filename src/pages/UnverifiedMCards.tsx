@@ -94,6 +94,7 @@ const UnverifiedMCards = () => {
           <ProductCarousel 
             onImageClick={handleImageClick}
             selectedCategory={selectedCategory === "all" ? undefined : selectedCategory}
+            showVerified={false}
           />
         </div>
       </div>
