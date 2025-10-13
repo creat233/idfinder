@@ -71,15 +71,15 @@ export const MCardMessageDialog = ({
 
       if (error) {
         console.error('❌ Erreur lors de l\'envoi:', error);
+        console.error('Code d\'erreur:', error.code);
+        console.error('Message d\'erreur:', error.message);
         
         let errorMessage = "Impossible d'envoyer le message";
         
-        if (error.code === '42501') {
-          errorMessage = "Vous n'avez pas la permission d'envoyer ce message. Vous êtes peut-être bloqué par ce propriétaire.";
-        } else if (error.code === '23503') {
+        if (error.code === '23503') {
           errorMessage = "Le destinataire n'existe pas ou est invalide.";
-        } else if (error.message?.includes('policy')) {
-          errorMessage = "Accès refusé. Vérifiez que vous êtes autorisé à contacter ce propriétaire.";
+        } else if (error.message?.includes('new row violates row-level security policy')) {
+          errorMessage = "La carte n'est pas disponible pour recevoir des messages. Elle doit être publiée et active.";
         }
         
         throw new Error(errorMessage);

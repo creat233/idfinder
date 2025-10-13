@@ -145,15 +145,15 @@ ${formData.message ? `💬 MESSAGE:\n${formData.message}\n` : ''}
 
       if (error) {
         console.error('❌ Erreur lors de l\'envoi du rendez-vous:', error);
+        console.error('Code d\'erreur:', error.code);
+        console.error('Message d\'erreur:', error.message);
         
         let errorMessage = "Impossible d'envoyer la demande de rendez-vous";
         
-        if (error.code === '42501') {
-          errorMessage = "Vous n'êtes pas autorisé à envoyer une demande à ce propriétaire.";
-        } else if (error.code === '23503') {
+        if (error.code === '23503') {
           errorMessage = "Le propriétaire de la carte n'existe pas.";
-        } else if (error.message?.includes('policy')) {
-          errorMessage = "Accès refusé. Vous êtes peut-être bloqué par ce propriétaire.";
+        } else if (error.message?.includes('new row violates row-level security policy')) {
+          errorMessage = "La carte n'est pas disponible pour recevoir des demandes de rendez-vous. Elle doit être publiée et active.";
         }
         
         throw new Error(errorMessage);
