@@ -159,10 +159,14 @@ export const MCardRealtimeChat = ({
 
       if (error) {
         console.error('Erreur envoi message chat:', error);
+        console.error('Code d\'erreur:', error.code);
+        console.error('Message d\'erreur:', error.message);
         
         let errorMessage = "Impossible d'envoyer le message";
-        if (error.code === '42501' || error.message.includes('policy')) {
-          errorMessage = "Vous êtes peut-être bloqué par ce propriétaire.";
+        if (error.code === '23503') {
+          errorMessage = "Le destinataire n'existe pas ou est invalide.";
+        } else if (error.message?.includes('new row violates row-level security policy')) {
+          errorMessage = "La carte n'est pas disponible pour recevoir des messages. Elle doit être publiée et active.";
         }
         
         throw new Error(errorMessage);
