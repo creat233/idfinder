@@ -4,7 +4,6 @@ import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
 import { MCardsSEO } from "@/components/seo/MCardsSEO";
 import { MCardsList } from "@/components/mcards/MCardsList";
-import { MCardFeatures } from '@/components/mcards/MCardFeatures';
 import { MCardFeaturesDetailed } from '@/components/mcards/MCardFeaturesDetailed';
 import { MCardShowcase } from '@/components/mcards/MCardShowcase';
 import { MCardCreationPage } from '@/components/mcards/MCardCreationPage';
@@ -107,11 +106,6 @@ const MCards = () => {
         {/* Showcase Section - Responsive */}
         <div className="w-full">
           <MCardShowcase />
-        </div>
-        
-        {/* Features Section - Responsive */}
-        <div className="w-full">
-          <MCardFeatures />
         </div>
         
         {/* Pricing Section - Responsive */}
