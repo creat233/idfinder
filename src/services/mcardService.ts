@@ -50,15 +50,25 @@ export const createMCard = async (
     profilePictureUrl = await uploadProfilePicture(profilePictureFile, userId);
   }
 
-  // Logique pour les plans payants uniquement
+  // Logique pour définir le statut et la date d'expiration
   let subscriptionStatus = 'pending_payment';
   let isPublished = false;
-  let subscriptionExpiresAt = null;
+  let subscriptionExpiresAt: Date | null = null;
 
-  // Toutes les cartes sont maintenant payantes et en attente de paiement
-  if (mcardData.plan === 'essential' || mcardData.plan === 'premium') {
+  // Pour le plan gratuit : statut trial, publié immédiatement, expiration après 30 jours
+  if (mcardData.plan === 'free') {
+    subscriptionStatus = 'trial';
+    isPublished = true;
+    subscriptionExpiresAt = new Date();
+    subscriptionExpiresAt.setDate(subscriptionExpiresAt.getDate() + 30); // 30 jours
+  } 
+  // Pour les plans payants : en attente de paiement
+  else if (mcardData.plan === 'essential' || mcardData.plan === 'premium') {
     subscriptionStatus = 'pending_payment';
-    isPublished = false; // Inactive jusqu'à confirmation de paiement
+    isPublished = false;
+    // La date d'expiration sera définie après confirmation du paiement par l'admin
+    subscriptionExpiresAt = new Date();
+    subscriptionExpiresAt.setDate(subscriptionExpiresAt.getDate() + 30); // Temporaire, sera mise à jour par l'admin
   }
 
   const { data, error } = await supabase
