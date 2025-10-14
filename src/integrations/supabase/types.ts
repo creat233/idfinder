@@ -850,7 +850,7 @@ export type Database = {
           slug: string
           snapchat_url: string | null
           social_links: Json | null
-          subscription_expires_at: string
+          subscription_expires_at: string | null
           subscription_status: string
           telegram_url: string | null
           tiktok_url: string | null
@@ -883,7 +883,7 @@ export type Database = {
           slug: string
           snapchat_url?: string | null
           social_links?: Json | null
-          subscription_expires_at?: string
+          subscription_expires_at?: string | null
           subscription_status?: string
           telegram_url?: string | null
           tiktok_url?: string | null
@@ -916,7 +916,7 @@ export type Database = {
           slug?: string
           snapchat_url?: string | null
           social_links?: Json | null
-          subscription_expires_at?: string
+          subscription_expires_at?: string | null
           subscription_status?: string
           telegram_url?: string | null
           tiktok_url?: string | null
