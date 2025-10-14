@@ -188,15 +188,31 @@ export const useConversations = (user: any) => {
             console.log('Message update:', payload);
             // Recharger seulement si l'utilisateur est concerné par ce message
             const newMessage = payload.new as any;
-            if (newMessage && (newMessage.sender_id === user.id || newMessage.recipient_id === user.id)) {
+            const oldMessage = payload.old as any;
+            
+            // Vérifier si l'update concerne l'utilisateur actuel
+            const isRelevant = newMessage && (newMessage.sender_id === user.id || newMessage.recipient_id === user.id);
+            const wasRelevant = oldMessage && (oldMessage.sender_id === user.id || oldMessage.recipient_id === user.id);
+            
+            if (isRelevant || wasRelevant) {
+              console.log('Rechargement des conversations après mise à jour');
               loadConversations();
             }
           }
         )
         .subscribe();
 
+      // Écouter l'événement personnalisé de marquage des messages
+      const handleMessagesMarkedAsRead = () => {
+        console.log('Rechargement après marquage comme lu');
+        loadConversations();
+      };
+      
+      window.addEventListener('messagesMarkedAsRead', handleMessagesMarkedAsRead);
+
       return () => {
         supabase.removeChannel(channel);
+        window.removeEventListener('messagesMarkedAsRead', handleMessagesMarkedAsRead);
       };
     }
   }, [user]);

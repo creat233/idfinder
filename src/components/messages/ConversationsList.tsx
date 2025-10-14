@@ -69,7 +69,10 @@ export function ConversationsList({
                       : 'border-l-transparent'
                   }`}
                   onClick={async () => {
-                    // Marquer comme lu AVANT de sélectionner pour que le compteur se mette à jour
+                    // Sélectionner d'abord la conversation pour l'afficher
+                    onConversationSelect(conversation);
+                    
+                    // Marquer comme lu immédiatement après avoir sélectionné
                     if (conversation.unreadCount > 0) {
                       try {
                         const { error } = await supabase
@@ -83,14 +86,14 @@ export function ConversationsList({
                         if (error) {
                           console.error('Erreur marquage messages:', error);
                         } else {
-                          // Forcer le rechargement du hook useUnreadMessages via un événement
+                          console.log('Messages marqués comme lus avec succès');
+                          // Forcer le rechargement du compteur de messages non lus
                           window.dispatchEvent(new CustomEvent('messagesMarkedAsRead'));
                         }
                       } catch (error) {
                         console.error('Erreur marquage messages:', error);
                       }
                     }
-                    onConversationSelect(conversation);
                   }}
                 >
                   <div className="flex items-start gap-3">
