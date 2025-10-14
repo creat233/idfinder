@@ -99,9 +99,11 @@ export const MCardViewCustomization = ({
               particlesEnabled={customization.particles_enabled}
               gradientsEnabled={customization.gradients_enabled}
               shadowsEnabled={customization.shadows_enabled}
+              maskEnabled={customization.mask_enabled}
               onParticlesChange={(enabled) => updateCustomization({ particles_enabled: enabled })}
               onGradientsChange={(enabled) => updateCustomization({ gradients_enabled: enabled })}
               onShadowsChange={(enabled) => updateCustomization({ shadows_enabled: enabled })}
+              onMaskChange={(enabled) => updateCustomization({ mask_enabled: enabled })}
             />
 
             <FontCustomization

@@ -6,18 +6,22 @@ interface VisualEffectsProps {
   particlesEnabled: boolean;
   gradientsEnabled: boolean;
   shadowsEnabled: boolean;
+  maskEnabled: boolean;
   onParticlesChange: (enabled: boolean) => void;
   onGradientsChange: (enabled: boolean) => void;
   onShadowsChange: (enabled: boolean) => void;
+  onMaskChange: (enabled: boolean) => void;
 }
 
 export const VisualEffects = ({
   particlesEnabled,
   gradientsEnabled,
   shadowsEnabled,
+  maskEnabled,
   onParticlesChange,
   onGradientsChange,
-  onShadowsChange
+  onShadowsChange,
+  onMaskChange
 }: VisualEffectsProps) => {
   return (
     <div>
@@ -57,6 +61,17 @@ export const VisualEffects = ({
             <Switch
               checked={shadowsEnabled}
               onCheckedChange={onShadowsChange}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-medium">Masque créatif</Label>
+              <p className="text-xs text-gray-500">Applique un effet de masque artistique</p>
+            </div>
+            <Switch
+              checked={maskEnabled}
+              onCheckedChange={onMaskChange}
             />
           </div>
         </div>

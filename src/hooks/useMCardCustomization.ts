@@ -12,6 +12,7 @@ export interface MCardCustomization {
   particles_enabled: boolean;
   gradients_enabled: boolean;
   shadows_enabled: boolean;
+  mask_enabled: boolean;
   custom_font: string;
 }
 
@@ -25,6 +26,7 @@ export const useMCardCustomization = (mcardId: string) => {
     particles_enabled: false,
     gradients_enabled: true,
     shadows_enabled: true,
+    mask_enabled: false,
     custom_font: 'Inter'
   });
   const [loading, setLoading] = useState(true);

@@ -50,6 +50,10 @@ export const getVisualEffects = (customization: MCardCustomization) => {
     effects.push('shadow-2xl');
   }
   
+  if (customization.mask_enabled) {
+    effects.push('mask-creative');
+  }
+  
   return effects.join(' ');
 };
 
