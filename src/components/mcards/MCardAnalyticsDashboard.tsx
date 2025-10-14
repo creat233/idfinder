@@ -30,7 +30,6 @@ import {
   Globe,
   Smartphone,
   Monitor,
-  Download,
   FileDown
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -65,6 +64,63 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
 
   useEffect(() => {
     loadAnalytics();
+
+    // Mise à jour en temps réel des analytics
+    const channel = supabase
+      .channel('mcard-analytics-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcard_analytics',
+          filter: `mcard_id=eq.${mcardId}`
+        },
+        () => {
+          loadAnalytics();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'mcard_interactions',
+          filter: `mcard_id=eq.${mcardId}`
+        },
+        () => {
+          loadAnalytics();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'mcard_interactions',
+          filter: `mcard_id=eq.${mcardId}`
+        },
+        () => {
+          loadAnalytics();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'mcard_messages',
+          filter: `mcard_id=eq.${mcardId}`
+        },
+        () => {
+          loadAnalytics();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [mcardId, timeRange]);
 
   const loadAnalytics = async () => {
@@ -129,23 +185,6 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
     }
   };
 
-  const exportDataJSON = () => {
-    if (!analytics) return;
-    
-    const dataToExport = {
-      mcard_slug: mcardSlug,
-      export_date: new Date().toISOString(),
-      analytics: analytics
-    };
-    
-    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mcard-analytics-${mcardSlug}-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   const exportDataPDF = () => {
     if (!analytics) return;
@@ -272,10 +311,6 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
           <Button onClick={exportDataPDF} variant="default" size="sm">
             <FileDown className="h-4 w-4 mr-2" />
             PDF
-          </Button>
-          <Button onClick={exportDataJSON} variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            JSON
           </Button>
         </div>
       </div>
