@@ -118,6 +118,7 @@ const MCardView = () => {
               isOwner={isOwner}
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
+              subscriptionStatus={mcard.subscription_status}
               onStatusesChange={refreshData}
               onOptimisticStatusAdd={addStatus}
             />
@@ -129,6 +130,7 @@ const MCardView = () => {
               isOwner={isOwner}
               mcardId={mcard.id}
               mcardPlan={mcard.plan}
+              subscriptionStatus={mcard.subscription_status}
               mcardOwnerName={mcard.full_name}
               mcardOwnerUserId={mcard.user_id}
               onProductsChange={refreshData}

@@ -20,6 +20,7 @@ interface MCardViewStatusesProps {
   mcardPlan?: string;
   mcardOwnerName?: string;
   mcardOwnerUserId?: string;
+  subscriptionStatus?: string;
   onStatusesChange?: () => void;
   onOptimisticStatusAdd?: (status: any) => void;
 }
@@ -32,6 +33,7 @@ export const MCardViewStatuses = ({
   mcardPlan,
   mcardOwnerName,
   mcardOwnerUserId,
+  subscriptionStatus,
   onStatusesChange,
   onOptimisticStatusAdd 
 }: MCardViewStatusesProps) => {
@@ -61,8 +63,9 @@ export const MCardViewStatuses = ({
     currentProductsCount: 0 
   });
 
-  const isPremiumOrUltimate = mcardPlan === 'premium' || mcardPlan === 'ultimate';
-  const canAddStatus = isOwner && isPremiumOrUltimate;
+  const isPremiumOrEssential = mcardPlan === 'premium' || mcardPlan === 'essential';
+  const isCardActive = subscriptionStatus === 'active';
+  const canAddStatus = isOwner && isPremiumOrEssential && isCardActive;
 
   const handleStatusClick = (status: MCardStatus) => {
     const index = activeStatuses.findIndex(s => s.id === status.id);
@@ -90,7 +93,7 @@ export const MCardViewStatuses = ({
 
   const handleAddStatus = () => {
     // Vérifier les limites avant d'ouvrir le dialog
-    if (checkStatusLimit()) {
+    if (checkStatusLimit(subscriptionStatus)) {
       setIsAddDialogOpen(true);
     }
   };

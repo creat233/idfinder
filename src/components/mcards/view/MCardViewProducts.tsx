@@ -22,6 +22,7 @@ interface MCardViewProductsProps {
   mcardPlan?: string;
   mcardOwnerName?: string;
   mcardOwnerUserId?: string;
+  subscriptionStatus?: string;
   onProductsChange?: () => void;
   onOptimisticProductAdd?: (product: any) => void;
 }
@@ -34,6 +35,7 @@ export const MCardViewProducts = ({
   mcardPlan,
   mcardOwnerName,
   mcardOwnerUserId,
+  subscriptionStatus,
   onProductsChange,
   onOptimisticProductAdd 
 }: MCardViewProductsProps) => {
@@ -57,8 +59,9 @@ export const MCardViewProducts = ({
     currentProductsCount: products.length 
   });
   
-  const isPremiumOrUltimate = mcardPlan === 'premium' || mcardPlan === 'ultimate';
-  const canAddProduct = isOwner && isPremiumOrUltimate;
+  const isPremiumOrEssential = mcardPlan === 'premium' || mcardPlan === 'essential';
+  const isCardActive = subscriptionStatus === 'active';
+  const canAddProduct = isOwner && isPremiumOrEssential && isCardActive;
 
   const handleProductClick = (product: MCardProduct) => {
     const index = activeProducts.findIndex(p => p.id === product.id);
@@ -86,7 +89,7 @@ export const MCardViewProducts = ({
 
   const handleAddProduct = () => {
     // Vérifier les limites avant d'ouvrir le dialog
-    if (checkProductLimit()) {
+    if (checkProductLimit(subscriptionStatus)) {
       setIsAddDialogOpen(true);
     }
   };
