@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Verified, MapPin, Briefcase, Phone, Mail, Globe, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { OnlineStatusIndicator } from '@/components/mcards/OnlineStatusIndicator';
+import { useUserPresence } from '@/hooks/useUserPresence';
 
 interface VerifiedMCardsGridProps {
   searchQuery: string;
@@ -17,6 +19,11 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
   const navigate = useNavigate();
   const [mcards, setMcards] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Activer la présence pour tous les propriétaires de cartes affichées
+  mcards.forEach(mcard => {
+    useUserPresence(mcard.user_id);
+  });
 
   useEffect(() => {
     loadVerifiedMCards();
@@ -115,6 +122,11 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
                       <h3 className="font-bold text-white text-lg leading-tight">
                         {mcard.full_name}
                       </h3>
+                      
+                      {/* Statut en ligne */}
+                      <div className="flex justify-center">
+                        <OnlineStatusIndicator userId={mcard.user_id} showText={true} className="text-white" />
+                      </div>
                       
                       {mcard.job_title && (
                         <div className="flex items-center justify-center gap-2 text-purple-300">
