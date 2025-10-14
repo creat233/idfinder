@@ -66,7 +66,7 @@ export function MCardOwnerFeatures({ mcard, analytics }: MCardOwnerFeaturesProps
       title: 'Gestion des factures',
       description: 'Créez et gérez vos factures professionnelles',
       icon: FileText,
-      available: isEssential,
+      available: isEssential && mcard.plan !== 'free',
       isPremium: false
     },
     {
@@ -90,7 +90,7 @@ export function MCardOwnerFeatures({ mcard, analytics }: MCardOwnerFeaturesProps
       title: 'Personnalisation avancée',
       description: 'Thèmes, animations et effets visuels',
       icon: Crown,
-      available: isPremium,
+      available: true,
       isPremium: true
     }
   ];
@@ -212,10 +212,12 @@ export function MCardOwnerFeatures({ mcard, analytics }: MCardOwnerFeaturesProps
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Voir les messages
                 </Button>
-                <Button variant="outline" className="justify-start">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Créer une facture
-                </Button>
+                {isEssential && mcard.plan !== 'free' && (
+                  <Button variant="outline" className="justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Créer une facture
+                  </Button>
+                )}
                 <Button variant="outline" className="justify-start">
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Analyses détaillées

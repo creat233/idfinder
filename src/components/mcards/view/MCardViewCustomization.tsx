@@ -26,6 +26,7 @@ export const MCardViewCustomization = ({
   const { toast } = useToast();
 
   const isPremium = mcard.plan === 'premium' || mcard.plan === 'ultimate';
+  const hasCustomizationAccess = true; // Accessible à tous les plans
 
   const updateCustomization = async (updates: any) => {
     try {
@@ -79,7 +80,7 @@ export const MCardViewCustomization = ({
       </CardHeader>
       
       <CardContent className="space-y-6">
-        {!isPremium ? (
+        {!hasCustomizationAccess ? (
           <PremiumUpgrade />
         ) : (
           <div className="space-y-6">
