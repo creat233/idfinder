@@ -44,6 +44,9 @@ const MCardView = () => {
 
   // Activer la présence pour l'utilisateur connecté
   useUserPresence(user?.id);
+  
+  // Activer aussi la présence du propriétaire de la carte pour afficher son statut
+  useUserPresence(mcard?.user_id);
 
   if (loading) {
     return <MCardViewLoading />;
