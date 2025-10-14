@@ -16,7 +16,16 @@ export const usePlanLimits = ({
   const { toast } = useToast();
   const planLimits = PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
 
-  const checkStatusLimit = (): boolean => {
+  const checkStatusLimit = (subscriptionStatus?: string): boolean => {
+    if (subscriptionStatus && subscriptionStatus !== 'active') {
+      toast({
+        variant: "destructive",
+        title: "Carte non activée",
+        description: "Votre carte doit être activée pour ajouter des statuts. Veuillez activer votre abonnement.",
+      });
+      return false;
+    }
+    
     const canAdd = canAddStatus(statusesCreatedToday, plan);
     if (!canAdd) {
       toast({
@@ -28,7 +37,16 @@ export const usePlanLimits = ({
     return canAdd;
   };
 
-  const checkProductLimit = (): boolean => {
+  const checkProductLimit = (subscriptionStatus?: string): boolean => {
+    if (subscriptionStatus && subscriptionStatus !== 'active') {
+      toast({
+        variant: "destructive",
+        title: "Carte non activée",
+        description: "Votre carte doit être activée pour ajouter des produits. Veuillez activer votre abonnement.",
+      });
+      return false;
+    }
+    
     const canAdd = canAddProduct(currentProductsCount, plan);
     if (!canAdd) {
       toast({
