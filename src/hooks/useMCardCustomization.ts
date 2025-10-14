@@ -50,7 +50,10 @@ export const useMCardCustomization = (mcardId: string) => {
       }
 
       if (data) {
-        setCustomization(data);
+        setCustomization({
+          ...data,
+          mask_enabled: data.mask_enabled ?? false
+        });
       }
     } catch (error) {
       console.error('Erreur lors du chargement de la personnalisation:', error);
@@ -71,7 +74,10 @@ export const useMCardCustomization = (mcardId: string) => {
 
       if (error) throw error;
 
-      setCustomization(data);
+      setCustomization({
+        ...data,
+        mask_enabled: data.mask_enabled ?? false
+      });
       
       toast({
         title: "Paramètres sauvegardés !",

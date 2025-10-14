@@ -30,7 +30,10 @@ export const MCardCustomized = ({ mcardId, children, className = '' }: MCardCust
         return;
       }
 
-      setCustomization(data);
+      setCustomization(data ? {
+        ...data,
+        mask_enabled: data.mask_enabled ?? false
+      } : null);
     } catch (error) {
       console.error('Erreur:', error);
     } finally {

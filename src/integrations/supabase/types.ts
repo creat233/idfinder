@@ -316,6 +316,7 @@ export type Database = {
           custom_font: string | null
           gradients_enabled: boolean | null
           id: string
+          mask_enabled: boolean | null
           mcard_id: string
           particles_enabled: boolean | null
           shadows_enabled: boolean | null
@@ -330,6 +331,7 @@ export type Database = {
           custom_font?: string | null
           gradients_enabled?: boolean | null
           id?: string
+          mask_enabled?: boolean | null
           mcard_id: string
           particles_enabled?: boolean | null
           shadows_enabled?: boolean | null
@@ -344,6 +346,7 @@ export type Database = {
           custom_font?: string | null
           gradients_enabled?: boolean | null
           id?: string
+          mask_enabled?: boolean | null
           mcard_id?: string
           particles_enabled?: boolean | null
           shadows_enabled?: boolean | null
@@ -1421,6 +1424,7 @@ export type Database = {
           custom_font: string | null
           gradients_enabled: boolean | null
           id: string
+          mask_enabled: boolean | null
           mcard_id: string
           particles_enabled: boolean | null
           shadows_enabled: boolean | null
