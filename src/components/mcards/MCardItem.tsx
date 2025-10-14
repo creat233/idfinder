@@ -22,6 +22,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MCard } from "@/types/mcard";
 import { useNavigate } from "react-router-dom";
 import { URL_CONFIG } from "@/utils/urlConfig";
+import { OnlineStatusIndicator } from "./OnlineStatusIndicator";
+import { useUserPresence } from "@/hooks/useUserPresence";
 
 interface MCardItemProps {
   mcard: MCard;
@@ -41,6 +43,9 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
   const { t } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // Activer la présence pour cette carte
+  useUserPresence(mcard.user_id);
 
   const handleCopyLink = () => {
     if (mcard.subscription_status === 'pending_payment') {
@@ -99,6 +104,9 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
               <CardDescription className="text-xs sm:text-sm truncate">
                 {mcard.job_title}{mcard.company ? ` at ${mcard.company}` : ''}
               </CardDescription>
+              <div className="mt-1">
+                <OnlineStatusIndicator userId={mcard.user_id} showText={false} />
+              </div>
             </div>
           </div>
           

@@ -19,11 +19,6 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
   const navigate = useNavigate();
   const [mcards, setMcards] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Activer la présence pour tous les propriétaires de cartes affichées
-  mcards.forEach(mcard => {
-    useUserPresence(mcard.user_id);
-  });
 
   useEffect(() => {
     loadVerifiedMCards();
