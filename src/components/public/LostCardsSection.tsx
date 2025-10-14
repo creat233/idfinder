@@ -124,13 +124,6 @@ export const LostCardsSection = () => {
               onClick={() => navigate(`/recherche/${card.card_number}`)}
             >
               <CardContent className="p-6">
-                {card.photo_url && (
-                  <img 
-                    src={card.photo_url} 
-                    alt="Carte signalée"
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                  />
-                )}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-lg">
