@@ -1,0 +1,98 @@
+/* Styles d'impression pour les factures */
+@media print {
+  /* Cache tous les éléments non essentiels */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Affiche uniquement le contenu de la facture */
+  #invoice-content,
+  #invoice-content * {
+    visibility: visible;
+  }
+  
+  /* Positionne la facture en haut de la page */
+  #invoice-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  
+  /* Configuration de la page */
+  @page {
+    size: A4;
+    margin: 2cm;
+  }
+  
+  /* Évite les ruptures de page dans les éléments importants */
+  table,
+  tr,
+  td,
+  th {
+    page-break-inside: avoid;
+  }
+  
+  /* Assure que le tableau des articles ne se coupe pas */
+  table {
+    page-break-before: auto;
+  }
+  
+  thead {
+    display: table-header-group;
+  }
+  
+  tfoot {
+    display: table-footer-group;
+  }
+  
+  /* Optimise les couleurs pour l'impression */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  /* Conserve les couleurs importantes du thème */
+  .print\:bg-gray-800 {
+    background-color: #1f2937 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:text-white {
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:bg-gray-100 {
+    background-color: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:border-gray-800 {
+    border-color: #1f2937 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .print\:border-gray-300 {
+    border-color: #d1d5db !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Améliore la lisibilité du texte */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Assure que les bordures sont bien visibles */
+  table,
+  th,
+  td {
+    border-color: #000 !important;
+  }
+}

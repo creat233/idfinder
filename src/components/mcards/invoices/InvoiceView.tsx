@@ -171,8 +171,8 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6" ref={invoiceRef}>
-      {/* En-tête avec actions */}
-      <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      {/* En-tête avec actions - caché à l'impression */}
+      <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white print:hidden">
         <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -230,13 +230,13 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
         </CardContent>
       </Card>
 
-      {/* Contenu de la facture */}
-      <Card>
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b">
+      {/* Contenu de la facture - optimisé pour l'impression */}
+      <Card className="print:shadow-none print:border-0">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b print:bg-white print:border-b-2 print:border-gray-300">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               {/* Logo FinderID */}
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg print:shadow-none print:border-2 print:border-blue-600">
                 <span className="text-white font-bold text-2xl">F</span>
               </div>
               <div>
@@ -247,7 +247,7 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
             <div className="text-right">
               <p className="text-sm text-gray-600 mb-1">Facture N°</p>
               <p className="text-xl font-bold text-gray-900">{invoice.invoice_number}</p>
-              <div className="mt-2 text-3xl font-bold text-primary">
+              <div className="mt-2 text-3xl font-bold text-primary print:text-blue-600">
                 {invoice.amount.toLocaleString()} {invoice.currency}
               </div>
             </div>
@@ -369,31 +369,31 @@ export const InvoiceView = ({ invoice, onClose }: InvoiceViewProps) => {
           {/* Articles */}
           {invoice.items && invoice.items.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-3">Articles</h3>
-              <div className="border rounded-lg overflow-x-auto">
-                <table className="w-full text-sm sm:text-base">
-                  <thead className="bg-muted/50">
+              <h3 className="font-semibold mb-3 print:text-lg print:font-bold">Articles</h3>
+              <div className="border rounded-lg overflow-x-auto print:rounded-none print:border-2 print:border-gray-300">
+                <table className="w-full text-sm sm:text-base print:text-base">
+                  <thead className="bg-muted/50 print:bg-gray-800 print:text-white">
                     <tr>
-                      <th className="text-left p-2 sm:p-3">Description</th>
-                      <th className="text-center p-2 sm:p-3">Qté</th>
-                      <th className="text-right p-2 sm:p-3 hidden sm:table-cell">Prix unit.</th>
-                      <th className="text-right p-2 sm:p-3">Total</th>
+                      <th className="text-left p-2 sm:p-3 print:p-4">Description</th>
+                      <th className="text-center p-2 sm:p-3 print:p-4">Quantité</th>
+                      <th className="text-right p-2 sm:p-3 print:p-4 print:table-cell">Prix unitaire</th>
+                      <th className="text-right p-2 sm:p-3 print:p-4">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoice.items.map((item, index) => (
-                      <tr key={index} className="border-t">
-                        <td className="p-2 sm:p-3">{item.description}</td>
-                        <td className="p-2 sm:p-3 text-center">{item.quantity}</td>
-                        <td className="p-2 sm:p-3 text-right hidden sm:table-cell">{item.unit_price.toLocaleString()} FCFA</td>
-                        <td className="p-2 sm:p-3 text-right font-medium">{item.total_price.toLocaleString()} FCFA</td>
+                      <tr key={index} className="border-t print:border-gray-300">
+                        <td className="p-2 sm:p-3 print:p-4">{item.description}</td>
+                        <td className="p-2 sm:p-3 print:p-4 text-center">{item.quantity}</td>
+                        <td className="p-2 sm:p-3 print:p-4 text-right print:table-cell">{item.unit_price.toLocaleString()} FCFA</td>
+                        <td className="p-2 sm:p-3 print:p-4 text-right font-medium">{item.total_price.toLocaleString()} FCFA</td>
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot className="bg-muted/50 border-t-2">
+                  <tfoot className="bg-muted/50 border-t-2 print:bg-gray-100 print:border-t-4 print:border-gray-800">
                     <tr>
-                      <td colSpan={3} className="p-2 sm:p-3 text-right font-semibold text-sm sm:text-base">Total général:</td>
-                      <td className="p-2 sm:p-3 text-right font-bold text-base sm:text-lg">{invoice.amount.toLocaleString()} {invoice.currency}</td>
+                      <td colSpan={3} className="p-2 sm:p-3 print:p-4 text-right font-semibold text-sm sm:text-base print:text-lg">Total général:</td>
+                      <td className="p-2 sm:p-3 print:p-4 text-right font-bold text-base sm:text-lg print:text-xl">{invoice.amount.toLocaleString()} {invoice.currency}</td>
                     </tr>
                   </tfoot>
                 </table>

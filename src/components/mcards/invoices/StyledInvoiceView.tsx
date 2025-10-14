@@ -328,13 +328,13 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
         </CardContent>
       </Card>
 
-      {/* Contenu de la facture */}
-      <Card id="invoice-content" style={cardStyle}>
-        <CardHeader style={{ borderBottomColor: template.styles.borderColor }}>
-          <CardTitle className="flex items-center justify-between">
-            <span>Facture {invoice.invoice_number}</span>
+      {/* Contenu de la facture - optimisé pour l'impression */}
+      <Card id="invoice-content" style={cardStyle} className="print:shadow-none print:border-0">
+        <CardHeader style={{ borderBottomColor: template.styles.borderColor }} className="print:border-b-2">
+          <CardTitle className="flex items-center justify-between print:mb-4">
+            <span className="print:text-2xl">Facture {invoice.invoice_number}</span>
             <div className="text-right">
-              <div className="text-3xl font-bold" style={{ color: template.styles.primaryColor }}>
+              <div className="text-3xl font-bold print:text-4xl" style={{ color: template.styles.primaryColor }}>
                 {invoice.amount.toLocaleString()} {invoice.currency}
               </div>
             </div>
@@ -464,30 +464,30 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
               <h3 className="font-semibold mb-3" style={{ color: template.styles.primaryColor }}>
                 Articles
               </h3>
-              <div className="border rounded-lg overflow-hidden" style={{ borderColor: template.styles.borderColor }}>
-                <table className="w-full">
-                  <thead style={{ backgroundColor: template.styles.primaryColor, color: 'white' }}>
+              <div className="border rounded-lg overflow-hidden print:rounded-none print:border-2" style={{ borderColor: template.styles.borderColor }}>
+                <table className="w-full print:text-base">
+                  <thead style={{ backgroundColor: template.styles.primaryColor, color: 'white' }} className="print:bg-gray-800">
                     <tr>
-                      <th className="text-left p-3">Description</th>
-                      <th className="text-center p-3">Quantité</th>
-                      <th className="text-right p-3">Prix unitaire</th>
-                      <th className="text-right p-3">Total</th>
+                      <th className="text-left p-3 print:p-4">Description</th>
+                      <th className="text-center p-3 print:p-4">Quantité</th>
+                      <th className="text-right p-3 print:p-4">Prix unitaire</th>
+                      <th className="text-right p-3 print:p-4">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoice.items.map((item, index) => (
-                      <tr key={index} className="border-t" style={{ borderTopColor: template.styles.borderColor }}>
-                        <td className="p-3">{item.description}</td>
-                        <td className="p-3 text-center">{item.quantity}</td>
-                        <td className="p-3 text-right">{item.unit_price.toLocaleString()} FCFA</td>
-                        <td className="p-3 text-right font-medium">{item.total_price.toLocaleString()} FCFA</td>
+                      <tr key={index} className="border-t print:border-gray-300" style={{ borderTopColor: template.styles.borderColor }}>
+                        <td className="p-3 print:p-4">{item.description}</td>
+                        <td className="p-3 print:p-4 text-center">{item.quantity}</td>
+                        <td className="p-3 print:p-4 text-right">{item.unit_price.toLocaleString()} FCFA</td>
+                        <td className="p-3 print:p-4 text-right font-medium">{item.total_price.toLocaleString()} FCFA</td>
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot style={{ backgroundColor: template.styles.primaryColor + '20', borderTopColor: template.styles.borderColor }}>
+                  <tfoot style={{ backgroundColor: template.styles.primaryColor + '20', borderTopColor: template.styles.borderColor }} className="print:bg-gray-100 print:border-t-4 print:border-gray-800">
                     <tr>
-                      <td colSpan={3} className="p-3 text-right font-semibold">Total général:</td>
-                      <td className="p-3 text-right font-bold text-lg" style={{ color: template.styles.primaryColor }}>
+                      <td colSpan={3} className="p-3 print:p-4 text-right font-semibold print:text-lg">Total général:</td>
+                      <td className="p-3 print:p-4 text-right font-bold text-lg print:text-xl" style={{ color: template.styles.primaryColor }}>
                         {invoice.amount.toLocaleString()} {invoice.currency}
                       </td>
                     </tr>
