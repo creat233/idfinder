@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MCard } from "@/types/mcard";
+import { MCard, MCardCreateData, MCardUpdateData } from "@/types/mcard";
 import { useAuthState } from "@/hooks/useAuthState";
+import { useToast } from "@/hooks/use-toast";
 
 export const useMCards = () => {
   const [mcards, setMCards] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuthState();
+  const { toast } = useToast();
 
   const fetchMCards = async () => {
     if (!user) {
@@ -46,31 +48,117 @@ export const useMCards = () => {
     fetchMCards();
   }, [user]);
 
-  const createMCard = async (mcardData: Partial<MCard> & { full_name: string; slug: string }) => {
-    if (!user) return null;
+  const createMCard = async (
+    mcardData: MCardCreateData, 
+    profilePictureFile: File | null = null,
+    options?: { silent?: boolean }
+  ): Promise<MCard | null> => {
+    if (!user) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour créer une carte",
+        variant: "destructive"
+      });
+      return null;
+    }
 
     try {
+      console.log('Creating MCard with data:', mcardData);
+      
+      let profile_picture_url = mcardData.profile_picture_url || null;
+      
+      // Upload profile picture if provided
+      if (profilePictureFile) {
+        const fileExt = profilePictureFile.name.split('.').pop();
+        const fileName = `${user.id}/${user.id}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError, data: uploadData } = await supabase.storage
+          .from('mcard-profile-pictures')
+          .upload(fileName, profilePictureFile);
+
+        if (uploadError) {
+          console.error('Error uploading profile picture:', uploadError);
+          throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('mcard-profile-pictures')
+          .getPublicUrl(fileName);
+          
+        profile_picture_url = publicUrl;
+      }
+
+      // Create the mcard
       const { data, error } = await supabase
         .from('mcards')
-        .insert({ ...mcardData, user_id: user.id })
+        .insert({ 
+          ...mcardData, 
+          user_id: user.id,
+          profile_picture_url 
+        })
         .select()
         .single();
 
       if (error) throw error;
       
       await refetch();
+      
+      if (!options?.silent) {
+        toast({
+          title: "Carte créée !",
+          description: `Votre carte ${mcardData.full_name} a été créée avec succès`,
+        });
+      }
+      
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating MCard:', error);
+      
+      if (!options?.silent) {
+        toast({
+          title: "Erreur",
+          description: error.message || "Une erreur est survenue lors de la sauvegarde",
+          variant: "destructive"
+        });
+      }
+      
       throw error;
     }
   };
 
-  const updateMCard = async (id: string, updates: Partial<MCard>) => {
+  const updateMCard = async (
+    id: string, 
+    updates: MCardUpdateData,
+    profilePictureFile: File | null = null,
+    originalCard: MCard
+  ): Promise<MCard | null> => {
     try {
+      let profile_picture_url = updates.profile_picture_url || originalCard.profile_picture_url;
+      
+      // Upload new profile picture if provided
+      if (profilePictureFile) {
+        const fileExt = profilePictureFile.name.split('.').pop();
+        const fileName = `${user?.id}/${user?.id}-${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('mcard-profile-pictures')
+          .upload(fileName, profilePictureFile);
+
+        if (uploadError) {
+          console.error('Error uploading profile picture:', uploadError);
+          throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('mcard-profile-pictures')
+          .getPublicUrl(fileName);
+          
+        profile_picture_url = publicUrl;
+      }
+
       const { data, error } = await supabase
         .from('mcards')
-        .update(updates)
+        .update({ ...updates, profile_picture_url })
         .eq('id', id)
         .eq('user_id', user?.id)
         .select()
@@ -79,9 +167,20 @@ export const useMCards = () => {
       if (error) throw error;
       
       await refetch();
+      
+      toast({
+        title: "Carte mise à jour !",
+        description: "Vos modifications ont été enregistrées",
+      });
+      
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating MCard:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Une erreur est survenue lors de la mise à jour",
+        variant: "destructive"
+      });
       throw error;
     }
   };
