@@ -59,9 +59,9 @@ export const MCardViewProducts = ({
     currentProductsCount: products.length 
   });
   
-  const isPremiumOrEssential = mcardPlan === 'premium' || mcardPlan === 'essential';
+  const isPaidPlan = mcardPlan === 'premium' || mcardPlan === 'essential' || mcardPlan === 'ultimate';
   const isCardActive = subscriptionStatus === 'active';
-  const canAddProduct = isOwner && isPremiumOrEssential && isCardActive;
+  const canAddProduct = isOwner && isPaidPlan && isCardActive;
 
   const handleProductClick = (product: MCardProduct) => {
     const index = activeProducts.findIndex(p => p.id === product.id);
