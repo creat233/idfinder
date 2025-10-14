@@ -63,11 +63,12 @@ export const useUserPresence = (userId: string | undefined) => {
 
     const trackPresence = async () => {
       if (channel) {
+        // IMPORTANT: Utiliser userId comme clé pour que la recherche fonctionne
         await channel.track({
           user_id: userId,
           online_at: new Date().toISOString(),
-        });
-        console.log(`✅ User ${userId} tracked as online`);
+        }, { key: userId }); // Spécifier userId comme clé
+        console.log(`✅ User ${userId} tracked as online with key: ${userId}`);
       }
     };
 
