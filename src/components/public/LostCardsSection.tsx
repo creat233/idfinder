@@ -127,7 +127,7 @@ export const LostCardsSection = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-lg">
-                      {card.card_number}
+                      ****{card.card_number.slice(-4)}
                     </h3>
                     <Badge variant="outline">
                       {getDocumentTypeLabel(card.document_type)}
