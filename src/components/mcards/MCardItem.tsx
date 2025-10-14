@@ -150,7 +150,7 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
                     onEdit(mcard);
                   }}>
                     <Edit className="mr-2 h-4 w-4" />
-                    {t('edit')}
+                    Modifier
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onSelect={(e) => {
@@ -160,25 +160,35 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
                     disabled={mcard.subscription_status === 'pending_payment'}
                   >
                     <Copy className="mr-2 h-4 w-4" />
-                    {t('copyLink')}
+                    Copier le lien
                     {mcard.subscription_status === 'pending_payment' && ' (Indisponible)'}
                   </DropdownMenuItem>
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem className="text-red-500" onSelect={(e) => e.preventDefault()}>
                       <Trash2 className="mr-2 h-4 w-4" />
-                      {t('delete')}
+                      Supprimer
                     </DropdownMenuItem>
                   </AlertDialogTrigger>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <AlertDialogContent>
+              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>{t('deleteMCard')}</AlertDialogTitle>
-                  <AlertDialogDescription>{t('deleteMCardConfirmation')}</AlertDialogDescription>
+                  <AlertDialogTitle>Supprimer cette carte ?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Cette action est irréversible. Votre carte "{mcard.full_name}" sera définitivement supprimée.
+                  </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDelete(mcard.id)} className="bg-destructive hover:bg-destructive/90">{t('delete')}</AlertDialogAction>
+                  <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Annuler</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(mcard.id);
+                    }} 
+                    className="bg-destructive hover:bg-destructive/90"
+                  >
+                    Supprimer
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
