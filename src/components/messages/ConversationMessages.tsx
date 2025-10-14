@@ -27,13 +27,9 @@ export function ConversationMessages({
     }
   }, [messages]);
   return (
-    <div className="flex-1 bg-gradient-to-b from-gray-50/50 to-white overflow-hidden relative">
-      <ScrollArea ref={scrollAreaRef} className="h-full w-full">
-        <div className="p-4 md:p-6 space-y-2"
-             style={{ 
-               paddingBottom: '140px',
-               minHeight: '100%'
-             }}>
+    <div className="h-full overflow-hidden relative bg-gradient-to-b from-gray-50/50 to-white">
+      <ScrollArea className="h-full w-full" ref={scrollAreaRef}>
+        <div className="p-4 md:p-6 space-y-2 min-h-full pb-4">
           {messages.length === 0 ? (
             <EmptyMessages />
           ) : (
