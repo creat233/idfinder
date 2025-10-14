@@ -6,6 +6,7 @@ import { PublicPricing } from "@/components/public/PublicPricing";
 import { PublicCTA } from "@/components/public/PublicCTA";
 import { HomeSEO } from "@/components/seo/HomeSEO";
 import { SecurityProvider } from "@/components/SecurityProvider";
+import { LostCardsSection } from "@/components/public/LostCardsSection";
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
         <PublicHeader />
         <main className="flex-grow pt-16 pb-24 md:pb-0">
           <PublicHero />
+          <LostCardsSection />
           <PublicFeatures />
           <PublicPricing />
           <PublicCTA />
