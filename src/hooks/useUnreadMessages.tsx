@@ -30,6 +30,12 @@ export const useUnreadMessages = (user: any) => {
     if (user) {
       loadUnreadCount();
 
+      // Écouter l'événement personnalisé pour recharger immédiatement
+      const handleMessagesRead = () => {
+        loadUnreadCount();
+      };
+      window.addEventListener('messagesMarkedAsRead', handleMessagesRead);
+
       // Écouter les changements de messages en temps réel
       const channel = supabase
         .channel('unread-messages-count')
@@ -57,6 +63,7 @@ export const useUnreadMessages = (user: any) => {
         .subscribe();
 
       return () => {
+        window.removeEventListener('messagesMarkedAsRead', handleMessagesRead);
         supabase.removeChannel(channel);
       };
     }
