@@ -73,13 +73,17 @@ export function ConversationsList({
                     // Marquer comme lu automatiquement lors de la sélection
                     if (conversation.unreadCount > 0) {
                       try {
-                        await supabase
+                        const { error } = await supabase
                           .from('mcard_messages')
                           .update({ is_read: true })
                           .eq('sender_id', conversation.otherUserId)
                           .eq('recipient_id', currentUserId)
                           .eq('mcard_id', conversation.mcardId)
                           .eq('is_read', false);
+                        
+                        if (error) {
+                          console.error('Erreur marquage messages:', error);
+                        }
                       } catch (error) {
                         console.error('Erreur marquage messages:', error);
                       }
