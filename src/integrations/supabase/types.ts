@@ -1392,6 +1392,16 @@ export type Database = {
         }
         Returns: string
       }
+      create_notification_secure: {
+        Args: {
+          p_card_id: string
+          p_message: string
+          p_title: string
+          p_type: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       deactivate_expired_promo_codes: {
         Args: Record<PropertyKey, never>
         Returns: undefined
