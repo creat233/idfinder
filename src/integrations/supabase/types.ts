@@ -1376,6 +1376,14 @@ export type Database = {
         Args: { user_email: string }
         Returns: boolean
       }
+      can_add_status_today: {
+        Args: { p_mcard_id: string }
+        Returns: boolean
+      }
+      count_statuses_created_today: {
+        Args: { p_mcard_id: string }
+        Returns: number
+      }
       create_card_search_secure: {
         Args: {
           p_card_number: string

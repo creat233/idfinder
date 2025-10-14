@@ -55,7 +55,7 @@ export const MCardViewStatuses = ({
   const statusesCreatedToday = countStatusesCreatedToday(statuses);
   
   // Utilisation correcte du hook usePlanLimits
-  const { checkStatusLimit } = usePlanLimits({ 
+  const { checkStatusLimit, planLimits } = usePlanLimits({ 
     plan: mcardPlan || 'free', 
     statusesCreatedToday, 
     currentProductsCount: 0 
@@ -143,15 +143,20 @@ export const MCardViewStatuses = ({
             🟢 Statuts & Disponibilités
           </h3>
           {canAddStatus && (
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={handleAddStatus}
-              className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              Ajouter un statut
-            </Button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <span className="text-xs text-center sm:text-right text-muted-foreground">
+                {statusesCreatedToday}/{planLimits.maxStatuses} statuts aujourd'hui
+              </span>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={handleAddStatus}
+                className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Ajouter un statut
+              </Button>
+            </div>
           )}
         </div>
 
