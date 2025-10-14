@@ -25,7 +25,7 @@ export const MCardViewCustomization = ({
   const { customization, saveCustomization, loading } = useMCardCustomization(mcard.id);
   const { toast } = useToast();
 
-  const isPremium = mcard.plan === 'premium';
+  const isPremium = mcard.plan === 'premium' || mcard.plan === 'ultimate';
 
   const updateCustomization = async (updates: any) => {
     try {
