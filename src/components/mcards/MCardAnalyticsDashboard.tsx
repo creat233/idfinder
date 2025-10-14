@@ -65,6 +65,11 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
   useEffect(() => {
     loadAnalytics();
 
+    // Rafraîchissement automatique toutes les 30 secondes
+    const refreshInterval = setInterval(() => {
+      loadAnalytics();
+    }, 30000);
+
     // Mise à jour en temps réel des analytics
     const channel = supabase
       .channel('mcard-analytics-updates')
@@ -119,6 +124,7 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
       .subscribe();
 
     return () => {
+      clearInterval(refreshInterval);
       supabase.removeChannel(channel);
     };
   }, [mcardId, timeRange]);
@@ -280,7 +286,13 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
               <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
             </div>
             <div className="text-left min-w-0 flex-1">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">Analyses détaillées</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate flex items-center gap-2">
+                Analyses détaillées
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
+                  <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                  En temps réel
+                </span>
+              </h3>
               <p className="text-xs sm:text-sm text-gray-600 truncate">Performances de votre MCard</p>
             </div>
           </div>
@@ -296,27 +308,33 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
         <div className="p-6 space-y-6">
           {/* En-tête avec export */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold">Analyses détaillées</h2>
-          <p className="text-muted-foreground">Suivez les performances de votre MCard</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Tabs value={timeRange} onValueChange={(value) => setTimeRange(value as any)}>
-            <TabsList>
-              <TabsTrigger value="24h">24h</TabsTrigger>
-              <TabsTrigger value="7d">7j</TabsTrigger>
-              <TabsTrigger value="30d">30j</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Button onClick={exportDataPDF} variant="default" size="sm">
-            <FileDown className="h-4 w-4 mr-2" />
-            PDF
-          </Button>
-        </div>
-      </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-bold">Analyses détaillées</h2>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">
+                  <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                  Temps réel
+                </span>
+              </div>
+              <p className="text-muted-foreground">Suivez les performances de votre MCard • Mise à jour automatique toutes les 30s</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Tabs value={timeRange} onValueChange={(value) => setTimeRange(value as any)}>
+                <TabsList>
+                  <TabsTrigger value="24h">24h</TabsTrigger>
+                  <TabsTrigger value="7d">7j</TabsTrigger>
+                  <TabsTrigger value="30d">30j</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <Button onClick={exportDataPDF} variant="default" size="sm">
+                <FileDown className="h-4 w-4 mr-2" />
+                PDF
+              </Button>
+            </div>
+          </div>
 
-      {/* Métriques principales */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {/* Métriques principales */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -367,11 +385,11 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
               <MessageCircle className="h-5 w-5 text-purple-600" />
             </div>
           </CardContent>
-        </Card>
-      </div>
+          </Card>
+        </div>
 
-      {/* Graphiques */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Graphiques */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Graphique des vues dans le temps */}
         <Card>
           <CardHeader>
@@ -475,11 +493,11 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
-      </div>
+          </Card>
+        </div>
 
-      {/* Recommandations */}
-      <Card>
+        {/* Recommandations */}
+        <Card>
         <CardHeader>
           <CardTitle>🚀 Recommandations pour améliorer vos performances</CardTitle>
         </CardHeader>
@@ -515,8 +533,8 @@ export function MCardAnalyticsDashboard({ mcardId, mcardSlug }: MCardAnalyticsDa
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
         </div>
       )}
     </div>
