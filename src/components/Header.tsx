@@ -11,6 +11,7 @@ import { AppMobileNav } from "./AppMobileNav";
 import { useAuthState } from "@/hooks/useAuthState";
 import { robustSignOut } from "@/utils/authCleanup";
 import { useUserPresence } from "@/hooks/useUserPresence";
+import { Badge } from "@/components/ui/badge";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -101,6 +102,15 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
+            {isAuthenticated && (
+              <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50">
+                <span className="relative flex h-2 w-2 mr-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                En ligne
+              </Badge>
+            )}
             <HeaderLinks user={user} isAdmin={isAdmin} onSignOut={handleSignOut} />
           </div>
 

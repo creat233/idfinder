@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { User, LogOut } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -110,6 +111,17 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
   return (
     <div className="md:hidden bg-white border-t border-gray-200 max-h-[80vh] overflow-y-auto">
       <nav className="py-4 space-y-2">
+        {user && (
+          <div className="px-4 pb-2 mb-2 border-b border-gray-100">
+            <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 w-full justify-center">
+              <span className="relative flex h-2 w-2 mr-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              Vous êtes en ligne
+            </Badge>
+          </div>
+        )}
         <div className="space-y-1">
           {user ? loggedInNav : loggedOutNav}
         </div>
