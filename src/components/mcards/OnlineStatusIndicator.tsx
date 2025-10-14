@@ -1,4 +1,5 @@
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import { Circle } from 'lucide-react';
 
 interface OnlineStatusIndicatorProps {
   userId: string;
@@ -15,9 +16,14 @@ export const OnlineStatusIndicator = ({
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <div className={`relative w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}>
+      <div className="relative">
+        <Circle 
+          className={`h-3 w-3 ${isOnline ? 'fill-green-500 text-green-500' : 'fill-gray-400 text-gray-400'}`}
+        />
         {isOnline && (
-          <span className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping opacity-75" />
+          <Circle 
+            className="absolute inset-0 h-3 w-3 fill-green-500 text-green-500 animate-ping opacity-75" 
+          />
         )}
       </div>
       {showText && (
