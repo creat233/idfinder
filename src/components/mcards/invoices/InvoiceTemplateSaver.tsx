@@ -58,6 +58,9 @@ export const InvoiceTemplateSaver = ({ colors, onSave }: InvoiceTemplateSaverPro
     existingTemplates.push(template);
     localStorage.setItem('customInvoiceTemplates', JSON.stringify(existingTemplates));
 
+    // Déclencher un événement pour informer les autres composants
+    window.dispatchEvent(new Event('customTemplatesUpdated'));
+
     toast({
       title: "Succès",
       description: `Modèle "${templateName}" sauvegardé avec succès`
