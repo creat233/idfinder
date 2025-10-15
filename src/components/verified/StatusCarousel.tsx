@@ -141,16 +141,16 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
   }
 
   return (
-    <div className="mb-8 px-0 w-full mt-16 pt-4">
+    <div className="mb-8 px-4 sm:px-6 lg:px-8 w-full">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-black text-white">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
           Stories
         </h2>
       </div>
       
-      {/* Stories horizontales style TikTok */}
+      {/* Stories horizontales - Design professionnel */}
       <div className="relative">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory scroll-smooth">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory scroll-smooth px-2">
           {mcards.map((mcard) => {
             const currentIndex = currentStatusIndex[mcard.id] || 0;
             const currentStatus = mcard.statuses[currentIndex];
@@ -158,13 +158,13 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
             return (
               <div 
                 key={mcard.id} 
-                className="flex-none w-28 snap-start group cursor-pointer"
+                className="flex-none snap-start group cursor-pointer transform transition-all duration-300 hover:scale-105"
                 onClick={() => handleProfileClick(mcard.slug)}
               >
-                {/* Story circle style TikTok */}
+                {/* Story circle avec gradient moderne */}
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-0.5 shadow-lg">
-                    <div className="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500 p-[3px] shadow-2xl shadow-purple-500/50 hover:shadow-purple-500/70 transition-all duration-300">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center border-2 border-slate-800">
                       <StatusImageModal
                         imageUrl={currentStatus.status_image || ''}
                         statusText={currentStatus.status_text}
@@ -172,7 +172,7 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                         <img
                           src={currentStatus.status_image || ''}
                           alt={currentStatus.status_text}
-                          className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-110 cursor-pointer"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
                           loading="lazy"
                         />
                       </StatusImageModal>
@@ -180,16 +180,16 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                   </div>
                   
                   
-                  {/* Progress bars pour multiples stories */}
+                  {/* Progress bars élégants pour multiples stories */}
                   {mcard.statuses.length > 1 && (
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1">
                       {mcard.statuses.map((_, index) => (
                         <div
                           key={index}
-                          className={`h-0.5 rounded-full transition-all duration-300 ${
+                          className={`h-1 rounded-full transition-all duration-500 ${
                             index === currentIndex 
-                              ? 'bg-white w-4' 
-                              : 'bg-white/40 w-2'
+                              ? 'bg-gradient-to-r from-pink-400 to-purple-400 w-6 shadow-lg shadow-purple-500/50' 
+                              : 'bg-white/30 w-3'
                           }`}
                         />
                       ))}
@@ -197,9 +197,9 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
                   )}
                 </div>
                 
-                {/* Nom en dessous */}
-                <div className="mt-2">
-                  <p className="text-xs text-white/90 text-center font-medium truncate">
+                {/* Nom professionnel en dessous */}
+                <div className="mt-3">
+                  <p className="text-sm text-white font-semibold text-center truncate max-w-[96px] drop-shadow-lg">
                     {mcard.full_name?.split(' ')[0] || 'User'}
                   </p>
                 </div>

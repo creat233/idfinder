@@ -137,13 +137,13 @@ const VerifiedMCards = () => {
       
       {/* Container principal */}
       <div className="relative z-10 w-full">
-        {/* Stories Section - Style Instagram */}
-        <div className="mb-6 sm:mb-8">
+        {/* Stories Section - Design professionnel */}
+        <div className="mb-10 sm:mb-12">
           <StatusCarousel />
         </div>
 
-        {/* Produits épinglés - Style TikTok Feed */}
-        <div className="px-2 sm:px-4 lg:px-6 mb-8">
+        {/* Produits épinglés - Feed professionnel */}
+        <div className="px-2 sm:px-4 lg:px-6 mb-12">
           <PinnedProductsCarousel onImageClick={handleImageClick} />
         </div>
       </div>
@@ -158,20 +158,20 @@ const VerifiedMCards = () => {
       />
 
       {/* Grille des MCards */}
-      <div className="px-4 sm:px-6 lg:px-8 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 pb-16">
         <VerifiedMCardsGrid 
           searchQuery={searchQuery}
           selectedCategory={selectedCategory}
         />
       </div>
       
-      {/* Particules flottantes améliorées */}
+      {/* Particules flottantes améliorées et subtiles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-purple-400/20 rounded-full animate-pulse blur-sm"></div>
-        <div className="absolute top-3/4 right-1/4 w-2 h-2 bg-pink-400/30 rounded-full animate-ping blur-sm"></div>
-        <div className="absolute top-1/2 left-3/4 w-2.5 h-2.5 bg-blue-400/20 rounded-full animate-bounce blur-sm"></div>
-        <div className="absolute top-1/3 right-1/3 w-4 h-4 bg-indigo-400/15 rounded-full animate-pulse blur-md"></div>
-        <div className="absolute bottom-1/4 left-1/2 w-3 h-3 bg-violet-400/20 rounded-full animate-ping blur-sm"></div>
+        <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-purple-400/10 rounded-full animate-pulse blur-xl"></div>
+        <div className="absolute top-3/4 right-1/4 w-3 h-3 bg-pink-400/15 rounded-full animate-ping blur-lg"></div>
+        <div className="absolute top-1/2 left-3/4 w-3 h-3 bg-blue-400/10 rounded-full animate-bounce blur-xl"></div>
+        <div className="absolute top-1/3 right-1/3 w-5 h-5 bg-indigo-400/10 rounded-full animate-pulse blur-2xl"></div>
+        <div className="absolute bottom-1/4 left-1/2 w-4 h-4 bg-violet-400/15 rounded-full animate-ping blur-lg"></div>
       </div>
     </div>
   );
