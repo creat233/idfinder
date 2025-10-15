@@ -32,12 +32,19 @@ const Messages = () => {
     loadConversations();
   });
 
-  // Émettre un événement quand l'état de la conversation change
+  // Émettre un événement quand l'état de la conversation change et forcer le rechargement des messages non lus
   useEffect(() => {
     const event = new CustomEvent('conversationStateChange', {
       detail: { hasSelectedConversation: !!selectedConversation }
     });
     window.dispatchEvent(event);
+    
+    // Forcer le rechargement du compteur après changement de conversation
+    if (selectedConversation) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('messagesMarkedAsRead'));
+      }, 500);
+    }
   }, [selectedConversation]);
 
   useEffect(() => {
