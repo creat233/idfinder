@@ -27,9 +27,8 @@ export function ConversationMessages({
     }
   }, [messages]);
   return (
-    <div className="h-full overflow-hidden relative bg-gradient-to-b from-gray-50/50 to-white">
-      <ScrollArea className="h-full w-full" ref={scrollAreaRef}>
-        <div className="p-4 md:p-6 space-y-2 min-h-full pb-4">
+    <ScrollArea className="h-full w-full" ref={scrollAreaRef}>
+      <div className="p-4 md:p-6 space-y-2 pb-4 bg-gradient-to-b from-gray-50/50 to-white">
           {messages.length === 0 ? (
             <EmptyMessages />
           ) : (
@@ -49,8 +48,7 @@ export function ConversationMessages({
               ))}
             </div>
           )}
-        </div>
-      </ScrollArea>
-    </div>
+      </div>
+    </ScrollArea>
   );
 }
