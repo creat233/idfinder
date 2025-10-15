@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Paintbrush, Plus, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { InvoiceTemplateSaver } from './InvoiceTemplateSaver';
 
 interface TemplateColorPickerProps {
   colors: string[];
@@ -115,23 +116,28 @@ export const TemplateColorPicker = ({
         )}
 
         {/* Aperçu des couleurs */}
-        <div className="pt-4 border-t">
-          <p className="text-sm font-medium mb-3">Aperçu de la palette</p>
-          <div className="flex gap-2 flex-wrap">
-            {colors.map((color, index) => (
-              <div
-                key={index}
-                className="w-16 h-16 rounded-lg border-2 border-border shadow-sm transition-transform hover:scale-110"
-                style={{ backgroundColor: color }}
-                title={color}
-              />
-            ))}
-            {colors.length === 0 && (
-              <p className="text-sm text-muted-foreground italic">
-                Aucune couleur personnalisée
-              </p>
-            )}
+        <div className="pt-4 border-t space-y-4">
+          <div>
+            <p className="text-sm font-medium mb-3">Aperçu de la palette</p>
+            <div className="flex gap-2 flex-wrap">
+              {colors.map((color, index) => (
+                <div
+                  key={index}
+                  className="w-16 h-16 rounded-lg border-2 border-border shadow-sm transition-transform hover:scale-110"
+                  style={{ backgroundColor: color }}
+                  title={color}
+                />
+              ))}
+              {colors.length === 0 && (
+                <p className="text-sm text-muted-foreground italic">
+                  Aucune couleur personnalisée
+                </p>
+              )}
+            </div>
           </div>
+
+          {/* Bouton pour sauvegarder le modèle */}
+          <InvoiceTemplateSaver colors={colors} />
         </div>
       </CardContent>
     </Card>

@@ -55,7 +55,7 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
             Horaires de disponibilité
           </div>
           <div className="flex items-center gap-2">
-            {!isOwner && (
+            {slots.length > 0 && (
               <Button 
                 size="sm" 
                 variant="outline"
