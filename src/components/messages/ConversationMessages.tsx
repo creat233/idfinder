@@ -28,7 +28,7 @@ export function ConversationMessages({
   }, [messages]);
   return (
     <ScrollArea className="h-full w-full" ref={scrollAreaRef}>
-      <div className="p-4 md:p-6 space-y-2 pb-24 bg-gradient-to-b from-gray-50/50 to-white">
+      <div className="p-4 md:p-6 space-y-2 pb-32 bg-gradient-to-b from-gray-50/50 to-white">
           {messages.length === 0 ? (
             <EmptyMessages />
           ) : (
