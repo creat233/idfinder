@@ -25,6 +25,7 @@ import About from "./pages/About";
 import MCards from "./pages/MCards";
 import MCardView from "./pages/MCardView";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
+import AdminDashboard from "./pages/AdminDashboard";
 import AdminExpiredCards from "./pages/AdminExpiredCards";
 import AdminLegal from "./pages/AdminLegal";
 import AdminMessages from "./pages/AdminMessages";
@@ -105,6 +106,7 @@ function AppContent() {
               <Route path="/mcard/:slug" element={<MCardView />} />
               <Route path="/mcard/:slug/invoices" element={<InvoiceManagement />} />
               <Route path="/m/:slug" element={<MCardView />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
               <Route path="/admin/cartes-expirees" element={<AdminExpiredCards />} />
               <Route path="/admin/juridique" element={<AdminLegal />} />
