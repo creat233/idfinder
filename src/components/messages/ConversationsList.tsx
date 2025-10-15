@@ -70,10 +70,7 @@ export function ConversationsList({
                       : 'border-l-transparent'
                   }`}
                   onClick={async () => {
-                    // Sélectionner d'abord la conversation pour l'afficher
-                    onConversationSelect(conversation);
-                    
-                    // Marquer comme lu immédiatement après avoir sélectionné
+                    // Marquer comme lu immédiatement AVANT de sélectionner
                     if (conversation.unreadCount > 0) {
                       try {
                         const { error } = await supabase
@@ -88,13 +85,18 @@ export function ConversationsList({
                           console.error('Erreur marquage messages:', error);
                         } else {
                           console.log('Messages marqués comme lus avec succès');
-                          // Forcer le rechargement du compteur de messages non lus
-                          window.dispatchEvent(new CustomEvent('messagesMarkedAsRead'));
+                          // Forcer le rechargement du compteur avec un léger délai
+                          setTimeout(() => {
+                            window.dispatchEvent(new CustomEvent('messagesMarkedAsRead'));
+                          }, 100);
                         }
                       } catch (error) {
                         console.error('Erreur marquage messages:', error);
                       }
                     }
+                    
+                    // Sélectionner la conversation après avoir marqué comme lu
+                    onConversationSelect(conversation);
                   }}
                 >
                   <div className="flex items-start gap-3">

@@ -32,6 +32,7 @@ export const useUnreadMessages = (user: any) => {
 
       // Écouter l'événement personnalisé pour recharger immédiatement
       const handleMessagesRead = () => {
+        console.log('🔄 Rechargement du compteur de messages non lus...');
         loadUnreadCount();
       };
       window.addEventListener('messagesMarkedAsRead', handleMessagesRead);
