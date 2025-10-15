@@ -60,7 +60,7 @@ export function ConversationsList({
               </p>
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-1 pb-24">
               {filteredConversations.map((conversation) => (
                 <div
                   key={conversation.otherUserId}
