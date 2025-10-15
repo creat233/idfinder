@@ -41,14 +41,14 @@ export const MCardFeaturesDetailed = () => {
       essential: true,
       premium: true,
       ultimate: true,
-      description: "Liens vers vos profils sociaux professionnels"
+      description: "LinkedIn, Instagram, Facebook, Twitter, TikTok..."
     },
     {
       name: "Statistiques de vues",
       essential: true,
       premium: true,
       ultimate: true,
-      description: "Suivez qui consulte votre carte"
+      description: "Suivez le nombre de consultations de votre carte"
     },
     {
       name: "Mise à jour en temps réel",
@@ -62,21 +62,63 @@ export const MCardFeaturesDetailed = () => {
       essential: "20 max",
       premium: "50 max",
       ultimate: "100 max",
-      description: "Présentez vos offres directement sur votre carte"
+      description: "Catalogue complet avec photos, prix et descriptions"
     },
     {
       name: "Statuts personnalisés",
-      essential: "15 max",
-      premium: "30 max",
-      ultimate: "50 max",
-      description: "Affichez votre disponibilité en temps réel"
+      essential: "15/jour",
+      premium: "30/jour",
+      ultimate: "50/jour",
+      description: "Stories temporaires pour partager votre actualité (24h)"
+    },
+    {
+      name: "Factures professionnelles",
+      essential: true,
+      premium: true,
+      ultimate: true,
+      description: "Créez et envoyez des factures directement depuis votre carte"
+    },
+    {
+      name: "Messages visiteurs",
+      essential: true,
+      premium: true,
+      ultimate: true,
+      description: "Recevez des messages de vos visiteurs"
+    },
+    {
+      name: "Avis et témoignages",
+      essential: true,
+      premium: true,
+      ultimate: true,
+      description: "Collectez et affichez les avis de vos clients"
+    },
+    {
+      name: "Créneaux de disponibilité",
+      essential: false,
+      premium: true,
+      ultimate: true,
+      description: "Indiquez vos heures d'ouverture et disponibilités"
     },
     {
       name: "Analytics avancées",
       essential: false,
       premium: true,
       ultimate: true,
-      description: "Analyses détaillées des interactions"
+      description: "Statistiques détaillées des interactions (likes, partages, favoris)"
+    },
+    {
+      name: "Badge de vérification",
+      essential: false,
+      premium: true,
+      ultimate: true,
+      description: "Certifiez l'authenticité de votre profil professionnel"
+    },
+    {
+      name: "Personnalisation avancée",
+      essential: false,
+      premium: true,
+      ultimate: true,
+      description: "Thèmes, couleurs, animations, polices personnalisées"
     },
     {
       name: "Support prioritaire",
@@ -86,32 +128,39 @@ export const MCardFeaturesDetailed = () => {
       description: "Assistance technique selon votre plan"
     },
     {
-      name: "Personnalisation avancée",
+      name: "Intégrations CRM",
       essential: false,
-      premium: true,
+      premium: false,
       ultimate: true,
-      description: "Thèmes et couleurs personnalisés"
+      description: "Synchronisez avec vos outils professionnels"
     },
     {
       name: "API personnalisée",
       essential: false,
       premium: false,
       ultimate: true,
-      description: "Intégrations sur mesure"
+      description: "Développez vos propres intégrations"
     },
     {
       name: "Formation personnalisée",
       essential: false,
       premium: false,
       ultimate: true,
-      description: "Sessions de formation dédiées"
+      description: "Sessions de formation dédiées à votre équipe"
     },
     {
       name: "Gestionnaire de compte",
       essential: false,
       premium: false,
       ultimate: true,
-      description: "Accompagnement personnalisé"
+      description: "Accompagnement personnalisé et assistance prioritaire"
+    },
+    {
+      name: "Sauvegardes automatiques",
+      essential: false,
+      premium: false,
+      ultimate: true,
+      description: "Protection et historique de vos données"
     }
   ];
 
