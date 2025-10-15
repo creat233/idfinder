@@ -12,6 +12,7 @@ import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
 import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
 import { MCardCustomized } from '@/components/mcards/MCardCustomized';
+import { MCardViewQuotes } from '@/components/mcards/view/MCardViewQuotes';
 import { useMCardView } from '@/hooks/useMCardView';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -121,6 +122,13 @@ const MCardView = () => {
             <MCardPhysicalProducts 
               mcard={mcard}
               isOwner={isOwner}
+            />
+
+            {/* Quotes Section */}
+            <MCardViewQuotes 
+              mcardId={mcard.id}
+              isOwner={isOwner}
+              mcard={mcard}
             />
           </MCardCustomized>
 
