@@ -74,7 +74,37 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
   const [mcardOwner, setMcardOwner] = useState<MCardOwner | null>(null);
   const { toast } = useToast();
 
-  const template = invoiceTemplates.find(t => t.id === templateId) || invoiceTemplates[0];
+  // Récupérer le template (par défaut ou personnalisé)
+  const getTemplate = () => {
+    // Vérifier si c'est un modèle personnalisé
+    const customTemplates = JSON.parse(localStorage.getItem('customInvoiceTemplates') || '[]');
+    const customTemplate = customTemplates.find((t: any) => t.id === templateId);
+    
+    if (customTemplate) {
+      // Créer un objet InvoiceTemplate à partir du modèle personnalisé
+      return {
+        id: customTemplate.id,
+        name: customTemplate.name,
+        description: customTemplate.description,
+        preview: '',
+        styles: {
+          primaryColor: customTemplate.colors[0] || '#000000',
+          backgroundColor: '#ffffff',
+          textColor: '#000000',
+          borderColor: customTemplate.colors[1] || '#e5e5e5',
+          headerStyle: 'modern' as const,
+          layout: 'standard' as const,
+          fontFamily: 'sans-serif'
+        },
+        customColors: customTemplate.colors
+      };
+    }
+    
+    // Sinon, utiliser le template par défaut
+    return invoiceTemplates.find(t => t.id === templateId) || invoiceTemplates[0];
+  };
+
+  const template = getTemplate();
 
   useEffect(() => {
     const fetchMCardOwner = async () => {
@@ -476,7 +506,14 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
                   </thead>
                   <tbody>
                     {invoice.items.map((item, index) => (
-                      <tr key={index} className="border-t print:border-gray-300" style={{ borderTopColor: template.styles.borderColor }}>
+                      <tr 
+                        key={index} 
+                        className="border-t print:border-gray-300" 
+                        style={{ 
+                          borderTopColor: template.styles.borderColor,
+                          backgroundColor: index % 2 === 0 ? 'transparent' : (template.customColors?.[2] ? `${template.customColors[2]}10` : 'transparent')
+                        }}
+                      >
                         <td className="p-3 print:p-4">{item.description}</td>
                         <td className="p-3 print:p-4 text-center">{item.quantity}</td>
                         <td className="p-3 print:p-4 text-right">{item.unit_price.toLocaleString()} FCFA</td>
@@ -484,7 +521,13 @@ export const StyledInvoiceView = ({ invoice, templateId, onClose }: StyledInvoic
                       </tr>
                     ))}
                   </tbody>
-                  <tfoot style={{ backgroundColor: template.styles.primaryColor + '20', borderTopColor: template.styles.borderColor }} className="print:bg-gray-100 print:border-t-4 print:border-gray-800">
+                  <tfoot 
+                    style={{ 
+                      backgroundColor: template.customColors?.[3] ? `${template.customColors[3]}20` : template.styles.primaryColor + '20', 
+                      borderTopColor: template.styles.borderColor 
+                    }} 
+                    className="print:bg-gray-100 print:border-t-4 print:border-gray-800"
+                  >
                     <tr>
                       <td colSpan={3} className="p-3 print:p-4 text-right font-semibold print:text-lg">Total général:</td>
                       <td className="p-3 print:p-4 text-right font-bold text-lg print:text-xl" style={{ color: template.styles.primaryColor }}>
