@@ -70,33 +70,35 @@ export function ConversationsList({
                       : 'border-l-transparent'
                   }`}
                   onClick={async () => {
-                    // Marquer comme lu immédiatement AVANT de sélectionner
+                    // Marquer TOUS les messages de cette conversation comme lus AVANT de sélectionner
                     if (conversation.unreadCount > 0) {
                       try {
+                        // Marquer tous les messages non lus de cet expéditeur vers le destinataire actuel
                         const { error } = await supabase
                           .from('mcard_messages')
                           .update({ is_read: true })
                           .eq('sender_id', conversation.otherUserId)
                           .eq('recipient_id', currentUserId)
-                          .eq('mcard_id', conversation.mcardId)
                           .eq('is_read', false);
                         
                         if (error) {
-                          console.error('Erreur marquage messages:', error);
+                          console.error('❌ Erreur marquage messages:', error);
                         } else {
-                          console.log('Messages marqués comme lus avec succès');
-                          // Forcer le rechargement du compteur avec un léger délai
-                          setTimeout(() => {
-                            window.dispatchEvent(new CustomEvent('messagesMarkedAsRead'));
-                          }, 100);
+                          console.log('✅ Messages marqués comme lus avec succès');
                         }
                       } catch (error) {
-                        console.error('Erreur marquage messages:', error);
+                        console.error('❌ Erreur marquage messages:', error);
                       }
                     }
                     
-                    // Sélectionner la conversation après avoir marqué comme lu
+                    // Sélectionner la conversation
                     onConversationSelect(conversation);
+                    
+                    // Forcer le rechargement du compteur après un délai
+                    setTimeout(() => {
+                      console.log('🔄 Rechargement forcé du compteur');
+                      window.dispatchEvent(new CustomEvent('messagesMarkedAsRead'));
+                    }, 300);
                   }}
                 >
                   <div className="flex items-start gap-3">
