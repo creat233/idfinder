@@ -57,7 +57,7 @@ export const AdminDashboard = () => {
       iconBg: "bg-orange-100",
       iconColor: "text-orange-600",
       badge: { text: "Nouveau", variant: "secondary" as const },
-      path: "/admin/expired-cards",
+      path: "/admin/cartes-expirees",
     },
     {
       title: "Gestion Juridique",
