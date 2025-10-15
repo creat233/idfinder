@@ -124,10 +124,10 @@ export const PinnedProductsCarousel = ({ onImageClick }: PinnedProductsCarouselP
         `)
         .eq('is_active', true)
         .eq('mcards.is_published', true)
-        .eq('mcards.is_verified', true)
+        .eq('mcards.subscription_status', 'active')
         .not('image_url', 'is', null)
-        .order('mcard_id', { ascending: false })
-        .limit(20);
+        .order('created_at', { ascending: false })
+        .limit(50);
 
       if (error) throw error;
 

@@ -48,14 +48,14 @@ export const StatusCarousel = ({ onImageClick }: StatusCarouselProps) => {
 
   const loadMCardsWithStatuses = async () => {
     try {
-      // Charger toutes les cartes vérifiées et publiées (sans restriction d'abonnement)
+      // Charger TOUTES les cartes actives et publiées (vérifiées ET non vérifiées)
       const { data: mcardsData, error: mcardsError } = await supabase
         .from('mcards')
         .select('*')
         .eq('is_published', true)
-        .eq('is_verified', true)
+        .eq('subscription_status', 'active')
         .order('view_count', { ascending: false })
-        .limit(15);
+        .limit(30);
 
       if (mcardsError) throw mcardsError;
 
