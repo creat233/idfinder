@@ -1,9 +1,21 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Scale, FileText, AlertTriangle, Users, Shield, BookOpen, Phone, Mail } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Scale, FileText, AlertTriangle, Phone, Mail, BookOpen, CheckCircle2, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const AdminLegalManagement = () => {
+  const { toast } = useToast();
+  const [selectedArea, setSelectedArea] = useState<any>(null);
+  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
   const legalAreas = [
     {
       title: "Protection des données (RGPD)",
@@ -119,6 +131,22 @@ export const AdminLegalManagement = () => {
     }
   };
 
+  const handleContactLawyer = () => {
+    toast({
+      title: "Contact avocat",
+      description: "Ouverture du client email...",
+    });
+    window.location.href = "mailto:contact@avocat-senegal.sn?subject=Consultation juridique FinderID";
+  };
+
+  const handleMarkComplete = (taskTitle: string) => {
+    setCompletedTasks([...completedTasks, taskTitle]);
+    toast({
+      title: "Tâche complétée",
+      description: `"${taskTitle}" a été marquée comme terminée.`,
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* En-tête avec informations avocat */}
@@ -204,7 +232,12 @@ export const AdminLegalManagement = () => {
                   )}
                 </div>
                 
-                <Button variant="outline" size="sm" className="w-full mt-3">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full mt-3"
+                  onClick={() => setSelectedArea(area)}
+                >
                   Voir détails
                 </Button>
               </div>
@@ -233,12 +266,28 @@ export const AdminLegalManagement = () => {
                 </div>
                 <p className="text-gray-600 mb-4">{task.description}</p>
                 <div className="flex gap-2">
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Button 
+                    size="sm" 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={handleContactLawyer}
+                  >
                     <Phone className="h-4 w-4 mr-2" />
                     Contacter avocat
                   </Button>
-                  <Button variant="outline" size="sm">
-                    Marquer terminé
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleMarkComplete(task.title)}
+                    disabled={completedTasks.includes(task.title)}
+                  >
+                    {completedTasks.includes(task.title) ? (
+                      <>
+                        <CheckCircle2 className="h-4 w-4 mr-2" />
+                        Terminé
+                      </>
+                    ) : (
+                      "Marquer terminé"
+                    )}
                   </Button>
                 </div>
               </div>
@@ -278,6 +327,57 @@ export const AdminLegalManagement = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Dialog pour les détails d'un domaine juridique */}
+      <Dialog open={!!selectedArea} onOpenChange={() => setSelectedArea(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Scale className="h-5 w-5 text-blue-600" />
+              {selectedArea?.title}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedArea?.description}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Badge className={getPriorityColor(selectedArea?.priority || '')}>
+                Priorité: {selectedArea?.priority}
+              </Badge>
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${getStatusColor(selectedArea?.status || '')}`}></div>
+                <span className="text-sm font-medium">
+                  Statut: {selectedArea?.status === 'ok' ? 'Conforme' : selectedArea?.status === 'attention' ? 'À surveiller' : 'Urgent'}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-3">Actions requises:</h4>
+              <div className="space-y-2">
+                {selectedArea?.actions?.map((action: string, index: number) => (
+                  <div key={index} className="flex items-start gap-2 p-3 bg-muted rounded-lg">
+                    <FileText className="h-4 w-4 mt-0.5 text-blue-600" />
+                    <span className="text-sm">{action}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button onClick={handleContactLawyer} className="flex-1">
+                <Phone className="h-4 w-4 mr-2" />
+                Contacter un avocat
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedArea(null)}>
+                Fermer
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
