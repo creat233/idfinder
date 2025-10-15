@@ -249,7 +249,7 @@ export const AdminMessages = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => navigate(`/search?q=${message.card_info.card_number}`)}
+                        onClick={() => navigate(`/recherche/${message.card_info.card_number}`)}
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
                         Voir la carte
