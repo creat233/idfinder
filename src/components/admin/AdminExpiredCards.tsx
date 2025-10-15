@@ -31,12 +31,23 @@ export const AdminExpiredCards = () => {
     queryKey: ['admin-expired-cards'],
     queryFn: async () => {
       try {
+        console.log('🔍 Fetching expired cards...');
         const { data, error } = await supabase.rpc('admin_get_expired_mcards');
-        if (error) throw error;
+        
+        console.log('📊 Response:', { data, error });
+        
+        if (error) {
+          console.error('❌ Error fetching expired cards:', error);
+          throw error;
+        }
+        
+        console.log('✅ Expired cards loaded:', data?.length || 0, 'cards');
+        console.log('📋 Cards data:', data);
+        
         return data as ExpiredCard[];
       } catch (error) {
-        console.error('Erreur lors de la récupération des cartes expirées:', error);
-        return [];
+        console.error('❌ Exception in fetchExpiredCards:', error);
+        throw error;
       }
     },
   });
@@ -95,12 +106,18 @@ export const AdminExpiredCards = () => {
     );
   }
 
+  console.log('🎯 Current state:', { 
+    isLoading, 
+    cardsCount: expiredCards?.length,
+    filteredCount: filteredCards?.length 
+  });
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-orange-500" />
-          Cartes expirées depuis plus de 30 jours ({expiredCards.length})
+          Cartes expirées depuis plus de 30 jours ({expiredCards?.length || 0})
         </CardTitle>
         <div className="flex gap-2">
           <Button
