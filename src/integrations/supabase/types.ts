@@ -1540,6 +1540,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      send_expiring_today_notifications: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          message: string
+          notifications_sent: number
+          success: boolean
+        }[]
+      }
       validate_password_strength: {
         Args: { password: string }
         Returns: boolean
