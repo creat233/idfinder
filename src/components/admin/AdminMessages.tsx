@@ -38,6 +38,27 @@ export const AdminMessages = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const handleViewMCard = async (mcardId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('mcards')
+        .select('slug')
+        .eq('id', mcardId)
+        .single();
+
+      if (error) throw error;
+      if (data?.slug) {
+        navigate(`/mcard/${data.slug}`);
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger la mCard"
+      });
+    }
+  };
+
   const fetchMessages = async () => {
     try {
       const { data, error } = await supabase
@@ -245,14 +266,24 @@ export const AdminMessages = () => {
                   )}
                   
                   <div className="flex gap-2">
-                    {message.card_info?.card_number && (
+                    {message.message_type === 'mcard_report' && message.card_info?.mcard_id && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleViewMCard(message.card_info.mcard_id)}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Voir la mCard
+                      </Button>
+                    )}
+                    {message.message_type === 'recovery_request' && message.card_info?.card_number && (
                       <Button 
                         variant="outline" 
                         size="sm"
                         onClick={() => navigate(`/recherche/${message.card_info.card_number}`)}
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        Voir la carte
+                        Voir la carte signalée
                       </Button>
                     )}
                     {message.status === 'unread' && (
