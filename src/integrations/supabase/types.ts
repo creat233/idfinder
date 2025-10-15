@@ -105,15 +105,7 @@ export type Database = {
           status?: string | null
           title?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_messages_card_id_fkey"
-            columns: ["card_id"]
-            isOneToOne: false
-            referencedRelation: "reported_cards"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       admin_permissions: {
         Row: {
