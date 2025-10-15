@@ -606,6 +606,106 @@ export type Database = {
           },
         ]
       }
+      mcard_quote_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          quantity: number
+          quote_id: string
+          total_price: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          quantity?: number
+          quote_id: string
+          total_price?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          quantity?: number
+          quote_id?: string
+          total_price?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_quote_items_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "mcard_quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_quotes: {
+        Row: {
+          amount: number
+          client_email: string | null
+          client_name: string
+          client_phone: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          issued_date: string | null
+          mcard_id: string
+          notes: string | null
+          quote_number: string
+          status: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          amount?: number
+          client_email?: string | null
+          client_name: string
+          client_phone?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          issued_date?: string | null
+          mcard_id: string
+          notes?: string | null
+          quote_number: string
+          status?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          amount?: number
+          client_email?: string | null
+          client_name?: string
+          client_phone?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          issued_date?: string | null
+          mcard_id?: string
+          notes?: string | null
+          quote_number?: string
+          status?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_quotes_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_renewal_requests: {
         Row: {
           created_at: string
