@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import { Search, MessageCircle, AlertCircle, Clock, CheckCircle } from "lucide-react";
+import { Search, MessageCircle, AlertCircle, Clock, CheckCircle, ExternalLink } from "lucide-react";
 import { AdminNavigation } from "./AdminNavigation";
+import { useNavigate } from "react-router-dom";
 
 interface AdminMessage {
   id: string;
@@ -35,6 +36,7 @@ export const AdminMessages = () => {
   const [response, setResponse] = useState("");
   const [processing, setProcessing] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchMessages = async () => {
     try {
@@ -243,6 +245,16 @@ export const AdminMessages = () => {
                   )}
                   
                   <div className="flex gap-2">
+                    {message.card_info?.card_number && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => navigate(`/search?q=${message.card_info.card_number}`)}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Voir la carte
+                      </Button>
+                    )}
                     {message.status === 'unread' && (
                       <Button 
                         variant="outline" 
