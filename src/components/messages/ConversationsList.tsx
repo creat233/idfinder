@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Search } from "lucide-react";
 import { formatMessageDate } from "@/utils/dateUtils";
 import { Conversation } from "@/types/messages";
@@ -30,10 +31,10 @@ export function ConversationsList({
   );
 
   return (
-    <Card className="h-full">
-      <CardContent className="p-0">
+    <Card className="h-full flex flex-col">
+      <CardContent className="p-0 flex flex-col h-full">
         {/* Barre de recherche */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b flex-shrink-0">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -45,8 +46,8 @@ export function ConversationsList({
           </div>
         </div>
 
-        {/* Liste des conversations */}
-        <div className="overflow-y-auto h-[calc(100%-80px)]">
+        {/* Liste des conversations avec scroll */}
+        <ScrollArea className="flex-1">{" "}
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -134,7 +135,7 @@ export function ConversationsList({
               ))}
             </div>
           )}
-        </div>
+        </ScrollArea>
       </CardContent>
     </Card>
   );
