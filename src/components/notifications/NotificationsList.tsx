@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useNavigate } from "react-router-dom";
 
 export const NotificationsList = () => {
-  const { notifications, loading, markAsRead, markAllAsRead, deleteAllNotifications, refetch } = useNotifications();
+  const { notifications, loading, markAsRead, markAllAsRead, deleteNotification, deleteAllNotifications, refetch } = useNotifications();
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const { toast } = useToast();
@@ -88,22 +88,15 @@ export const NotificationsList = () => {
     try {
       setDeletingIds(prev => new Set(prev).add(notificationId));
       
-      const { error } = await supabase
-        .from('notifications')
-        .delete()
-        .eq('id', notificationId);
-
-      if (error) {
-        throw error;
+      // Utiliser la méthode du hook qui met à jour le compteur automatiquement
+      if (deleteNotification) {
+        await deleteNotification(notificationId);
+        
+        toast({
+          title: "Notification supprimée",
+          description: "La notification a été supprimée avec succès."
+        });
       }
-
-      toast({
-        title: "Notification supprimée",
-        description: "La notification a été supprimée avec succès."
-      });
-
-      // Actualiser la liste via le hook
-      await refetch();
     } catch (error: any) {
       console.error('Error deleting notification:', error);
       toast({
