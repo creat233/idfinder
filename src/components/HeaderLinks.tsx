@@ -22,10 +22,10 @@ export const HeaderLinks = ({
       return (
         <>
           <Link
-            to="/admin/codes-promo"
+            to="/admin"
             className="text-gray-700 hover:text-orange-600"
           >
-            Administration
+            Panneau Admin
           </Link>
           <Link
             to="/profile"
