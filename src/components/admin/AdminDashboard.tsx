@@ -10,7 +10,8 @@ import {
   Users, 
   BarChart3, 
   Settings,
-  Mail
+  Mail,
+  ArrowLeft
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -104,6 +105,15 @@ export const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <Button
+        variant="ghost"
+        onClick={() => navigate(-1)}
+        className="mb-6"
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Retour
+      </Button>
+
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-2">
           <Settings className="h-8 w-8" />
