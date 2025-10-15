@@ -108,16 +108,42 @@ const VerifiedMCards = () => {
       {/* Header pour desktop uniquement */}
       {!isMobile && <PublicHeader />}
       
-      {/* Container principal - Sans padding du header */}
-      <div className="relative z-10 w-full">{/* Header retiré complètement */}
-        
+      {/* Hero Section avec recherche glassmorphism */}
+      <div className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 animate-fade-in">
+            Découvrez les Professionnels
+          </h1>
+          <p className="text-lg sm:text-xl text-white/80 mb-8 animate-fade-in">
+            Explorez les produits et services des professionnels actifs
+          </p>
+          
+          {/* Barre de recherche avec effet glassmorphism */}
+          <div className="max-w-2xl mx-auto animate-scale-in">
+            <div className="relative backdrop-blur-xl bg-white/10 rounded-2xl p-6 border border-white/20 shadow-2xl">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  placeholder="Rechercher par nom, entreprise, secteur d'activité..."
+                  className="flex-1 px-6 py-4 rounded-xl bg-white/90 backdrop-blur-sm border-2 border-white/30 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 text-base"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Container principal */}
+      <div className="relative z-10 w-full">
         {/* Stories Section - Style Instagram */}
-        <div className="mb-4 sm:mb-6">
+        <div className="mb-6 sm:mb-8">
           <StatusCarousel />
         </div>
 
         {/* Produits épinglés - Style TikTok Feed */}
-        <div className="px-2 sm:px-4 lg:px-6">
+        <div className="px-2 sm:px-4 lg:px-6 mb-8">
           <PinnedProductsCarousel onImageClick={handleImageClick} />
         </div>
       </div>
@@ -131,17 +157,21 @@ const VerifiedMCards = () => {
         initialProductIndex={selectedProductIndex}
       />
 
-      {/* Grille des MCards vérifiées et actives */}
-      <VerifiedMCardsGrid 
-        searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
-      />
+      {/* Grille des MCards */}
+      <div className="px-4 sm:px-6 lg:px-8 pb-12">
+        <VerifiedMCardsGrid 
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+        />
+      </div>
       
-      {/* Particules flottantes */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-pink-400/30 rounded-full animate-pulse"></div>
-        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-purple-400/40 rounded-full animate-ping"></div>
-        <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-blue-400/20 rounded-full animate-bounce"></div>
+      {/* Particules flottantes améliorées */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-purple-400/20 rounded-full animate-pulse blur-sm"></div>
+        <div className="absolute top-3/4 right-1/4 w-2 h-2 bg-pink-400/30 rounded-full animate-ping blur-sm"></div>
+        <div className="absolute top-1/2 left-3/4 w-2.5 h-2.5 bg-blue-400/20 rounded-full animate-bounce blur-sm"></div>
+        <div className="absolute top-1/3 right-1/3 w-4 h-4 bg-indigo-400/15 rounded-full animate-pulse blur-md"></div>
+        <div className="absolute bottom-1/4 left-1/2 w-3 h-3 bg-violet-400/20 rounded-full animate-ping blur-sm"></div>
       </div>
     </div>
   );
