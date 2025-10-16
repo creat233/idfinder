@@ -43,6 +43,7 @@ import Notifications from "./pages/Notifications";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import InvoiceManagement from "./pages/InvoiceManagement";
+import MCardQuotes from "./pages/MCardQuotes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -105,6 +106,7 @@ function AppContent() {
               <Route path="/mcards" element={<MCards />} />
               <Route path="/mcard/:slug" element={<MCardView />} />
               <Route path="/mcard/:slug/invoices" element={<InvoiceManagement />} />
+              <Route path="/mcard/:slug/quotes" element={<MCardQuotes />} />
               <Route path="/m/:slug" element={<MCardView />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
