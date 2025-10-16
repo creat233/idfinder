@@ -123,14 +123,16 @@ const MCardView = () => {
               mcard={mcard}
               isOwner={isOwner}
             />
+          </MCardCustomized>
 
-            {/* Quotes Section */}
+          {/* Quotes Section - Disponible uniquement pour les plans Essential et Premium */}
+          {(mcard.plan === 'essential' || mcard.plan === 'premium') && (
             <MCardViewQuotes 
               mcardId={mcard.id}
               isOwner={isOwner}
               mcard={mcard}
             />
-          </MCardCustomized>
+          )}
 
           {/* Customization Section */}
           <MCardViewCustomization
