@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 import { QuoteCreateData } from '@/types/quote';
 
@@ -37,10 +38,17 @@ export const MCardQuoteDialog = ({
   const [validUntil, setValidUntil] = useState('');
   const [description, setDescription] = useState('');
   const [notes, setNotes] = useState('');
+  const [currency, setCurrency] = useState<'FCFA' | 'EUR' | 'USD'>('FCFA');
   const [items, setItems] = useState<QuoteItem[]>([
     { description: '', quantity: 1, unit_price: 0 }
   ]);
   const [loading, setLoading] = useState(false);
+
+  const currencySymbols = {
+    'FCFA': 'FCFA',
+    'EUR': '€',
+    'USD': '$'
+  };
 
   const handleAddItem = () => {
     setItems([...items, { description: '', quantity: 1, unit_price: 0 }]);
@@ -73,7 +81,7 @@ export const MCardQuoteDialog = ({
         valid_until: validUntil || undefined,
         description: description || undefined,
         notes: notes || undefined,
-        currency: 'FCFA',
+        currency: currency,
         items: items.filter(item => item.description && item.quantity > 0)
       });
 
@@ -84,6 +92,7 @@ export const MCardQuoteDialog = ({
       setValidUntil('');
       setDescription('');
       setNotes('');
+      setCurrency('FCFA');
       setItems([{ description: '', quantity: 1, unit_price: 0 }]);
       onOpenChange(false);
     } catch (error) {
@@ -138,14 +147,21 @@ export const MCardQuoteDialog = ({
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Détails du devis</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                />
+              <div>
+                <Label htmlFor="currency">Devise *</Label>
+                <Select
+                  value={currency}
+                  onValueChange={(value) => setCurrency(value as 'FCFA' | 'EUR' | 'USD')}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner une devise" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="FCFA">FCFA (CFA Franc)</SelectItem>
+                    <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                    <SelectItem value="USD">USD (Dollar)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="validUntil">Valable jusqu'au</Label>
@@ -154,6 +170,15 @@ export const MCardQuoteDialog = ({
                   type="date"
                   value={validUntil}
                   onChange={(e) => setValidUntil(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
                 />
               </div>
             </div>
@@ -192,7 +217,7 @@ export const MCardQuoteDialog = ({
                       />
                     </div>
                     <div>
-                      <Label>Prix unitaire (FCFA) *</Label>
+                      <Label>Prix unitaire ({currencySymbols[currency]}) *</Label>
                       <Input
                         type="number"
                         min="0"
@@ -228,7 +253,7 @@ export const MCardQuoteDialog = ({
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Total</p>
                 <p className="text-2xl font-bold text-primary">
-                  {calculateTotal().toLocaleString()} FCFA
+                  {calculateTotal().toLocaleString()} {currencySymbols[currency]}
                 </p>
               </div>
             </div>
