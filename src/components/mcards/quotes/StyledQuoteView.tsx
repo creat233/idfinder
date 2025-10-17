@@ -53,12 +53,46 @@ export const StyledQuoteView = ({ quote, mcard }: StyledQuoteViewProps) => {
     }
   };
 
-  const handleShare = () => {
-    // TODO: Implement share functionality
-    toast({
-      title: 'Partage',
-      description: 'Fonctionnalité à venir'
-    });
+  const handleShare = async () => {
+    const shareUrl = window.location.origin + `/mcard/${mcard.slug}/quotes`;
+    const shareText = `Devis ${quote.quote_number} - ${mcard.full_name}\nMontant: ${quote.amount.toLocaleString()} ${quote.currency}`;
+
+    // Vérifier si l'API Web Share est disponible
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Devis ${quote.quote_number}`,
+          text: shareText,
+          url: shareUrl
+        });
+        
+        toast({
+          title: 'Succès',
+          description: 'Devis partagé avec succès'
+        });
+      } catch (error) {
+        // L'utilisateur a annulé le partage
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+        }
+      }
+    } else {
+      // Fallback: copier le lien dans le presse-papier
+      try {
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
+        toast({
+          title: 'Lien copié',
+          description: 'Le lien du devis a été copié dans le presse-papier'
+        });
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Erreur',
+          description: 'Impossible de copier le lien'
+        });
+      }
+    }
   };
 
   return (
