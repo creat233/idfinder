@@ -61,10 +61,13 @@ export const useQuotes = (mcardId: string) => {
       const quoteNumber = generateQuoteNumber();
       const totalAmount = data.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
 
+      // Séparer les items des autres données
+      const { items, ...quoteFields } = data;
+
       const { data: quoteData, error: quoteError } = await supabase
         .from('mcard_quotes')
         .insert({
-          ...data,
+          ...quoteFields,
           quote_number: quoteNumber,
           amount: totalAmount
         })
@@ -73,7 +76,7 @@ export const useQuotes = (mcardId: string) => {
 
       if (quoteError) throw quoteError;
 
-      const itemsToInsert = data.items.map(item => ({
+      const itemsToInsert = items.map(item => ({
         quote_id: quoteData.id,
         description: item.description,
         quantity: item.quantity,
