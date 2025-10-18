@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, Plus, Eye, Trash2, ArrowLeft } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useQuotes } from '@/hooks/useQuotes';
 import { MCardQuoteDialog } from '@/components/mcards/view/MCardQuoteDialog';
 import { StyledQuoteView } from '@/components/mcards/quotes/StyledQuoteView';
@@ -27,6 +28,7 @@ export const MCardQuotes = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [mcard, setMcard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -121,40 +123,41 @@ export const MCardQuotes = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <div className="w-full px-4 md:px-6 lg:px-8 py-6">
-        <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pb-20 md:pb-6">
+      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
           {/* Header */}
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              size="sm"
+              size={isMobile ? "sm" : "default"}
               onClick={() => navigate(`/mcard/${slug}`)}
               className="gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Retour à la carte
+              {!isMobile && "Retour à la carte"}
             </Button>
           </div>
 
           {/* Main Card */}
           <Card className="overflow-hidden shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
-            <CardHeader className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-b border-blue-200/50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-blue-500/10">
-                    <FileText className="w-6 h-6 text-blue-600" />
+            <CardHeader className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-b border-blue-200/50 p-4 sm:p-6">
+              <div className={`flex ${isMobile ? 'flex-col gap-4' : 'items-center justify-between'}`}>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className={`${isMobile ? 'p-1.5' : 'p-2'} rounded-lg bg-blue-500/10`}>
+                    <FileText className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-blue-600`} />
                   </div>
-                  <div>
-                    <CardTitle className="text-2xl">Gestion des devis</CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className={`${isMobile ? 'text-lg' : 'text-2xl'}`}>Gestion des devis</CardTitle>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
                       {mcard.full_name} - {mcard.company || 'Entreprise'}
                     </p>
                   </div>
                 </div>
                 <Button 
                   onClick={() => setIsAddDialogOpen(true)}
-                  className="gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  size={isMobile ? "default" : "default"}
+                  className={`gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 ${isMobile ? 'w-full' : ''}`}
                 >
                   <Plus className="w-4 h-4" />
                   Créer un devis
@@ -162,63 +165,64 @@ export const MCardQuotes = () => {
               </div>
             </CardHeader>
 
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-6">
               {quotesLoading ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
                   Chargement des devis...
                 </div>
               ) : quotes.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileText className="w-10 h-10 text-blue-600" />
+                <div className="text-center py-8 sm:py-12 px-4">
+                  <div className={`${isMobile ? 'w-16 h-16' : 'w-20 h-20'} bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4`}>
+                    <FileText className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} text-blue-600`} />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Aucun devis pour le moment</h3>
-                  <p className="text-muted-foreground mb-6">
+                  <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold mb-2`}>Aucun devis pour le moment</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
                     Commencez par créer votre premier devis professionnel
                   </p>
                   <Button 
                     onClick={() => setIsAddDialogOpen(true)}
                     className="gap-2"
+                    size={isMobile ? "default" : "default"}
                   >
                     <Plus className="w-4 h-4" />
                     Créer mon premier devis
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {quotes.map((quote) => (
                     <div
                       key={quote.id}
-                      className="flex items-center justify-between p-5 rounded-xl border bg-card hover:shadow-lg transition-all duration-300 group"
+                      className={`flex ${isMobile ? 'flex-col' : 'items-center justify-between'} p-3 sm:p-5 rounded-xl border bg-card hover:shadow-lg transition-all duration-300 group gap-4`}
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="font-semibold text-lg">{quote.quote_number}</h3>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(quote.status)}`}>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
+                          <h3 className={`font-semibold ${isMobile ? 'text-base' : 'text-lg'} truncate`}>{quote.quote_number}</h3>
+                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(quote.status)} flex-shrink-0`}>
                             {getStatusLabel(quote.status)}
                           </span>
                         </div>
-                        <div className="space-y-2">
-                          <p className="text-sm text-muted-foreground flex items-center gap-2">
-                            <span className="font-medium">Client:</span>
-                            <span>{quote.client_name}</span>
+                        <div className="space-y-1.5 sm:space-y-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground flex items-start sm:items-center gap-2">
+                            <span className="font-medium flex-shrink-0">Client:</span>
+                            <span className="break-words">{quote.client_name}</span>
                           </p>
                           {quote.client_email && (
-                            <p className="text-sm text-muted-foreground flex items-center gap-2">
-                              <span className="font-medium">Email:</span>
-                              <span>{quote.client_email}</span>
+                            <p className="text-xs sm:text-sm text-muted-foreground flex items-start sm:items-center gap-2">
+                              <span className="font-medium flex-shrink-0">Email:</span>
+                              <span className="break-all">{quote.client_email}</span>
                             </p>
                           )}
-                          <div className="flex items-center gap-6 mt-3">
-                            <span className="font-semibold text-lg text-blue-600">
+                          <div className={`flex ${isMobile ? 'flex-col gap-2' : 'items-center gap-4 sm:gap-6'} mt-2 sm:mt-3`}>
+                            <span className={`font-semibold ${isMobile ? 'text-base' : 'text-lg'} text-blue-600`}>
                               {quote.amount.toLocaleString()} {quote.currency}
                             </span>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-xs sm:text-sm text-muted-foreground">
                               Créé le {format(new Date(quote.created_at), 'dd MMM yyyy', { locale: fr })}
                             </span>
                             {quote.valid_until && (
-                              <span className="text-sm text-muted-foreground">
+                              <span className="text-xs sm:text-sm text-muted-foreground">
                                 Valide jusqu'au {format(new Date(quote.valid_until), 'dd MMM yyyy', { locale: fr })}
                               </span>
                             )}
@@ -226,23 +230,24 @@ export const MCardQuotes = () => {
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2">
+                      <div className={`flex items-center gap-2 ${isMobile ? 'w-full' : ''}`}>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handlePreview(quote)}
-                          className="gap-2"
+                          className={`gap-2 ${isMobile ? 'flex-1' : ''}`}
                         >
                           <Eye className="w-4 h-4" />
-                          Aperçu
+                          {!isMobile && "Aperçu"}
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => setQuoteToDelete(quote.id)}
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          className={`text-destructive hover:text-destructive hover:bg-destructive/10 ${isMobile ? 'flex-1' : ''}`}
                         >
                           <Trash2 className="w-4 h-4" />
+                          {isMobile && "Supprimer"}
                         </Button>
                       </div>
                     </div>
@@ -263,7 +268,7 @@ export const MCardQuotes = () => {
       />
 
       <Dialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className={`${isMobile ? 'max-w-[95vw] p-3' : 'max-w-4xl p-6'} max-h-[90vh] overflow-y-auto`}>
           {selectedQuote && (
             <StyledQuoteView 
               quote={selectedQuote} 
