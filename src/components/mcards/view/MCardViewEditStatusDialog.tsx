@@ -132,16 +132,17 @@ export const MCardViewEditStatusDialog = ({
     setIsSubmitting(true);
 
     try {
+      // Set status to inactive instead of deleting
       const { error } = await supabase
         .from('mcard_statuses')
-        .delete()
+        .update({ is_active: false })
         .eq('id', status.id);
 
       if (error) throw error;
 
       toast({
         title: "Statut supprimé !",
-        description: "Le statut a été supprimé avec succès"
+        description: "Le statut a été désactivé avec succès"
       });
 
       onStatusUpdated();

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { MCardVerifiedBadge } from "@/components/mcards/MCardVerifiedBadge";
 import { MCardInteractionButtons } from "@/components/mcards/MCardInteractionButtons";
@@ -12,6 +13,7 @@ import { MCard } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
 
 const MyFavorites = () => {
+  const navigate = useNavigate();
   const [favorites, setFavorites] = useState<MCard[]>([]);
   const [filteredFavorites, setFilteredFavorites] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ const MyFavorites = () => {
   }, [searchQuery, favorites]);
 
   const handleCardClick = (slug: string) => {
-    window.open(`/mcard/${slug}`, '_blank');
+    navigate(`/mcard/${slug}`);
   };
 
   if (loading) {

@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Upload, Palette } from 'lucide-react';
+import { createStatusNotification } from '@/services/mcardNotificationService';
 
 interface MCardViewAddStatusDialogProps {
   isOpen: boolean;
@@ -119,6 +120,17 @@ export const MCardViewAddStatusDialog = ({
         title: "Statut ajouté !",
         description: "Votre statut a été publié avec succès"
       });
+
+      // Get MCard info for notification
+      const { data: mcardData } = await supabase
+        .from('mcards')
+        .select('full_name')
+        .eq('id', mcardId)
+        .single();
+
+      if (mcardData) {
+        await createStatusNotification(mcardId, mcardData.full_name, statusText.trim());
+      }
 
       onStatusAdded();
       onClose();
