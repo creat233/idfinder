@@ -7,6 +7,8 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface StyledQuoteViewProps {
   quote: Quote;
@@ -16,6 +18,27 @@ interface StyledQuoteViewProps {
 export const StyledQuoteView = ({ quote, mcard }: StyledQuoteViewProps) => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [primaryColor, setPrimaryColor] = useState('#3B82F6');
+
+  // Fetch customization colors from mcard or use default
+  useEffect(() => {
+    const fetchCustomization = async () => {
+      const { data } = await supabase
+        .from('mcard_customization')
+        .select('*')
+        .eq('mcard_id', mcard.id)
+        .single();
+      
+      if (data && data.theme) {
+        // Use theme color if available, otherwise default
+        setPrimaryColor('#3B82F6');
+      }
+    };
+    
+    if (mcard?.id) {
+      fetchCustomization();
+    }
+  }, [mcard?.id]);
 
   const generateQuoteImage = async () => {
     const element = document.getElementById('quote-content');
@@ -200,9 +223,9 @@ export const StyledQuoteView = ({ quote, mcard }: StyledQuoteViewProps) => {
 
       <div id="quote-content" className="bg-white p-4 sm:p-8 rounded-lg border">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 sm:mb-8 pb-4 sm:pb-6 border-b-2 border-primary gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 sm:mb-8 pb-4 sm:pb-6 border-b-2 gap-4" style={{ borderColor: primaryColor }}>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">DEVIS</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: primaryColor }}>DEVIS</h1>
             <p className="text-base sm:text-lg font-semibold text-gray-700">{quote.quote_number}</p>
           </div>
           <div className="sm:text-right">
@@ -251,7 +274,7 @@ export const StyledQuoteView = ({ quote, mcard }: StyledQuoteViewProps) => {
         <div className="mb-6 sm:mb-8 overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full min-w-full">
             <thead>
-              <tr className="bg-primary text-white">
+              <tr className="text-white" style={{ backgroundColor: primaryColor }}>
                 <th className="text-left p-2 sm:p-3 text-xs sm:text-sm">Description</th>
                 <th className="text-center p-2 sm:p-3 text-xs sm:text-sm">Qté</th>
                 <th className="text-right p-2 sm:p-3 text-xs sm:text-sm whitespace-nowrap">Prix unit.</th>
@@ -275,7 +298,7 @@ export const StyledQuoteView = ({ quote, mcard }: StyledQuoteViewProps) => {
             <tfoot>
               <tr className="bg-gray-100 font-bold">
                 <td colSpan={3} className="text-right p-2 sm:p-3 text-xs sm:text-sm">TOTAL</td>
-                <td className="text-right p-2 sm:p-3 text-primary text-sm sm:text-lg whitespace-nowrap">
+                <td className="text-right p-2 sm:p-3 text-sm sm:text-lg whitespace-nowrap" style={{ color: primaryColor }}>
                   {quote.amount.toLocaleString()} {quote.currency}
                 </td>
               </tr>

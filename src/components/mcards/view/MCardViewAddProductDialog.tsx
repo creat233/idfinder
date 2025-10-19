@@ -149,6 +149,17 @@ export const MCardViewAddProductDialog = ({
         description: "Votre produit/service a été publié avec succès"
       });
 
+      // Get MCard info for notification
+      const { data: mcardData } = await supabase
+        .from('mcards')
+        .select('full_name')
+        .eq('id', mcardId)
+        .single();
+
+      if (mcardData) {
+        await createProductNotification(mcardId, mcardData.full_name, productName.trim());
+      }
+
       onProductAdded();
       onClose();
       

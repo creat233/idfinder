@@ -69,20 +69,20 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       company: mcard.company || undefined,
       phone_number: mcard.phone_number || undefined,
       email: mcard.email || undefined,
-      website_url: mcard.website_url || undefined,
+      website_url: mcardUrl, // Ajouter le lien de la carte comme URL principale
       profile_picture_url: mcard.profile_picture_url || undefined,
       linkedin_url: mcard.linkedin_url || undefined,
       twitter_url: mcard.twitter_url || undefined,
       facebook_url: mcard.facebook_url || undefined,
       instagram_url: mcard.instagram_url || undefined,
-      note: `Carte digitale: ${mcardUrl}`,
+      note: `Carte digitale FinderID: ${mcardUrl}\n${mcard.description || ''}`,
     });
     
     downloadVCard(vcard, mcard.full_name);
     
     toast({
       title: "Contact enregistré",
-      description: "La carte de visite avec le lien a été téléchargée avec succès"
+      description: "Carte avec toutes les informations et le lien sauvegardés"
     });
   };
 
