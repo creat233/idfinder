@@ -36,15 +36,8 @@ export const useMCardData = () => {
       setLoading(true);
       
       if (!slug) {
-        console.log('No slug provided, using default card');
-        const defaultCard = createDefaultCard();
-        setMCard(defaultCard);
-        setStatuses(createDefaultStatuses());
-        setProducts(createDefaultProducts());
-        setViewCount(defaultCard.view_count || 0);
-        loadedSlugRef.current = null;
-        setLoading(false);
-        return;
+        console.log('No slug provided, loading exemple-mcard by default');
+        slug = 'exemple-mcard';
       }
 
       if (slug === 'demo') {
