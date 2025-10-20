@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
 import { createDefaultCard, createDefaultStatuses, createDefaultProducts } from '@/utils/mcardDefaults';
 import { 
@@ -10,6 +10,7 @@ import {
   checkMCardOwnership 
 } from '@/services/mcardViewService';
 import { fetchAllMCardReviews } from '@/services/mcardReviewService';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useMCardData = () => {
   const [mcard, setMCard] = useState<MCard | null>(null);
@@ -225,6 +226,101 @@ export const useMCardData = () => {
   const forceRefresh = async () => {
     await refreshData(true);
   };
+
+  // Écouter les changements en temps réel
+  useEffect(() => {
+    if (!mcard || mcard.slug === 'demo') return;
+
+    console.log('Setting up real-time subscriptions for mCard:', mcard.id);
+
+    // Écouter les changements de statuts
+    const statusesChannel = supabase
+      .channel(`mcard-statuses-${mcard.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcard_statuses',
+          filter: `mcard_id=eq.${mcard.id}`
+        },
+        async (payload) => {
+          console.log('Real-time status change:', payload);
+          const updatedStatuses = await fetchMCardStatuses(mcard.id);
+          setStatuses(updatedStatuses);
+        }
+      )
+      .subscribe();
+
+    // Écouter les changements de produits
+    const productsChannel = supabase
+      .channel(`mcard-products-${mcard.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcard_products',
+          filter: `mcard_id=eq.${mcard.id}`
+        },
+        async (payload) => {
+          console.log('Real-time product change:', payload);
+          const updatedProducts = await fetchMCardProducts(mcard.id);
+          setProducts(updatedProducts);
+        }
+      )
+      .subscribe();
+
+    // Écouter les changements de reviews
+    const reviewsChannel = supabase
+      .channel(`mcard-reviews-${mcard.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'mcard_reviews',
+          filter: `mcard_id=eq.${mcard.id}`
+        },
+        async (payload) => {
+          console.log('Real-time review change:', payload);
+          const updatedReviews = await fetchAllMCardReviews(mcard.id, isOwner);
+          setReviews(updatedReviews);
+        }
+      )
+      .subscribe();
+
+    // Écouter les changements de la carte elle-même
+    const mcardChannel = supabase
+      .channel(`mcard-${mcard.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'mcards',
+          filter: `id=eq.${mcard.id}`
+        },
+        async (payload) => {
+          console.log('Real-time mCard change:', payload);
+          const updatedMCard = await fetchMCardBySlug(mcard.slug);
+          if (updatedMCard) {
+            setMCard(updatedMCard);
+            setViewCount(updatedMCard.view_count || 0);
+          }
+        }
+      )
+      .subscribe();
+
+    // Cleanup lors du démontage
+    return () => {
+      console.log('Cleaning up real-time subscriptions');
+      supabase.removeChannel(statusesChannel);
+      supabase.removeChannel(productsChannel);
+      supabase.removeChannel(reviewsChannel);
+      supabase.removeChannel(mcardChannel);
+    };
+  }, [mcard?.id, mcard?.slug, isOwner]);
 
   return {
     mcard,
