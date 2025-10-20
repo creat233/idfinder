@@ -12,15 +12,20 @@ export const useMCards = () => {
   const { toast } = useToast();
 
   const fetchMCards = async () => {
+    if (!user) {
+      setMCards([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
-      // Récupérer uniquement la carte "exemple-mcard"
       const { data, error } = await supabase
         .from('mcards')
         .select('*')
-        .eq('slug', 'exemple-mcard')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) {

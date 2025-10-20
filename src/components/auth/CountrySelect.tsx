@@ -73,6 +73,7 @@ export function CountrySelect({ control, name }: CountrySelectProps) {
 
   return (
     <div className="space-y-2">
+      <Label htmlFor={name}>Pays de résidence *</Label>
       <Select
         value={field.value}
         onValueChange={field.onChange}
