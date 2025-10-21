@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
-import { Search, MessageCircle, AlertCircle, Clock, CheckCircle, ExternalLink } from "lucide-react";
+import { Search, MessageCircle, AlertCircle, Clock, CheckCircle, ExternalLink, ShoppingCart } from "lucide-react";
 import { AdminNavigation } from "./AdminNavigation";
 import { useNavigate } from "react-router-dom";
 
@@ -27,9 +27,25 @@ interface AdminMessage {
   processed_by?: string;
 }
 
+interface MCardMessage {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
+  mcard_id: string;
+  subject: string | null;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  sender_name?: string;
+  recipient_name?: string;
+  mcard_name?: string;
+}
+
 export const AdminMessages = () => {
   const [messages, setMessages] = useState<AdminMessage[]>([]);
+  const [mcardMessages, setMcardMessages] = useState<MCardMessage[]>([]);
   const [filteredMessages, setFilteredMessages] = useState<AdminMessage[]>([]);
+  const [filteredMcardMessages, setFilteredMcardMessages] = useState<MCardMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMessage, setSelectedMessage] = useState<AdminMessage | null>(null);
@@ -61,14 +77,32 @@ export const AdminMessages = () => {
 
   const fetchMessages = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch admin messages
+      const { data: adminData, error: adminError } = await supabase
         .from('admin_messages')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setMessages(data as AdminMessage[] || []);
-      setFilteredMessages(data as AdminMessage[] || []);
+      if (adminError) throw adminError;
+      setMessages(adminData as AdminMessage[] || []);
+      setFilteredMessages(adminData as AdminMessage[] || []);
+
+      // Fetch mcard messages
+      const { data: mcardData, error: mcardError } = await supabase
+        .from('mcard_messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (mcardError) throw mcardError;
+      
+      const processedMcardMessages = (mcardData || []).map(msg => ({
+        ...msg,
+        sender_name: 'Client',
+        mcard_name: 'mCard'
+      }));
+      
+      setMcardMessages(processedMcardMessages);
+      setFilteredMcardMessages(processedMcardMessages);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -85,13 +119,21 @@ export const AdminMessages = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = messages.filter(message =>
+    const filteredAdmin = messages.filter(message =>
       message.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       message.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (message.card_info?.card_number || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredMessages(filtered);
-  }, [searchTerm, messages]);
+    setFilteredMessages(filteredAdmin);
+
+    const filteredMcard = mcardMessages.filter(message =>
+      message.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (message.subject || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (message.sender_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (message.mcard_name || '').toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredMcardMessages(filteredMcard);
+  }, [searchTerm, messages, mcardMessages]);
 
   const markAsRead = async (messageId: string) => {
     try {
@@ -172,8 +214,9 @@ export const AdminMessages = () => {
     }
   };
 
-  const unreadCount = messages.filter(m => m.status === 'unread').length;
+  const unreadCount = messages.filter(m => m.status === 'unread').length + mcardMessages.filter(m => !m.is_read).length;
   const highPriorityCount = messages.filter(m => m.priority === 'high' || m.priority === 'urgent').length;
+  const mcardMessagesCount = mcardMessages.length;
 
   if (loading) {
     return (
@@ -207,6 +250,10 @@ export const AdminMessages = () => {
               <div className="text-2xl font-bold text-orange-600">{highPriorityCount}</div>
               <div className="text-sm text-muted-foreground">Priorité haute</div>
             </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{mcardMessagesCount}</div>
+              <div className="text-sm text-muted-foreground">Messages mCard</div>
+            </div>
           </div>
         </div>
 
@@ -221,9 +268,71 @@ export const AdminMessages = () => {
           />
         </div>
 
-        {/* Liste des messages */}
-        <div className="grid gap-4">
-          {filteredMessages.map((message) => (
+        {/* Messages mCard (Commandes) */}
+        {filteredMcardMessages.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5" />
+              Messages de commandes ({filteredMcardMessages.length})
+            </h2>
+            <div className="grid gap-4">
+              {filteredMcardMessages.map((message) => (
+                <Card key={message.id} className={`cursor-pointer transition-all hover:shadow-md ${
+                  !message.is_read ? 'border-l-4 border-l-blue-500 bg-blue-50/50' : ''
+                }`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <MessageCircle className="h-4 w-4" />
+                          <CardTitle className="text-lg">
+                            {message.subject || 'Message'}
+                          </CardTitle>
+                          {!message.is_read && (
+                            <Badge variant="default">Nouveau</Badge>
+                          )}
+                        </div>
+                        <CardDescription>
+                          De: {message.sender_name} • Pour: {message.mcard_name}
+                        </CardDescription>
+                      </div>
+                      <div className="text-right text-sm text-muted-foreground">
+                        {new Date(message.created_at).toLocaleString('fr-FR')}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="p-3 bg-muted/50 rounded-md">
+                        <p className="text-sm whitespace-pre-wrap">{message.message}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => navigate(`/messages`)}
+                        >
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Répondre
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Messages administratifs */}
+        {filteredMessages.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <AlertCircle className="h-5 w-5" />
+              Messages administratifs ({filteredMessages.length})
+            </h2>
+            <div className="grid gap-4">
+              {filteredMessages.map((message) => (
             <Card key={message.id} className={`cursor-pointer transition-all hover:shadow-md ${
               message.status === 'unread' ? 'border-l-4 border-l-primary bg-blue-50/50' : ''
             }`}>
@@ -314,9 +423,11 @@ export const AdminMessages = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
+            </div>
+          </div>
+        )}
 
-        {filteredMessages.length === 0 && (
+        {filteredMessages.length === 0 && filteredMcardMessages.length === 0 && (
           <div className="text-center py-12">
             <MessageCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium">Aucun message trouvé</h3>
