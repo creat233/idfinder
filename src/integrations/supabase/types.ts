@@ -188,6 +188,44 @@ export type Database = {
         }
         Relationships: []
       }
+      featured_mcards: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean
+          mcard_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          mcard_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          mcard_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_mcards_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_analytics: {
         Row: {
           created_at: string
@@ -1281,7 +1319,7 @@ export type Database = {
           created_at: string | null
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           success: boolean | null
           user_agent: string | null
           user_id: string | null
@@ -1291,7 +1329,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           success?: boolean | null
           user_agent?: string | null
           user_id?: string | null
@@ -1301,7 +1339,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           success?: boolean | null
           user_agent?: string | null
           user_id?: string | null
@@ -1379,7 +1417,7 @@ export type Database = {
         }[]
       }
       admin_get_all_mcards: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           full_name: string
@@ -1394,7 +1432,7 @@ export type Database = {
         }[]
       }
       admin_get_all_promo_codes: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           code: string
           created_at: string
@@ -1411,7 +1449,7 @@ export type Database = {
         }[]
       }
       admin_get_all_users: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           country: string
           created_at: string
@@ -1423,7 +1461,7 @@ export type Database = {
         }[]
       }
       admin_get_expired_mcards: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           days_expired: number
@@ -1437,7 +1475,7 @@ export type Database = {
         }[]
       }
       admin_get_pending_mcards: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           full_name: string
@@ -1450,7 +1488,7 @@ export type Database = {
         }[]
       }
       admin_get_pending_renewals: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           current_plan: string
           days_remaining: number
@@ -1465,7 +1503,7 @@ export type Database = {
         }[]
       }
       admin_send_renewal_notifications: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           message: string
           notifications_sent: number
@@ -1476,10 +1514,7 @@ export type Database = {
         Args: { user_email: string }
         Returns: boolean
       }
-      can_add_status_today: {
-        Args: { p_mcard_id: string }
-        Returns: boolean
-      }
+      can_add_status_today: { Args: { p_mcard_id: string }; Returns: boolean }
       count_statuses_created_today: {
         Args: { p_mcard_id: string }
         Returns: number
@@ -1502,24 +1537,12 @@ export type Database = {
         }
         Returns: undefined
       }
-      deactivate_expired_promo_codes: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      delete_inactive_mcards: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      generate_invoice_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_promo_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      deactivate_expired_promo_codes: { Args: never; Returns: undefined }
+      delete_inactive_mcards: { Args: never; Returns: undefined }
+      generate_invoice_number: { Args: never; Returns: string }
+      generate_promo_code: { Args: never; Returns: string }
       get_audit_logs: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           action: string
           created_at: string
@@ -1530,7 +1553,7 @@ export type Database = {
         }[]
       }
       get_daily_user_signups: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           count: number
           signup_date: string
@@ -1553,9 +1576,15 @@ export type Database = {
           theme: string | null
           updated_at: string
         }
+        SetofOptions: {
+          from: "*"
+          to: "mcard_customization"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       get_public_ads: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           end_date: string | null
@@ -1568,6 +1597,12 @@ export type Database = {
           title: string
           updated_at: string
         }[]
+        SetofOptions: {
+          from: "*"
+          to: "admin_ads"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       get_public_mcard_data: {
         Args: { p_slug: string }
@@ -1628,28 +1663,19 @@ export type Database = {
         Args: { mcard_slug: string }
         Returns: undefined
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
       is_user_blocked: {
         Args: { p_mcard_id: string; p_user_id: string }
         Returns: boolean
       }
-      log_login_event: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      log_login_event: { Args: never; Returns: undefined }
       log_security_event: {
         Args: { p_action: string; p_details?: Json; p_user_id?: string }
         Returns: undefined
       }
-      notify_expired_promo_codes: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      notify_expired_promo_codes: { Args: never; Returns: undefined }
       send_expiring_today_notifications: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           message: string
           notifications_sent: number

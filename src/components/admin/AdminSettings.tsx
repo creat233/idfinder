@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { AdminNavigation } from "./AdminNavigation";
+import { AdminFeaturedMCard } from "./AdminFeaturedMCard";
 import { Settings, Database, Mail, Shield, Globe, Bell, Save } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
@@ -38,6 +39,9 @@ export const AdminSettings = () => {
   return (
     <div className="space-y-6">
       <AdminNavigation />
+      
+      {/* mCard Sponsorisée */}
+      <AdminFeaturedMCard />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Paramètres Généraux */}
