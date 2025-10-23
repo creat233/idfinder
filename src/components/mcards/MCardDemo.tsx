@@ -7,23 +7,10 @@ import { QrCode, Share2, Phone, Mail, Globe, MapPin, Building, User, Clock, Star
 import { cn } from "@/lib/utils";
 
 export const MCardDemo = () => {
-  const [selectedPlan, setSelectedPlan] = useState<'free' | 'essential' | 'premium'>('free');
+  const [selectedPlan, setSelectedPlan] = useState<'essential' | 'premium'>('essential');
   const [isAnimating, setIsAnimating] = useState(false);
 
   const demoCards = {
-    free: {
-      name: "Marie Diallo",
-      title: "Consultante",
-      company: "Freelance",
-      phone: "+221 77 123 45 67",
-      email: "marie.diallo@example.com",
-      website: "www.mariediallo.com",
-      description: "Consultante en marketing digital avec 3 ans d'expérience.",
-      gradient: "from-gray-600 to-gray-800",
-      features: ["Informations de base", "QR Code", "Partage simple"],
-      badge: { text: "GRATUIT", color: "bg-gray-100 text-gray-800" },
-      icon: <User className="h-4 w-4" />
-    },
     essential: {
       name: "Jean Dupont",
       title: "Développeur Full Stack",
@@ -54,7 +41,7 @@ export const MCardDemo = () => {
 
   const currentCard = demoCards[selectedPlan];
 
-  const handlePlanChange = (plan: 'free' | 'essential' | 'premium') => {
+  const handlePlanChange = (plan: 'essential' | 'premium') => {
     setIsAnimating(true);
     setTimeout(() => {
       setSelectedPlan(plan);
@@ -81,7 +68,7 @@ export const MCardDemo = () => {
               key={planId}
               variant={selectedPlan === planId ? "default" : "outline"}
               size="lg"
-              onClick={() => handlePlanChange(planId as 'free' | 'essential' | 'premium')}
+              onClick={() => handlePlanChange(planId as 'essential' | 'premium')}
               className={cn(
                 "flex items-center gap-2 transition-all duration-300",
                 selectedPlan === planId && "scale-105 shadow-lg"
