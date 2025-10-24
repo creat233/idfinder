@@ -7,6 +7,7 @@ import { QrCode, Share2, Phone, Mail, Globe, Building, Clock, Star, Loader2 } fr
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { MCard } from "@/types/mcard";
+import { Link } from "react-router-dom";
 
 export const MCardDemo = () => {
   const [featuredMCard, setFeaturedMCard] = useState<MCard | null>(null);
@@ -86,9 +87,10 @@ export const MCardDemo = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
           {/* Carte de démonstration */}
           <div className="relative">
-            <div 
+            <Link 
+              to={`/mcard/${featuredMCard.slug}`}
               className={cn(
-                "transition-all duration-300 transform",
+                "block transition-all duration-300 transform hover:scale-105 cursor-pointer",
                 isAnimating ? "scale-95 opacity-50" : "scale-100 opacity-100"
               )}
             >
@@ -191,7 +193,7 @@ export const MCardDemo = () => {
                   )}
                 </CardContent>
               </Card>
-            </div>
+            </Link>
 
             {/* Indicateurs visuels */}
             <div className="absolute -top-6 -right-6 w-16 h-16 bg-yellow-400 rounded-full opacity-20 animate-pulse"></div>
