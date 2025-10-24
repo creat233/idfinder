@@ -1,6 +1,6 @@
 
 import { Header } from "@/components/Header";
-
+import { MCardDemo } from "@/components/mcards/MCardDemo";
 import { DemoHero } from "@/components/demo/DemoHero";
 import { DemoPricing } from "@/components/demo/DemoPricing";
 import { DemoTabs } from "@/components/demo/DemoTabs";
@@ -14,6 +14,7 @@ const Demo = () => {
       
       <main className="pt-20">
         <DemoHero />
+        <MCardDemo />
         <DemoPricing />
         <DemoTabs />
         <DemoTestimonials />
