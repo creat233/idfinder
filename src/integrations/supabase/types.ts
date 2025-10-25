@@ -1610,19 +1610,24 @@ export type Database = {
           company: string
           created_at: string
           description: string
+          email: string
           facebook_url: string
           full_name: string
           google_business_url: string
           id: string
           instagram_url: string
+          is_published: boolean
           is_verified: boolean
           job_title: string
           linkedin_url: string
           maps_location_url: string
+          phone_number: string
           plan: string
           profile_picture_url: string
           slug: string
           snapchat_url: string
+          social_links: Json
+          subscription_status: string
           telegram_url: string
           tiktok_url: string
           twitter_url: string
