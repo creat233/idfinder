@@ -59,11 +59,11 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
     onShare();
   };
 
-  const handleSaveOffline = () => {
+  const handleSaveOffline = async () => {
     // Générer le lien de la carte
     const mcardUrl = `${window.location.origin}/mcard/${mcard.slug}`;
     
-    const vcard = generateVCard({
+    const vcard = await generateVCard({
       full_name: mcard.full_name,
       job_title: mcard.job_title || undefined,
       company: mcard.company || undefined,
