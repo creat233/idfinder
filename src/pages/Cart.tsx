@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Trash2, MessageCircle, ShoppingCart, ArrowLeft, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { MCardContactDialog } from '@/components/mcards/messaging/MCardContactDialog';
+import { MCardMessageDialog } from '@/components/mcards/MCardMessageDialog';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -24,15 +24,13 @@ export default function Cart() {
 
   const handleContactOwner = (item: any) => {
     if (item.mcardOwnerUserId && item.mcardOwnerName) {
-      const message = `Bonjour, je suis intéressé(e) par votre produit "${item.name}" que j'ai ajouté à mon panier. Pouvez-vous me donner plus d'informations ?`;
-      navigate('/messages', { 
-        state: { 
-          prefilledMessage: message,
-          recipientId: item.mcardOwnerUserId,
-          mcardId: item.mcardId,
-          mcardOwnerName: item.mcardOwnerName
-        } 
+      setSelectedContact({
+        mcardId: item.mcardId,
+        ownerName: item.mcardOwnerName,
+        ownerUserId: item.mcardOwnerUserId,
+        productName: item.name
       });
+      setContactDialogOpen(true);
     }
   };
 
@@ -250,19 +248,15 @@ export default function Cart() {
         </Dialog>
 
         {selectedContact && (
-          <MCardContactDialog
+          <MCardMessageDialog
             isOpen={contactDialogOpen}
-            onClose={() => {
-              setContactDialogOpen(false);
-              setSelectedContact(null);
+            onOpenChange={(open) => {
+              setContactDialogOpen(open);
+              if (!open) setSelectedContact(null);
             }}
-            mcardId={selectedContact.mcardId}
-            mcardOwnerName={selectedContact.ownerName}
             recipientId={selectedContact.ownerUserId}
-            context={{
-              type: 'product',
-              title: selectedContact.productName
-            }}
+            recipientName={selectedContact.ownerName}
+            mcardId={selectedContact.mcardId}
           />
         )}
       </div>
