@@ -39,6 +39,10 @@ interface MCardMessage {
   sender_name?: string;
   recipient_name?: string;
   mcard_name?: string;
+  mcard_company?: string;
+  mcard_job_title?: string;
+  mcard_slug?: string;
+  mcard_profile_picture?: string;
 }
 
 export const AdminMessages = () => {
@@ -87,18 +91,51 @@ export const AdminMessages = () => {
       setMessages(adminData as AdminMessage[] || []);
       setFilteredMessages(adminData as AdminMessage[] || []);
 
-      // Fetch mcard messages
+      // Fetch mcard messages with full details
       const { data: mcardData, error: mcardError } = await supabase
         .from('mcard_messages')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false});
 
       if (mcardError) throw mcardError;
       
-      const processedMcardMessages = (mcardData || []).map(msg => ({
-        ...msg,
-        sender_name: 'Client',
-        mcard_name: 'mCard'
+      // Fetch additional details for each message
+      const processedMcardMessages = await Promise.all((mcardData || []).map(async (msg: any) => {
+        // Fetch sender info
+        const { data: senderData } = await supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('id', msg.sender_id)
+          .single();
+        
+        // Fetch recipient info
+        const { data: recipientData } = await supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('id', msg.recipient_id)
+          .single();
+        
+        // Fetch mcard info
+        const { data: mcardData } = await supabase
+          .from('mcards')
+          .select('id, slug, full_name, company, job_title, profile_picture_url')
+          .eq('id', msg.mcard_id)
+          .single();
+        
+        return {
+          ...msg,
+          sender_name: senderData 
+            ? `${senderData.first_name || ''} ${senderData.last_name || ''}`.trim() || 'Client'
+            : 'Client',
+          recipient_name: recipientData
+            ? `${recipientData.first_name || ''} ${recipientData.last_name || ''}`.trim() || 'mCard'
+            : 'mCard',
+          mcard_name: mcardData?.full_name || 'mCard',
+          mcard_company: mcardData?.company,
+          mcard_job_title: mcardData?.job_title,
+          mcard_slug: mcardData?.slug,
+          mcard_profile_picture: mcardData?.profile_picture_url
+        };
       }));
       
       setMcardMessages(processedMcardMessages);
@@ -281,22 +318,38 @@ export const AdminMessages = () => {
                   !message.is_read ? 'border-l-4 border-l-blue-500 bg-blue-50/50' : ''
                 }`}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <MessageCircle className="h-4 w-4" />
-                          <CardTitle className="text-lg">
-                            {message.subject || 'Message'}
-                          </CardTitle>
-                          {!message.is_read && (
-                            <Badge variant="default">Nouveau</Badge>
-                          )}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex gap-3 flex-1">
+                        {message.mcard_profile_picture && (
+                          <img 
+                            src={message.mcard_profile_picture} 
+                            alt={message.mcard_name || 'mCard'} 
+                            className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                          />
+                        )}
+                        <div className="space-y-1 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <MessageCircle className="h-4 w-4 flex-shrink-0" />
+                            <CardTitle className="text-lg">
+                              {message.subject || 'Commande de produit'}
+                            </CardTitle>
+                            {!message.is_read && (
+                              <Badge variant="default">Nouveau</Badge>
+                            )}
+                          </div>
+                          <CardDescription className="space-y-1">
+                            <div><strong>De:</strong> {message.sender_name}</div>
+                            <div><strong>Carte:</strong> {message.mcard_name}</div>
+                            {message.mcard_company && (
+                              <div><strong>Entreprise:</strong> {message.mcard_company}</div>
+                            )}
+                            {message.mcard_job_title && (
+                              <div><strong>Poste:</strong> {message.mcard_job_title}</div>
+                            )}
+                          </CardDescription>
                         </div>
-                        <CardDescription>
-                          De: {message.sender_name} • Pour: {message.mcard_name}
-                        </CardDescription>
                       </div>
-                      <div className="text-right text-sm text-muted-foreground">
+                      <div className="text-right text-sm text-muted-foreground flex-shrink-0">
                         {new Date(message.created_at).toLocaleString('fr-FR')}
                       </div>
                     </div>
@@ -306,7 +359,17 @@ export const AdminMessages = () => {
                       <div className="p-3 bg-muted/50 rounded-md">
                         <p className="text-sm whitespace-pre-wrap">{message.message}</p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
+                        {message.mcard_slug && (
+                          <Button 
+                            variant="default" 
+                            size="sm"
+                            onClick={() => navigate(`/mcard/${message.mcard_slug}`)}
+                          >
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Voir la carte
+                          </Button>
+                        )}
                         <Button 
                           variant="outline" 
                           size="sm"
