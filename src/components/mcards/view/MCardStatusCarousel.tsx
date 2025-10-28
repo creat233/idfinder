@@ -72,6 +72,8 @@ export const MCardStatusCarousel = ({
                   <StatusImageModal 
                     imageUrl={status.status_image}
                     statusText={status.status_text}
+                    allStatuses={statuses}
+                    currentStatusId={status.id}
                   >
                     <div className="relative group flex-shrink-0 mx-auto lg:mx-0">
                       <div className="relative overflow-hidden rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
@@ -197,6 +199,12 @@ export const MCardStatusCarousel = ({
                     <StatusImageModal 
                       imageUrl={status.status_image}
                       statusText={status.status_text}
+                      allStatuses={statuses}
+                      currentStatusId={status.id}
+                      onNavigate={(statusId) => {
+                        const newIndex = statuses.findIndex(s => s.id === statusId);
+                        if (newIndex !== -1) onIndexChange(newIndex);
+                      }}
                     >
                       <div className="relative h-full cursor-pointer">
                         <img 
