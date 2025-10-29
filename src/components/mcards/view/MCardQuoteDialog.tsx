@@ -40,7 +40,7 @@ export const MCardQuoteDialog = ({
   const [notes, setNotes] = useState('');
   const [currency, setCurrency] = useState<'FCFA' | 'EUR' | 'USD'>('FCFA');
   const [items, setItems] = useState<QuoteItem[]>([
-    { description: '', quantity: 1, unit_price: 0 }
+    { description: '', quantity: 0, unit_price: 0 }
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -51,7 +51,7 @@ export const MCardQuoteDialog = ({
   };
 
   const handleAddItem = () => {
-    setItems([...items, { description: '', quantity: 1, unit_price: 0 }]);
+    setItems([...items, { description: '', quantity: 0, unit_price: 0 }]);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -93,7 +93,7 @@ export const MCardQuoteDialog = ({
       setDescription('');
       setNotes('');
       setCurrency('FCFA');
-      setItems([{ description: '', quantity: 1, unit_price: 0 }]);
+      setItems([{ description: '', quantity: 0, unit_price: 0 }]);
       onOpenChange(false);
     } catch (error) {
       console.error('Error creating quote:', error);
@@ -210,9 +210,10 @@ export const MCardQuoteDialog = ({
                       <Label>Quantité *</Label>
                       <Input
                         type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 1)}
+                        min="0"
+                        value={item.quantity || ''}
+                        onChange={(e) => handleItemChange(index, 'quantity', parseInt(e.target.value) || 0)}
+                        placeholder="0"
                         required
                       />
                     </div>
@@ -221,8 +222,10 @@ export const MCardQuoteDialog = ({
                       <Input
                         type="number"
                         min="0"
-                        value={item.unit_price}
+                        step="0.01"
+                        value={item.unit_price || ''}
                         onChange={(e) => handleItemChange(index, 'unit_price', parseFloat(e.target.value) || 0)}
+                        placeholder="0"
                         required
                       />
                     </div>

@@ -179,22 +179,6 @@ export default function Cart() {
                           Ajouté le {format(item.addedAt, 'dd MMM yyyy à HH:mm', { locale: fr })}
                         </span>
                       </div>
-                      <div className="flex gap-2 mt-3">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleContactOwner({
-                            mcardId: item.mcardId,
-                            mcardOwnerName: item.mcardOwnerName,
-                            mcardOwnerUserId: item.mcardOwnerUserId,
-                            name: item.name
-                          })}
-                          className="text-primary border-primary hover:bg-primary/10"
-                        >
-                          <MessageCircle className="h-3 w-3 mr-1" />
-                          Message
-                        </Button>
-                      </div>
                     </div>
                     
                     <Button
