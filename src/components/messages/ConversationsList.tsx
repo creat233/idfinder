@@ -31,8 +31,8 @@ export function ConversationsList({
   );
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardContent className="p-0 flex flex-col h-full">
+    <Card className="h-full flex flex-col overflow-hidden">
+      <CardContent className="p-0 flex flex-col h-full overflow-hidden">
         {/* Barre de recherche */}
         <div className="p-4 border-b flex-shrink-0">
           <div className="relative">
@@ -47,7 +47,7 @@ export function ConversationsList({
         </div>
 
         {/* Liste des conversations avec scroll */}
-        <ScrollArea className="flex-1">{" "}
+        <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -60,7 +60,7 @@ export function ConversationsList({
               </p>
             </div>
           ) : (
-            <div className="space-y-1 pb-24">
+            <div className="space-y-1 pb-4">
               {filteredConversations.map((conversation) => (
                 <div
                   key={conversation.otherUserId}
@@ -139,7 +139,7 @@ export function ConversationsList({
               ))}
             </div>
           )}
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );
