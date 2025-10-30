@@ -5,13 +5,15 @@ const STORAGE_KEYS = {
   STATUSES: 'offline_statuses',
   PRODUCTS: 'offline_products',
   REVIEWS: 'offline_reviews',
+  REPORTED_CARDS: 'offline_reported_cards',
+  USER_CARDS: 'offline_user_cards',
   PENDING_CHANGES: 'offline_pending_changes',
   LAST_SYNC: 'offline_last_sync',
 };
 
 export interface PendingChange {
   id: string;
-  type: 'mcard' | 'status' | 'product' | 'review';
+  type: 'mcard' | 'status' | 'product' | 'review' | 'reported_card' | 'user_card';
   action: 'create' | 'update' | 'delete';
   data: any;
   timestamp: number;
@@ -132,6 +134,56 @@ class OfflineStorage {
   getLastSync(): number {
     const data = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
     return data ? parseInt(data) : 0;
+  }
+
+  // Reported Cards
+  saveReportedCard(reportedCard: any) {
+    const cards = this.getAllReportedCards();
+    const index = cards.findIndex(c => c.id === reportedCard.id);
+    if (index >= 0) {
+      cards[index] = reportedCard;
+    } else {
+      cards.push(reportedCard);
+    }
+    localStorage.setItem(STORAGE_KEYS.REPORTED_CARDS, JSON.stringify(cards));
+  }
+
+  getReportedCard(id: string): any | null {
+    const cards = this.getAllReportedCards();
+    return cards.find(c => c.id === id) || null;
+  }
+
+  getAllReportedCards(): any[] {
+    const data = localStorage.getItem(STORAGE_KEYS.REPORTED_CARDS);
+    return data ? JSON.parse(data) : [];
+  }
+
+  // User Cards
+  saveUserCard(userCard: any) {
+    const cards = this.getAllUserCards();
+    const index = cards.findIndex(c => c.id === userCard.id);
+    if (index >= 0) {
+      cards[index] = userCard;
+    } else {
+      cards.push(userCard);
+    }
+    localStorage.setItem(STORAGE_KEYS.USER_CARDS, JSON.stringify(cards));
+  }
+
+  getUserCard(id: string): any | null {
+    const cards = this.getAllUserCards();
+    return cards.find(c => c.id === id) || null;
+  }
+
+  getAllUserCards(): any[] {
+    const data = localStorage.getItem(STORAGE_KEYS.USER_CARDS);
+    return data ? JSON.parse(data) : [];
+  }
+
+  deleteUserCard(id: string) {
+    const cards = this.getAllUserCards();
+    const filtered = cards.filter(c => c.id !== id);
+    localStorage.setItem(STORAGE_KEYS.USER_CARDS, JSON.stringify(filtered));
   }
 
   // Clear all offline data

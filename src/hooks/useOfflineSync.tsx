@@ -141,6 +141,24 @@ export const useOfflineSync = () => {
           await supabase.from('mcard_reviews').insert(data);
         }
         break;
+
+      case 'reported_card':
+        if (action === 'create') {
+          await supabase.from('reported_cards').insert(data);
+        } else if (action === 'update') {
+          await supabase.from('reported_cards').update(data).eq('id', data.id);
+        }
+        break;
+
+      case 'user_card':
+        if (action === 'create') {
+          await supabase.from('user_cards').insert(data);
+        } else if (action === 'update') {
+          await supabase.from('user_cards').update(data).eq('id', data.id);
+        } else if (action === 'delete') {
+          await supabase.from('user_cards').delete().eq('id', data.id);
+        }
+        break;
     }
   };
 
