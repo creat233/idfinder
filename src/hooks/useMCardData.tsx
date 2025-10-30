@@ -10,6 +10,8 @@ import {
   checkMCardOwnership 
 } from '@/services/mcardViewService';
 import { fetchAllMCardReviews } from '@/services/mcardReviewService';
+import { offlineStorage } from '@/services/offlineStorage';
+import { useOfflineSync } from './useOfflineSync';
 
 export const useMCardData = () => {
   const [mcard, setMCard] = useState<MCard | null>(null);
@@ -22,6 +24,7 @@ export const useMCardData = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const loadedSlugRef = useRef<string | null>(null);
+  const { isOnline } = useOfflineSync();
 
   const fetchMCard = async (slug?: string) => {
     try {
@@ -33,6 +36,23 @@ export const useMCardData = () => {
       
       console.log('Starting fetchMCard for slug:', slug);
       setLoading(true);
+      
+      // Essayer d'abord de charger depuis le cache local en mode hors ligne
+      if (!isOnline && slug && slug !== 'demo') {
+        console.log('Mode hors ligne, chargement depuis le cache');
+        const cachedMCard = offlineStorage.getMCardBySlug(slug);
+        if (cachedMCard) {
+          setMCard(cachedMCard);
+          setStatuses(offlineStorage.getStatuses(cachedMCard.id));
+          setProducts(offlineStorage.getProducts(cachedMCard.id));
+          setReviews(offlineStorage.getReviews(cachedMCard.id));
+          setViewCount(cachedMCard.view_count || 0);
+          loadedSlugRef.current = slug;
+          setLoading(false);
+          console.log('Données chargées depuis le cache');
+          return;
+        }
+      }
       
       if (!slug) {
         console.log('No slug provided, using default card');
@@ -83,6 +103,9 @@ export const useMCardData = () => {
       setViewCount(mcardData.view_count || 0);
       setError(null);
       
+      // Sauvegarder dans le cache local
+      offlineStorage.saveMCard(mcardData);
+      
       // Vérifier la propriété immédiatement
       const ownershipStatus = await checkMCardOwnership(mcardData.user_id);
       console.log('Checking ownership for MCard user_id:', mcardData.user_id);
@@ -112,6 +135,11 @@ export const useMCardData = () => {
         setStatuses(statusesData);
         setProducts(productsData);
         setReviews(reviewsData);
+        
+        // Sauvegarder dans le cache local
+        offlineStorage.saveStatuses(mcardData.id, statusesData);
+        offlineStorage.saveProducts(mcardData.id, productsData);
+        offlineStorage.saveReviews(mcardData.id, reviewsData);
       } catch (dataError) {
         console.error('Error loading additional data:', dataError);
         setStatuses([]);

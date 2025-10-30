@@ -1,52 +1,37 @@
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Wifi, WifiOff } from "lucide-react";
+import { WifiOff, Cloud, RefreshCw } from "lucide-react";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { Button } from "@/components/ui/button";
 
 export const ConnectionStatus = () => {
-  const [isConnected, setIsConnected] = useState(true);
+  const { isOnline, isSyncing, pendingChangesCount, forceSyncNow } = useOfflineSync();
 
-  useEffect(() => {
-    const checkConnection = () => {
-      setIsConnected(navigator.onLine);
-    };
-
-    // Vérifier la connexion Supabase
-    const testConnection = async () => {
-      try {
-        await supabase.from('profiles').select('count').limit(1);
-        setIsConnected(true);
-      } catch (error) {
-        console.warn("Connexion Supabase instable:", error);
-        setIsConnected(false);
-      }
-    };
-
-    window.addEventListener('online', checkConnection);
-    window.addEventListener('offline', checkConnection);
-    
-    // Test initial
-    testConnection();
-    
-    // Test périodique
-    const interval = setInterval(testConnection, 30000);
-
-    return () => {
-      window.removeEventListener('online', checkConnection);
-      window.removeEventListener('offline', checkConnection);
-      clearInterval(interval);
-    };
-  }, []);
-
-  if (isConnected) return null;
+  if (isOnline && pendingChangesCount === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50">
-      <Badge variant="destructive" className="flex items-center gap-2">
-        <WifiOff className="h-3 w-3" />
-        Connexion instable
-      </Badge>
+    <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+      {!isOnline && (
+        <Badge variant="destructive" className="flex items-center gap-2">
+          <WifiOff className="h-3 w-3" />
+          Mode hors ligne
+        </Badge>
+      )}
+      
+      {pendingChangesCount > 0 && (
+        <Badge 
+          variant={isOnline ? "default" : "secondary"} 
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={forceSyncNow}
+        >
+          {isSyncing ? (
+            <RefreshCw className="h-3 w-3 animate-spin" />
+          ) : (
+            <Cloud className="h-3 w-3" />
+          )}
+          {isSyncing ? 'Synchronisation...' : `${pendingChangesCount} modif. en attente`}
+        </Badge>
+      )}
     </div>
   );
 };
