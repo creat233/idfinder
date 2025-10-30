@@ -23,7 +23,8 @@ export const useMCardView = () => {
     forceRefresh,
     updateViewCount,
     addStatus,
-    addProduct
+    addProduct,
+    addReview
   } = useMCardData();
 
   const {
@@ -83,6 +84,7 @@ export const useMCardView = () => {
     refreshData,
     forceRefresh,
     addStatus,
-    addProduct
+    addProduct,
+    addReview
   };
 };

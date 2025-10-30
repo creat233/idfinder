@@ -1,5 +1,5 @@
-
 import { useState, useRef } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { MCard, MCardStatus, MCardProduct, MCardReview } from '@/types/mcard';
 import { createDefaultCard, createDefaultStatuses, createDefaultProducts } from '@/utils/mcardDefaults';
 import { 
@@ -7,7 +7,7 @@ import {
   fetchMCardStatuses, 
   fetchMCardProducts, 
   incrementViewCount, 
-  checkMCardOwnership 
+  checkMCardOwnership
 } from '@/services/mcardViewService';
 import { fetchAllMCardReviews } from '@/services/mcardReviewService';
 import { offlineStorage } from '@/services/offlineStorage';
@@ -241,12 +241,167 @@ export const useMCardData = () => {
     }
   };
 
-  const addStatus = (status: MCardStatus) => {
-    setStatuses(prev => [status, ...prev]);
+  const addStatus = async (statusData: Partial<MCardStatus>) => {
+    if (!mcard) return;
+
+    const newStatus = {
+      id: `temp_${Date.now()}`,
+      mcard_id: mcard.id,
+      ...statusData,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as MCardStatus;
+
+    // Ajouter immédiatement à l'état local
+    setStatuses(prev => [newStatus, ...prev]);
+
+    if (!isOnline) {
+      // Mode hors ligne : sauvegarder localement
+      const updatedStatuses = [newStatus, ...statuses];
+      offlineStorage.saveStatuses(mcard.id, updatedStatuses);
+      offlineStorage.addPendingChange({
+        type: 'status',
+        action: 'create',
+        data: newStatus,
+      });
+      return newStatus;
+    }
+
+    try {
+      // Mode en ligne : sauvegarder dans Supabase
+      const { data, error } = await supabase
+        .from('mcard_statuses')
+        .insert({
+          mcard_id: mcard.id,
+          status_text: statusData.status_text,
+          status_color: statusData.status_color,
+          status_image: statusData.status_image,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        // Mettre à jour avec l'ID réel
+        setStatuses(prev => prev.map(s => s.id === newStatus.id ? data : s));
+        offlineStorage.saveStatuses(mcard.id, [data, ...statuses.filter(s => s.id !== newStatus.id)]);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error adding status:', error);
+      // Garder le statut temporaire en cas d'erreur
+      return newStatus;
+    }
   };
 
-  const addProduct = (product: MCardProduct) => {
-    setProducts(prev => [product, ...prev]);
+  const addProduct = async (productData: Partial<MCardProduct>) => {
+    if (!mcard) return;
+
+    const newProduct = {
+      id: `temp_${Date.now()}`,
+      mcard_id: mcard.id,
+      ...productData,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as MCardProduct;
+
+    // Ajouter immédiatement à l'état local
+    setProducts(prev => [newProduct, ...prev]);
+
+    if (!isOnline) {
+      // Mode hors ligne : sauvegarder localement
+      const updatedProducts = [newProduct, ...products];
+      offlineStorage.saveProducts(mcard.id, updatedProducts);
+      offlineStorage.addPendingChange({
+        type: 'product',
+        action: 'create',
+        data: newProduct,
+      });
+      return newProduct;
+    }
+
+    try {
+      // Mode en ligne : sauvegarder dans Supabase
+      const { data, error } = await supabase
+        .from('mcard_products')
+        .insert({
+          mcard_id: mcard.id,
+          name: productData.name,
+          description: productData.description,
+          price: productData.price,
+          currency: productData.currency,
+          category: productData.category,
+          image_url: productData.image_url,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        // Mettre à jour avec l'ID réel
+        setProducts(prev => prev.map(p => p.id === newProduct.id ? data : p));
+        offlineStorage.saveProducts(mcard.id, [data, ...products.filter(p => p.id !== newProduct.id)]);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error adding product:', error);
+      // Garder le produit temporaire en cas d'erreur
+      return newProduct;
+    }
+  };
+
+  const addReview = async (reviewData: {
+    visitor_name: string;
+    visitor_email?: string;
+    rating: number;
+    comment?: string;
+  }) => {
+    if (!mcard) return;
+
+    const newReview = {
+      id: `temp_${Date.now()}`,
+      mcard_id: mcard.id,
+      ...reviewData,
+      is_approved: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    if (!isOnline) {
+      // Mode hors ligne : sauvegarder localement
+      offlineStorage.addPendingChange({
+        type: 'review',
+        action: 'create',
+        data: newReview,
+      });
+      return newReview;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('mcard_reviews')
+        .insert([{
+          mcard_id: mcard.id,
+          visitor_name: reviewData.visitor_name,
+          visitor_email: reviewData.visitor_email,
+          rating: reviewData.rating,
+          comment: reviewData.comment,
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error adding review:', error);
+      return newReview;
+    }
   };
 
   // Fonction pour forcer le rafraîchissement immédiat (utilisée après mise à jour)
@@ -272,6 +427,7 @@ export const useMCardData = () => {
     setProducts,
     setReviews,
     addStatus,
-    addProduct
+    addProduct,
+    addReview
   };
 };
