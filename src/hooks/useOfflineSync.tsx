@@ -159,6 +159,44 @@ export const useOfflineSync = () => {
           await supabase.from('user_cards').delete().eq('id', data.id);
         }
         break;
+
+      case 'invoice':
+        if (action === 'create') {
+          const { items, ...invoiceData } = data;
+          const { data: invoice } = await supabase.from('mcard_invoices').insert(invoiceData).select().single();
+          if (invoice && items) {
+            await supabase.from('mcard_invoice_items').insert(items.map((item: any) => ({ ...item, invoice_id: invoice.id })));
+          }
+        } else if (action === 'update') {
+          const { items, ...invoiceData } = data;
+          await supabase.from('mcard_invoices').update(invoiceData).eq('id', data.id);
+          if (items) {
+            await supabase.from('mcard_invoice_items').delete().eq('invoice_id', data.id);
+            await supabase.from('mcard_invoice_items').insert(items.map((item: any) => ({ ...item, invoice_id: data.id })));
+          }
+        } else if (action === 'delete') {
+          await supabase.from('mcard_invoices').delete().eq('id', data.id);
+        }
+        break;
+
+      case 'quote':
+        if (action === 'create') {
+          const { items, ...quoteData } = data;
+          const { data: quote } = await supabase.from('mcard_quotes').insert(quoteData).select().single();
+          if (quote && items) {
+            await supabase.from('mcard_quote_items').insert(items.map((item: any) => ({ ...item, quote_id: quote.id })));
+          }
+        } else if (action === 'update') {
+          const { items, ...quoteData } = data;
+          await supabase.from('mcard_quotes').update(quoteData).eq('id', data.id);
+          if (items) {
+            await supabase.from('mcard_quote_items').delete().eq('quote_id', data.id);
+            await supabase.from('mcard_quote_items').insert(items.map((item: any) => ({ ...item, quote_id: data.id })));
+          }
+        } else if (action === 'delete') {
+          await supabase.from('mcard_quotes').delete().eq('id', data.id);
+        }
+        break;
     }
   };
 

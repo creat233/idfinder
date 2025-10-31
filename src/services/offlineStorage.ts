@@ -13,7 +13,7 @@ const STORAGE_KEYS = {
 
 export interface PendingChange {
   id: string;
-  type: 'mcard' | 'status' | 'product' | 'review' | 'reported_card' | 'user_card';
+  type: 'mcard' | 'status' | 'product' | 'review' | 'reported_card' | 'user_card' | 'invoice' | 'quote';
   action: 'create' | 'update' | 'delete';
   data: any;
   timestamp: number;
@@ -186,11 +186,47 @@ class OfflineStorage {
     localStorage.setItem(STORAGE_KEYS.USER_CARDS, JSON.stringify(filtered));
   }
 
+  // Invoices
+  saveInvoices(mcardId: string, invoices: any[]) {
+    const allInvoices = this.getAllInvoicesData();
+    allInvoices[mcardId] = invoices;
+    localStorage.setItem('offline_invoices', JSON.stringify(allInvoices));
+  }
+
+  getInvoices(mcardId: string): any[] {
+    const allInvoices = this.getAllInvoicesData();
+    return allInvoices[mcardId] || [];
+  }
+
+  private getAllInvoicesData(): Record<string, any[]> {
+    const data = localStorage.getItem('offline_invoices');
+    return data ? JSON.parse(data) : {};
+  }
+
+  // Quotes
+  saveQuotes(mcardId: string, quotes: any[]) {
+    const allQuotes = this.getAllQuotesData();
+    allQuotes[mcardId] = quotes;
+    localStorage.setItem('offline_quotes', JSON.stringify(allQuotes));
+  }
+
+  getQuotes(mcardId: string): any[] {
+    const allQuotes = this.getAllQuotesData();
+    return allQuotes[mcardId] || [];
+  }
+
+  private getAllQuotesData(): Record<string, any[]> {
+    const data = localStorage.getItem('offline_quotes');
+    return data ? JSON.parse(data) : {};
+  }
+
   // Clear all offline data
   clearAll() {
     Object.values(STORAGE_KEYS).forEach(key => {
       localStorage.removeItem(key);
     });
+    localStorage.removeItem('offline_invoices');
+    localStorage.removeItem('offline_quotes');
   }
 }
 

@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Quote, QuoteCreateData } from '@/types/quote';
+import { offlineStorage } from '@/services/offlineStorage';
+import { useOfflineSync } from './useOfflineSync';
 
 export const useQuotes = (mcardId: string) => {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { isOnline } = useOfflineSync();
 
   const generateQuoteNumber = () => {
     const date = new Date();
@@ -21,6 +24,16 @@ export const useQuotes = (mcardId: string) => {
     
     try {
       setLoading(true);
+      
+      // Mode hors ligne
+      if (!isOnline) {
+        const cachedQuotes = offlineStorage.getQuotes(mcardId);
+        setQuotes(cachedQuotes);
+        setLoading(false);
+        return;
+      }
+      
+      // Mode en ligne
       const { data: quotesData, error: quotesError } = await supabase
         .from('mcard_quotes')
         .select('*')
@@ -44,6 +57,9 @@ export const useQuotes = (mcardId: string) => {
       );
 
       setQuotes(quotesWithItems);
+      
+      // Sauvegarder en cache
+      offlineStorage.saveQuotes(mcardId, quotesWithItems);
     } catch (error) {
       console.error('Erreur lors du chargement des devis:', error);
       toast({
@@ -57,13 +73,41 @@ export const useQuotes = (mcardId: string) => {
   };
 
   const addQuote = async (data: QuoteCreateData) => {
+    const quoteNumber = generateQuoteNumber();
+    const totalAmount = data.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
+    const { items, ...quoteFields } = data;
+
+    const tempQuote = {
+      id: `temp_${Date.now()}`,
+      ...quoteFields,
+      quote_number: quoteNumber,
+      amount: totalAmount,
+      items,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as Quote;
+
+    // Ajouter immédiatement à l'état local
+    setQuotes(prev => [tempQuote, ...prev]);
+
+    if (!isOnline) {
+      // Mode hors ligne
+      const updatedQuotes = [tempQuote, ...quotes];
+      offlineStorage.saveQuotes(mcardId, updatedQuotes);
+      offlineStorage.addPendingChange({
+        type: 'quote',
+        action: 'create',
+        data: tempQuote,
+      });
+      toast({
+        title: 'Succès',
+        description: 'Devis créé (hors ligne)'
+      });
+      return;
+    }
+
     try {
-      const quoteNumber = generateQuoteNumber();
-      const totalAmount = data.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-
-      // Séparer les items des autres données
-      const { items, ...quoteFields } = data;
-
+      // Mode en ligne
       const { data: quoteData, error: quoteError } = await supabase
         .from('mcard_quotes')
         .insert({
@@ -107,6 +151,25 @@ export const useQuotes = (mcardId: string) => {
   };
 
   const deleteQuote = async (quoteId: string) => {
+    // Supprimer immédiatement de l'état local
+    setQuotes(prev => prev.filter(q => q.id !== quoteId));
+
+    if (!isOnline) {
+      // Mode hors ligne
+      const updatedQuotes = quotes.filter(q => q.id !== quoteId);
+      offlineStorage.saveQuotes(mcardId, updatedQuotes);
+      offlineStorage.addPendingChange({
+        type: 'quote',
+        action: 'delete',
+        data: { id: quoteId },
+      });
+      toast({
+        title: 'Succès',
+        description: 'Devis supprimé (hors ligne)'
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('mcard_quotes')

@@ -47,6 +47,11 @@ export const useMCardData = () => {
           setProducts(offlineStorage.getProducts(cachedMCard.id));
           setReviews(offlineStorage.getReviews(cachedMCard.id));
           setViewCount(cachedMCard.view_count || 0);
+          
+          // Vérifier la propriété même hors ligne
+          const { data: { user } } = await supabase.auth.getUser();
+          setIsOwner(user?.id === cachedMCard.user_id);
+          
           loadedSlugRef.current = slug;
           setLoading(false);
           console.log('Données chargées depuis le cache');
