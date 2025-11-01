@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { MCardStatus } from '@/types/mcard';
@@ -37,6 +38,7 @@ export const MCardViewStatuses = ({
   onStatusesChange,
   onOptimisticStatusAdd 
 }: MCardViewStatusesProps) => {
+  const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState<MCardStatus | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
@@ -145,22 +147,38 @@ export const MCardViewStatuses = ({
           <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🟢 Statuts & Disponibilités
           </h3>
-          {canAddStatus && (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <span className="text-xs text-center sm:text-right text-muted-foreground">
-                {statusesCreatedToday}/{planLimits.maxStatuses} statuts aujourd'hui
-              </span>
-              <Button 
-                size="sm" 
+          <div className="flex gap-2 flex-wrap">
+            {activeStatuses.length > 0 && (
+              <Button
+                size="sm"
                 variant="outline"
-                onClick={handleAddStatus}
-                className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+                onClick={() => {
+                  navigate(`all-statuses`, {
+                    state: { statuses: activeStatuses, mcardId, ownerName: mcardOwnerName || '', isOwner }
+                  });
+                }}
+                className="text-purple-600 border-purple-600 hover:bg-purple-50"
               >
-                <Plus className="h-4 w-4 mr-1" />
-                Ajouter un statut
+                Voir tout
               </Button>
-            </div>
-          )}
+            )}
+            {canAddStatus && (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <span className="text-xs text-center sm:text-right text-muted-foreground">
+                  {statusesCreatedToday}/{planLimits.maxStatuses} statuts aujourd'hui
+                </span>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={handleAddStatus}
+                  className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Ajouter un statut
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         {activeStatuses.length === 0 ? (

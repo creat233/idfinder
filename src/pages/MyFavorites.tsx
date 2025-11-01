@@ -158,7 +158,11 @@ const MyFavorites = () => {
             <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto mb-6">
               Découvrez les mCards vérifiées et ajoutez-les à vos favoris pour les retrouver facilement
             </p>
-            <Badge variant="outline" className="px-4 py-2">
+            <Badge 
+              variant="outline" 
+              className="px-4 py-2 cursor-pointer hover:bg-primary hover:text-white transition-all"
+              onClick={() => navigate('/mcard-verified')}
+            >
               <Sparkles className="w-4 h-4 mr-2" />
               Commencez à explorer
             </Badge>

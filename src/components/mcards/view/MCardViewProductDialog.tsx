@@ -198,37 +198,15 @@ export const MCardViewProductDialog = ({
                 {isInCart(product.id) ? "Dans le panier" : "Ajouter au panier"}
               </Button>
 
-              {/* Bouton Contacter via Messages */}
+              {/* Bouton Message */}
               {mcardId && mcardOwnerUserId && (
                 <Button 
                   onClick={handleContactMessage}
                   className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-base"
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  Contacter le vendeur
+                  Message
                 </Button>
-              )}
-              
-              {/* Boutons WhatsApp et Telegram si numéro disponible */}
-              {phoneNumber && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Button 
-                    onClick={handleWhatsAppContact}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base"
-                  >
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    Commander via WhatsApp
-                  </Button>
-                  
-                  <Button 
-                    onClick={handleTelegramContact}
-                    variant="outline"
-                    className="w-full border-blue-500 text-blue-500 hover:bg-blue-50 py-3 text-base"
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Commander via Telegram
-                  </Button>
-                </div>
               )}
             </div>
           </div>

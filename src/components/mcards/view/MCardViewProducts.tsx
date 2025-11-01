@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, ShoppingCart, Share2, MessageCircle, Star, Send, ShoppingBag } from 'lucide-react';
@@ -39,6 +40,7 @@ export const MCardViewProducts = ({
   onProductsChange,
   onOptimisticProductAdd 
 }: MCardViewProductsProps) => {
+  const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState<MCardProduct | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
@@ -176,17 +178,34 @@ export const MCardViewProducts = ({
           <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
             🛍️ Produits & Services
           </h3>
-          {canAddProduct && (
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={handleAddProduct}
-              className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              Ajouter un produit
-            </Button>
-          )}
+          <div className="flex gap-2 flex-wrap">
+            {isOwner && activeProducts.length > 0 && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  navigate(`all-products`, {
+                    state: { products: activeProducts, mcardId, ownerName: mcardOwnerName || '' }
+                  });
+                }}
+                className="text-purple-600 border-purple-600 hover:bg-purple-50"
+              >
+                <ShoppingBag className="h-4 w-4 mr-1" />
+                Voir tout
+              </Button>
+            )}
+            {canAddProduct && (
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={handleAddProduct}
+                className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Ajouter un produit
+              </Button>
+            )}
+          </div>
         </div>
 
         {activeProducts.length === 0 ? (

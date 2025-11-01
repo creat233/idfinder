@@ -44,6 +44,8 @@ import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import InvoiceManagement from "./pages/InvoiceManagement";
 import MCardQuotes from "./pages/MCardQuotes";
+import AllMCardProducts from "./pages/AllMCardProducts";
+import AllMCardStatuses from "./pages/AllMCardStatuses";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -125,6 +127,8 @@ function AppContent() {
               <Route path="/verification-request" element={<VerificationRequest />} />
               <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/mcard/:slug/all-products" element={<AllMCardProducts />} />
+              <Route path="/mcard/:slug/all-statuses" element={<AllMCardStatuses />} />
             </Routes>
             {!isInConversation && <MobileBottomNav />}
           </BrowserRouter>

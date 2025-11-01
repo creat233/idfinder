@@ -170,7 +170,7 @@ export const MCardStatusCarousel = ({
       </div>
     );
   } else {
-    // Design moderne et professionnel pour les visiteurs
+    // Design moderne et professionnel pour les visiteurs avec scroll horizontal
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between mb-6">
@@ -182,7 +182,9 @@ export const MCardStatusCarousel = ({
           </Badge>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Scroll horizontal pour mobile et tablette */}
+        <div className="relative">
+          <div className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible">
           {statuses.map((status, index) => {
             const timeRemaining = status.expires_at ? 
               Math.max(0, Math.floor((new Date(status.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60))) : 
@@ -191,7 +193,7 @@ export const MCardStatusCarousel = ({
             return (
               <div 
                 key={status.id} 
-                className="group relative bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-md rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-primary/20 hover:-translate-y-1"
+                className="group relative bg-gradient-to-br from-white/95 via-white/90 to-white/95 backdrop-blur-md rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 hover:border-primary/20 hover:-translate-y-1 flex-shrink-0 w-[85vw] sm:w-[45vw] lg:w-auto snap-center"
               >
                 {/* Image du statut avec overlay élégant */}
                 <div className="relative h-72 overflow-hidden">
@@ -304,6 +306,7 @@ export const MCardStatusCarousel = ({
               </div>
             );
           })}
+          </div>
         </div>
       </div>
     );
