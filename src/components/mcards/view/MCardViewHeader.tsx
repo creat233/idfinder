@@ -46,7 +46,7 @@ export const MCardViewHeader = ({
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/')}
                 className="flex items-center gap-2 hover:bg-blue-100/50 text-gray-700 hover:text-blue-700 transition-all duration-200"
               >
                 <ArrowLeft className="h-4 w-4" />
