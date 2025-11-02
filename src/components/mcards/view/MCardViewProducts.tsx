@@ -179,7 +179,7 @@ export const MCardViewProducts = ({
             🛍️ Produits & Services
           </h3>
           <div className="flex gap-2 flex-wrap">
-            {isOwner && activeProducts.length > 0 && (
+            {activeProducts.length > 0 && (
               <Button
                 size="sm"
                 variant="outline"
