@@ -11,7 +11,7 @@ import { ProductImageModal } from '@/components/mcards/view/ProductImageModal';
 const AllMCardProducts = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { products = [], mcardId = '', ownerName = '', mcardSlug = '' } = location.state || {};
+  const { products = [], mcardId = '', ownerName = '' } = location.state || {};
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -57,7 +57,7 @@ const AllMCardProducts = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(`/mcard/${mcardSlug}`)}
+              onClick={() => navigate(-1)}
               className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
             >
               <ArrowLeft className="h-5 w-5" />
