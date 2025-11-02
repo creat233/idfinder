@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { useMCards } from "@/hooks/useMCards";
 import { MCardsSEO } from "@/components/seo/MCardsSEO";
@@ -15,11 +15,27 @@ import { useMCardsUpgradeHandler } from '@/hooks/useMCardsUpgradeHandler';
 import { useMCardsFormHandler } from '@/hooks/useMCardsFormHandler';
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { offlineStorage } from "@/services/offlineStorage";
+import { supabase } from "@/integrations/supabase/client";
 
 const MCards = () => {
+  const { isOnline } = useOfflineSync();
+  const [session, setSession] = useState<any>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const { mcards, loading, createMCard, updateMCard, deleteMCard, requestPlanUpgrade } = useMCards();
   const { t } = useTranslation();
   const [showCreationPage, setShowCreationPage] = useState(false);
+
+  // Vérifier la session
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setSessionLoading(false);
+    };
+    checkSession();
+  }, []);
 
   // Handle notifications for expiring cards
   useMCardsNotificationHandler(mcards);
@@ -72,6 +88,43 @@ const MCards = () => {
       setShowCreationPage(true);
     }
   };
+
+  // Mode hors ligne sans session
+  if (!session && !isOnline && !sessionLoading) {
+    const offlineMCards = offlineStorage.getAllMCards();
+    
+    return (
+      <>
+        <MCardsSEO />
+        <div className="min-h-screen bg-background pb-24 md:pb-0">
+          <Header />
+          <main className="w-full">
+            <div className="px-3 sm:px-4 lg:px-6 xl:px-8">
+              <MCardsHeader />
+            </div>
+            
+            <div className="w-full px-3 sm:px-4 lg:px-6 xl:px-8">
+              <div className="container mx-auto py-8 sm:py-12 lg:py-16">
+                <MCardsList
+                  mcards={offlineMCards}
+                  loading={false}
+                  deleteMCard={deleteMCard}
+                  onStartUpgradeFlow={handleInitiateUpgrade}
+                  onEdit={handleOpenEdit}
+                />
+              </div>
+            </div>
+          </main>
+        </div>
+      </>
+    );
+  }
+
+  // Si pas de session et en ligne, rediriger
+  if (!session && !sessionLoading) {
+    window.location.href = '/login';
+    return null;
+  }
 
   if (showCreationPage) {
     return (
