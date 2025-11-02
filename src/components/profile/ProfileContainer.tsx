@@ -8,11 +8,14 @@ import { useProfile } from "@/hooks/useProfile";
 import { useUserCards } from "@/hooks/useUserCards";
 import { useUserBadges } from "@/hooks/useUserBadges";
 import { useMCards } from "@/hooks/useMCards";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { offlineStorage } from "@/services/offlineStorage";
 
 export const ProfileContainer = () => {
   const [session, setSession] = useState<any>(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const initializationRef = useRef(false);
+  const { isOnline } = useOfflineSync();
   
   const {
     loading: profileLoading,
@@ -100,6 +103,46 @@ export const ProfileContainer = () => {
     );
   }
 
+  // En mode hors ligne, afficher les données locales
+  if (!session && !isOnline) {
+    const offlineMCards = offlineStorage.getAllMCards();
+    
+    // Si on a des MCards en cache, les afficher
+    if (offlineMCards.length > 0) {
+      return (
+        <>
+          <Header />
+          <ProfileContent
+            session={null}
+            firstName=""
+            lastName=""
+            phone=""
+            country=""
+            isEditing={false}
+            totalEarnings={0}
+            isOnVacation={false}
+            enableSecurityNotifications={false}
+            cards={[]}
+            cardsLoading={false}
+            topReporterEarned={false}
+            premiumMemberEarned={false}
+            badgesLoading={false}
+            mcards={offlineMCards}
+            mcardsLoading={false}
+            profileLoading={false}
+            setPhone={() => {}}
+            setIsEditing={() => {}}
+            updateProfile={() => Promise.resolve()}
+            onVacationModeChange={() => {}}
+            onSecurityNotificationsChange={() => {}}
+            deleteMCard={() => Promise.resolve()}
+          />
+        </>
+      );
+    }
+  }
+  
+  // Si pas de session et en ligne, rediriger vers login
   if (!session) {
     window.location.href = '/login';
     return null;
