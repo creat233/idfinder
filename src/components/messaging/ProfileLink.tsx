@@ -19,9 +19,12 @@ export const ProfileLink = ({
 }: ProfileLinkProps) => {
   const navigate = useNavigate();
   
-  const handleProfileClick = () => {
+  const handleProfileClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     console.log('ProfileLink clicked with slug:', mcardSlug);
-    navigate(`/mcard/${mcardSlug}`);
+    if (mcardSlug) {
+      window.location.href = `/mcard/${mcardSlug}`;
+    }
   };
 
   return (
