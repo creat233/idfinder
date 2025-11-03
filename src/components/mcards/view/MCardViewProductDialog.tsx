@@ -74,14 +74,20 @@ export const MCardViewProductDialog = ({
   };
 
   const handleContactMessage = () => {
-    if (mcardId && mcardOwnerUserId) {
+    if (mcardId && mcardOwnerUserId && product) {
+      // Message pré-rempli avec détails du produit
+      const preFilledMessage = `Bonjour, je suis intéressé(e) par votre produit "${product.name}" à ${product.price.toLocaleString()} ${product.currency}. Pourriez-vous me donner plus d'informations ?`;
+      const preFilledSubject = `Produit: ${product.name}`;
+      
       // Stocker les données du produit pour le message pré-rempli
       const productContext = {
         type: 'product' as const,
         title: product.name,
         mcardId,
         mcardOwnerName: mcardOwnerName || 'Propriétaire',
-        recipientId: mcardOwnerUserId
+        recipientId: mcardOwnerUserId,
+        preFilledMessage,
+        preFilledSubject
       };
       
       // Stocker dans localStorage pour que la page Messages puisse récupérer

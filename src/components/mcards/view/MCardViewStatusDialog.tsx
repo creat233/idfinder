@@ -242,7 +242,7 @@ export const MCardViewStatusDialog = ({
                   <div className="space-y-3">
                     <Textarea
                       placeholder={`Bonjour ! Je vous contacte concernant votre statut "${status.status_text}".`}
-                      value={message}
+                      value={message || `Bonjour, j'ai vu votre statut "${status?.status_text}" et j'aimerais vous contacter à ce sujet.`}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={3}
                       className="resize-none"

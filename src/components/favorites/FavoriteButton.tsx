@@ -2,24 +2,45 @@ import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMCardInteractions } from '@/hooks/useMCardInteractions';
 import { motion } from 'framer-motion';
+import { offlineStorage } from '@/services/offlineStorage';
+import { useToast } from '@/hooks/use-toast';
 
 interface FavoriteButtonProps {
   mcardId: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
+  allowOffline?: boolean;
 }
 
 export const FavoriteButton = ({ 
   mcardId, 
   className = "", 
   size = 'md',
-  showText = false
+  showText = false,
+  allowOffline = true
 }: FavoriteButtonProps) => {
   const { isFavorited, handleFavorite, loading } = useMCardInteractions(mcardId);
+  const { toast } = useToast();
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Si hors ligne et autorisé, sauvegarder localement
+    if (allowOffline && !navigator.onLine) {
+      toast({
+        title: "Mode hors ligne",
+        description: "Le favori sera synchronisé lors de la prochaine connexion"
+      });
+      // Sauvegarder l'action en attente
+      offlineStorage.addPendingChange({
+        type: 'mcard',
+        action: isFavorited ? 'delete' : 'create',
+        data: { mcardId, action: 'favorite' }
+      });
+      return;
+    }
+    
     await handleFavorite();
   };
 

@@ -1,7 +1,9 @@
 
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
 import { ProfileSkeleton } from "@/components/profile/ProfileSkeleton";
 import { ProfileContent } from "./ProfileContent";
 import { useProfile } from "@/hooks/useProfile";
@@ -10,8 +12,10 @@ import { useUserBadges } from "@/hooks/useUserBadges";
 import { useMCards } from "@/hooks/useMCards";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { offlineStorage } from "@/services/offlineStorage";
+import { Home } from "lucide-react";
 
 export const ProfileContainer = () => {
+  const navigate = useNavigate();
   const [session, setSession] = useState<any>(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const initializationRef = useRef(false);
@@ -151,6 +155,18 @@ export const ProfileContainer = () => {
   return (
     <>
       <Header />
+      {/* Bouton Retour à l'accueil */}
+      <div className="container mx-auto px-4 pt-4">
+        <Button
+          variant="outline"
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 mb-4"
+        >
+          <Home className="w-4 h-4" />
+          Retour à l'accueil
+        </Button>
+      </div>
+      
       <ProfileContent
         session={session}
         firstName={firstName}

@@ -9,6 +9,8 @@ import { PinnedProductsCarousel } from "@/components/verified/PinnedProductsCaro
 import { VerifiedMCardsGrid } from "@/components/verified/VerifiedMCardsGrid";
 import { MCard, MCardProduct } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { offlineStorage } from "@/services/offlineStorage";
 
 const VerifiedMCards = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +19,7 @@ const VerifiedMCards = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const { toast } = useToast();
+  const { isOnline } = useOfflineSync();
   const isMobile = useIsMobile();
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);

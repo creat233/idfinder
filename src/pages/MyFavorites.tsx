@@ -7,11 +7,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Phone, Mail, Building, Eye, Heart, Search, Sparkles, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Phone, Mail, Building, Eye, Heart, Search, Sparkles, TrendingUp, Home } from "lucide-react";
 import { getFavoriteCards } from "@/services/mcardInteractionService";
 import { MCard } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { offlineStorage } from "@/services/offlineStorage";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
+import { supabase } from "@/integrations/supabase/client";
 
 const MyFavorites = () => {
   const navigate = useNavigate();
@@ -20,6 +24,7 @@ const MyFavorites = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  const { isOnline } = useOfflineSync();
 
   useEffect(() => {
     loadFavorites();
@@ -27,15 +32,36 @@ const MyFavorites = () => {
 
   const loadFavorites = async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // Si hors ligne ou pas de session, charger depuis le stockage local
+      if (!isOnline || !session) {
+        const offlineMCards = offlineStorage.getAllMCards();
+        // Filtrer uniquement les cartes qui étaient en favoris (on peut stocker une liste de favoris hors ligne)
+        setFavorites(offlineMCards);
+        setFilteredFavorites(offlineMCards);
+        setLoading(false);
+        return;
+      }
+
       const data = await getFavoriteCards();
       setFavorites(data);
       setFilteredFavorites(data);
+      
+      // Sauvegarder pour le mode hors ligne
+      data.forEach(card => offlineStorage.saveMCard(card));
     } catch (error: any) {
       console.error('Erreur lors du chargement des favoris:', error);
+      
+      // En cas d'erreur, essayer de charger depuis le cache
+      const offlineMCards = offlineStorage.getAllMCards();
+      setFavorites(offlineMCards);
+      setFilteredFavorites(offlineMCards);
+      
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Impossible de charger vos favoris"
+        description: "Chargement depuis le cache local"
       });
     } finally {
       setLoading(false);
@@ -82,6 +108,18 @@ const MyFavorites = () => {
       <Header />
       
       <div className="container mx-auto px-4 py-6 sm:py-8 lg:py-10">
+        {/* Bouton Retour à l'accueil */}
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Retour à l'accueil
+          </Button>
+        </div>
+
         {/* Enhanced Header avec gradient */}
         <div className="relative mb-8 sm:mb-10 lg:mb-12 overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 sm:p-8 lg:p-10">
           <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
