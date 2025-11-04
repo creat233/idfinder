@@ -28,12 +28,13 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
     try {
       setLoading(true);
       
-      // Charger toutes les cartes actives (avec subscription_status = 'active')
+      // Charger toutes les cartes actives et non expirées
       const { data, error } = await supabase
         .from('mcards')
         .select('*')
         .eq('is_published', true)
         .eq('subscription_status', 'active')
+        .gt('subscription_expires_at', new Date().toISOString())
         .order('is_verified', { ascending: false })
         .order('view_count', { ascending: false });
 
