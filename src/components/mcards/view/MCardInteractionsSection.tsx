@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Star, Share2, MessageCircle, Flag, Home } from "lucide-react";
+import { Heart, Star, Share2, MessageCircle, Flag } from "lucide-react";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { ReportButton } from "@/components/mcards/ReportButton";
 import { useState, useEffect } from "react";
@@ -172,13 +172,6 @@ export const MCardInteractionsSection = ({
       onClick: () => handleAuthRequired(() => setIsMessageDialogOpen(true)),
       bgColor: "bg-green-50",
       textColor: "text-green-600"
-    },
-    {
-      icon: Home,
-      label: "Accueil",
-      onClick: () => navigate('/'),
-      bgColor: "bg-purple-50",
-      textColor: "text-purple-600"
     },
     {
       icon: Flag,
