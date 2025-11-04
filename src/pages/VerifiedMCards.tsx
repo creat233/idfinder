@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { PublicHeader } from "@/components/PublicHeader";
 import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductImageCarousel } from "@/components/verified/ProductImageCarousel";
@@ -112,19 +113,16 @@ const VerifiedMCards = () => {
       {/* Header pour desktop uniquement */}
       {!isMobile && <PublicHeader />}
       
-      {/* Bouton Accueil en haut à gauche pour mobile */}
+      {/* Bouton Home flottant fixe pour mobile et tablette */}
       {isMobile && (
-        <div className="fixed top-4 left-4 z-50">
+        <div className="fixed bottom-24 right-4 z-50">
           <Button
             onClick={() => window.location.href = '/'}
-            variant="outline"
             size="icon"
-            className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 shadow-xl"
+            className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-300 border-2 border-white/20"
             aria-label="Retour à l'accueil"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
+            <Home className="h-6 w-6" />
           </Button>
         </div>
       )}
