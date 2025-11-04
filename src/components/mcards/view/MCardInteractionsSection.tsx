@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Star, Share2, MessageCircle, Flag, Menu } from "lucide-react";
+import { Heart, Star, Share2, MessageCircle, Flag, Home } from "lucide-react";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { ReportButton } from "@/components/mcards/ReportButton";
 import { useState, useEffect } from "react";
@@ -178,8 +178,8 @@ export const MCardInteractionsSection = ({
       textColor: "text-green-600"
     },
     {
-      icon: Menu,
-      label: "Menu",
+      icon: Home,
+      label: "Accueil",
       onClick: handleMenuClick,
       bgColor: "bg-purple-50",
       textColor: "text-purple-600"
