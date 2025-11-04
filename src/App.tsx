@@ -64,6 +64,7 @@ function AutoRefreshWrapper() {
 
 function AppContent() {
   const [isInConversation, setIsInConversation] = useState(false);
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   
   useEffect(() => {
     // Écouter les changements de state des conversations
@@ -71,8 +72,18 @@ function AppContent() {
       setIsInConversation(event.detail.hasSelectedConversation);
     };
     
+    // Écouter les changements de route
+    const handlePathChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    
     window.addEventListener('conversationStateChange', handleConversationChange as EventListener);
-    return () => window.removeEventListener('conversationStateChange', handleConversationChange as EventListener);
+    window.addEventListener('popstate', handlePathChange);
+    
+    return () => {
+      window.removeEventListener('conversationStateChange', handleConversationChange as EventListener);
+      window.removeEventListener('popstate', handlePathChange);
+    };
   }, []);
 
   return (
@@ -130,7 +141,7 @@ function AppContent() {
               <Route path="/mcard/:slug/all-products" element={<AllMCardProducts />} />
               <Route path="/mcard/:slug/all-statuses" element={<AllMCardStatuses />} />
             </Routes>
-            {!isInConversation && <MobileBottomNav />}
+            {!isInConversation && currentPath !== '/mcards-verifiees' && <MobileBottomNav />}
           </BrowserRouter>
           </TooltipProvider>
         </CartProvider>
