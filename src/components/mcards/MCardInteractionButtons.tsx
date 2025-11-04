@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Share2, MessageCircle, Heart } from "lucide-react";
+import { Share2, MessageCircle, Heart, Home } from "lucide-react";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { ReportButton } from "@/components/mcards/ReportButton";
 import { useState, useEffect } from "react";
@@ -218,6 +218,18 @@ export const MCardInteractionButtons = ({
             className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-xl text-white border-white/20 hover:bg-white/30 transition-all duration-300 hover:scale-110"
           >
             <MessageCircle className="w-6 h-6" />
+          </Button>
+        </div>
+
+        {/* Bouton Home */}
+        <div className="flex flex-col items-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-purple-500/50"
+          >
+            <Home className="w-6 h-6" />
           </Button>
         </div>
       </div>

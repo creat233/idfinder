@@ -113,20 +113,6 @@ const VerifiedMCards = () => {
       {/* Header pour desktop uniquement */}
       {!isMobile && <PublicHeader />}
       
-      {/* Bouton Home flottant fixe pour mobile et tablette */}
-      {isMobile && (
-        <div className="fixed bottom-24 right-4 z-50">
-          <Button
-            onClick={() => window.location.href = '/'}
-            size="icon"
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-300 border-2 border-white/20"
-            aria-label="Retour à l'accueil"
-          >
-            <Home className="h-6 w-6" />
-          </Button>
-        </div>
-      )}
-      
       {/* Hero Section avec recherche glassmorphism */}
       <div className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-6">
