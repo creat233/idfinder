@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { TranslationProvider } from "./providers/TranslationProvider";
 import { CartProvider } from "./contexts/CartContext";
 import { HelmetProvider } from "react-helmet-async";
@@ -62,9 +62,9 @@ function AutoRefreshWrapper() {
   return null;
 }
 
-function AppContent() {
+function NavigationWrapper() {
+  const location = useLocation();
   const [isInConversation, setIsInConversation] = useState(false);
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   
   useEffect(() => {
     // Écouter les changements de state des conversations
@@ -72,19 +72,70 @@ function AppContent() {
       setIsInConversation(event.detail.hasSelectedConversation);
     };
     
-    // Écouter les changements de route
-    const handlePathChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-    
     window.addEventListener('conversationStateChange', handleConversationChange as EventListener);
-    window.addEventListener('popstate', handlePathChange);
     
     return () => {
       window.removeEventListener('conversationStateChange', handleConversationChange as EventListener);
-      window.removeEventListener('popstate', handlePathChange);
     };
   }, []);
+
+  const hiddenBottomNavPaths = ['/mcards-verifiees'];
+  const shouldShowBottomNav = !isInConversation && !hiddenBottomNavPaths.includes(location.pathname);
+
+  return (
+    <>
+      <AutoRefreshWrapper />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/auth" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/my-cards" element={<MyCards />} />
+        <Route path="/mes-cartes" element={<MyCards />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/signaler-carte" element={<SignalerCarte />} />
+        <Route path="/signaler" element={<SignalerCarte />} />
+        <Route path="/recherche-resultat" element={<RechercheResultat />} />
+        <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
+        <Route path="/numero-urgence" element={<NumeroUrgence />} />
+        <Route path="/numeros-urgence" element={<NumeroUrgence />} />
+        <Route path="/urgence" element={<NumeroUrgence />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/codes-promo" element={<PromoCodes />} />
+        <Route path="/demo" element={<Demo />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/mcards" element={<MCards />} />
+        <Route path="/mcard/:slug" element={<MCardView />} />
+        <Route path="/mcard/:slug/invoices" element={<InvoiceManagement />} />
+        <Route path="/mcard/:slug/quotes" element={<MCardQuotes />} />
+        <Route path="/m/:slug" element={<MCardView />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
+        <Route path="/admin/cartes-expirees" element={<AdminExpiredCards />} />
+        <Route path="/admin/juridique" element={<AdminLegal />} />
+        <Route path="/admin/messages" element={<AdminMessages />} />
+        <Route path="/admin/utilisateurs" element={<AdminUsers />} />
+        <Route path="/admin/signalements" element={<AdminReports />} />
+        <Route path="/admin/analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/parametres" element={<AdminSettings />} />
+        <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
+        <Route path="/mes-favoris" element={<MyFavorites />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/panier" element={<Cart />} />
+        <Route path="/status/:statusId" element={<StatusView />} />
+        <Route path="/verification-request" element={<VerificationRequest />} />
+        <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/mcard/:slug/all-products" element={<AllMCardProducts />} />
+        <Route path="/mcard/:slug/all-statuses" element={<AllMCardStatuses />} />
+      </Routes>
+      {shouldShowBottomNav && <MobileBottomNav />}
+    </>
+  );
+}
+
+function AppContent() {
 
   return (
     <HelmetProvider>
@@ -95,53 +146,7 @@ function AppContent() {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <AutoRefreshWrapper />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Login />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/my-cards" element={<MyCards />} />
-              <Route path="/mes-cartes" element={<MyCards />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/signaler-carte" element={<SignalerCarte />} />
-              <Route path="/signaler" element={<SignalerCarte />} />
-              <Route path="/recherche-resultat" element={<RechercheResultat />} />
-              <Route path="/recherche/:cardNumber" element={<RechercheResultat />} />
-              <Route path="/numero-urgence" element={<NumeroUrgence />} />
-              <Route path="/numeros-urgence" element={<NumeroUrgence />} />
-              <Route path="/urgence" element={<NumeroUrgence />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/codes-promo" element={<PromoCodes />} />
-              <Route path="/demo" element={<Demo />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/mcards" element={<MCards />} />
-              <Route path="/mcard/:slug" element={<MCardView />} />
-              <Route path="/mcard/:slug/invoices" element={<InvoiceManagement />} />
-              <Route path="/mcard/:slug/quotes" element={<MCardQuotes />} />
-              <Route path="/m/:slug" element={<MCardView />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/codes-promo" element={<AdminPromoCodes />} />
-              <Route path="/admin/cartes-expirees" element={<AdminExpiredCards />} />
-              <Route path="/admin/juridique" element={<AdminLegal />} />
-              <Route path="/admin/messages" element={<AdminMessages />} />
-              <Route path="/admin/utilisateurs" element={<AdminUsers />} />
-              <Route path="/admin/signalements" element={<AdminReports />} />
-              <Route path="/admin/analytics" element={<AdminAnalytics />} />
-              <Route path="/admin/parametres" element={<AdminSettings />} />
-              <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
-              <Route path="/mes-favoris" element={<MyFavorites />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/panier" element={<Cart />} />
-              <Route path="/status/:statusId" element={<StatusView />} />
-              <Route path="/verification-request" element={<VerificationRequest />} />
-              <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/mcard/:slug/all-products" element={<AllMCardProducts />} />
-              <Route path="/mcard/:slug/all-statuses" element={<AllMCardStatuses />} />
-            </Routes>
-            {!isInConversation && currentPath !== '/mcards-verifiees' && <MobileBottomNav />}
+            <NavigationWrapper />
           </BrowserRouter>
           </TooltipProvider>
         </CartProvider>
