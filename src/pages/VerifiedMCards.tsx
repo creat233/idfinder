@@ -1,8 +1,5 @@
 
 import { useState, useEffect, useRef } from "react";
-import { PublicHeader } from "@/components/PublicHeader";
-import { Button } from "@/components/ui/button";
-import { Home } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MCardTranslateButton } from "@/components/mcards/translate/MCardTranslateButton";
 import { ProductImageCarousel } from "@/components/verified/ProductImageCarousel";
@@ -109,30 +106,27 @@ const VerifiedMCards = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 overflow-hidden">
-      {/* Header pour desktop uniquement */}
-      {!isMobile && <PublicHeader />}
-      
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 overflow-hidden pb-24 md:pb-8">
       {/* Hero Section avec recherche glassmorphism */}
-      <div className="relative pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 animate-fade-in">
+      <div className="relative pt-6 sm:pt-12 lg:pt-16 pb-8 sm:pb-12 px-3 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 animate-fade-in px-2">
             Découvrez les Professionnels
           </h1>
-          <p className="text-lg sm:text-xl text-white/80 mb-8 animate-fade-in">
+          <p className="text-base sm:text-lg md:text-xl text-white/80 mb-4 sm:mb-8 animate-fade-in px-2">
             Explorez les produits et services des professionnels actifs
           </p>
           
           {/* Barre de recherche avec effet glassmorphism */}
-          <div className="max-w-2xl mx-auto animate-scale-in">
-            <div className="relative backdrop-blur-xl bg-white/10 rounded-2xl p-6 border border-white/20 shadow-2xl">
-              <div className="flex gap-3">
+          <div className="max-w-2xl mx-auto animate-scale-in px-2">
+            <div className="relative backdrop-blur-xl bg-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-6 border border-white/20 shadow-2xl">
+              <div className="flex gap-2 sm:gap-3">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
-                  placeholder="Rechercher par nom, entreprise, secteur d'activité..."
-                  className="flex-1 px-6 py-4 rounded-xl bg-white/90 backdrop-blur-sm border-2 border-white/30 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 text-base"
+                  placeholder="Rechercher par nom, entreprise, secteur..."
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl bg-white/90 backdrop-blur-sm border-2 border-white/30 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -143,12 +137,12 @@ const VerifiedMCards = () => {
       {/* Container principal */}
       <div className="relative z-10 w-full">
         {/* Stories Section - Design professionnel */}
-        <div className="mb-10 sm:mb-12">
+        <div className="mb-6 sm:mb-10 lg:mb-12">
           <StatusCarousel />
         </div>
 
         {/* Produits épinglés - Feed professionnel */}
-        <div className="px-2 sm:px-4 lg:px-6 mb-12">
+        <div className="px-2 sm:px-4 lg:px-6 mb-8 sm:mb-12">
           <PinnedProductsCarousel onImageClick={handleImageClick} />
         </div>
       </div>
@@ -163,7 +157,7 @@ const VerifiedMCards = () => {
       />
 
       {/* Grille des MCards */}
-      <div className="px-4 sm:px-6 lg:px-8 pb-16">
+      <div className="px-3 sm:px-4 md:px-6 lg:px-8 pb-8 sm:pb-16">
         <VerifiedMCardsGrid 
           searchQuery={searchQuery}
           selectedCategory={selectedCategory}
