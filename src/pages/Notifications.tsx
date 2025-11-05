@@ -36,10 +36,9 @@ const Notifications = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">
-      <Header />
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <div className="space-y-4">
-          <h1 className="text-2xl font-bold mb-6">{t("notifications") || "Notifications"}</h1>
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-3xl">
+        <div className="space-y-3 sm:space-y-4">
+          <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t("notifications") || "Notifications"}</h1>
           
           {isAdmin && (
             <Alert className="border-orange-200 bg-orange-50">

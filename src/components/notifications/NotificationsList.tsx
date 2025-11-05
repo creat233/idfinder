@@ -42,6 +42,10 @@ export const NotificationsList = () => {
         return <CreditCard className="h-5 w-5 text-green-600" />;
       case 'new_message':
         return <MessageCircle className="h-5 w-5 text-blue-600" />;
+      case 'new_status':
+        return <Bell className="h-5 w-5 text-purple-500" />;
+      case 'new_product':
+        return <Gift className="h-5 w-5 text-emerald-500" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
     }
@@ -67,6 +71,10 @@ export const NotificationsList = () => {
         return 'mCard activée';
       case 'new_message':
         return 'Nouveau message';
+      case 'new_status':
+        return 'Nouveau statut';
+      case 'new_product':
+        return 'Nouveau produit';
       default:
         return 'Notification';
     }
@@ -78,9 +86,16 @@ export const NotificationsList = () => {
       await markAsRead(notification.id);
     }
 
-    // Rediriger selon le type de notification
-    if (notification.type === 'new_message') {
+    // Rediriger selon le type de notification et action_url
+    if (notification.action_url) {
+      navigate(notification.action_url);
+    } else if (notification.type === 'new_message') {
       navigate('/messages');
+    } else if (notification.type === 'new_status' || notification.type === 'new_product') {
+      // Ces types doivent avoir un action_url, mais au cas où
+      if (notification.action_url) {
+        navigate(notification.action_url);
+      }
     }
   };
 
@@ -221,7 +236,7 @@ export const NotificationsList = () => {
       {notifications.map((notification) => (
         <Card 
           key={notification.id} 
-          className={`transition-all cursor-pointer hover:shadow-md ${!notification.is_read ? 'border-blue-200 bg-blue-50/50' : ''} ${notification.type === 'new_message' ? 'hover:bg-blue-50' : 'hover:bg-gray-50'}`}
+          className={`transition-all cursor-pointer hover:shadow-md ${!notification.is_read ? 'border-blue-200 bg-blue-50/50' : ''} ${['new_message', 'new_status', 'new_product'].includes(notification.type) ? 'hover:bg-blue-50' : 'hover:bg-gray-50'}`}
           onClick={() => handleNotificationClick(notification)}
         >
           <CardContent className="p-3 sm:p-4">
