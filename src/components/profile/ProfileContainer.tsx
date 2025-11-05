@@ -12,7 +12,8 @@ import { useUserBadges } from "@/hooks/useUserBadges";
 import { useMCards } from "@/hooks/useMCards";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { offlineStorage } from "@/services/offlineStorage";
-import { Home } from "lucide-react";
+import { mcardExpirationService } from "@/services/mcardExpirationService";
+import { ArrowLeft } from "lucide-react";
 
 export const ProfileContainer = () => {
   const navigate = useNavigate();
@@ -64,7 +65,8 @@ export const ProfileContainer = () => {
           
           await Promise.all([
             getProfile(session),
-            fetchBadgeStatus(session.user)
+            fetchBadgeStatus(session.user),
+            mcardExpirationService.checkAndUpdateExpiredMCards()
           ]);
         }
       } catch (error) {
@@ -75,6 +77,9 @@ export const ProfileContainer = () => {
     };
 
     initializeAuth();
+    
+    // Démarrer la vérification périodique des expirations (toutes les 30 minutes)
+    const expirationCheckInterval = mcardExpirationService.startPeriodicCheck(30);
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔄 Changement d\'état d\'authentification:', event);
@@ -95,6 +100,7 @@ export const ProfileContainer = () => {
 
     return () => {
       subscription.unsubscribe();
+      clearInterval(expirationCheckInterval);
     };
   }, [getProfile, fetchBadgeStatus]);
 
@@ -155,15 +161,15 @@ export const ProfileContainer = () => {
   return (
     <>
       <Header />
-      {/* Bouton Retour à l'accueil */}
-      <div className="container mx-auto px-4 pt-4">
+      {/* Bouton Retour */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-2 mb-4 sm:mb-6 hover:bg-accent transition-colors"
         >
-          <Home className="w-4 h-4" />
-          Retour à l'accueil
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm sm:text-base">Retour</span>
         </Button>
       </div>
       
