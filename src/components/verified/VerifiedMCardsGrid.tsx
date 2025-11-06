@@ -1,14 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MCard } from '@/types/mcard';
-import { Card, CardContent } from '@/components/ui/card';
-import { RobustAvatar } from '@/components/ui/robust-avatar';
-import { Badge } from '@/components/ui/badge';
-import { Verified, MapPin, Briefcase, Phone, Mail, Globe, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
-import { OnlineStatusIndicator } from '@/components/mcards/OnlineStatusIndicator';
 import { VerifiedMCardItem } from './VerifiedMCardItem';
+import { PaidMCardWithProducts } from './PaidMCardWithProducts';
 
 interface VerifiedMCardsGridProps {
   searchQuery: string;
@@ -16,7 +10,6 @@ interface VerifiedMCardsGridProps {
 }
 
 export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMCardsGridProps) => {
-  const navigate = useNavigate();
   const [mcards, setMcards] = useState<MCard[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,14 +51,14 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
     const matchesCategory = selectedCategory === 'all' || 
       mcard.job_title?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
       mcard.company?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-      mcard.description?.toLowerCase().includes(selectedCategory.toLowerCase());
+      mcard.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesSearch && matchesCategory;
   });
 
-  const handleViewCard = (slug: string) => {
-    navigate(`/mcard/${slug}`);
-  };
+  // Séparer les cartes gratuites et payantes
+  const freeCards = filteredMCards.filter(mcard => mcard.plan === 'free');
+  const paidCards = filteredMCards.filter(mcard => mcard.plan !== 'free');
 
   if (loading) {
     return (
@@ -92,10 +85,34 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredMCards.map((mcard) => (
-              <VerifiedMCardItem key={mcard.id} mcard={mcard} />
-            ))}
+          <div className="space-y-12">
+            {/* Cartes gratuites - Format simple */}
+            {freeCards.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-6 px-2">
+                  Cartes Gratuites
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {freeCards.map((mcard) => (
+                    <VerifiedMCardItem key={mcard.id} mcard={mcard} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cartes payantes - Avec produits/services */}
+            {paidCards.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-6 px-2">
+                  Professionnels Premium
+                </h2>
+                <div className="max-w-2xl mx-auto space-y-6">
+                  {paidCards.map((mcard) => (
+                    <PaidMCardWithProducts key={mcard.id} mcard={mcard} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
