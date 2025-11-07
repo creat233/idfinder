@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
-import { MCardVerifiedBadge } from "@/components/mcards/MCardVerifiedBadge";
-import { MCardInteractionButtons } from "@/components/mcards/MCardInteractionButtons";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, Building, Eye, Heart, Search, Sparkles, TrendingUp, Home } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Heart, Search, Sparkles, TrendingUp, Home } from "lucide-react";
 import { getFavoriteCards } from "@/services/mcardInteractionService";
 import { MCard } from "@/types/mcard";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +12,8 @@ import { Loader2 } from "lucide-react";
 import { offlineStorage } from "@/services/offlineStorage";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { supabase } from "@/integrations/supabase/client";
+import { VerifiedMCardItem } from "@/components/verified/VerifiedMCardItem";
+import { PaidMCardWithProducts } from "@/components/verified/PaidMCardWithProducts";
 
 const MyFavorites = () => {
   const navigate = useNavigate();
@@ -84,6 +82,10 @@ const MyFavorites = () => {
       setFilteredFavorites(filtered);
     }
   }, [searchQuery, favorites]);
+
+  // Séparer les cartes gratuites et payantes
+  const freeCards = filteredFavorites.filter(mcard => mcard.plan === 'free');
+  const paidCards = filteredFavorites.filter(mcard => mcard.plan !== 'free');
 
   const handleCardClick = (slug: string) => {
     navigate(`/mcard/${slug}`);
@@ -219,109 +221,34 @@ const MyFavorites = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {filteredFavorites.map((mcard) => (
-              <Card 
-                key={mcard.id} 
-                className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer bg-card border-border overflow-hidden"
-                onClick={() => handleCardClick(mcard.slug)}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                
-                <CardHeader className="pb-3 relative">
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-border relative">
-                          <AvatarImage src={mcard.profile_picture_url || ''} />
-                          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                            {mcard.full_name?.charAt(0) || 'U'}
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base sm:text-lg text-foreground truncate">
-                          {mcard.full_name}
-                        </h3>
-                        {mcard.job_title && (
-                          <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                            {mcard.job_title}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
-                  </div>
-                  
-                  {mcard.company && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-                      <Building className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                      <span className="truncate">{mcard.company}</span>
-                    </div>
-                  )}
-                </CardHeader>
-                
-                <CardContent className="space-y-3 sm:space-y-4 relative">
-                  {/* Contact Info */}
-                  {(mcard.phone_number || mcard.email) && (
-                    <div className="space-y-2">
-                      {mcard.phone_number && (
-                        <div className="flex items-center gap-2 text-xs sm:text-sm bg-muted/30 rounded-lg px-3 py-2">
-                          <Phone className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-                          <span className="truncate text-foreground">{mcard.phone_number}</span>
-                        </div>
-                      )}
-                      {mcard.email && (
-                        <div className="flex items-center gap-2 text-xs sm:text-sm bg-muted/30 rounded-lg px-3 py-2">
-                          <Mail className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-                          <span className="truncate text-foreground">{mcard.email}</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+          <div className="space-y-12">
+            {/* Cartes gratuites - Format simple */}
+            {freeCards.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-foreground mb-6 px-2">
+                  Cartes Gratuites
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {freeCards.map((mcard) => (
+                    <VerifiedMCardItem key={mcard.id} mcard={mcard} />
+                  ))}
+                </div>
+              </div>
+            )}
 
-                  {/* Description */}
-                  {mcard.description && (
-                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                      {mcard.description}
-                    </p>
-                  )}
-
-                  {/* Plan Badge & Views */}
-                  <div className="flex items-center justify-between pt-2 border-t border-border">
-                    <Badge 
-                      variant={mcard.plan === 'premium' ? 'default' : 'outline'} 
-                      className="text-xs capitalize"
-                    >
-                      {mcard.plan === 'premium' ? (
-                        <>
-                          <Sparkles className="w-3 h-3 mr-1" />
-                          Premium
-                        </>
-                      ) : (
-                        'Essentiel'
-                      )}
-                    </Badge>
-                    
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>{mcard.view_count || 0}</span>
-                    </div>
-                  </div>
-
-                  {/* Interactions */}
-                  <div onClick={(e) => e.stopPropagation()} className="pt-2">
-                    <MCardInteractionButtons
-                      mcardId={mcard.id}
-                      mcardOwnerId={mcard.user_id}
-                      mcardOwnerName={mcard.full_name}
-                      className="justify-center"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {/* Cartes payantes - Avec produits/services */}
+            {paidCards.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-foreground mb-6 px-2">
+                  Professionnels Premium
+                </h2>
+                <div className="max-w-2xl mx-auto space-y-6">
+                  {paidCards.map((mcard) => (
+                    <PaidMCardWithProducts key={mcard.id} mcard={mcard} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
