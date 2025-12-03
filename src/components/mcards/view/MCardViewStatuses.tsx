@@ -65,8 +65,8 @@ export const MCardViewStatuses = ({
     currentProductsCount: 0 
   });
 
-  const isPaidPlan = mcardPlan === 'premium' || mcardPlan === 'essential' || mcardPlan === 'ultimate';
-  const isCardActive = subscriptionStatus === 'active';
+  const isPaidPlan = mcardPlan === 'premium' || mcardPlan === 'essential' || mcardPlan === 'ultimate' || mcardPlan === 'free';
+  const isCardActive = subscriptionStatus === 'active' || subscriptionStatus === 'trial';
   const canAddStatus = isOwner && isPaidPlan && isCardActive;
 
   const handleStatusClick = (status: MCardStatus) => {

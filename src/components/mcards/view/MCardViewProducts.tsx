@@ -61,8 +61,8 @@ export const MCardViewProducts = ({
     currentProductsCount: products.length 
   });
   
-  const isPaidPlan = mcardPlan === 'premium' || mcardPlan === 'essential' || mcardPlan === 'ultimate';
-  const isCardActive = subscriptionStatus === 'active';
+  const isPaidPlan = mcardPlan === 'premium' || mcardPlan === 'essential' || mcardPlan === 'ultimate' || mcardPlan === 'free';
+  const isCardActive = subscriptionStatus === 'active' || subscriptionStatus === 'trial';
   const canAddProduct = isOwner && isPaidPlan && isCardActive;
 
   const handleProductClick = (product: MCardProduct) => {
@@ -149,23 +149,23 @@ export const MCardViewProducts = ({
   const getActionButtonText = (category: string) => {
     switch (category.toLowerCase()) {
       case 'service':
-        return 'Contacte';
+        return 'Contacter';
       case 'produit':
-        return 'Achète';
+        return 'Acheter';
       case 'menu restaurant':
-        return 'Commende';
+        return 'Commander';
       case 'consultation':
         return 'Rendez-Vous';
       case 'formation':
         return 'S\'inscrire';
       case 'événement':
-        return 'Réserve';
+        return 'Réserver';
       case 'article':
-        return 'Lire';
+        return 'Contacter';
       case 'autre':
-        return 'Contacte';
+        return 'Contacter';
       default:
-        return 'Contacte';
+        return 'Contacter';
     }
   };
 
@@ -300,7 +300,7 @@ export const MCardViewProducts = ({
                   </div>
                   
                   {product.description && (
-                    <p className="text-sm text-gray-600 line-clamp-2">
+                    <p className="text-sm text-gray-600 line-clamp-3">
                       {product.description}
                     </p>
                   )}

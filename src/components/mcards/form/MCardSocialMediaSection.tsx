@@ -1,16 +1,26 @@
 
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { MCardFormData } from "./mcardFormSchema";
+import { MCardCustomSocialLinks } from "./MCardCustomSocialLinks";
 
 interface MCardSocialMediaSectionProps {
   register: UseFormRegister<MCardFormData>;
   errors: FieldErrors<MCardFormData>;
+  watch?: UseFormWatch<MCardFormData>;
+  setValue?: UseFormSetValue<MCardFormData>;
+  customSocialLinks?: { name: string; url: string }[];
+  onCustomSocialLinksChange?: (links: { name: string; url: string }[]) => void;
 }
 
-export const MCardSocialMediaSection = ({ register, errors }: MCardSocialMediaSectionProps) => {
+export const MCardSocialMediaSection = ({ 
+  register, 
+  errors,
+  customSocialLinks = [],
+  onCustomSocialLinksChange
+}: MCardSocialMediaSectionProps) => {
   return (
     <>
       <Separator />
@@ -79,6 +89,14 @@ export const MCardSocialMediaSection = ({ register, errors }: MCardSocialMediaSe
           {errors.maps_location_url && <p className="text-sm text-red-500">{errors.maps_location_url.message}</p>}
         </div>
       </div>
+
+      {/* Section pour ajouter des réseaux sociaux personnalisés */}
+      {onCustomSocialLinksChange && (
+        <MCardCustomSocialLinks
+          value={customSocialLinks}
+          onChange={onCustomSocialLinksChange}
+        />
+      )}
     </>
   );
 };

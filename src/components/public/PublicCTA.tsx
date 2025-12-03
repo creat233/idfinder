@@ -89,7 +89,7 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
             </div>
           )}
 
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="mt-12 grid grid-cols-3 gap-6 max-w-3xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold">+1000</div>
               <div className="text-purple-200">{t("cta_stats_documents_found")}</div>
@@ -101,10 +101,6 @@ export const PublicCTA = ({ user, isLoading }: PublicCTAProps) => {
             <div className="text-center">
               <div className="text-3xl font-bold">100%</div>
               <div className="text-purple-200">{t("cta_stats_secure")}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold">🇸🇳</div>
-              <div className="text-purple-200">{t("cta_stats_made_in_senegal")}</div>
             </div>
           </div>
         </motion.div>
