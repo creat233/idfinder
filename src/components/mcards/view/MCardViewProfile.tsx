@@ -60,6 +60,9 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
   };
 
   const handleSaveOffline = async () => {
+    // Détecter si Android pour utiliser une méthode alternative
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    
     // Générer le lien de la carte
     const mcardUrl = `${window.location.origin}/mcard/${mcard.slug}`;
     
@@ -69,7 +72,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       company: mcard.company || undefined,
       phone_number: mcard.phone_number || undefined,
       email: mcard.email || undefined,
-      website_url: mcardUrl, // Ajouter le lien de la carte comme URL principale
+      website_url: mcardUrl,
       profile_picture_url: mcard.profile_picture_url || undefined,
       linkedin_url: mcard.linkedin_url || undefined,
       twitter_url: mcard.twitter_url || undefined,
@@ -78,7 +81,41 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       note: `Carte digitale FinderID: ${mcardUrl}\n${mcard.description || ''}`,
     });
     
-    downloadVCard(vcard, mcard.full_name);
+    if (isAndroid) {
+      // Pour Android, créer un blob et utiliser l'API de partage si disponible
+      const blob = new Blob([vcard], { type: 'text/vcard' });
+      const file = new File([blob], `${mcard.full_name.replace(/\s+/g, '_')}.vcf`, { type: 'text/vcard' });
+      
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: `Contact ${mcard.full_name}`,
+            text: `Carte de visite de ${mcard.full_name}`
+          });
+          toast({
+            title: "Contact partagé",
+            description: "Choisissez où enregistrer le contact"
+          });
+          return;
+        } catch (err) {
+          console.log('Share failed, falling back to download');
+        }
+      }
+      
+      // Fallback: téléchargement direct
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${mcard.full_name.replace(/\s+/g, '_')}.vcf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } else {
+      // Pour iOS et autres
+      downloadVCard(vcard, mcard.full_name);
+    }
     
     toast({
       title: "Contact enregistré",

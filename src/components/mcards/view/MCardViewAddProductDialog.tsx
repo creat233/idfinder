@@ -99,6 +99,23 @@ export const MCardViewAddProductDialog = ({
     setIsSubmitting(true);
 
     try {
+      // Vérifier si le produit existe déjà (éviter les doublons)
+      const { data: existingProducts } = await supabase
+        .from('mcard_products')
+        .select('id, name')
+        .eq('mcard_id', mcardId)
+        .ilike('name', productName.trim());
+
+      if (existingProducts && existingProducts.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "Produit existant",
+          description: "Un produit avec ce nom existe déjà"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       let imageUrl = productImageUrl;
       
       if (productImage) {

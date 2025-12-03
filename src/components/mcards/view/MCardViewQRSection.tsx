@@ -75,15 +75,24 @@ export const MCardViewQRSection = ({ showQRCode, url, cardName, onClose }: MCard
         </div>
         
         <div className="flex flex-col items-center space-y-3 sm:space-y-4">
-          <div className="bg-white p-2 sm:p-3 md:p-4 rounded-lg border border-gray-200 mx-auto">
-            <QRCodeSVG
-              id="qrcode-svg"
-              value={qrUrl}
-              size={160}
-              level="M"
-              includeMargin={true}
-              className="w-full h-auto max-w-[160px] sm:max-w-[200px]"
-            />
+          {/* QR Code avec effet glace - noir et blanc classique */}
+          <div className="relative">
+            {/* Effet glace/ombre */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl transform translate-x-1 translate-y-1 blur-sm" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl" />
+            
+            <div className="relative bg-white p-3 sm:p-4 md:p-5 rounded-2xl border-2 border-gray-100 shadow-lg">
+              <QRCodeSVG
+                id="qrcode-svg"
+                value={qrUrl}
+                size={180}
+                level="H"
+                includeMargin={true}
+                fgColor="#000000"
+                bgColor="#FFFFFF"
+                className="w-full h-auto max-w-[180px] sm:max-w-[200px]"
+              />
+            </div>
           </div>
           
           <div className="text-center px-2">

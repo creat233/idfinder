@@ -96,6 +96,9 @@ export const NotificationsList = () => {
       if (notification.action_url) {
         navigate(notification.action_url);
       }
+    } else if (notification.type === 'mcard_subscription_activated') {
+      // Rediriger vers la page MCards pour voir la carte activée
+      navigate('/mcards');
     }
   };
 

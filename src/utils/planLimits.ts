@@ -1,8 +1,8 @@
 // Plan limits configuration
 export const PLAN_LIMITS = {
   free: {
-    maxStatuses: 0,
-    maxProducts: 0,
+    maxStatuses: 5,
+    maxProducts: 5,
     name: 'Gratuit'
   },
   essential: {
