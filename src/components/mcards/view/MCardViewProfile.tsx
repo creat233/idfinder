@@ -125,14 +125,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
   return (
     <div className="relative">
-      {/* Background décoratif */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-pink-600/5 rounded-3xl" />
-      <div className="absolute inset-0 opacity-10 rounded-3xl" style={{backgroundImage: "url('data:image/svg+xml;utf8,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><g fill=\"%236366f1\" fill-opacity=\"0.4\"><circle cx=\"30\" cy=\"30\" r=\"2\"/></g></g></svg>')"}} />
-      
-      <Card className="relative shadow-2xl border-0 bg-white/95 backdrop-blur-xl rounded-3xl overflow-hidden">
-        {/* Gradient border effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 rounded-3xl" />
-        <div className="absolute inset-[1px] bg-white rounded-3xl" />
+      <Card className="relative shadow-xl border border-gray-100 bg-white rounded-3xl overflow-hidden">
         
         <CardContent className="relative p-4 sm:p-6 lg:p-8">
           {/* Message d'avertissement pour carte en attente */}

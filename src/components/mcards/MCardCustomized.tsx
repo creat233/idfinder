@@ -51,23 +51,8 @@ export const MCardCustomized = ({ mcardId, children, className = '' }: MCardCust
 
   const styles = applyCustomizationToCard(customization);
   
-  // Créer les particules si activées
-  const particlesComponent = styles.particles ? (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 20 }).map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-2 h-2 bg-white/20 rounded-full animate-bounce"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 2}s`,
-            animationDuration: `${2 + Math.random() * 3}s`
-          }}
-        />
-      ))}
-    </div>
-  ) : null;
+  // Désactiver les particules pour éviter les artefacts visuels sur mobile
+  const particlesComponent = null;
 
   return (
     <div 
