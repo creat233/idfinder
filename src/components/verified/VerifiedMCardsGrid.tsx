@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MCard } from '@/types/mcard';
-import { VerifiedMCardItem } from './VerifiedMCardItem';
 import { PaidMCardWithProducts } from './PaidMCardWithProducts';
 
 interface VerifiedMCardsGridProps {
@@ -56,10 +55,6 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
     return matchesSearch && matchesCategory;
   });
 
-  // Séparer les cartes gratuites et payantes
-  const freeCards = filteredMCards.filter(mcard => mcard.plan === 'free');
-  const paidCards = filteredMCards.filter(mcard => mcard.plan !== 'free');
-
   if (loading) {
     return (
       <div className="px-4 py-8">
@@ -85,34 +80,10 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
             </div>
           </div>
         ) : (
-          <div className="space-y-12">
-            {/* Cartes gratuites - Format simple */}
-            {freeCards.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-6 px-2">
-                  Cartes Gratuites
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {freeCards.map((mcard) => (
-                    <VerifiedMCardItem key={mcard.id} mcard={mcard} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Cartes payantes - Avec produits/services */}
-            {paidCards.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-6 px-2">
-                  Professionnels Premium
-                </h2>
-                <div className="max-w-2xl mx-auto space-y-6">
-                  {paidCards.map((mcard) => (
-                    <PaidMCardWithProducts key={mcard.id} mcard={mcard} />
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="max-w-lg mx-auto space-y-6">
+            {filteredMCards.map((mcard) => (
+              <PaidMCardWithProducts key={mcard.id} mcard={mcard} />
+            ))}
           </div>
         )}
       </div>
