@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNavigate } from 'react-router-dom';
 import { MCardInteractionButtons } from '@/components/mcards/MCardInteractionButtons';
 import { ImageWithFallback } from './ImageWithFallback';
-import { MCardComments } from './MCardComments';
 
 interface PaidMCardWithProductsProps {
   mcard: MCard;
@@ -26,7 +25,7 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
     if (products.length > 1) {
       const interval = setInterval(() => {
         setCurrentProductIndex((prev) => (prev + 1) % products.length);
-      }, 3000);
+      }, 4000);
       return () => clearInterval(interval);
     }
   }, [products.length]);
@@ -71,30 +70,24 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
   const currentProduct = products[currentProductIndex];
 
   return (
-    <div className="relative w-full bg-slate-900/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 mb-6">
-      {/* En-tête de la carte */}
+    <div className="relative w-full bg-slate-950 rounded-2xl overflow-hidden">
+      {/* En-tête compact avec avatar et nom */}
       <div 
-        className="flex items-center gap-3 p-4 cursor-pointer hover:bg-white/5 transition-colors"
+        className="flex items-center gap-3 p-3 cursor-pointer"
         onClick={handleNavigateToMCard}
       >
-        <Avatar className="h-12 w-12 border-2 border-purple-400/50">
+        <Avatar className="h-10 w-10 border-2 border-blue-400/50">
           <AvatarImage src={mcard.profile_picture_url || ''} />
-          <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-bold">
+          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold text-sm">
             {mcard.full_name?.charAt(0) || '?'}
           </AvatarFallback>
         </Avatar>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-white text-base truncate">
-            {mcard.full_name}
-          </h3>
-          <p className="text-sm text-white/60 truncate">
-            {mcard.job_title}
-            {mcard.company && ` • ${mcard.company}`}
-          </p>
-        </div>
+        <span className="text-white/80 text-sm font-medium">
+          @{mcard.slug}
+        </span>
       </div>
 
-      {/* Image du produit */}
+      {/* Image du produit avec boutons sur le côté */}
       <div className="relative aspect-square bg-black">
         <ImageWithFallback
           src={currentProduct.image_url || ''}
@@ -110,73 +103,50 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
                 e.stopPropagation();
                 handlePrevProduct();
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1.5 rounded-full transition-colors z-10"
             >
-              <ChevronLeft className="h-6 w-6" />
+              <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleNextProduct();
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+              className="absolute right-14 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1.5 rounded-full transition-colors z-10"
             >
-              <ChevronRight className="h-6 w-6" />
+              <ChevronRight className="h-5 w-5" />
             </button>
-
-            {/* Indicateurs de progression */}
-            <div className="absolute top-2 left-0 right-0 flex gap-1 px-2">
-              {products.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-0.5 flex-1 rounded-full transition-all duration-300 ${
-                    index === currentProductIndex
-                      ? 'bg-white'
-                      : 'bg-white/30'
-                  }`}
-                />
-              ))}
-            </div>
           </>
         )}
-      </div>
 
-      {/* Boutons d'interaction */}
-      <div className="px-4 py-3">
-        <MCardInteractionButtons
-          mcardId={mcard.id}
-          mcardOwnerId={mcard.user_id}
-          mcardOwnerName={mcard.full_name}
-        />
-      </div>
-
-      {/* Informations du produit */}
-      <div className="px-4 pb-4 space-y-2">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-white text-lg truncate">
-              {currentProduct.name}
-            </h4>
-            {currentProduct.description && (
-              <p className="text-sm text-white/70 line-clamp-2 mt-1">
-                {currentProduct.description}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col items-end flex-shrink-0">
-            <span className="text-lg font-bold text-green-400">
-              {currentProduct.price.toLocaleString()} {currentProduct.currency}
-            </span>
-            <span className="text-xs text-white/50 bg-purple-500/20 px-2 py-1 rounded">
-              {currentProduct.category}
-            </span>
-          </div>
+        {/* Boutons d'interaction sur le côté droit */}
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+          <MCardInteractionButtons
+            mcardId={mcard.id}
+            mcardOwnerId={mcard.user_id}
+            mcardOwnerName={mcard.full_name}
+          />
         </div>
       </div>
 
-      {/* Section commentaires */}
-      <div className="px-4 pb-4">
-        <MCardComments mcardId={mcard.id} mcardOwnerName={mcard.full_name} />
+      {/* Informations du produit en bas */}
+      <div className="p-4 space-y-2">
+        <h4 className="font-bold text-white text-lg">
+          {currentProduct.name}
+        </h4>
+        {currentProduct.description && (
+          <p className="text-sm text-white/60">
+            Disponible
+          </p>
+        )}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs text-white/70 bg-white/10 px-3 py-1 rounded-full">
+            #{currentProduct.category.toLowerCase()}
+          </span>
+          <span className="text-sm font-bold text-white bg-green-500 px-3 py-1 rounded-full">
+            {currentProduct.price.toLocaleString()} {currentProduct.currency}
+          </span>
+        </div>
       </div>
     </div>
   );
