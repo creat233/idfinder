@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Search, Filter, Package } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Search, Filter, Package, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { MCardProduct } from '@/types/mcard';
 import { ProductImageModal } from '@/components/mcards/view/ProductImageModal';
+import { MCardContactDialog } from '@/components/mcards/messaging/MCardContactDialog';
 
 const AllMCardProducts = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { products = [], mcardId = '', ownerName = '' } = location.state || {};
+  const { products = [], mcardId = '', ownerName = '', ownerUserId = '' } = location.state || {};
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [filteredProducts, setFilteredProducts] = useState<MCardProduct[]>(products);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [contactContext, setContactContext] = useState<{ type: 'product'; title: string } | undefined>();
 
   // Filtrer les produits
   useEffect(() => {
@@ -43,9 +46,12 @@ const AllMCardProducts = () => {
   const uniqueCategories = Array.from(new Set((products as MCardProduct[]).map((p: MCardProduct) => p.category))) as string[];
   const categories: string[] = ['all', ...uniqueCategories];
 
-  const handleProductClick = (product: MCardProduct) => {
-    // Navigation vers les détails ou autre action
-    console.log('Product clicked:', product);
+  const handleContactClick = (product: MCardProduct) => {
+    setContactContext({
+      type: 'product',
+      title: product.name
+    });
+    setIsContactDialogOpen(true);
   };
 
   return (
@@ -195,25 +201,14 @@ const AllMCardProducts = () => {
                       <ShoppingCart className="h-5 w-5 text-green-500" />
                     </div>
 
-                    {/* Boutons d'action */}
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => handleProductClick(product)}
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        Voir détails
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          // TODO: Ouvrir dialog de contact
-                          console.log('Contact for product:', product);
-                        }}
-                        className="flex-1 bg-primary hover:bg-primary/90"
-                      >
-                        Contacter
-                      </Button>
-                    </div>
+                    {/* Bouton Contacter */}
+                    <Button
+                      onClick={() => handleContactClick(product)}
+                      className="w-full bg-primary hover:bg-primary/90 gap-2"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      Contacter
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -221,6 +216,18 @@ const AllMCardProducts = () => {
           </div>
         )}
       </div>
+
+      {/* Dialog de contact */}
+      {ownerUserId && ownerName && (
+        <MCardContactDialog
+          isOpen={isContactDialogOpen}
+          onClose={() => setIsContactDialogOpen(false)}
+          mcardId={mcardId}
+          mcardOwnerName={ownerName}
+          recipientId={ownerUserId}
+          context={contactContext}
+        />
+      )}
     </div>
   );
 };

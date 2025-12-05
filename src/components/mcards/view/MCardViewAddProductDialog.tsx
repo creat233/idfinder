@@ -28,6 +28,7 @@ const PRODUCT_CATEGORIES = [
   'Événement',
   'Offre d\'emploi',
   'Santé et beauté',
+  'Location',
   'Autre'
 ];
 

@@ -97,7 +97,18 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onGetStarte
               >
                 {t('login')}
               </Button>
-              {/* Bouton Signaler masqué */}
+              <Button 
+                onClick={() => { navigate("/#tarifs"); onClose(); }}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+              >
+                📋 Voir les abonnements MCard
+              </Button>
+              <Button 
+                onClick={() => { navigate("/login"); onClose(); }}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white"
+              >
+                ✨ Créer ma carte
+              </Button>
             </>
           )}
         </div>
