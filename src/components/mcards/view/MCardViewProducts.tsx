@@ -185,7 +185,7 @@ export const MCardViewProducts = ({
                 variant="outline"
                 onClick={() => {
                   navigate(`all-products`, {
-                    state: { products: activeProducts, mcardId, ownerName: mcardOwnerName || '' }
+                    state: { products: activeProducts, mcardId, ownerName: mcardOwnerName || '', ownerUserId: mcardOwnerUserId || '' }
                   });
                 }}
                 className="text-purple-600 border-purple-600 hover:bg-purple-50"
