@@ -1687,6 +1687,12 @@ export type Database = {
           success: boolean
         }[]
       }
+      update_expired_mcards: {
+        Args: never
+        Returns: {
+          updated_count: number
+        }[]
+      }
       validate_password_strength: {
         Args: { password: string }
         Returns: boolean
