@@ -5,41 +5,39 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const mcardExpirationService = {
   /**
-   * Vérifie et met à jour le statut des MCards expirées
+   * Vérifie et met à jour le statut des MCards expirées via la fonction RPC
    */
-  async checkAndUpdateExpiredMCards(): Promise<void> {
+  async checkAndUpdateExpiredMCards(): Promise<number> {
     try {
       console.log('🔍 Vérification des MCards expirées...');
       
-      // Mettre à jour les cartes dont la date d'expiration est passée
-      // et qui ont encore le statut 'active' ou 'trial'
-      const { error: updateError, data } = await supabase
-        .from('mcards')
-        .update({ subscription_status: 'expired' })
-        .lt('subscription_expires_at', new Date().toISOString())
-        .in('subscription_status', ['active', 'trial'])
-        .select();
+      // Utiliser la fonction RPC pour mettre à jour les cartes expirées
+      const { data, error } = await supabase.rpc('update_expired_mcards');
       
-      if (updateError) {
-        console.error('❌ Erreur lors de la mise à jour des MCards expirées:', updateError);
-      } else {
-        const count = data?.length || 0;
-        if (count > 0) {
-          console.log(`✅ ${count} MCard(s) expirée(s) mise(s) à jour avec succès`);
-        } else {
-          console.log('✅ Aucune MCard expirée à mettre à jour');
-        }
+      if (error) {
+        console.error('❌ Erreur lors de la mise à jour des MCards expirées:', error);
+        return 0;
       }
+      
+      const count = data?.[0]?.updated_count || 0;
+      if (count > 0) {
+        console.log(`✅ ${count} MCard(s) expirée(s) mise(s) à jour avec succès`);
+      } else {
+        console.log('✅ Aucune MCard expirée à mettre à jour');
+      }
+      
+      return count;
     } catch (error) {
       console.error('❌ Erreur inattendue lors de la vérification des expirations:', error);
+      return 0;
     }
   },
 
   /**
    * Démarre la vérification périodique des MCards expirées
-   * @param intervalMinutes - Intervalle en minutes entre chaque vérification (par défaut: 60 minutes)
+   * @param intervalMinutes - Intervalle en minutes entre chaque vérification (par défaut: 30 minutes)
    */
-  startPeriodicCheck(intervalMinutes: number = 60): NodeJS.Timeout {
+  startPeriodicCheck(intervalMinutes: number = 30): NodeJS.Timeout {
     console.log(`🕐 Démarrage de la vérification périodique (toutes les ${intervalMinutes} minutes)`);
     
     // Vérification immédiate
