@@ -1,10 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Search } from "lucide-react";
-import { formatMessageDate } from "@/utils/dateUtils";
 import { Conversation } from "@/types/messages";
 import { supabase } from "@/integrations/supabase/client";
+import { AutoReplySettingsDialog } from "./AutoReplySettings";
 
 interface ConversationsListProps {
   conversations: Conversation[];
@@ -33,16 +32,19 @@ export function ConversationsList({
   return (
     <Card className="h-full flex flex-col overflow-hidden">
       <CardContent className="p-0 flex flex-col h-full overflow-hidden">
-        {/* Barre de recherche */}
+        {/* Header avec recherche et paramètres */}
         <div className="p-4 border-b flex-shrink-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Rechercher une conversation..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10"
-            />
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Rechercher une conversation..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <AutoReplySettingsDialog userId={currentUserId} />
           </div>
         </div>
 
