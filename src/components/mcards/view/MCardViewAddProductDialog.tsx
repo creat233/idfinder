@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { createProductNotification } from '@/services/mcardNotificationService';
+import { X, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface MCardViewAddProductDialogProps {
   isOpen: boolean;
@@ -38,6 +39,8 @@ const CURRENCIES = [
   { code: 'USD', symbol: '$' },
 ];
 
+const MAX_IMAGES = 6;
+
 export const MCardViewAddProductDialog = ({ 
   isOpen, 
   onClose, 
@@ -50,13 +53,15 @@ export const MCardViewAddProductDialog = ({
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Service');
   const [currency, setCurrency] = useState('FCFA');
-  const [productImage, setProductImage] = useState<File | null>(null);
-  const [productImageUrl, setProductImageUrl] = useState('');
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const uploadProductImage = async (file: File): Promise<string | null> => {
-    const fileName = `${mcardId}-product-${Date.now()}.${file.name.split('.').pop()}`;
+    const fileName = `${mcardId}-product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${file.name.split('.').pop()}`;
     const filePath = `product-images/${fileName}`;
 
     const { error } = await supabase.storage
@@ -73,6 +78,42 @@ export const MCardViewAddProductDialog = ({
       .getPublicUrl(filePath);
 
     return data.publicUrl;
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      const remainingSlots = MAX_IMAGES - productImages.length;
+      
+      if (newFiles.length > remainingSlots) {
+        toast({
+          variant: "destructive",
+          title: "Limite atteinte",
+          description: `Vous ne pouvez ajouter que ${remainingSlots} image(s) supplémentaire(s)`
+        });
+      }
+      
+      const filesToAdd = newFiles.slice(0, remainingSlots);
+      setProductImages(prev => [...prev, ...filesToAdd]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setProductImages(prev => prev.filter((_, i) => i !== index));
+    if (currentImageIndex >= productImages.length - 1 && currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
+  const scrollToImage = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = 100;
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,33 +158,16 @@ export const MCardViewAddProductDialog = ({
         return;
       }
 
-      let imageUrl = productImageUrl;
-      
-      if (productImage) {
-        const uploadedUrl = await uploadProductImage(productImage);
+      // Upload toutes les images
+      const uploadedUrls: string[] = [];
+      for (const file of productImages) {
+        const uploadedUrl = await uploadProductImage(file);
         if (uploadedUrl) {
-          imageUrl = uploadedUrl;
+          uploadedUrls.push(uploadedUrl);
         }
       }
 
-      // Optimistic update - add immediately to UI
-      const tempProduct = {
-        id: `temp-${Date.now()}`,
-        mcard_id: mcardId,
-        name: productName.trim(),
-        description: description.trim() || null,
-        price: numericPrice,
-        category,
-        currency,
-        image_url: imageUrl || null,
-        is_active: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      if (onOptimisticProductAdd) {
-        onOptimisticProductAdd(tempProduct);
-      }
+      const mainImageUrl = uploadedUrls[0] || null;
 
       const { error } = await supabase
         .from('mcard_products')
@@ -154,7 +178,8 @@ export const MCardViewAddProductDialog = ({
           price: numericPrice,
           category,
           currency,
-          image_url: imageUrl || null,
+          image_url: mainImageUrl,
+          image_urls: uploadedUrls.length > 0 ? uploadedUrls : []
         });
 
       if (error) {
@@ -187,8 +212,9 @@ export const MCardViewAddProductDialog = ({
       setPrice('');
       setCategory('Service');
       setCurrency('FCFA');
-      setProductImage(null);
-      setProductImageUrl('');
+      setProductImages([]);
+      setImageUrls([]);
+      setCurrentImageIndex(0);
     } catch (error: any) {
       console.error('Error adding product:', error);
       toast({
@@ -201,12 +227,7 @@ export const MCardViewAddProductDialog = ({
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setProductImage(e.target.files[0]);
-      setProductImageUrl('');
-    }
-  };
+  const imagePreviews = productImages.map(file => URL.createObjectURL(file));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -285,28 +306,81 @@ export const MCardViewAddProductDialog = ({
             </Select>
           </div>
 
+          {/* Multi-image upload section */}
           <div>
-            <Label htmlFor="productImage">Image (optionnel)</Label>
-            <div className="mt-2">
-              <Input
-                id="productImage"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="mb-2"
-              />
-              {productImageUrl && (
-                <div className="text-sm text-gray-600">
-                  Ou URL de l'image:
-                  <Input
-                    value={productImageUrl}
-                    onChange={(e) => setProductImageUrl(e.target.value)}
-                    placeholder="https://..."
-                    className="mt-1"
-                  />
+            <Label>Images ({productImages.length}/{MAX_IMAGES})</Label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Ajoutez jusqu'à {MAX_IMAGES} images. Glissez pour naviguer.
+            </p>
+            
+            {imagePreviews.length > 0 && (
+              <div className="relative mb-3">
+                <div 
+                  ref={scrollContainerRef}
+                  className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+                  style={{ scrollSnapType: 'x mandatory' }}
+                >
+                  {imagePreviews.map((preview, index) => (
+                    <div 
+                      key={index}
+                      className="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border border-border"
+                      style={{ scrollSnapAlign: 'start' }}
+                    >
+                      <img 
+                        src={preview} 
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                      <span className="absolute bottom-1 left-1 bg-black/60 text-white text-xs px-1 rounded">
+                        {index + 1}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
+                
+                {imagePreviews.length > 3 && (
+                  <div className="flex justify-center gap-2 mt-2">
+                    <button
+                      type="button"
+                      onClick={() => scrollToImage('left')}
+                      className="p-1 bg-muted rounded-full hover:bg-muted/80"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => scrollToImage('right')}
+                      className="p-1 bg-muted rounded-full hover:bg-muted/80"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {productImages.length < MAX_IMAGES && (
+              <label className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                <Plus className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
+                  Ajouter {productImages.length === 0 ? 'des images' : 'plus d\'images'}
+                </span>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
