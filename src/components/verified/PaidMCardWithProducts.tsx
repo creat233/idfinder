@@ -116,7 +116,7 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
           </AvatarFallback>
         </Avatar>
         <span className="text-white/80 text-sm font-medium">
-          @{mcard.slug}
+          {mcard.company || mcard.full_name}
         </span>
       </div>
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Conversation, ProcessedMessage } from "@/types/messages";
-import { getAutoReplyMessage, sendAutoReply } from "@/services/autoReplyService";
+
 
 export const useConversations = (user: any) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -191,19 +191,6 @@ export const useConversations = (user: any) => {
             
             const isRelevant = newMessage && (newMessage.sender_id === user.id || newMessage.recipient_id === user.id);
             const wasRelevant = oldMessage && (oldMessage.sender_id === user.id || oldMessage.recipient_id === user.id);
-            
-            // Si c'est un nouveau message reçu, vérifier l'auto-réponse
-            if (payload.eventType === 'INSERT' && newMessage && newMessage.recipient_id === user.id) {
-              const autoReplyMessage = getAutoReplyMessage(user.id);
-              if (autoReplyMessage && newMessage.subject !== '[Auto-réponse]') {
-                await sendAutoReply(
-                  user.id,
-                  newMessage.sender_id,
-                  newMessage.mcard_id,
-                  autoReplyMessage
-                );
-              }
-            }
             
             if (isRelevant || wasRelevant) {
               console.log('Rechargement des conversations après mise à jour');

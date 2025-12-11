@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getAutoReplyMessage, sendAutoReply } from "@/services/autoReplyService";
 
 interface MCardMessageDialogProps {
   isOpen: boolean;
@@ -86,6 +86,13 @@ export const MCardMessageDialog = ({
       }
 
       console.log('✅ Message envoyé avec succès:', data);
+
+      // Vérifier et envoyer l'auto-réponse si activée pour le destinataire
+      const autoReplyMessage = getAutoReplyMessage(recipientId);
+      if (autoReplyMessage) {
+        console.log('🔄 Auto-réponse activée, envoi...');
+        await sendAutoReply(recipientId, user.id, mcardId, autoReplyMessage);
+      }
 
       toast({
         title: "✅ Message envoyé !",
