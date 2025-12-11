@@ -599,6 +599,7 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          image_urls: string[] | null
           is_active: boolean
           is_pinned: boolean
           mcard_id: string
@@ -613,6 +614,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[] | null
           is_active?: boolean
           is_pinned?: boolean
           mcard_id: string
@@ -627,6 +629,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[] | null
           is_active?: boolean
           is_pinned?: boolean
           mcard_id?: string
