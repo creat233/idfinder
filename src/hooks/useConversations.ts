@@ -3,11 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Conversation, ProcessedMessage } from "@/types/messages";
 
-
 export const useConversations = (user: any) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
   const loadConversations = async () => {
     if (!user) return;
     
@@ -184,11 +184,13 @@ export const useConversations = (user: any) => {
             schema: 'public',
             table: 'mcard_messages'
           },
-          async (payload) => {
+          (payload) => {
             console.log('Message update:', payload);
+            // Recharger seulement si l'utilisateur est concerné par ce message
             const newMessage = payload.new as any;
             const oldMessage = payload.old as any;
             
+            // Vérifier si l'update concerne l'utilisateur actuel
             const isRelevant = newMessage && (newMessage.sender_id === user.id || newMessage.recipient_id === user.id);
             const wasRelevant = oldMessage && (oldMessage.sender_id === user.id || oldMessage.recipient_id === user.id);
             

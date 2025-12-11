@@ -39,26 +39,21 @@ export const VerifiedMCardsGrid = ({ searchQuery, selectedCategory }: VerifiedMC
     }
   };
 
-  // Dédupliquer les cartes par ID et filtrer selon la recherche et la catégorie
-  const filteredMCards = mcards
-    .filter((mcard, index, self) => 
-      // Dédupliquer par ID
-      index === self.findIndex(m => m.id === mcard.id)
-    )
-    .filter(mcard => {
-      const matchesSearch = !searchQuery || 
-        mcard.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mcard.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mcard.job_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mcard.description?.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filtrer les cartes selon la recherche et la catégorie
+  const filteredMCards = mcards.filter(mcard => {
+    const matchesSearch = !searchQuery || 
+      mcard.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      mcard.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      mcard.job_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      mcard.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesCategory = selectedCategory === 'all' || 
-        mcard.job_title?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-        mcard.company?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-        mcard.description?.toLowerCase().includes(selectedCategory.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || 
+      mcard.job_title?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      mcard.company?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      mcard.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchesSearch && matchesCategory;
-    });
+    return matchesSearch && matchesCategory;
+  });
 
   if (loading) {
     return (

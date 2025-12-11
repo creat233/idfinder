@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MCard, MCardProduct } from '@/types/mcard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -15,9 +15,7 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
   const navigate = useNavigate();
   const [products, setProducts] = useState<MCardProduct[]>([]);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const imageScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadProducts();
@@ -27,7 +25,6 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
     if (products.length > 1) {
       const interval = setInterval(() => {
         setCurrentProductIndex((prev) => (prev + 1) % products.length);
-        setCurrentImageIndex(0); // Reset image index when product changes
       }, 4000);
       return () => clearInterval(interval);
     }
@@ -56,42 +53,14 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
     setCurrentProductIndex((prev) => 
       prev === 0 ? products.length - 1 : prev - 1
     );
-    setCurrentImageIndex(0);
   };
 
   const handleNextProduct = () => {
     setCurrentProductIndex((prev) => (prev + 1) % products.length);
-    setCurrentImageIndex(0);
   };
 
   const handleNavigateToMCard = () => {
     navigate(`/mcard/${mcard.slug}`);
-  };
-
-  // Get all images for current product
-  const getCurrentProductImages = (): string[] => {
-    const product = products[currentProductIndex];
-    if (!product) return [];
-    
-    const images: string[] = [];
-    if (product.image_urls && product.image_urls.length > 0) {
-      images.push(...product.image_urls);
-    } else if (product.image_url) {
-      images.push(product.image_url);
-    }
-    return images;
-  };
-
-  const handlePrevImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const images = getCurrentProductImages();
-    setCurrentImageIndex((prev) => prev === 0 ? images.length - 1 : prev - 1);
-  };
-
-  const handleNextImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const images = getCurrentProductImages();
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
   if (loading || products.length === 0) {
@@ -99,8 +68,6 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
   }
 
   const currentProduct = products[currentProductIndex];
-  const productImages = getCurrentProductImages();
-  const currentImageUrl = productImages[currentImageIndex] || currentProduct.image_url || '';
 
   return (
     <div className="relative w-full bg-slate-950 rounded-2xl overflow-hidden">
@@ -116,52 +83,20 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
           </AvatarFallback>
         </Avatar>
         <span className="text-white/80 text-sm font-medium">
-          {mcard.company || mcard.full_name}
+          @{mcard.slug}
         </span>
       </div>
 
       {/* Image du produit avec boutons sur le côté */}
       <div className="relative aspect-square bg-black">
         <ImageWithFallback
-          src={currentImageUrl}
+          src={currentProduct.image_url || ''}
           alt={currentProduct.name}
           className="w-full h-full object-cover"
         />
 
-        {/* Indicateurs d'images multiples */}
-        {productImages.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-            {productImages.map((_, idx) => (
-              <div
-                key={idx}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  idx === currentImageIndex ? 'bg-white' : 'bg-white/40'
-                }`}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Navigation images (swipe gauche/droite) */}
-        {productImages.length > 1 && (
-          <>
-            <button
-              onClick={handlePrevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1.5 rounded-full transition-colors z-10"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={handleNextImage}
-              className="absolute right-14 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1.5 rounded-full transition-colors z-10"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </>
-        )}
-
-        {/* Navigation produits (si plusieurs produits et une seule image) */}
-        {products.length > 1 && productImages.length <= 1 && (
+        {/* Contrôles de navigation */}
+        {products.length > 1 && (
           <>
             <button
               onClick={(e) => {
@@ -192,13 +127,6 @@ export const PaidMCardWithProducts = ({ mcard }: PaidMCardWithProductsProps) => 
             mcardOwnerName={mcard.full_name}
           />
         </div>
-
-        {/* Indicateur de produit (si multi-produits) */}
-        {products.length > 1 && (
-          <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full z-10">
-            {currentProductIndex + 1}/{products.length}
-          </div>
-        )}
       </div>
 
       {/* Informations du produit en bas */}
