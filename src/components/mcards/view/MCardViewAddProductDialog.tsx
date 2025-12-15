@@ -15,6 +15,7 @@ interface MCardViewAddProductDialogProps {
   isOpen: boolean;
   onClose: () => void;
   mcardId: string;
+  mcardPlan?: string;
   onProductAdded: () => void;
   onOptimisticProductAdd?: (product: any) => void;
 }
@@ -39,15 +40,19 @@ const CURRENCIES = [
   { code: 'USD', symbol: '$' },
 ];
 
-const MAX_IMAGES = 6;
+const getMaxImages = (plan: string): number => {
+  return plan === 'free' ? 3 : 6;
+};
 
 export const MCardViewAddProductDialog = ({ 
   isOpen, 
   onClose, 
   mcardId, 
+  mcardPlan = 'free',
   onProductAdded,
   onOptimisticProductAdd 
 }: MCardViewAddProductDialogProps) => {
+  const maxImages = getMaxImages(mcardPlan);
   const [productName, setProductName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -83,7 +88,7 @@ export const MCardViewAddProductDialog = ({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      const remainingSlots = MAX_IMAGES - productImages.length;
+      const remainingSlots = maxImages - productImages.length;
       
       if (newFiles.length > remainingSlots) {
         toast({
@@ -308,9 +313,9 @@ export const MCardViewAddProductDialog = ({
 
           {/* Multi-image upload section */}
           <div>
-            <Label>Images ({productImages.length}/{MAX_IMAGES})</Label>
+            <Label>Images ({productImages.length}/{maxImages})</Label>
             <p className="text-xs text-muted-foreground mb-2">
-              Ajoutez jusqu'à {MAX_IMAGES} images. Glissez pour naviguer.
+              Ajoutez jusqu'à {maxImages} images. Glissez pour naviguer.
             </p>
             
             {imagePreviews.length > 0 && (
@@ -366,7 +371,7 @@ export const MCardViewAddProductDialog = ({
               </div>
             )}
 
-            {productImages.length < MAX_IMAGES && (
+            {productImages.length < maxImages && (
               <label className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                 <Plus className="h-5 w-5 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">

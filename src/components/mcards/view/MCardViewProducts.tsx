@@ -384,6 +384,7 @@ export const MCardViewProducts = ({
           isOpen={isAddDialogOpen}
           onClose={() => setIsAddDialogOpen(false)}
           mcardId={mcardId}
+          mcardPlan={mcardPlan}
           onProductAdded={handleProductAdded}
           onOptimisticProductAdd={onOptimisticProductAdd}
         />
