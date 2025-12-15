@@ -13,8 +13,8 @@ export const pricingPlans = [
       'Informations de contact',
       'Réseaux sociaux',
       'Partage via QR code et lien',
-      '5 produits/services maximum',
-      '5 statuts maximum',
+      '3 produits/services maximum',
+      '2 statuts maximum',
       'Aucune facture'
     ],
     isPopular: false,
