@@ -11,8 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Settings, MessageSquareText } from "lucide-react";
+import { Settings, MessageSquareText, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AutoReplySettings {
   enabled: boolean;
@@ -54,6 +55,8 @@ interface AutoReplySettingsProps {
 
 export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<AutoReplySettings>({
     enabled: false,
     selectedMessage: "vacation",
@@ -61,27 +64,74 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
   });
   const { toast } = useToast();
 
-  // Charger les paramètres depuis localStorage
+  // Charger les paramètres depuis Supabase
   useEffect(() => {
-    const savedSettings = localStorage.getItem(`autoReply_${userId}`);
-    if (savedSettings) {
+    const loadSettings = async () => {
+      if (!userId) return;
+      
+      setLoading(true);
       try {
-        setSettings(JSON.parse(savedSettings));
+        const { data, error } = await supabase
+          .from('auto_reply_settings')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error("Erreur chargement paramètres auto-réponse:", error);
+        }
+
+        if (data) {
+          setSettings({
+            enabled: data.enabled,
+            selectedMessage: data.selected_message,
+            customMessage: data.custom_message || ""
+          });
+        }
       } catch (error) {
         console.error("Erreur chargement paramètres auto-réponse:", error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    loadSettings();
   }, [userId]);
 
-  const handleSave = () => {
-    localStorage.setItem(`autoReply_${userId}`, JSON.stringify(settings));
-    toast({
-      title: "Paramètres enregistrés",
-      description: settings.enabled 
-        ? "Les messages d'absence automatique sont activés"
-        : "Les messages d'absence automatique sont désactivés"
-    });
-    setOpen(false);
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('auto_reply_settings')
+        .upsert({
+          user_id: userId,
+          enabled: settings.enabled,
+          selected_message: settings.selectedMessage,
+          custom_message: settings.customMessage || null,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Paramètres enregistrés",
+        description: settings.enabled 
+          ? "Les messages d'absence automatique sont activés. Ils fonctionneront même si vous êtes déconnecté."
+          : "Les messages d'absence automatique sont désactivés"
+      });
+      setOpen(false);
+    } catch (error) {
+      console.error("Erreur sauvegarde paramètres:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de sauvegarder les paramètres"
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const getCurrentMessage = () => {
@@ -114,100 +164,122 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          {/* Activation */}
-          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-            <div className="space-y-0.5">
-              <Label htmlFor="auto-reply-toggle" className="font-medium">
-                Activer les réponses automatiques
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Envoyer un message automatique quand vous êtes absent
-              </p>
-            </div>
-            <Switch
-              id="auto-reply-toggle"
-              checked={settings.enabled}
-              onCheckedChange={(enabled) => 
-                setSettings(prev => ({ ...prev, enabled }))
-              }
-            />
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
-
-          {/* Sélection du message */}
-          <div className={`space-y-3 ${!settings.enabled ? 'opacity-50 pointer-events-none' : ''}`}>
-            <Label className="font-medium">Choisir un message</Label>
-            <RadioGroup
-              value={settings.selectedMessage}
-              onValueChange={(value) => 
-                setSettings(prev => ({ ...prev, selectedMessage: value }))
-              }
-              className="space-y-2"
-            >
-              {PREDEFINED_MESSAGES.map((msg) => (
-                <div 
-                  key={msg.id}
-                  className={`flex items-start space-x-3 p-3 rounded-lg border transition-colors ${
-                    settings.selectedMessage === msg.id 
-                      ? 'border-primary bg-primary/5' 
-                      : 'border-border hover:bg-muted/50'
-                  }`}
-                >
-                  <RadioGroupItem value={msg.id} id={msg.id} className="mt-1" />
-                  <div className="flex-1 space-y-1">
-                    <Label htmlFor={msg.id} className="font-medium cursor-pointer">
-                      {msg.label}
-                    </Label>
-                    {msg.message && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {msg.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-
-          {/* Message personnalisé */}
-          {settings.selectedMessage === "custom" && settings.enabled && (
-            <div className="space-y-2">
-              <Label htmlFor="custom-message" className="font-medium">
-                Votre message personnalisé
-              </Label>
-              <Textarea
-                id="custom-message"
-                placeholder="Écrivez votre message d'absence personnalisé..."
-                value={settings.customMessage}
-                onChange={(e) => 
-                  setSettings(prev => ({ ...prev, customMessage: e.target.value }))
-                }
-                className="min-h-[120px] resize-none"
-                maxLength={500}
-              />
-              <p className="text-xs text-muted-foreground text-right">
-                {settings.customMessage.length}/500 caractères
-              </p>
-            </div>
-          )}
-
-          {/* Aperçu */}
-          {settings.enabled && getCurrentMessage() && (
-            <div className="space-y-2">
-              <Label className="font-medium">Aperçu du message</Label>
-              <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-100">
-                <p className="text-sm text-gray-700 italic">
-                  "{getCurrentMessage()}"
+        ) : (
+          <div className="space-y-6 py-4">
+            {/* Activation */}
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <div className="space-y-0.5">
+                <Label htmlFor="auto-reply-toggle" className="font-medium">
+                  Activer les réponses automatiques
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Envoyer un message automatique quand vous êtes absent
                 </p>
               </div>
+              <Switch
+                id="auto-reply-toggle"
+                checked={settings.enabled}
+                onCheckedChange={(enabled) => 
+                  setSettings(prev => ({ ...prev, enabled }))
+                }
+              />
             </div>
-          )}
 
-          {/* Bouton sauvegarder */}
-          <Button onClick={handleSave} className="w-full">
-            Enregistrer les paramètres
-          </Button>
-        </div>
+            {/* Info: fonctionne même déconnecté */}
+            {settings.enabled && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-700">
+                  ✓ Les réponses automatiques fonctionneront même si vous êtes déconnecté de l'application.
+                </p>
+              </div>
+            )}
+
+            {/* Sélection du message */}
+            <div className={`space-y-3 ${!settings.enabled ? 'opacity-50 pointer-events-none' : ''}`}>
+              <Label className="font-medium">Choisir un message</Label>
+              <RadioGroup
+                value={settings.selectedMessage}
+                onValueChange={(value) => 
+                  setSettings(prev => ({ ...prev, selectedMessage: value }))
+                }
+                className="space-y-2"
+              >
+                {PREDEFINED_MESSAGES.map((msg) => (
+                  <div 
+                    key={msg.id}
+                    className={`flex items-start space-x-3 p-3 rounded-lg border transition-colors ${
+                      settings.selectedMessage === msg.id 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-border hover:bg-muted/50'
+                    }`}
+                  >
+                    <RadioGroupItem value={msg.id} id={msg.id} className="mt-1" />
+                    <div className="flex-1 space-y-1">
+                      <Label htmlFor={msg.id} className="font-medium cursor-pointer">
+                        {msg.label}
+                      </Label>
+                      {msg.message && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {msg.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Message personnalisé */}
+            {settings.selectedMessage === "custom" && settings.enabled && (
+              <div className="space-y-2">
+                <Label htmlFor="custom-message" className="font-medium">
+                  Votre message personnalisé
+                </Label>
+                <Textarea
+                  id="custom-message"
+                  placeholder="Écrivez votre message d'absence personnalisé..."
+                  value={settings.customMessage}
+                  onChange={(e) => 
+                    setSettings(prev => ({ ...prev, customMessage: e.target.value }))
+                  }
+                  className="min-h-[120px] resize-none"
+                  maxLength={500}
+                />
+                <p className="text-xs text-muted-foreground text-right">
+                  {settings.customMessage.length}/500 caractères
+                </p>
+              </div>
+            )}
+
+            {/* Aperçu */}
+            {settings.enabled && getCurrentMessage() && (
+              <div className="space-y-2">
+                <Label className="font-medium">Aperçu du message</Label>
+                <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+                  <p className="text-sm text-gray-700 italic">
+                    "{getCurrentMessage()}"
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Bouton sauvegarder */}
+            <Button onClick={handleSave} className="w-full" disabled={saving}>
+              {saving ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Enregistrement...
+                </>
+              ) : (
+                "Enregistrer les paramètres"
+              )}
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
@@ -218,38 +290,30 @@ export function useAutoReplyMessage(userId: string): string | null {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem(`autoReply_${userId}`);
-    if (savedSettings) {
-      try {
-        const settings: AutoReplySettings = JSON.parse(savedSettings);
-        if (settings.enabled) {
-          if (settings.selectedMessage === "custom") {
-            setMessage(settings.customMessage || null);
-          } else {
-            const predefined = PREDEFINED_MESSAGES.find(m => m.id === settings.selectedMessage);
-            setMessage(predefined?.message || null);
-          }
+    const loadMessage = async () => {
+      if (!userId) return;
+
+      const { data } = await supabase
+        .from('auto_reply_settings')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('enabled', true)
+        .single();
+
+      if (data) {
+        if (data.selected_message === "custom") {
+          setMessage(data.custom_message || null);
         } else {
-          setMessage(null);
+          const predefined = PREDEFINED_MESSAGES.find(m => m.id === data.selected_message);
+          setMessage(predefined?.message || null);
         }
-      } catch (error) {
+      } else {
         setMessage(null);
       }
-    }
+    };
+
+    loadMessage();
   }, [userId]);
 
   return message;
-}
-
-// Fonction pour vérifier si l'auto-réponse est activée
-export function getAutoReplySettings(userId: string): AutoReplySettings | null {
-  const savedSettings = localStorage.getItem(`autoReply_${userId}`);
-  if (savedSettings) {
-    try {
-      return JSON.parse(savedSettings);
-    } catch {
-      return null;
-    }
-  }
-  return null;
 }

@@ -164,6 +164,36 @@ export type Database = {
         }
         Relationships: []
       }
+      auto_reply_settings: {
+        Row: {
+          created_at: string
+          custom_message: string | null
+          enabled: boolean
+          id: string
+          selected_message: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          custom_message?: string | null
+          enabled?: boolean
+          id?: string
+          selected_message?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          custom_message?: string | null
+          enabled?: boolean
+          id?: string
+          selected_message?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       card_searches: {
         Row: {
           card_number: string
