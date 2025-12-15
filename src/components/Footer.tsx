@@ -20,7 +20,7 @@ export const Footer = () => {
               <h3 className="text-2xl font-bold">FinderID</h3>
             </div>
             <p className="text-primary-foreground/80 mb-6">
-              La solution sécurisée pour retrouver les pièces d'identité perdues au Sénégal
+              La solution sécurisée pour retrouver les pièces d'identité perdues
             </p>
             <div className="flex space-x-4">
               <a 
@@ -95,19 +95,6 @@ export const Footer = () => {
             </ul>
           </div>
           
-          <div>
-            <h4 className="font-semibold text-lg mb-5">Contact</h4>
-            <ul className="space-y-3">
-              <li className="flex items-center">
-                <Mail className="h-4 w-4 mr-2 text-secondary" />
-                <span className="text-primary-foreground/80">mcard1100@gmail.com</span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="h-4 w-4 mr-2 text-secondary" />
-                <span className="text-primary-foreground/80">+221710117579</span>
-              </li>
-            </ul>
-          </div>
         </div>
         
         <div className="mt-12 pt-8 border-t border-primary-foreground/20 text-center text-primary-foreground/60 flex items-center justify-center gap-2">

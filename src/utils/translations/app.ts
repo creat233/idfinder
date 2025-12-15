@@ -94,8 +94,8 @@ export const appTranslations: Translations = {
     en: "About FinderID"
   },
   about_subtitle: {
-    fr: "FinderID est une plateforme innovante qui révolutionne la récupération de documents perdus au Sénégal, en créant un pont entre ceux qui trouvent et ceux qui cherchent leurs pièces d'identité.",
-    en: "FinderID is an innovative platform that revolutionizes the recovery of lost documents in Senegal, creating a bridge between those who find and those who are looking for their identity documents."
+    fr: "FinderID est une plateforme innovante qui révolutionne la récupération de documents perdus, en créant un pont entre ceux qui trouvent et ceux qui cherchent leurs pièces d'identité.",
+    en: "FinderID is an innovative platform that revolutionizes the recovery of lost documents, creating a bridge between those who find and those who are looking for their identity documents."
   },
   about_mission_title: {
     fr: "Notre Mission",
@@ -142,8 +142,8 @@ export const appTranslations: Translations = {
     en: "Our Story"
   },
   about_story_p1: {
-    fr: "FinderID est né d'un constat simple : chaque jour au Sénégal, des centaines de personnes perdent leurs documents d'identité, créant des situations stressantes et coûteuses.",
-    en: "FinderID was born from a simple observation: every day in Senegal, hundreds of people lose their identity documents, creating stressful and costly situations."
+    fr: "FinderID est né d'un constat simple : chaque jour, des centaines de personnes perdent leurs documents d'identité, créant des situations stressantes et coûteuses.",
+    en: "FinderID was born from a simple observation: every day, hundreds of people lose their identity documents, creating stressful and costly situations."
   },
   about_story_p2: {
     fr: "Parallèlement, de nombreuses personnes trouvent ces documents mais ne savent pas comment les restituer efficacement à leurs propriétaires légitimes.",
@@ -180,8 +180,8 @@ export const appTranslations: Translations = {
     en: "Report found cards and help others recover their documents."
   },
   cta_join_community: {
-    fr: "Rejoignez notre communauté solidaire dès aujourd'hui et participez à un Sénégal où personne ne perd définitivement ses documents.",
-    en: "Join our supportive community today and participate in a Senegal where no one permanently loses their documents."
+    fr: "Rejoignez notre communauté solidaire dès aujourd'hui et participez à un monde où personne ne perd définitivement ses documents.",
+    en: "Join our supportive community today and participate in a world where no one permanently loses their documents."
   },
   cta_report_found_card: {
     fr: "Signaler une carte trouvée",
@@ -234,8 +234,8 @@ export const appTranslations: Translations = {
     en: "in one click"
   },
   heroSubtitle_base: {
-    fr: "FinderID révolutionne la récupération de documents perdus au Sénégal.",
-    en: "FinderID revolutionizes the recovery of lost documents in Senegal."
+    fr: "FinderID révolutionne la récupération de documents perdus.",
+    en: "FinderID revolutionizes the recovery of lost documents."
   },
   heroSubtitle_user: {
     fr: "Recherchez vos cartes perdues ou signalez des cartes trouvées.",
