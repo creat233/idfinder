@@ -23,10 +23,11 @@ interface PricingPlanCardProps {
   };
   upgradingCardId?: string | null;
   mcards?: any[];
+  hasFreeMCard?: boolean;
   onSelectPlan: (planId: 'essential' | 'premium' | 'ultimate') => void;
 }
 
-export const PricingPlanCard = ({ plan, upgradingCardId, mcards = [], onSelectPlan }: PricingPlanCardProps) => {
+export const PricingPlanCard = ({ plan, upgradingCardId, mcards = [], hasFreeMCard = false, onSelectPlan }: PricingPlanCardProps) => {
   const priceInfo = getPriceInfoForCountry('SN');
 
   return (
@@ -94,10 +95,12 @@ export const PricingPlanCard = ({ plan, upgradingCardId, mcards = [], onSelectPl
             plan.isPopular && "shadow-lg hover:shadow-xl"
           )}
           onClick={() => onSelectPlan(plan.id as 'essential' | 'premium' | 'ultimate')}
-          disabled={!upgradingCardId && mcards.length >= 3}
+          disabled={!upgradingCardId && (mcards.length >= 3 || (plan.id === 'free' && hasFreeMCard))}
         >
           {!upgradingCardId && mcards.length >= 3 ? (
             "Limite atteinte (3/3)"
+          ) : !upgradingCardId && plan.id === 'free' && hasFreeMCard ? (
+            "1 carte gratuite par compte"
           ) : upgradingCardId ? (
             <>
               Passer au plan {plan.name}

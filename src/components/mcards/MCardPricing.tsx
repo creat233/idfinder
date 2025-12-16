@@ -20,14 +20,20 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
   const [isSelectCardDialogOpen, setIsSelectCardDialogOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'essential' | 'premium' | 'ultimate' | null>(null);
 
+  // Vérifier si l'utilisateur a déjà une carte gratuite
+  const hasFreeMCard = mcards.some(card => card.plan === 'free');
+
   const handleSelectPlan = (planId: 'free' | 'essential' | 'premium' | 'ultimate') => {
     if (upgradingCardId) {
       onRequestUpgrade(upgradingCardId, planId);
     } else if (mcards.length >= 3) {
       // Limite atteinte : ne pas permettre la création
       return;
+    } else if (planId === 'free' && hasFreeMCard) {
+      // L'utilisateur a déjà une carte gratuite
+      return;
     } else {
-      // Permettre la création directe pour les 3 premières cartes
+      // Permettre la création directe
       onStartCreationFlow(planId);
     }
   };
@@ -57,6 +63,7 @@ export const MCardPricing = ({ mcards, onRequestUpgrade, onStartCreationFlow, up
                   plan={plan}
                   upgradingCardId={upgradingCardId}
                   mcards={mcards}
+                  hasFreeMCard={hasFreeMCard}
                   onSelectPlan={handleSelectPlan}
                 />
               ))}
