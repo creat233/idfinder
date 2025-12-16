@@ -21,52 +21,97 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onGetStarte
 
   return (
     <div className="md:hidden bg-white border-t border-gray-200">
-      <nav className="py-4 space-y-4">
-        <a href="/#fonctionnalites" className="block px-4 text-gray-600 hover:text-[#7E69AB]" onClick={onClose}>
-          {t('features')}
-        </a>
-        <a href="/#tarifs" className="block px-4 text-gray-600 hover:text-[#7E69AB]" onClick={onClose}>
-          {t('pricing')}
-        </a>
-        <button 
-          onClick={() => { navigate("/demo"); onClose(); }}
-          className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-        >
-          {t('demo')}
-        </button>
-        <button 
-          onClick={() => { navigate("/urgence"); onClose(); }}
-          className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-        >
-          {t('emergencyNumbersLink')}
-        </button>
-        <button 
-          onClick={() => { navigate("/about"); onClose(); }}
-          className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-        >
-          {t('about')}
-        </button>
-        <button 
-          onClick={() => { navigate("/verified-mcards"); onClose(); }}
-          className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full font-medium"
-        >
-          ✅ Services
-        </button>
+      <nav className="py-4 space-y-2">
+        {/* Section Identité */}
+        <div className="px-4 py-2">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">🪪 Cartes d'identité</p>
+          <div className="space-y-2 pl-2">
+            <button 
+              onClick={() => { navigate("/rechercher"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+            >
+              🔍 Rechercher une carte perdue
+            </button>
+            <button 
+              onClick={() => { navigate("/signaler"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+            >
+              📢 Signaler une carte trouvée
+            </button>
+            <button 
+              onClick={() => { navigate("/urgence"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+            >
+              🚨 Numéros d'urgence
+            </button>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100 mx-4"></div>
+
+        {/* Section MCard */}
+        <div className="px-4 py-2">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">💳 Cartes de visite MCard</p>
+          <div className="space-y-2 pl-2">
+            <button 
+              onClick={() => { navigate("/mcards"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+            >
+              ✨ Créer ma carte de visite
+            </button>
+            <button 
+              onClick={() => { navigate("/verified-mcards"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full font-medium"
+            >
+              ✅ Services & prestataires vérifiés
+            </button>
+            <a href="/#tarifs" className="block text-gray-600 hover:text-[#7E69AB]" onClick={onClose}>
+              💰 Voir les tarifs MCard
+            </a>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100 mx-4"></div>
+
+        {/* Section Générale */}
+        <div className="px-4 py-2">
+          <div className="space-y-2">
+            <button 
+              onClick={() => { navigate("/about"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+            >
+              ℹ️ À propos de FinderID
+            </button>
+            <button 
+              onClick={() => { navigate("/demo"); onClose(); }}
+              className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+            >
+              🎬 Voir la démo
+            </button>
+          </div>
+        </div>
+
         {user && (
-          <button 
-            onClick={() => { navigate("/mes-cartes"); onClose(); }}
-            className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-          >
-            {t('myCards')}
-          </button>
-        )}
-        {user && (
-          <button
-            onClick={() => { navigate("/notifications"); onClose(); }}
-            className="block px-4 text-left text-gray-600 hover:text-[#7E69AB] w-full"
-          >
-            {t('notifications')}
-          </button>
+          <>
+            <div className="border-t border-gray-100 mx-4"></div>
+            <div className="px-4 py-2">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">👤 Mon compte</p>
+              <div className="space-y-2 pl-2">
+                <button 
+                  onClick={() => { navigate("/mes-cartes"); onClose(); }}
+                  className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+                >
+                  {t('myCards')}
+                </button>
+                <button
+                  onClick={() => { navigate("/notifications"); onClose(); }}
+                  className="block text-left text-gray-600 hover:text-[#7E69AB] w-full"
+                >
+                  {t('notifications')}
+                </button>
+              </div>
+            </div>
+          </>
         )}
         <div className="px-4 pt-4 space-y-2">
           {user ? (
@@ -98,16 +143,10 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onGetStarte
                 {t('login')}
               </Button>
               <Button 
-                onClick={() => { navigate("/#tarifs"); onClose(); }}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-              >
-                📋 Voir les abonnements MCard
-              </Button>
-              <Button 
-                onClick={() => { navigate("/login"); onClose(); }}
+                onClick={() => { navigate("/mcards"); onClose(); }}
                 className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white"
               >
-                ✨ Créer ma carte
+                ✨ Créer ma carte MCard
               </Button>
             </>
           )}
