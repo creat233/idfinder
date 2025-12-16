@@ -32,16 +32,25 @@ export const createMCard = async (
   profilePictureFile: File | null, 
   userId: string
 ): Promise<MCard> => {
-  // Vérifier la limite de 3 cartes par utilisateur
+  // Vérifier les limites de cartes par utilisateur
   const { data: existingCards, error: countError } = await supabase
     .from('mcards')
-    .select('id')
+    .select('id, plan')
     .eq('user_id', userId);
 
   if (countError) throw countError;
 
+  // Limite de 3 cartes maximum par compte
   if (existingCards && existingCards.length >= 3) {
     throw new Error('Limite atteinte : Vous ne pouvez créer que 3 cartes de visite maximum par compte.');
+  }
+
+  // Limite d'une seule carte gratuite par compte
+  if (mcardData.plan === 'free') {
+    const existingFreeCard = existingCards?.find(card => card.plan === 'free');
+    if (existingFreeCard) {
+      throw new Error('Limite atteinte : Vous ne pouvez créer qu\'une seule carte gratuite par compte. Passez à un plan payant pour créer une nouvelle carte.');
+    }
   }
 
   let profilePictureUrl = null;

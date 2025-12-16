@@ -7,7 +7,7 @@ export const pricingPlans = [
     name: 'Gratuit',
     price: 0,
     monthlyPrice: 0,
-    description: 'Pour découvrir mCard',
+    description: '1 carte gratuite par compte',
     features: [
       'Carte de visite digitale basique',
       'Informations de contact',
