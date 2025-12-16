@@ -22,66 +22,52 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut, onGetStarted }: Props)
 
   return (
     <>
-      <nav className="hidden md:flex items-center space-x-6">
-        {/* Section Identité */}
-        <div className="flex items-center space-x-4 border-r border-gray-200 pr-4">
-          <button 
-            onClick={() => navigate("/rechercher")}
-            className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-          >
-            🔍 Rechercher ID
-          </button>
-          <button 
-            onClick={() => navigate("/signaler")}
-            className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-          >
-            📢 Signaler ID
-          </button>
-          <button 
-            onClick={() => navigate("/urgence")}
-            className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-          >
-            🚨 Urgences
-          </button>
-        </div>
-        
-        {/* Section MCard */}
-        <div className="flex items-center space-x-4">
-          <button 
-            onClick={() => navigate("/mcards")}
-            className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-          >
-            💳 Créer MCard
-          </button>
-          <button 
-            onClick={() => navigate("/verified-mcards")}
-            className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm font-medium bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 px-2 py-1 rounded-md hover:from-green-100 hover:to-emerald-100"
-          >
-            ✅ Services vérifiés
-          </button>
-          <button 
-            onClick={() => navigate("/about")}
-            className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-          >
-            ℹ️ À propos
-          </button>
-        </div>
-
+      <nav className="hidden md:flex items-center space-x-8">
+        <a href="/#fonctionnalites" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
+          {t('features')}
+        </a>
+        <a href="/#tarifs" className="text-gray-600 hover:text-[#7E69AB] transition-colors">
+          {t('pricing')}
+        </a>
+        <button 
+          onClick={() => navigate("/demo")}
+          className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+        >
+          {t('demo')}
+        </button>
+        <button 
+          onClick={() => navigate("/urgence")}
+          className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+        >
+          {t('emergencyNumbersLink')}
+        </button>
+        <button 
+          onClick={() => navigate("/about")}
+          className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+        >
+          {t('about')}
+        </button>
+        <button 
+          onClick={() => navigate("/verified-mcards")}
+          className="text-gray-600 hover:text-[#7E69AB] transition-colors font-medium bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 px-3 py-1 rounded-md hover:from-green-100 hover:to-emerald-100"
+        >
+          ✅ Services
+        </button>
         {user && (
-          <>
-            <button 
-              onClick={() => navigate("/mes-cartes")}
-              className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-            >
-              {t('myCards')}
-            </button>
-            <button
-              onClick={() => navigate("/notifications")}
-              className="text-gray-600 hover:text-[#7E69AB] transition-colors text-sm"
-            >
-              {t('notifications')}
-            </button>
-          </>
+          <button 
+            onClick={() => navigate("/mes-cartes")}
+            className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+          >
+            {t('myCards')}
+          </button>
+        )}
+        {user && (
+          <button
+            onClick={() => navigate("/notifications")}
+            className="text-gray-600 hover:text-[#7E69AB] transition-colors"
+          >
+            {t('notifications')}
+          </button>
         )}
       </nav>
       <div className="hidden md:flex items-center space-x-4">
