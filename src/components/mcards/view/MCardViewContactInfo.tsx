@@ -1,5 +1,5 @@
 
-import { Phone, Mail, Globe, ExternalLink } from "lucide-react";
+import { Phone, Mail, Globe, ExternalLink, MapPin } from "lucide-react";
 import { MCard } from "@/types/mcard";
 
 interface MCardViewContactInfoProps {
@@ -27,6 +27,13 @@ export const MCardViewContactInfo = ({ mcard }: MCardViewContactInfoProps) => {
       href: mcard.website_url,
       icon: Globe,
       label: "Site web",
+      external: true
+    },
+    {
+      condition: mcard.maps_location_url,
+      href: mcard.maps_location_url,
+      icon: MapPin,
+      label: "Voir l'adresse",
       external: true
     }
   ];
