@@ -3,17 +3,27 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AdminNavigation } from "./AdminNavigation";
 import { useAdminUserSignups } from "@/hooks/useAdminUserSignups";
+import { useAdminAppVisits } from "@/hooks/useAdminAppVisits";
 import { useAuditLogs } from "@/hooks/useAuditLogs";
-import { Loader2, BarChart3, Users, Activity, TrendingUp, Eye, Calendar } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Loader2, BarChart3, Users, Activity, TrendingUp, Eye, Globe } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 export const AdminAnalytics = () => {
   const { data: signupData, loading: signupLoading, refetch: refetchSignups } = useAdminUserSignups();
+  const { 
+    data: visitsData, 
+    loading: visitsLoading, 
+    refetch: refetchVisits,
+    totalVisits,
+    totalUniqueVisitors,
+    recentVisits,
+    recentUniqueVisitors
+  } = useAdminAppVisits(30);
   const { logs, loading: logsLoading, refetch: refetchLogs } = useAuditLogs();
 
-  if (signupLoading || logsLoading) {
+  if (signupLoading || logsLoading || visitsLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -28,24 +38,51 @@ export const AdminAnalytics = () => {
     <div className="space-y-6">
       <AdminNavigation />
       
+      {/* Section Visiteurs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
+        <Card className="border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Utilisateurs</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Visiteurs Total</CardTitle>
+            <Globe className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalSignups}</div>
+            <div className="text-2xl font-bold">{totalVisits}</div>
             <p className="text-xs text-muted-foreground">
-              Depuis le lancement
+              {totalUniqueVisitors} visiteurs uniques
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Nouveaux cette semaine</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Visites cette semaine</CardTitle>
+            <Eye className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{recentVisits}</div>
+            <p className="text-xs text-muted-foreground">
+              {recentUniqueVisitors} uniques (7 jours)
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-purple-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Utilisateurs</CardTitle>
+            <Users className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalSignups}</div>
+            <p className="text-xs text-muted-foreground">
+              Comptes créés
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-orange-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Nouveaux inscrits</CardTitle>
+            <TrendingUp className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{recentSignups}</div>
@@ -54,7 +91,73 @@ export const AdminAnalytics = () => {
             </p>
           </CardContent>
         </Card>
+      </div>
 
+      {/* Graphique des visites */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5 text-blue-500" />
+            Évolution des Visites (30 jours)
+            <Badge variant="secondary">Visiteurs non-inscrits inclus</Badge>
+          </CardTitle>
+          <Button onClick={refetchVisits} variant="outline" size="sm">
+            Actualiser
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={[...visitsData].reverse()}>
+                <defs>
+                  <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorUnique" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="visit_date" 
+                  tickFormatter={(value) => format(new Date(value), 'dd MMM', { locale: fr })}
+                />
+                <YAxis />
+                <Tooltip 
+                  labelFormatter={(value) => format(new Date(value), 'dd MMMM yyyy', { locale: fr })}
+                  formatter={(value: number, name: string) => [
+                    value, 
+                    name === 'total_visits' ? 'Visites totales' : 'Visiteurs uniques'
+                  ]}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="total_visits" 
+                  stroke="hsl(var(--primary))" 
+                  fillOpacity={1}
+                  fill="url(#colorVisits)"
+                  strokeWidth={2}
+                  name="total_visits"
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="unique_visitors" 
+                  stroke="#10b981" 
+                  fillOpacity={1}
+                  fill="url(#colorUnique)"
+                  strokeWidth={2}
+                  name="unique_visitors"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Section Utilisateurs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Actions Admin</CardTitle>

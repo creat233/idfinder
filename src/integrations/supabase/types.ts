@@ -134,6 +134,33 @@ export type Database = {
         }
         Relationships: []
       }
+      app_visits: {
+        Row: {
+          created_at: string
+          id: string
+          page_path: string
+          referrer: string | null
+          user_agent: string | null
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          page_path: string
+          referrer?: string | null
+          user_agent?: string | null
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          page_path?: string
+          referrer?: string | null
+          user_agent?: string | null
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -1583,6 +1610,14 @@ export type Database = {
           id: string
           ip_address: string
           user_email: string
+        }[]
+      }
+      get_daily_app_visits: {
+        Args: { days_back?: number }
+        Returns: {
+          total_visits: number
+          unique_visitors: number
+          visit_date: string
         }[]
       }
       get_daily_user_signups: {

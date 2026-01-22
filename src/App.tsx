@@ -9,6 +9,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { HelmetProvider } from "react-helmet-async";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAutoRefresh } from "./hooks/useAutoRefresh";
+import { useVisitorTracking } from "./hooks/useVisitorTracking";
 import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -65,6 +66,9 @@ function AutoRefreshWrapper() {
 function NavigationWrapper() {
   const location = useLocation();
   const [isInConversation, setIsInConversation] = useState(false);
+  
+  // Tracker les visites de pages pour l'analytics admin
+  useVisitorTracking();
   
   useEffect(() => {
     // Écouter les changements de state des conversations
