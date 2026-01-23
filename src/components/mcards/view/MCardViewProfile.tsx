@@ -21,6 +21,10 @@ import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
 import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
+import { MCardBusinessDashboard } from "../business/MCardBusinessDashboard";
+import { MCardClientManager } from "../business/MCardClientManager";
+import { MCardSalesGoals } from "../business/MCardSalesGoals";
+import { MCardPaymentTracker } from "../business/MCardPaymentTracker";
 import { OnlineStatusIndicator } from "../OnlineStatusIndicator";
 import { Mail, Phone, Globe, MapPin, Briefcase, Building, CheckCircle, MessageCircle, Edit, FileText } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -341,72 +345,37 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
           {/* Fonctionnalités avancées pour les propriétaires */}
           {isOwner && (
             <div className="space-y-4 sm:space-y-6">
+              {/* Tableau de bord Business 2026 - uniquement pour les plans payants */}
+              {mcard.plan !== 'free' && (
+                <MCardBusinessDashboard mcard={mcard} isOwner={isOwner} />
+              )}
+              
               <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
               
               <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-purple-100 shadow-sm">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
                   <span className="text-lg sm:text-xl">🚀</span> 
-                  <span className="break-words">Fonctionnalités avancées</span>
+                  <span className="break-words">Fonctionnalités avancées 2026</span>
                 </h3>
                 
-                {/* Bouton de gestion des factures avec design élégant - uniquement pour les plans payants */}
+                {/* Outils Business - uniquement pour les plans payants */}
                 {mcard.plan !== 'free' && (
-                  <div className="mb-4 sm:mb-6">
-                    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg sm:rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-300 group">
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0">
-                            <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="font-semibold text-gray-900 mb-1 text-xs sm:text-sm lg:text-base break-words">Gestion des factures</h4>
-                            <p className="text-xs text-gray-600 break-words">Créez et gérez vos factures professionnelles</p>
-                          </div>
-                        </div>
-                        <Button 
-                          className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 w-full sm:w-auto text-xs sm:text-sm"
-                          size="sm"
-                          onClick={() => {
-                            // Navigation vers la page de factures
-                            window.location.href = `/mcard/${mcard.slug}/invoices`;
-                          }}
-                        >
-                          <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
-                          <span className="hidden sm:inline">Créer une facture</span>
-                          <span className="sm:hidden">Créer facture</span>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Bouton de gestion des devis - uniquement pour les plans Essential, Premium et Ultimate */}
-                {(mcard.plan === 'essential' || mcard.plan === 'premium' || mcard.plan === 'ultimate') && (
-                  <div className="mb-4 sm:mb-6">
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg sm:rounded-xl p-3 sm:p-4 hover:shadow-md transition-all duration-300 group">
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0">
-                            <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="font-semibold text-gray-900 mb-1 text-xs sm:text-sm lg:text-base break-words">Gestion des devis</h4>
-                            <p className="text-xs text-gray-600 break-words">Créez et partagez vos devis clients</p>
-                          </div>
-                        </div>
-                        <Button 
-                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 w-full sm:w-auto text-xs sm:text-sm"
-                          size="sm"
-                          onClick={() => {
-                            // Navigation vers la page de devis
-                            window.location.href = `/mcard/${mcard.slug}/quotes`;
-                          }}
-                        >
-                          <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
-                          <span className="hidden sm:inline">Créer un devis</span>
-                          <span className="sm:hidden">Créer devis</span>
-                        </Button>
-                      </div>
+                  <div className="mb-4 sm:mb-6 space-y-3">
+                    <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      💼 Gestion Business
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <MCardClientManager mcard={mcard} isOwner={isOwner} />
+                      <MCardSalesGoals mcard={mcard} isOwner={isOwner} />
+                      <MCardPaymentTracker mcard={mcard} isOwner={isOwner} />
+                      <Button 
+                        variant="outline"
+                        className="w-full justify-start"
+                        onClick={() => window.location.href = `/mcard/${mcard.slug}/invoices`}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Factures & Devis
+                      </Button>
                     </div>
                   </div>
                 )}
