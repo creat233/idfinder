@@ -19,12 +19,14 @@ import {
   BarChart3,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  BellRing
 } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { supabase } from '@/integrations/supabase/client';
 import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { BusinessNotificationBadge } from '@/components/notifications/BusinessNotificationBadge';
 
 interface BusinessStats {
   totalRevenue: number;
@@ -171,9 +173,12 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="bg-gradient-to-r from-blue-50 to-purple-50">
-            🎯 2026
-          </Badge>
+          <div className="flex items-center gap-2">
+            <BusinessNotificationBadge mcardId={mcard.id} />
+            <Badge variant="outline" className="bg-gradient-to-r from-blue-50 to-purple-50">
+              🎯 2026
+            </Badge>
+          </div>
         </CardTitle>
       </CardHeader>
 
