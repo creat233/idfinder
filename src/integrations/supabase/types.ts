@@ -604,6 +604,62 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_marketing_campaigns: {
+        Row: {
+          campaign_type: string
+          clicked_count: number | null
+          created_at: string
+          id: string
+          mcard_id: string
+          message: string
+          opened_count: number | null
+          recipients_count: number | null
+          scheduled_at: string | null
+          sent_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          campaign_type?: string
+          clicked_count?: number | null
+          created_at?: string
+          id?: string
+          mcard_id: string
+          message: string
+          opened_count?: number | null
+          recipients_count?: number | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          campaign_type?: string
+          clicked_count?: number | null
+          created_at?: string
+          id?: string
+          mcard_id?: string
+          message?: string
+          opened_count?: number | null
+          recipients_count?: number | null
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_marketing_campaigns_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_messages: {
         Row: {
           created_at: string | null
@@ -1625,6 +1681,14 @@ export type Database = {
         Returns: {
           count: number
           signup_date: string
+        }[]
+      }
+      get_mcard_favorite_emails: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          email: string
+          first_name: string
+          user_id: string
         }[]
       }
       get_or_create_mcard_customization: {
