@@ -20,13 +20,15 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  BellRing
+  BellRing,
+  Megaphone
 } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { supabase } from '@/integrations/supabase/client';
 import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { BusinessNotificationBadge } from '@/components/notifications/BusinessNotificationBadge';
+import { MCardMarketingCampaigns } from './MCardMarketingCampaigns';
 
 interface BusinessStats {
   totalRevenue: number;
@@ -263,6 +265,9 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
                 </Button>
               </div>
             </div>
+
+            {/* Marketing Campaigns */}
+            <MCardMarketingCampaigns mcardId={mcard.id} />
 
             {/* Insights IA */}
             <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
