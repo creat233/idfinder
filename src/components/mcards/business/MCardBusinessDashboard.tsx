@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   TrendingUp, 
   Target, 
@@ -19,16 +19,19 @@ import {
   BarChart3,
   Clock,
   CheckCircle,
-  AlertCircle,
-  BellRing,
-  Megaphone
+  AlertCircle
 } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { supabase } from '@/integrations/supabase/client';
-import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns';
+import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { BusinessNotificationBadge } from '@/components/notifications/BusinessNotificationBadge';
 import { MCardMarketingCampaigns } from './MCardMarketingCampaigns';
+import { MCardClientManager } from './MCardClientManager';
+import { InvoiceCreateForm } from '@/components/mcards/invoices/InvoiceCreateForm';
+import { MCardViewAddProductDialog } from '@/components/mcards/view/MCardViewAddProductDialog';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface BusinessStats {
   totalRevenue: number;
@@ -46,6 +49,8 @@ interface MCardBusinessDashboardProps {
 }
 
 export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboardProps) => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<BusinessStats>({
     totalRevenue: 0,
     pendingPayments: 0,
@@ -56,7 +61,11 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
     currentProgress: 0
   });
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  
+  // Dialog states
+  const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] = useState(false);
+  const [isProductDialogOpen, setIsProductDialogOpen] = useState(false);
+  const [isClientDialogOpen, setIsClientDialogOpen] = useState(false);
 
   useEffect(() => {
     if (isOwner && mcard.id) {
@@ -119,6 +128,85 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
+  };
+
+  // Handlers for quick actions
+  const handleNewInvoice = () => {
+    setIsInvoiceDialogOpen(true);
+  };
+
+  const handleViewClients = () => {
+    setIsClientDialogOpen(true);
+  };
+
+  const handleScheduleAppointment = () => {
+    navigate(`/mcard/${mcard.slug}#availability`);
+    toast({
+      title: "Planification RDV",
+      description: "Configurez vos créneaux de disponibilité depuis votre carte.",
+    });
+  };
+
+  const handleAddProduct = () => {
+    setIsProductDialogOpen(true);
+  };
+
+  const handleInvoiceSubmit = async (invoiceData: any) => {
+    try {
+      const invoiceNumber = `INV-${Date.now()}`;
+      const totalAmount = invoiceData.items.reduce(
+        (sum: number, item: any) => sum + item.quantity * item.unit_price,
+        0
+      );
+
+      const { data: invoice, error: invoiceError } = await supabase
+        .from('mcard_invoices')
+        .insert({
+          mcard_id: mcard.id,
+          invoice_number: invoiceNumber,
+          client_name: invoiceData.client_name,
+          client_email: invoiceData.client_email || null,
+          client_phone: invoiceData.client_phone || null,
+          amount: totalAmount,
+          currency: invoiceData.currency,
+          due_date: invoiceData.due_date || null,
+          description: invoiceData.description || null,
+          notes: invoiceData.notes || null,
+          status: 'draft'
+        })
+        .select()
+        .single();
+
+      if (invoiceError) throw invoiceError;
+
+      // Insert items
+      if (invoice && invoiceData.items.length > 0) {
+        const items = invoiceData.items.map((item: any) => ({
+          invoice_id: invoice.id,
+          description: item.description,
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          total_price: item.quantity * item.unit_price
+        }));
+
+        await supabase.from('mcard_invoice_items').insert(items);
+      }
+
+      toast({
+        title: "Facture créée",
+        description: `La facture ${invoiceNumber} a été créée avec succès.`,
+      });
+      
+      setIsInvoiceDialogOpen(false);
+      loadBusinessStats();
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer la facture.",
+        variant: "destructive"
+      });
+    }
   };
 
   const kpis = [
@@ -247,19 +335,19 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
                 Actions rapides
               </h4>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" size="sm" className="justify-start">
+                <Button variant="outline" size="sm" className="justify-start" onClick={handleNewInvoice}>
                   <DollarSign className="h-4 w-4 mr-2" />
                   Nouvelle facture
                 </Button>
-                <Button variant="outline" size="sm" className="justify-start">
+                <Button variant="outline" size="sm" className="justify-start" onClick={handleViewClients}>
                   <Users className="h-4 w-4 mr-2" />
                   Voir clients
                 </Button>
-                <Button variant="outline" size="sm" className="justify-start">
+                <Button variant="outline" size="sm" className="justify-start" onClick={handleScheduleAppointment}>
                   <Calendar className="h-4 w-4 mr-2" />
                   Planifier RDV
                 </Button>
-                <Button variant="outline" size="sm" className="justify-start">
+                <Button variant="outline" size="sm" className="justify-start" onClick={handleAddProduct}>
                   <ShoppingBag className="h-4 w-4 mr-2" />
                   Ajouter produit
                 </Button>
@@ -296,6 +384,45 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
             </div>
           </>
         )}
+
+        {/* Invoice Creation Dialog */}
+        <Dialog open={isInvoiceDialogOpen} onOpenChange={setIsInvoiceDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-green-600" />
+                Créer une nouvelle facture
+              </DialogTitle>
+            </DialogHeader>
+            <InvoiceCreateForm
+              mcardId={mcard.id}
+              onSubmit={handleInvoiceSubmit}
+              onCancel={() => setIsInvoiceDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Product Add Dialog */}
+        <MCardViewAddProductDialog
+          isOpen={isProductDialogOpen}
+          onClose={() => setIsProductDialogOpen(false)}
+          mcardId={mcard.id}
+          mcardPlan={mcard.plan}
+          onProductAdded={() => {
+            setIsProductDialogOpen(false);
+            toast({
+              title: "Produit ajouté",
+              description: "Le produit a été ajouté avec succès."
+            });
+          }}
+        />
+
+        {/* Client Manager Dialog */}
+        <Dialog open={isClientDialogOpen} onOpenChange={setIsClientDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <MCardClientManager mcard={mcard} isOwner={isOwner} />
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
