@@ -173,12 +173,12 @@ export const MCardViewProducts = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mx-2 sm:mx-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+      <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mx-1 sm:mx-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
           <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
-            🛍️ Produits & Services
+            🛍️ <span className="truncate">Produits & Services</span>
           </h3>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-shrink-0">
             {activeProducts.length > 0 && (
               <Button
                 size="sm"
@@ -188,10 +188,11 @@ export const MCardViewProducts = ({
                     state: { products: activeProducts, mcardId, ownerName: mcardOwnerName || '', ownerUserId: mcardOwnerUserId || '' }
                   });
                 }}
-                className="text-purple-600 border-purple-600 hover:bg-purple-50"
+                className="text-purple-600 border-purple-600 hover:bg-purple-50 text-xs sm:text-sm h-8 sm:h-9"
               >
-                <ShoppingBag className="h-4 w-4 mr-1" />
-                Voir tout
+                <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+                <span className="hidden xs:inline">Voir tout</span>
+                <span className="xs:hidden">Tout</span>
               </Button>
             )}
             {canAddProduct && (
@@ -199,166 +200,169 @@ export const MCardViewProducts = ({
                 size="sm" 
                 variant="outline"
                 onClick={handleAddProduct}
-                className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+                className="text-blue-600 border-blue-600 hover:bg-blue-50 text-xs sm:text-sm h-8 sm:h-9"
               >
-                <Plus className="h-4 w-4 mr-1" />
-                Ajouter un produit
+                <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+                <span className="hidden sm:inline">Ajouter</span>
               </Button>
             )}
           </div>
         </div>
 
         {activeProducts.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-8 sm:py-12">
             {canAddProduct ? (
               <div className="space-y-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-2">
-                  <ShoppingCart className="h-8 w-8 text-blue-600" />
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-full mb-2">
+                  <ShoppingCart className="h-7 w-7 sm:h-8 sm:w-8 text-blue-600" />
                 </div>
-                <p className="text-gray-600 text-lg font-medium">Pas encore de produits</p>
-                <p className="text-gray-500 text-sm">Ajoutez votre premier produit ou service pour commencer</p>
-                <Button onClick={handleAddProduct} className="bg-blue-600 hover:bg-blue-700 mt-4">
+                <p className="text-gray-600 text-base sm:text-lg font-medium">Pas encore de produits</p>
+                <p className="text-gray-500 text-xs sm:text-sm px-4">Ajoutez votre premier produit ou service</p>
+                <Button onClick={handleAddProduct} className="bg-blue-600 hover:bg-blue-700 mt-2 text-sm">
                   <Plus className="h-4 w-4 mr-2" />
-                  Ajouter votre premier produit
+                  Ajouter un produit
                 </Button>
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-2">
-                  <ShoppingCart className="h-8 w-8 text-gray-400" />
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-full mb-2">
+                  <ShoppingCart className="h-7 w-7 sm:h-8 sm:w-8 text-gray-400" />
                 </div>
-                <p className="text-gray-500 text-lg">Pas encore de produits</p>
+                <p className="text-gray-500 text-base sm:text-lg">Pas encore de produits</p>
               </div>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             {activeProducts.map((product) => (
               <div 
                 key={product.id} 
-                className="border rounded-xl p-3 sm:p-4 md:p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
+                className="border rounded-xl p-3 sm:p-4 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50 active:scale-[0.99]"
               >
                 {product.image_url && (
                   <ProductImageModal
                     imageUrl={product.image_url}
                     product={product}
                   >
-                    <div className="relative group mb-3 sm:mb-4">
+                    <div className="relative group mb-3">
                       <img 
                         src={product.image_url} 
                         alt={product.name}
-                        className="w-full h-40 sm:h-48 md:h-56 object-cover rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300"
+                        className="w-full h-36 sm:h-44 md:h-48 object-cover rounded-lg shadow-md"
                         onError={(e) => {
-                          console.error('Error loading product image:', product.image_url);
                           e.currentTarget.style.display = 'none';
                         }}
-                        onLoad={() => {
-                          console.log('Product image loaded successfully:', product.image_url);
-                        }}
                       />
-                      <div className="absolute top-3 right-3 bg-black/50 text-white text-xs px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                        Cliquer pour agrandir
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </ProductImageModal>
                 )}
                 
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-bold text-lg sm:text-xl text-gray-900 cursor-pointer hover:text-blue-600 transition-colors mb-2" onClick={() => handleProductClick(product)}>
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h4 
+                        className="font-bold text-base sm:text-lg text-gray-900 cursor-pointer hover:text-blue-600 transition-colors line-clamp-2" 
+                        onClick={() => handleProductClick(product)}
+                      >
                         {product.name}
                       </h4>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary" className="text-sm font-medium">
-                          <Star className="w-3 h-3 mr-1" />
-                          {product.category}
-                        </Badge>
+                      <Badge variant="secondary" className="text-xs font-medium mt-1">
+                        <Star className="w-3 h-3 mr-1" />
+                        {product.category}
+                      </Badge>
+                    </div>
+                    {isOwner && (
+                      <div className="flex gap-1 flex-shrink-0">
+                        <PinProductButton
+                          productId={product.id}
+                          isPinned={product.is_pinned || false}
+                          onPinToggle={() => onProductsChange?.()}
+                        />
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProduct(product);
+                          }}
+                          className="h-8 w-8 p-0 hover:bg-gray-100"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                       </div>
-                     </div>
-                     {isOwner && (
-                       <div className="flex gap-2 items-start">
-                         <PinProductButton
-                           productId={product.id}
-                           isPinned={product.is_pinned || false}
-                           onPinToggle={() => onProductsChange?.()}
-                         />
-                         <Button 
-                           size="sm" 
-                           variant="ghost" 
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             handleEditProduct(product);
-                           }}
-                           className="hover:bg-gray-100 hover:scale-105 transition-all"
-                         >
-                           <Edit className="h-4 w-4" />
-                         </Button>
-                       </div>
-                     )}
+                    )}
                   </div>
                   
                   {product.description && (
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
                       {product.description}
                     </p>
                   )}
                   
-                  <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl">
-                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-green-600">
+                  <div className="flex items-center justify-between p-2.5 sm:p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+                    <span className="text-lg sm:text-xl font-bold text-green-600">
                       {product.price.toLocaleString()} {product.currency}
                     </span>
-                    <ShoppingCart className="h-6 w-6 text-green-500" />
+                    <ShoppingCart className="h-5 w-5 text-green-500" />
                   </div>
 
-                  {/* Boutons d'action améliorés */}
-                  <div className="flex flex-wrap gap-2 sm:gap-3 pt-2">
+                  {/* Boutons d'action - responsive */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleShareProduct(product)}
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:scale-105 transition-all flex-1 shadow-sm"
+                      className="text-blue-600 border-blue-600 hover:bg-blue-50 text-xs h-9 active:scale-95"
                     >
-                      <Share2 className="h-4 w-4 mr-2" />
+                      <Share2 className="h-3.5 w-3.5 mr-1" />
                       Partager
                     </Button>
                     
-                    {!isOwner && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant={isInCart(product.id) ? "default" : "outline"}
-                          onClick={() => handleAddToCart(product)}
-                          disabled={isInCart(product.id)}
-                          className={`${
-                            isInCart(product.id)
-                              ? "bg-green-600 text-white hover:bg-green-700"
-                              : "text-green-600 border-green-600 hover:bg-green-50"
-                          } hover:scale-105 transition-all flex-1 shadow-sm`}
-                        >
-                          <ShoppingBag className="h-4 w-4 mr-2" />
-                          {isInCart(product.id) ? "Dans le panier" : "Ajouter au panier"}
-                        </Button>
-                        
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setContactContext({
-                              type: 'product',
-                              title: product.name
-                            });
-                            setIsContactDialogOpen(true);
-                          }}
-                          className="text-purple-600 border-purple-600 hover:bg-purple-50 hover:scale-105 transition-all flex-1 shadow-sm"
-                        >
-                          <Send className="h-4 w-4 mr-2" />
-                          {getActionButtonText(product.category)}
-                        </Button>
-                      </>
+                    {!isOwner ? (
+                      <Button
+                        size="sm"
+                        variant={isInCart(product.id) ? "default" : "outline"}
+                        onClick={() => handleAddToCart(product)}
+                        disabled={isInCart(product.id)}
+                        className={`${
+                          isInCart(product.id)
+                            ? "bg-green-600 text-white"
+                            : "text-green-600 border-green-600 hover:bg-green-50"
+                        } text-xs h-9 active:scale-95`}
+                      >
+                        <ShoppingBag className="h-3.5 w-3.5 mr-1" />
+                        {isInCart(product.id) ? "Ajouté" : "Panier"}
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleProductClick(product)}
+                        className="text-gray-600 border-gray-300 hover:bg-gray-50 text-xs h-9"
+                      >
+                        Détails
+                      </Button>
                     )}
                   </div>
+                  
+                  {!isOwner && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setContactContext({
+                          type: 'product',
+                          title: product.name
+                        });
+                        setIsContactDialogOpen(true);
+                      }}
+                      className="w-full text-purple-600 border-purple-600 hover:bg-purple-50 text-xs h-9 active:scale-95"
+                    >
+                      <Send className="h-3.5 w-3.5 mr-1.5" />
+                      {getActionButtonText(product.category)}
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}

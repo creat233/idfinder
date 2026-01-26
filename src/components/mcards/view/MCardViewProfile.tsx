@@ -129,34 +129,33 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
   return (
     <div className="relative">
-      <Card className="relative shadow-xl border border-gray-100 bg-white rounded-3xl overflow-hidden">
+      <Card className="relative shadow-xl border border-gray-100 bg-white rounded-2xl sm:rounded-3xl overflow-hidden">
         
-        <CardContent className="relative p-4 sm:p-6 lg:p-8">
+        <CardContent className="relative p-3 sm:p-5 md:p-6 lg:p-8">
           {/* Message d'avertissement pour carte en attente */}
           {isPendingPayment && (
-            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl sm:rounded-2xl shadow-sm">
-              <div className="flex items-start gap-2 sm:gap-3">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-orange-600 text-sm sm:text-lg">⏳</span>
+            <div className="mb-4 p-3 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl shadow-sm">
+              <div className="flex items-start gap-2.5">
+                <div className="w-7 h-7 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-orange-600 text-sm">⏳</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-orange-800 font-semibold text-xs sm:text-sm lg:text-base leading-tight">Carte en attente d'activation</h4>
-                  <p className="text-xs sm:text-sm text-orange-700 mt-1 leading-relaxed">
-                    Votre carte est visible mais le partage et le QR code seront disponibles après validation par un administrateur.
+                  <h4 className="text-orange-800 font-semibold text-xs sm:text-sm leading-tight">Carte en attente d'activation</h4>
+                  <p className="text-[11px] sm:text-xs text-orange-700 mt-0.5 leading-relaxed">
+                    Visible mais partage et QR code après validation.
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 sm:gap-8 lg:gap-12">
+          <div className="flex flex-col items-center lg:flex-row lg:items-start gap-4 sm:gap-6 lg:gap-10">
             {/* Photo de profil et informations principales */}
             <div className="flex flex-col items-center text-center lg:text-left w-full lg:w-auto">
               
               <div 
-                className="cursor-pointer transition-all duration-300 hover:scale-105 group relative mb-4 sm:mb-6"
+                className="cursor-pointer transition-all duration-300 hover:scale-105 group relative mb-3 sm:mb-4"
                 onClick={() => setIsProfileImageDialogOpen(true)}
-                title="Cliquer pour voir le profil en grand"
               >
                 <div className="relative">
                   {/* Ring animé */}
@@ -166,12 +165,12 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                     src={currentProfileImage} 
                     alt={mcard.full_name || 'Profile picture'}
                     fallbackText={mcard.full_name || ''}
-                    className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 shadow-2xl ring-2 sm:ring-4 ring-white group-hover:ring-4 sm:group-hover:ring-6 transition-all duration-300 text-lg sm:text-2xl lg:text-4xl"
+                    className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 shadow-2xl ring-2 sm:ring-3 lg:ring-4 ring-white group-hover:ring-4 transition-all duration-300 text-base sm:text-xl lg:text-3xl"
                   />
                   
                   {/* Overlay au hover */}
                   <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                    <span className="text-white text-xs sm:text-sm font-medium px-2">{isOwner ? 'Modifier' : 'Voir le profil'}</span>
+                    <span className="text-white text-[10px] sm:text-xs font-medium px-2">{isOwner ? 'Modifier' : 'Voir'}</span>
                   </div>
                   
                   {/* Bouton d'édition pour le propriétaire */}
@@ -182,20 +181,20 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                         e.stopPropagation();
                         setIsProfileEditorOpen(true);
                       }}
-                      className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 bg-blue-600 hover:bg-blue-700 shadow-lg"
+                      className="absolute -bottom-0.5 -right-0.5 sm:-bottom-1 sm:-right-1 rounded-full w-6 h-6 sm:w-7 sm:h-7 p-0 bg-blue-600 hover:bg-blue-700 shadow-lg"
                     >
-                      <Edit className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                      <Edit className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-white" />
                     </Button>
                   )}
                 </div>
               </div>
               
               {/* Nom et badge de vérification */}
-              <div className="flex flex-col items-center gap-2 sm:gap-3 mb-3 sm:mb-4 w-full">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-center leading-tight break-words max-w-full">
+              <div className="flex flex-col items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 w-full">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent text-center leading-tight break-words max-w-full px-2">
                   {mcard.full_name}
                 </h1>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <MCardVerifiedBadge isVerified={mcard.is_verified || false} />
                   <OnlineStatusIndicator userId={mcard.user_id} showText={true} />
                 </div>
@@ -203,35 +202,35 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               
               {/* Titre du poste */}
               {mcard.job_title && (
-                <div className="flex items-center justify-center gap-2 sm:gap-3 text-gray-600 mb-2 sm:mb-3 w-full">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Briefcase className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-1.5 sm:mb-2 w-full">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Briefcase className="h-3 w-3 text-blue-600" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium text-center break-words">{mcard.job_title}</span>
+                  <span className="text-xs sm:text-sm lg:text-base font-medium text-center break-words">{mcard.job_title}</span>
                 </div>
               )}
               
               {/* Entreprise */}
               {mcard.company && (
-                <div className="flex items-center justify-center gap-2 sm:gap-3 text-gray-600 mb-4 sm:mb-6 w-full">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Building className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600" />
+                <div className="flex items-center justify-center gap-2 text-gray-600 mb-3 sm:mb-4 w-full">
+                  <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Building className="h-3 w-3 text-purple-600" />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg font-medium text-center break-words">{mcard.company}</span>
+                  <span className="text-xs sm:text-sm lg:text-base font-medium text-center break-words">{mcard.company}</span>
                 </div>
               )}
 
               {/* Badges de statut */}
-              <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 max-w-full">
-                <Badge variant="outline" className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 text-blue-700">
+              <div className="flex flex-wrap justify-center gap-1.5 mb-3 sm:mb-4 max-w-full">
+                <Badge variant="outline" className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 text-blue-700">
                   Plan {mcard.plan === 'essential' ? 'Essentiel' : mcard.plan === 'premium' ? 'Premium' : mcard.plan}
                 </Badge>
                 {mcard.subscription_status && (
                   <Badge 
                     variant={mcard.subscription_status === 'active' ? 'default' : 'secondary'}
-                    className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium ${
+                    className={`px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium ${
                       mcard.subscription_status === 'active' 
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg' 
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
                         : 'bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border-orange-200'
                     }`}
                   >
@@ -241,8 +240,8 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   </Badge>
                 )}
                 {mcard.verification_status === 'pending' && (
-                  <Badge className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 border-orange-200">
-                    🔄 Vérification en cours
+                  <Badge className="px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 border-orange-200">
+                    🔄 En vérification
                   </Badge>
                 )}
               </div>
@@ -251,38 +250,38 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               {canRequestVerification && (
                 <Button
                   onClick={() => setIsVerificationDialogOpen(true)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 mb-4 sm:mb-6 w-full sm:w-auto text-xs sm:text-sm"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 mb-3 sm:mb-4 w-full sm:w-auto text-[10px] sm:text-xs h-8 sm:h-9 active:scale-95"
                   size="sm"
                 >
-                  <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                  <CheckCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5" />
                   <span className="hidden sm:inline">Demander la vérification (5 000 FCFA)</span>
-                  <span className="sm:hidden">Vérification (5 000 FCFA)</span>
+                  <span className="sm:hidden">Vérification (5 000 F)</span>
                 </Button>
               )}
             </div>
 
             {/* Informations de contact et actions */}
-            <div className="flex-1 w-full min-w-0 space-y-4 sm:space-y-6">
+            <div className="flex-1 w-full min-w-0 space-y-3 sm:space-y-4">
               {/* Informations de contact avec design amélioré */}
-              <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-sm">
+              <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-xl p-3 sm:p-4 border border-gray-100 shadow-sm">
                 <MCardViewContactInfo mcard={mcard} />
               </div>
               
               {/* Description */}
               {mcard.description && (
-                <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-purple-100 shadow-sm">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-purple-600 text-sm sm:text-lg">📝</span>
+                <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl p-3 sm:p-4 border border-purple-100 shadow-sm">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-purple-600 text-sm">📝</span>
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">À propos</h3>
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900">À propos</h3>
                   </div>
-                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base break-words">{mcard.description}</p>
+                  <p className="text-gray-700 leading-relaxed text-xs sm:text-sm break-words">{mcard.description}</p>
                 </div>
               )}
 
               {/* Actions rapides */}
-              <div className="bg-gradient-to-br from-blue-50/30 to-indigo-50/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-blue-100 shadow-sm">
+              <div className="bg-gradient-to-br from-blue-50/30 to-indigo-50/30 rounded-xl p-3 sm:p-4 border border-blue-100 shadow-sm">
                 <MCardViewQuickActions 
                   onCopyLink={handleCopyLink} 
                   onShare={handleShare}
@@ -292,7 +291,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
               {/* Section Interactions améliorée */}
               {!isOwner && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <MCardInteractionsSection
                     mcardId={mcard.id}
                     mcardOwnerId={mcard.user_id}
@@ -300,9 +299,11 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   />
                   
                   {/* Actions disponibles */}
-                  <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-2xl p-6 border border-green-100 shadow-sm">
-                    <h4 className="font-semibold text-gray-900 mb-4">🚀 Actions disponibles</h4>
-                    <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="bg-gradient-to-br from-green-50/30 to-emerald-50/30 rounded-xl p-3 sm:p-4 border border-green-100 shadow-sm">
+                    <h4 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base flex items-center gap-2">
+                      🚀 Actions
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
                       <MCardAppointmentBooking
                         mcardId={mcard.id}
                         mcardOwnerId={mcard.user_id}
@@ -311,9 +312,9 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                       />
                       <Button 
                         onClick={handleSaveOffline}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                        className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 active:scale-95 text-xs sm:text-sm h-9 sm:h-10"
                       >
-                        💾 Sauvegarder hors-ligne
+                        💾 <span className="hidden xs:inline ml-1">Sauvegarder</span><span className="xs:hidden ml-1">Sauv.</span>
                       </Button>
                     </div>
                   </div>
@@ -322,12 +323,11 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
 
               {/* Bouton pour envoyer un message (cartes en attente) */}
               {!isOwner && isPendingPayment && (
-                <div className="bg-gradient-to-br from-orange-50/30 to-amber-50/30 rounded-2xl p-6 border border-orange-100 shadow-sm">
+                <div className="bg-gradient-to-br from-orange-50/30 to-amber-50/30 rounded-xl p-3 sm:p-4 border border-orange-100 shadow-sm">
                   <Button
                     onClick={() => setIsMessageDialogOpen(true)}
                     variant="outline"
-                    className="w-full bg-white/80 hover:bg-white border-orange-200 text-orange-700 hover:text-orange-800 shadow-sm"
-                    size="lg"
+                    className="w-full bg-white/80 hover:bg-white border-orange-200 text-orange-700 hover:text-orange-800 shadow-sm h-10 text-sm"
                   >
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Envoyer un message
@@ -338,13 +338,13 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
           </div>
 
           {/* Réseaux sociaux */}
-          <div className="mt-6 sm:mt-8 bg-gradient-to-br from-indigo-50/30 to-blue-50/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-indigo-100 shadow-sm">
+          <div className="mt-4 sm:mt-6 bg-gradient-to-br from-indigo-50/30 to-blue-50/30 rounded-xl p-3 sm:p-4 border border-indigo-100 shadow-sm">
             <MCardSocialLinks mcard={mcard} />
           </div>
 
           {/* Fonctionnalités avancées pour les propriétaires */}
           {isOwner && (
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
               {/* Tableau de bord Business 2026 - uniquement pour les plans payants */}
               {mcard.plan !== 'free' && (
                 <MCardBusinessDashboard mcard={mcard} isOwner={isOwner} />
@@ -352,28 +352,28 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               
               <MCardAnalyticsDashboard mcardId={mcard.id} mcardSlug={mcard.slug} />
               
-              <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-purple-100 shadow-sm">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
-                  <span className="text-lg sm:text-xl">🚀</span> 
-                  <span className="break-words">Fonctionnalités avancées 2026</span>
+              <div className="bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl p-3 sm:p-4 border border-purple-100 shadow-sm">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+                  <span className="text-base sm:text-lg">🚀</span> 
+                  <span className="break-words">Fonctionnalités avancées</span>
                 </h3>
                 
                 {/* Outils Business - uniquement pour les plans payants */}
                 {mcard.plan !== 'free' && (
-                  <div className="mb-4 sm:mb-6 space-y-3">
-                    <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <div className="mb-3 sm:mb-4 space-y-2 sm:space-y-3">
+                    <h4 className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2">
                       💼 Gestion Business
                     </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                       <MCardClientManager mcard={mcard} isOwner={isOwner} />
                       <MCardSalesGoals mcard={mcard} isOwner={isOwner} />
                       <MCardPaymentTracker mcard={mcard} isOwner={isOwner} />
                       <Button 
                         variant="outline"
-                        className="w-full justify-start"
+                        className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10"
                         onClick={() => window.location.href = `/mcard/${mcard.slug}/invoices`}
                       >
-                        <FileText className="h-4 w-4 mr-2" />
+                        <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-2" />
                         Factures & Devis
                       </Button>
                     </div>
@@ -381,7 +381,7 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                 )}
 
                 {/* Autres fonctionnalités */}
-                <div className="grid grid-cols-1 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 gap-2 sm:gap-3">
                   <MCardAvailabilityManager mcardId={mcard.id} isOwner={isOwner} />
                   <MCardAIAssistant mcard={mcard} isOwner={isOwner} />
                 </div>
