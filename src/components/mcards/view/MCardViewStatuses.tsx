@@ -142,12 +142,12 @@ export const MCardViewStatuses = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mx-2 sm:mx-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+      <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 md:p-6 mx-1 sm:mx-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
           <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center gap-2">
-            🟢 Statuts & Disponibilités
+            🟢 <span className="truncate">Statuts & Disponibilités</span>
           </h3>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {activeStatuses.length > 0 && (
               <Button
                 size="sm"
@@ -157,24 +157,25 @@ export const MCardViewStatuses = ({
                     state: { statuses: activeStatuses, mcardId, ownerName: mcardOwnerName || '', isOwner }
                   });
                 }}
-                className="text-purple-600 border-purple-600 hover:bg-purple-50"
+                className="text-purple-600 border-purple-600 hover:bg-purple-50 text-xs sm:text-sm h-8 sm:h-9"
               >
-                Voir tout
+                <span className="hidden xs:inline">Voir tout</span>
+                <span className="xs:hidden">Tout</span>
               </Button>
             )}
             {canAddStatus && (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <span className="text-xs text-center sm:text-right text-muted-foreground">
-                  {statusesCreatedToday}/{planLimits.maxStatuses} statuts aujourd'hui
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">
+                  {statusesCreatedToday}/{planLimits.maxStatuses}
                 </span>
                 <Button 
                   size="sm" 
                   variant="outline"
                   onClick={handleAddStatus}
-                  className="text-blue-600 border-blue-600 hover:bg-blue-50 w-full sm:w-auto"
+                  className="text-blue-600 border-blue-600 hover:bg-blue-50 text-xs sm:text-sm h-8 sm:h-9"
                 >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Ajouter un statut
+                  <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+                  <span className="hidden sm:inline">Ajouter</span>
                 </Button>
               </div>
             )}
@@ -182,21 +183,21 @@ export const MCardViewStatuses = ({
         </div>
 
         {activeStatuses.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-6 sm:py-8 text-gray-500">
             {canAddStatus ? (
               <div>
-                <p className="mb-4">Aucun statut actif pour le moment</p>
-                <Button onClick={handleAddStatus} className="bg-blue-600 hover:bg-blue-700">
+                <p className="mb-4 text-sm sm:text-base">Aucun statut actif</p>
+                <Button onClick={handleAddStatus} className="bg-blue-600 hover:bg-blue-700 text-sm">
                   <Plus className="h-4 w-4 mr-2" />
-                  Ajouter votre premier statut
+                  Ajouter un statut
                 </Button>
               </div>
             ) : (
-              <p>Aucun statut actif pour le moment</p>
+              <p className="text-sm sm:text-base">Aucun statut actif</p>
             )}
           </div>
         ) : (
-          <div className="max-h-96 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="max-h-80 sm:max-h-96 overflow-y-auto space-y-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 -mx-1 px-1">
             <MCardStatusCarousel
               statuses={activeStatuses}
               isOwner={isOwner}
