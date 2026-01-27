@@ -61,6 +61,47 @@ serve(async (req: Request) => {
       throw new Error("Campaign already sent or cancelled");
     }
 
+    // Utiliser le client admin pour les opérations privilégiées
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+
+    // Vérifier le quota hebdomadaire
+    const weekStart = getWeekStart();
+    
+    // Récupérer ou créer le quota
+    let { data: quota, error: quotaError } = await supabaseAdmin
+      .from("mcard_marketing_quotas")
+      .select("*")
+      .eq("mcard_id", mcardId)
+      .eq("week_start", weekStart)
+      .maybeSingle();
+
+    if (!quota) {
+      const { data: newQuota, error: createError } = await supabaseAdmin
+        .from("mcard_marketing_quotas")
+        .insert({
+          mcard_id: mcardId,
+          week_start: weekStart
+        })
+        .select()
+        .single();
+      
+      if (createError) {
+        console.error("Error creating quota:", createError);
+        throw new Error("Failed to create weekly quota");
+      }
+      quota = newQuota;
+    }
+
+    // Calculer les messages disponibles
+    const FREE_LIMIT = 20;
+    const freeRemaining = Math.max(0, FREE_LIMIT - quota.free_messages_used);
+    const paidRemaining = quota.paid_messages_available - quota.paid_messages_used;
+    const totalRemaining = freeRemaining + paidRemaining;
+
     // Récupérer les user_ids des favoris via la fonction RPC
     const { data: favorites, error: favoritesError } = await supabaseClient
       .rpc("get_mcard_favorite_emails", { p_mcard_id: mcardId });
@@ -77,17 +118,31 @@ serve(async (req: Request) => {
       );
     }
 
-    console.log(`Sending campaign to ${favorites.length} recipients via Finder ID messaging`);
+    // Vérifier si on peut envoyer à tous les destinataires
+    const recipientCount = favorites.length;
+    if (recipientCount > totalRemaining) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: `Quota insuffisant. Vous avez ${totalRemaining} messages disponibles mais ${recipientCount} destinataires.`,
+          quota: {
+            freeRemaining,
+            paidRemaining,
+            totalRemaining
+          }
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    // Utiliser le client admin pour insérer les messages
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    );
+    console.log(`Sending campaign to ${recipientCount} recipients via Finder ID messaging`);
 
     const campaignEmoji = getCampaignEmoji(campaign.campaign_type);
     const typeLabel = getTypeLabel(campaign.campaign_type);
+    
+    // Calculer la date d'expiration (3 jours)
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 3);
     
     // Créer un message pour chaque favori
     const messages = favorites.map((favorite: { user_id: string }) => ({
@@ -96,7 +151,9 @@ serve(async (req: Request) => {
       mcard_id: mcardId,
       subject: `${campaignEmoji} ${typeLabel}: ${campaign.title}`,
       message: campaign.message,
-      is_read: false
+      is_read: false,
+      is_marketing: true,
+      expires_at: expiresAt.toISOString()
     }));
 
     // Insérer tous les messages en une seule requête
@@ -110,6 +167,26 @@ serve(async (req: Request) => {
     }
 
     const totalSent = messages.length;
+
+    // Mettre à jour le quota
+    let freeUsed = 0;
+    let paidUsed = 0;
+
+    if (totalSent <= freeRemaining) {
+      freeUsed = totalSent;
+    } else {
+      freeUsed = freeRemaining;
+      paidUsed = totalSent - freeRemaining;
+    }
+
+    await supabaseAdmin
+      .from("mcard_marketing_quotas")
+      .update({
+        free_messages_used: quota.free_messages_used + freeUsed,
+        paid_messages_used: quota.paid_messages_used + paidUsed,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", quota.id);
 
     // Mettre à jour le statut de la campagne
     await supabaseAdmin
@@ -126,7 +203,7 @@ serve(async (req: Request) => {
       user_id: user.id,
       type: "campaign_sent",
       title: "📧 Campagne envoyée !",
-      message: `Votre campagne "${campaign.title}" a été envoyée à ${totalSent} personnes via la messagerie Finder ID.`
+      message: `Votre campagne "${campaign.title}" a été envoyée à ${totalSent} personnes. Les messages expireront dans 3 jours.`
     });
 
     console.log(`Campaign sent successfully to ${totalSent} recipients`);
@@ -134,7 +211,11 @@ serve(async (req: Request) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        recipientCount: totalSent
+        recipientCount: totalSent,
+        quotaUsed: {
+          free: freeUsed,
+          paid: paidUsed
+        }
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
@@ -147,6 +228,14 @@ serve(async (req: Request) => {
     );
   }
 });
+
+function getWeekStart(): string {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+  const monday = new Date(now.setDate(diff));
+  return monday.toISOString().split('T')[0];
+}
 
 function getCampaignEmoji(type: string): string {
   switch (type) {

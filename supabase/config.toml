@@ -36,6 +36,9 @@ enable_signup = true
 [functions.send-admin-email]
 verify_jwt = true
 
+[functions.send-marketing-campaign]
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 port = 54329
