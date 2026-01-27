@@ -604,6 +604,217 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_loyalty_points: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          lifetime_points: number
+          mcard_id: string
+          total_points: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          lifetime_points?: number
+          mcard_id: string
+          total_points?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          lifetime_points?: number
+          mcard_id?: string
+          total_points?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_loyalty_points_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_loyalty_programs: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          mcard_id: string
+          points_per_favorite: number
+          points_per_message: number
+          points_per_purchase: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          mcard_id: string
+          points_per_favorite?: number
+          points_per_message?: number
+          points_per_purchase?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          mcard_id?: string
+          points_per_favorite?: number
+          points_per_message?: number
+          points_per_purchase?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_loyalty_programs_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: true
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_loyalty_redemptions: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          points_spent: number
+          redeemed_at: string
+          reward_id: string
+          status: string
+          validated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          points_spent: number
+          redeemed_at?: string
+          reward_id: string
+          status?: string
+          validated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          points_spent?: number
+          redeemed_at?: string
+          reward_id?: string
+          status?: string
+          validated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_loyalty_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "mcard_loyalty_rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_loyalty_rewards: {
+        Row: {
+          created_at: string
+          current_redemptions: number
+          description: string | null
+          id: string
+          is_active: boolean
+          max_redemptions: number | null
+          mcard_id: string
+          name: string
+          points_required: number
+          reward_type: string
+          reward_value: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_redemptions?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          mcard_id: string
+          name: string
+          points_required: number
+          reward_type?: string
+          reward_value?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_redemptions?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          mcard_id?: string
+          name?: string
+          points_required?: number
+          reward_type?: string
+          reward_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_loyalty_rewards_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_loyalty_transactions: {
+        Row: {
+          created_at: string
+          customer_id: string
+          description: string | null
+          id: string
+          mcard_id: string
+          points: number
+          transaction_type: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          description?: string | null
+          id?: string
+          mcard_id: string
+          points: number
+          transaction_type: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          description?: string | null
+          id?: string
+          mcard_id?: string
+          points?: number
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_loyalty_transactions_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_marketing_campaigns: {
         Row: {
           campaign_type: string
@@ -660,10 +871,97 @@ export type Database = {
           },
         ]
       }
+      mcard_marketing_packs: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          mcard_id: string
+          messages_remaining: number
+          pack_size: number
+          price_fcfa: number
+          purchased_at: string
+          stripe_payment_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          mcard_id: string
+          messages_remaining: number
+          pack_size: number
+          price_fcfa: number
+          purchased_at?: string
+          stripe_payment_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          mcard_id?: string
+          messages_remaining?: number
+          pack_size?: number
+          price_fcfa?: number
+          purchased_at?: string
+          stripe_payment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_marketing_packs_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mcard_marketing_quotas: {
+        Row: {
+          created_at: string
+          free_messages_used: number
+          id: string
+          mcard_id: string
+          paid_messages_available: number
+          paid_messages_used: number
+          updated_at: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          free_messages_used?: number
+          id?: string
+          mcard_id: string
+          paid_messages_available?: number
+          paid_messages_used?: number
+          updated_at?: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          free_messages_used?: number
+          id?: string
+          mcard_id?: string
+          paid_messages_available?: number
+          paid_messages_used?: number
+          updated_at?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_marketing_quotas_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_messages: {
         Row: {
           created_at: string | null
+          expires_at: string | null
           id: string
+          is_marketing: boolean | null
           is_read: boolean | null
           mcard_id: string
           message: string
@@ -674,7 +972,9 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          expires_at?: string | null
           id?: string
+          is_marketing?: boolean | null
           is_read?: boolean | null
           mcard_id: string
           message: string
@@ -685,7 +985,9 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          expires_at?: string | null
           id?: string
+          is_marketing?: boolean | null
           is_read?: boolean | null
           mcard_id?: string
           message?: string
@@ -1631,6 +1933,7 @@ export type Database = {
         Returns: boolean
       }
       can_add_status_today: { Args: { p_mcard_id: string }; Returns: boolean }
+      cleanup_expired_marketing_messages: { Args: never; Returns: undefined }
       count_statuses_created_today: {
         Args: { p_mcard_id: string }
         Returns: number
@@ -1668,6 +1971,15 @@ export type Database = {
           user_email: string
         }[]
       }
+      get_available_marketing_messages: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          can_send: boolean
+          free_remaining: number
+          paid_remaining: number
+          total_remaining: number
+        }[]
+      }
       get_daily_app_visits: {
         Args: { days_back?: number }
         Returns: {
@@ -1690,6 +2002,25 @@ export type Database = {
           first_name: string
           user_id: string
         }[]
+      }
+      get_or_create_marketing_quota: {
+        Args: { p_mcard_id: string }
+        Returns: {
+          created_at: string
+          free_messages_used: number
+          id: string
+          mcard_id: string
+          paid_messages_available: number
+          paid_messages_used: number
+          updated_at: string
+          week_start: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "mcard_marketing_quotas"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       get_or_create_mcard_customization: {
         Args: { p_mcard_id: string }
@@ -1796,6 +2127,7 @@ export type Database = {
           first_name: string
         }[]
       }
+      get_week_start: { Args: { input_date?: string }; Returns: string }
       increment_mcard_view_count: {
         Args: { mcard_slug: string }
         Returns: undefined

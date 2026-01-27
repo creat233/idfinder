@@ -6,8 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useMarketingQuota } from "@/hooks/useMarketingQuota";
+import { MarketingQuotaDisplay } from "./MarketingQuotaDisplay";
 import { 
   Megaphone, 
   Plus, 
@@ -15,14 +18,16 @@ import {
   Clock, 
   Users, 
   Eye, 
-  MousePointer,
   Loader2,
   Trash2,
-  Edit,
   Gift,
   Bell,
   Calendar,
-  MessageSquare
+  MessageSquare,
+  ChevronDown,
+  ChevronUp,
+  Zap,
+  AlertCircle
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -78,6 +83,7 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isQuotaExpanded, setIsQuotaExpanded] = useState(false);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
@@ -85,6 +91,7 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
     campaign_type: "promotion"
   });
   const { toast } = useToast();
+  const { quota, refresh: refreshQuota } = useMarketingQuota(mcardId);
 
   useEffect(() => {
     fetchCampaigns();
@@ -172,6 +179,16 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
       return;
     }
 
+    // Vérifier le quota
+    if (!quota.canSend || quota.totalRemaining < favoritesCount) {
+      toast({
+        title: "Quota insuffisant",
+        description: `Vous avez ${quota.totalRemaining} messages disponibles mais ${favoritesCount} destinataires. Achetez un pack pour continuer.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     setSending(campaign.id);
     try {
       const { data, error } = await supabase.functions.invoke("send-marketing-campaign", {
@@ -183,12 +200,22 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
 
       if (error) throw error;
 
+      if (!data.success) {
+        toast({
+          title: "Envoi impossible",
+          description: data.message || "Une erreur est survenue",
+          variant: "destructive"
+        });
+        return;
+      }
+
       toast({
         title: "Campagne envoyée ! 🎉",
-        description: `${data.recipientCount} emails envoyés avec succès`
+        description: `${data.recipientCount} messages envoyés. Ils expireront dans 3 jours.`
       });
 
       fetchCampaigns();
+      refreshQuota();
     } catch (error) {
       console.error("Erreur envoi campagne:", error);
       toast({
@@ -198,6 +225,67 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
       });
     } finally {
       setSending(null);
+    }
+  };
+
+  const sendQuickCampaign = async () => {
+    if (favoritesCount === 0) {
+      toast({
+        title: "Aucun destinataire",
+        description: "Personne n'a encore favorisé votre MCard",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!quota.canSend || quota.totalRemaining < favoritesCount) {
+      toast({
+        title: "Quota insuffisant",
+        description: `Achetez un pack de messages pour envoyer à vos ${favoritesCount} fans.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Créer une campagne rapide
+    try {
+      const { data: newCampaign, error: createError } = await supabase
+        .from("mcard_marketing_campaigns")
+        .insert({
+          mcard_id: mcardId,
+          title: "Message rapide",
+          message: "Bonjour ! Nous avons des nouveautés pour vous. Visitez notre profil pour en savoir plus !",
+          campaign_type: "announcement"
+        })
+        .select()
+        .single();
+
+      if (createError) throw createError;
+
+      // Envoyer immédiatement
+      const { data, error } = await supabase.functions.invoke("send-marketing-campaign", {
+        body: {
+          campaignId: newCampaign.id,
+          mcardId: mcardId
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message envoyé ! ⚡",
+        description: `${data.recipientCount} personnes ont reçu votre message.`
+      });
+
+      fetchCampaigns();
+      refreshQuota();
+    } catch (error) {
+      console.error("Erreur envoi rapide:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer le message",
+        variant: "destructive"
+      });
     }
   };
 
@@ -327,7 +415,51 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
           </Dialog>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {/* Quota Display Section */}
+        <Collapsible open={isQuotaExpanded} onOpenChange={setIsQuotaExpanded}>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" className="w-full flex items-center justify-between p-2 h-auto">
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-blue-500" />
+                <span className="text-sm font-medium">
+                  {quota.totalRemaining} messages disponibles cette semaine
+                </span>
+              </div>
+              {isQuotaExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-2">
+            <MarketingQuotaDisplay 
+              mcardId={mcardId} 
+              favoritesCount={favoritesCount}
+              onBuyPack={(size, price) => {
+                toast({
+                  title: "Achat de pack",
+                  description: `Activez Stripe pour acheter ${size} messages à ${price.toLocaleString()} FCFA`
+                });
+              }}
+            />
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Bouton envoi rapide */}
+        <Button 
+          onClick={sendQuickCampaign}
+          disabled={favoritesCount === 0 || !quota.canSend}
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+        >
+          <Zap className="h-4 w-4 mr-2" />
+          Envoyer un message à tous vos fans ({favoritesCount})
+        </Button>
+
+        {quota.totalRemaining === 0 && (
+          <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>Vous avez épuisé vos messages gratuits cette semaine. Achetez un pack pour continuer.</span>
+          </div>
+        )}
+
         {campaigns.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Megaphone className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -379,7 +511,7 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
                           size="sm"
                           variant="default"
                           onClick={() => sendCampaign(campaign)}
-                          disabled={sending === campaign.id || favoritesCount === 0}
+                          disabled={sending === campaign.id || favoritesCount === 0 || !quota.canSend}
                         >
                           {sending === campaign.id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />

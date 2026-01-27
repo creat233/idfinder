@@ -27,6 +27,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { BusinessNotificationBadge } from '@/components/notifications/BusinessNotificationBadge';
 import { MCardMarketingCampaigns } from './MCardMarketingCampaigns';
+import { MCardLoyaltyProgram } from './MCardLoyaltyProgram';
 import { MCardClientManager } from './MCardClientManager';
 import { InvoiceCreateForm } from '@/components/mcards/invoices/InvoiceCreateForm';
 import { MCardViewAddProductDialog } from '@/components/mcards/view/MCardViewAddProductDialog';
@@ -356,6 +357,9 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
 
             {/* Marketing Campaigns */}
             <MCardMarketingCampaigns mcardId={mcard.id} />
+
+            {/* Loyalty Program */}
+            <MCardLoyaltyProgram mcardId={mcard.id} />
 
             {/* Insights IA */}
             <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
