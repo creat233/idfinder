@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useMarketingQuota } from "@/hooks/useMarketingQuota";
@@ -467,75 +468,77 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
             <p className="text-sm">Créez votre première campagne pour toucher vos {favoritesCount} fans !</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {campaigns.map((campaign) => (
-              <div
-                key={campaign.id}
-                className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      {campaignTypeIcons[campaign.campaign_type]}
-                      <span className="font-medium truncate">{campaign.title}</span>
-                      <Badge className={statusColors[campaign.status]}>
-                        {statusLabels[campaign.status]}
-                      </Badge>
+          <ScrollArea className="max-h-64">
+            <div className="space-y-3 pr-2">
+              {campaigns.map((campaign) => (
+                <div
+                  key={campaign.id}
+                  className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        {campaignTypeIcons[campaign.campaign_type]}
+                        <span className="font-medium truncate">{campaign.title}</span>
+                        <Badge className={statusColors[campaign.status]}>
+                          {statusLabels[campaign.status]}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                        {campaign.message}
+                      </p>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {format(new Date(campaign.created_at), "dd MMM yyyy", { locale: fr })}
+                        </span>
+                        {campaign.status === "sent" && (
+                          <>
+                            <span className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              {campaign.recipients_count} envoyés
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Eye className="h-3 w-3" />
+                              {campaign.opened_count} ouverts
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                      {campaign.message}
-                    </p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {format(new Date(campaign.created_at), "dd MMM yyyy", { locale: fr })}
-                      </span>
-                      {campaign.status === "sent" && (
+                    <div className="flex items-center gap-2">
+                      {campaign.status === "draft" && (
                         <>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            {campaign.recipients_count} envoyés
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            {campaign.opened_count} ouverts
-                          </span>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => sendCampaign(campaign)}
+                            disabled={sending === campaign.id || favoritesCount === 0 || !quota.canSend}
+                          >
+                            {sending === campaign.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <>
+                                <Send className="h-4 w-4 mr-1" />
+                                Envoyer
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => deleteCampaign(campaign.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
                         </>
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {campaign.status === "draft" && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={() => sendCampaign(campaign)}
-                          disabled={sending === campaign.id || favoritesCount === 0 || !quota.canSend}
-                        >
-                          {sending === campaign.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <>
-                              <Send className="h-4 w-4 mr-1" />
-                              Envoyer
-                            </>
-                          )}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => deleteCampaign(campaign.id)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </>
-                    )}
-                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollArea>
         )}
       </CardContent>
     </Card>
