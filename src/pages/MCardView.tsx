@@ -12,6 +12,7 @@ import { MCardViewNotFound } from '@/components/mcards/view/MCardViewNotFound';
 import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalProducts';
 import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
 import { MCardCustomized } from '@/components/mcards/MCardCustomized';
+import { MCardVisitorLoyalty } from '@/components/mcards/view/MCardVisitorLoyalty';
 import { useMCardView } from '@/hooks/useMCardView';
 import { useUserPresence } from '@/hooks/useUserPresence';
 import { useAuth } from '@/hooks/useAuth';
@@ -139,6 +140,14 @@ const MCardView = () => {
               mcard={mcard}
               isOwner={isOwner}
             />
+
+            {/* Loyalty Program for Visitors */}
+            {!isOwner && mcard.plan !== 'free' && (
+              <MCardVisitorLoyalty 
+                mcardId={mcard.id}
+                mcardOwnerName={mcard.full_name}
+              />
+            )}
           </MCardCustomized>
 
           {/* Customization Section */}
