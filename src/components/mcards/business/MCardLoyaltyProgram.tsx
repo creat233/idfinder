@@ -57,9 +57,14 @@ export const MCardLoyaltyProgram = ({ mcardId }: MCardLoyaltyProgramProps) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isRewardDialogOpen, setIsRewardDialogOpen] = useState(false);
   const [settings, setSettings] = useState({
-    pointsPerPurchase: 10,
-    pointsPerFavorite: 5,
-    pointsPerMessage: 2
+    pointsPerPurchase: program?.pointsPerPurchase ?? 10,
+    pointsPerFavorite: program?.pointsPerFavorite ?? 5,
+    pointsPerMessage: program?.pointsPerMessage ?? 2,
+    pointsPerLike: program?.pointsPerLike ?? 5,
+    pointsPerShare: program?.pointsPerShare ?? 10,
+    pointsPerReview: program?.pointsPerReview ?? 20,
+    pointsPerProductLike: program?.pointsPerProductLike ?? 3,
+    pointsPerSave: program?.pointsPerSave ?? 5
   });
   const [newReward, setNewReward] = useState({
     name: '',
@@ -137,35 +142,91 @@ export const MCardLoyaltyProgram = ({ mcardId }: MCardLoyaltyProgramProps) => {
                 <Settings className="h-4 w-4" />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Paramètres du Programme</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
-                <div>
-                  <label className="text-sm font-medium">Points par achat</label>
-                  <Input
-                    type="number"
-                    value={settings.pointsPerPurchase}
-                    onChange={(e) => setSettings({ ...settings, pointsPerPurchase: parseInt(e.target.value) || 0 })}
-                  />
+                <p className="text-sm text-muted-foreground">
+                  Configurez les points que vos clients gagnent pour chaque action. 
+                  Mettez 0 pour désactiver une action.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">⭐ Ajouter aux favoris</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerFavorite}
+                      onChange={(e) => setSettings({ ...settings, pointsPerFavorite: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">❤️ Aimer la carte</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerLike}
+                      onChange={(e) => setSettings({ ...settings, pointsPerLike: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">🔗 Partager la carte</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerShare}
+                      onChange={(e) => setSettings({ ...settings, pointsPerShare: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">🔖 Sauvegarder</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerSave}
+                      onChange={(e) => setSettings({ ...settings, pointsPerSave: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">💬 Laisser un avis</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerReview}
+                      onChange={(e) => setSettings({ ...settings, pointsPerReview: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">👍 Aimer un produit</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerProductLike}
+                      onChange={(e) => setSettings({ ...settings, pointsPerProductLike: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">💬 Envoyer un message</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerMessage}
+                      onChange={(e) => setSettings({ ...settings, pointsPerMessage: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">🛒 Par achat validé</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={settings.pointsPerPurchase}
+                      onChange={(e) => setSettings({ ...settings, pointsPerPurchase: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Points par ajout en favori</label>
-                  <Input
-                    type="number"
-                    value={settings.pointsPerFavorite}
-                    onChange={(e) => setSettings({ ...settings, pointsPerFavorite: parseInt(e.target.value) || 0 })}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Points par interaction message</label>
-                  <Input
-                    type="number"
-                    value={settings.pointsPerMessage}
-                    onChange={(e) => setSettings({ ...settings, pointsPerMessage: parseInt(e.target.value) || 0 })}
-                  />
-                </div>
+                
                 <Button onClick={handleSaveSettings} className="w-full">
                   Enregistrer
                 </Button>
@@ -210,20 +271,40 @@ export const MCardLoyaltyProgram = ({ mcardId }: MCardLoyaltyProgramProps) => {
               <div className="bg-muted/50 rounded-lg p-4">
                 <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
-                  Points gagnés par action
+                  Points par action (une seule fois)
                 </h4>
-                <div className="space-y-2 text-sm">
+                <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="flex justify-between">
-                    <span>Achat validé</span>
-                    <Badge variant="secondary">{program.pointsPerPurchase} pts</Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Ajout en favoris</span>
+                    <span>⭐ Favoris</span>
                     <Badge variant="secondary">{program.pointsPerFavorite} pts</Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span>Interaction message</span>
+                    <span>❤️ Like</span>
+                    <Badge variant="secondary">{program.pointsPerLike} pts</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>🔗 Partage</span>
+                    <Badge variant="secondary">{program.pointsPerShare} pts</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>🔖 Sauvegarde</span>
+                    <Badge variant="secondary">{program.pointsPerSave} pts</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>💬 Avis</span>
+                    <Badge variant="secondary">{program.pointsPerReview} pts</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>👍 Like produit</span>
+                    <Badge variant="secondary">{program.pointsPerProductLike} pts</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>💬 Message</span>
                     <Badge variant="secondary">{program.pointsPerMessage} pts</Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>🛒 Achat</span>
+                    <Badge variant="secondary">{program.pointsPerPurchase} pts</Badge>
                   </div>
                 </div>
               </div>
