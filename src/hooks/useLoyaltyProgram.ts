@@ -8,6 +8,11 @@ interface LoyaltyProgram {
   pointsPerPurchase: number;
   pointsPerFavorite: number;
   pointsPerMessage: number;
+  pointsPerLike: number;
+  pointsPerShare: number;
+  pointsPerReview: number;
+  pointsPerProductLike: number;
+  pointsPerSave: number;
 }
 
 interface LoyaltyReward {
@@ -66,7 +71,12 @@ export const useLoyaltyProgram = (mcardId: string) => {
           isActive: data.is_active,
           pointsPerPurchase: data.points_per_purchase,
           pointsPerFavorite: data.points_per_favorite,
-          pointsPerMessage: data.points_per_message
+          pointsPerMessage: data.points_per_message,
+          pointsPerLike: data.points_per_like,
+          pointsPerShare: data.points_per_share,
+          pointsPerReview: data.points_per_review,
+          pointsPerProductLike: data.points_per_product_like,
+          pointsPerSave: data.points_per_save
         });
       }
     } catch (error) {
@@ -172,6 +182,11 @@ export const useLoyaltyProgram = (mcardId: string) => {
             points_per_purchase: settings.pointsPerPurchase ?? program.pointsPerPurchase,
             points_per_favorite: settings.pointsPerFavorite ?? program.pointsPerFavorite,
             points_per_message: settings.pointsPerMessage ?? program.pointsPerMessage,
+            points_per_like: settings.pointsPerLike ?? program.pointsPerLike,
+            points_per_share: settings.pointsPerShare ?? program.pointsPerShare,
+            points_per_review: settings.pointsPerReview ?? program.pointsPerReview,
+            points_per_product_like: settings.pointsPerProductLike ?? program.pointsPerProductLike,
+            points_per_save: settings.pointsPerSave ?? program.pointsPerSave,
             updated_at: new Date().toISOString()
           })
           .eq('id', program.id);
@@ -185,7 +200,12 @@ export const useLoyaltyProgram = (mcardId: string) => {
             is_active: settings.isActive ?? false,
             points_per_purchase: settings.pointsPerPurchase ?? 10,
             points_per_favorite: settings.pointsPerFavorite ?? 5,
-            points_per_message: settings.pointsPerMessage ?? 2
+            points_per_message: settings.pointsPerMessage ?? 2,
+            points_per_like: settings.pointsPerLike ?? 5,
+            points_per_share: settings.pointsPerShare ?? 10,
+            points_per_review: settings.pointsPerReview ?? 20,
+            points_per_product_like: settings.pointsPerProductLike ?? 3,
+            points_per_save: settings.pointsPerSave ?? 5
           });
 
         if (error) throw error;

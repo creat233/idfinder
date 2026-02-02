@@ -33,6 +33,11 @@ interface LoyaltyProgram {
   pointsPerPurchase: number;
   pointsPerFavorite: number;
   pointsPerMessage: number;
+  pointsPerLike: number;
+  pointsPerShare: number;
+  pointsPerReview: number;
+  pointsPerProductLike: number;
+  pointsPerSave: number;
 }
 
 interface CustomerPoints {
@@ -88,7 +93,12 @@ export const MCardVisitorLoyalty = ({ mcardId, mcardOwnerName }: MCardVisitorLoy
           isActive: programData.is_active,
           pointsPerPurchase: programData.points_per_purchase,
           pointsPerFavorite: programData.points_per_favorite,
-          pointsPerMessage: programData.points_per_message
+          pointsPerMessage: programData.points_per_message,
+          pointsPerLike: programData.points_per_like,
+          pointsPerShare: programData.points_per_share,
+          pointsPerReview: programData.points_per_review,
+          pointsPerProductLike: programData.points_per_product_like,
+          pointsPerSave: programData.points_per_save
         });
 
         // Fetch rewards
@@ -280,25 +290,61 @@ export const MCardVisitorLoyalty = ({ mcardId, mcardOwnerName }: MCardVisitorLoy
           </div>
         )}
 
-        {/* How to earn points */}
+        {/* How to earn points - More compact grid */}
         <div className="bg-white/60 rounded-lg p-3 border border-amber-100">
           <h4 className="text-sm font-medium text-amber-800 mb-2 flex items-center gap-2">
             <Star className="h-4 w-4" />
-            Comment gagner des points
+            Points par action (une seule fois)
           </h4>
-          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="bg-amber-50 rounded-lg p-2">
-              <p className="font-bold text-amber-700">{program.pointsPerPurchase}</p>
-              <p className="text-amber-600">par achat</p>
-            </div>
-            <div className="bg-amber-50 rounded-lg p-2">
-              <p className="font-bold text-amber-700">{program.pointsPerFavorite}</p>
-              <p className="text-amber-600">favori</p>
-            </div>
-            <div className="bg-amber-50 rounded-lg p-2">
-              <p className="font-bold text-amber-700">{program.pointsPerMessage}</p>
-              <p className="text-amber-600">message</p>
-            </div>
+          <div className="grid grid-cols-4 gap-1 text-center text-xs">
+            {program.pointsPerFavorite > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerFavorite}</p>
+                <p className="text-amber-600 text-[10px]">⭐ Favori</p>
+              </div>
+            )}
+            {program.pointsPerLike > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerLike}</p>
+                <p className="text-amber-600 text-[10px]">❤️ Like</p>
+              </div>
+            )}
+            {program.pointsPerShare > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerShare}</p>
+                <p className="text-amber-600 text-[10px]">🔗 Partage</p>
+              </div>
+            )}
+            {program.pointsPerSave > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerSave}</p>
+                <p className="text-amber-600 text-[10px]">🔖 Save</p>
+              </div>
+            )}
+            {program.pointsPerReview > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerReview}</p>
+                <p className="text-amber-600 text-[10px]">💬 Avis</p>
+              </div>
+            )}
+            {program.pointsPerProductLike > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerProductLike}</p>
+                <p className="text-amber-600 text-[10px]">👍 Produit</p>
+              </div>
+            )}
+            {program.pointsPerMessage > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerMessage}</p>
+                <p className="text-amber-600 text-[10px]">💬 Msg</p>
+              </div>
+            )}
+            {program.pointsPerPurchase > 0 && (
+              <div className="bg-amber-50 rounded-lg p-1.5">
+                <p className="font-bold text-amber-700">{program.pointsPerPurchase}</p>
+                <p className="text-amber-600 text-[10px]">🛒 Achat</p>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

@@ -604,6 +604,51 @@ export type Database = {
         }
         Relationships: []
       }
+      mcard_loyalty_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          customer_id: string
+          id: string
+          mcard_id: string
+          points_earned: number
+          product_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          customer_id: string
+          id?: string
+          mcard_id: string
+          points_earned?: number
+          product_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          customer_id?: string
+          id?: string
+          mcard_id?: string
+          points_earned?: number
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_loyalty_actions_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mcard_loyalty_actions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "mcard_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_loyalty_points: {
         Row: {
           created_at: string
@@ -649,8 +694,13 @@ export type Database = {
           is_active: boolean
           mcard_id: string
           points_per_favorite: number
+          points_per_like: number
           points_per_message: number
+          points_per_product_like: number
           points_per_purchase: number
+          points_per_review: number
+          points_per_save: number
+          points_per_share: number
           updated_at: string
         }
         Insert: {
@@ -659,8 +709,13 @@ export type Database = {
           is_active?: boolean
           mcard_id: string
           points_per_favorite?: number
+          points_per_like?: number
           points_per_message?: number
+          points_per_product_like?: number
           points_per_purchase?: number
+          points_per_review?: number
+          points_per_save?: number
+          points_per_share?: number
           updated_at?: string
         }
         Update: {
@@ -669,8 +724,13 @@ export type Database = {
           is_active?: boolean
           mcard_id?: string
           points_per_favorite?: number
+          points_per_like?: number
           points_per_message?: number
+          points_per_product_like?: number
           points_per_purchase?: number
+          points_per_review?: number
+          points_per_save?: number
+          points_per_share?: number
           updated_at?: string
         }
         Relationships: [
@@ -1927,6 +1987,15 @@ export type Database = {
           notifications_sent: number
           success: boolean
         }[]
+      }
+      award_loyalty_points: {
+        Args: {
+          p_action_type: string
+          p_customer_id: string
+          p_mcard_id: string
+          p_product_id?: string
+        }
+        Returns: Json
       }
       can_activate_promo_codes: {
         Args: { user_email: string }

@@ -13,6 +13,7 @@ import { MCardPhysicalProducts } from '@/components/mcards/view/MCardPhysicalPro
 import { MCardComplianceWarning } from '@/components/mcards/MCardComplianceWarning';
 import { MCardCustomized } from '@/components/mcards/MCardCustomized';
 import { MCardVisitorLoyalty } from '@/components/mcards/view/MCardVisitorLoyalty';
+import { MCardLoyaltyTasks } from '@/components/mcards/view/MCardLoyaltyTasks';
 import { useMCardView } from '@/hooks/useMCardView';
 import { useUserPresence } from '@/hooks/useUserPresence';
 import { useAuth } from '@/hooks/useAuth';
@@ -141,7 +142,14 @@ const MCardView = () => {
               isOwner={isOwner}
             />
 
-            {/* Loyalty Program for Visitors */}
+            {/* Loyalty Tasks for Visitors - Gain points by completing actions */}
+            {!isOwner && mcard.plan !== 'free' && (
+              <MCardLoyaltyTasks 
+                mcardId={mcard.id}
+              />
+            )}
+
+            {/* Loyalty Program Progress for Visitors */}
             {!isOwner && mcard.plan !== 'free' && (
               <MCardVisitorLoyalty 
                 mcardId={mcard.id}
