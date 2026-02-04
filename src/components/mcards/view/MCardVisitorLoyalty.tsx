@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Gift, 
   Star, 
@@ -14,7 +16,10 @@ import {
   Percent,
   ChevronRight,
   Loader2,
-  Lock
+  Lock,
+  Shield,
+  CheckCircle,
+  AlertTriangle
 } from 'lucide-react';
 
 interface LoyaltyReward {
@@ -50,6 +55,14 @@ interface MCardVisitorLoyaltyProps {
   mcardOwnerName?: string;
 }
 
+interface RewardRedemptionItemProps {
+  reward: LoyaltyReward;
+  mcardId: string;
+  mcardOwnerName?: string;
+  customerPoints: number;
+  onRedemptionSuccess: () => void;
+}
+
 const rewardTypeIcons: Record<string, React.ReactNode> = {
   discount: <Percent className="h-4 w-4" />,
   gift: <Gift className="h-4 w-4" />,
@@ -62,6 +75,237 @@ const rewardTypeLabels: Record<string, string> = {
   gift: 'Cadeau',
   vip: 'VIP',
   free_service: 'Service gratuit'
+};
+
+// Secure Reward Redemption Component
+const RewardRedemptionItem = ({ 
+  reward, 
+  mcardId, 
+  mcardOwnerName, 
+  customerPoints, 
+  onRedemptionSuccess 
+}: RewardRedemptionItemProps) => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isRedeeming, setIsRedeeming] = useState(false);
+  const [redemptionCode, setRedemptionCode] = useState('');
+
+  const generateSecureCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+
+  const handleRedeemReward = async () => {
+    if (!user) return;
+
+    setIsRedeeming(true);
+    try {
+      const code = generateSecureCode();
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      // Create redemption record
+      const { error: redemptionError } = await supabase
+        .from('mcard_loyalty_redemptions')
+        .insert({
+          reward_id: reward.id,
+          customer_id: user.id,
+          points_spent: reward.pointsRequired,
+          status: 'pending'
+        });
+
+      if (redemptionError) throw redemptionError;
+
+      // Deduct points
+      await supabase
+        .from('mcard_loyalty_points')
+        .update({ 
+          total_points: customerPoints - reward.pointsRequired 
+        })
+        .eq('mcard_id', mcardId)
+        .eq('customer_id', user.id);
+
+      // Get owner user_id from mcard
+      const { data: mcardData } = await supabase
+        .from('mcards')
+        .select('user_id')
+        .eq('id', mcardId)
+        .single();
+
+      if (mcardData?.user_id) {
+        // Send secure formatted message to owner
+        const secureMessage = `
+🎁 DEMANDE DE RÉCOMPENSE FIDÉLITÉ 🎁
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 CODE DE VÉRIFICATION: ${code}
+
+📋 DÉTAILS DE LA RÉCOMPENSE:
+• Récompense: ${reward.name}
+• Type: ${rewardTypeLabels[reward.rewardType] || reward.rewardType}
+• Valeur: ${reward.rewardValue}${reward.rewardType === 'discount' ? '%' : ' FCFA'}
+• Points utilisés: ${reward.pointsRequired} pts
+
+👤 CLIENT:
+• ID: ${user.id.substring(0, 8)}...
+• Email: ${user.email}
+
+📅 Date: ${formattedDate}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ MESSAGE OFFICIEL FINDERID
+Ce message est généré automatiquement par le système de fidélité.
+Vérifiez le code avec le client avant d'honorer la récompense.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim();
+
+        await supabase
+          .from('mcard_messages')
+          .insert({
+            mcard_id: mcardId,
+            sender_id: user.id,
+            recipient_id: mcardData.user_id,
+            subject: `🎁 [RÉCOMPENSE] ${reward.name} - Code: ${code}`,
+            message: secureMessage
+          });
+      }
+
+      setRedemptionCode(code);
+      toast({
+        title: "Récompense demandée ! 🎉",
+        description: `Votre code de vérification: ${code}. Montrez-le au vendeur.`
+      });
+      
+      onRedemptionSuccess();
+    } catch (error) {
+      console.error('Error redeeming reward:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de réclamer la récompense",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRedeeming(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-between text-sm">
+        <span className="flex items-center gap-2 text-green-800">
+          {rewardTypeIcons[reward.rewardType]}
+          {reward.name}
+        </span>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="h-7 text-xs border-green-300 text-green-700 hover:bg-green-100"
+          onClick={() => setIsDialogOpen(true)}
+        >
+          Utiliser
+        </Button>
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Gift className="h-5 w-5 text-green-600" />
+              Utiliser votre récompense
+            </DialogTitle>
+            <DialogDescription>
+              Confirmez pour envoyer une demande sécurisée au vendeur
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {redemptionCode ? (
+              // Success state
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-green-700">Demande envoyée !</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Présentez ce code au vendeur :
+                  </p>
+                </div>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4">
+                  <p className="text-2xl font-mono font-bold text-green-700 tracking-widest">
+                    {redemptionCode}
+                  </p>
+                </div>
+                <div className="flex items-start gap-2 text-xs text-amber-600 bg-amber-50 p-3 rounded-lg">
+                  <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <p>Ce code est valable une seule fois. Le vendeur le vérifiera avant de vous remettre votre récompense.</p>
+                </div>
+                <Button onClick={() => setIsDialogOpen(false)} className="w-full">
+                  Fermer
+                </Button>
+              </div>
+            ) : (
+              // Confirmation state
+              <>
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-200">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white rounded-lg shadow-sm">
+                      {rewardTypeIcons[reward.rewardType]}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-purple-800">{reward.name}</p>
+                      <p className="text-xs text-purple-600">
+                        {reward.rewardValue}{reward.rewardType === 'discount' ? '%' : ' FCFA'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Coins className="h-4 w-4" />
+                  <span>Coût: <strong className="text-foreground">{reward.pointsRequired} points</strong></span>
+                </div>
+
+                <div className="flex items-start gap-2 text-xs text-blue-600 bg-blue-50 p-3 rounded-lg">
+                  <Shield className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <p>Un code de vérification unique sera généré et envoyé au vendeur pour éviter toute fraude.</p>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="flex-1">
+                    Annuler
+                  </Button>
+                  <Button 
+                    onClick={handleRedeemReward} 
+                    disabled={isRedeeming}
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600"
+                  >
+                    {isRedeeming ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : (
+                      <Gift className="h-4 w-4 mr-2" />
+                    )}
+                    Confirmer
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
 
 export const MCardVisitorLoyalty = ({ mcardId, mcardOwnerName }: MCardVisitorLoyaltyProps) => {
@@ -208,15 +452,14 @@ export const MCardVisitorLoyalty = ({ mcardId, mcardOwnerName }: MCardVisitorLoy
                 </p>
                 <div className="space-y-2">
                   {availableRewards.map((reward) => (
-                    <div key={reward.id} className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-green-800">
-                        {rewardTypeIcons[reward.rewardType]}
-                        {reward.name}
-                      </span>
-                      <Button size="sm" variant="outline" className="h-7 text-xs border-green-300 text-green-700 hover:bg-green-100">
-                        Utiliser
-                      </Button>
-                    </div>
+                    <RewardRedemptionItem 
+                      key={reward.id}
+                      reward={reward}
+                      mcardId={mcardId}
+                      mcardOwnerName={mcardOwnerName}
+                      customerPoints={currentPoints}
+                      onRedemptionSuccess={() => fetchLoyaltyData()}
+                    />
                   ))}
                 </div>
               </div>

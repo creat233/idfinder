@@ -101,6 +101,28 @@ export const useMCards = () => {
 
       if (error) throw error;
       
+      // Send notification email for new MCard creation
+      try {
+        await supabase.functions.invoke('notify-new-mcard', {
+          body: {
+            mcardId: data.id,
+            fullName: data.full_name,
+            plan: data.plan,
+            slug: data.slug,
+            jobTitle: data.job_title,
+            company: data.company,
+            phoneNumber: data.phone_number,
+            email: data.email,
+            description: data.description,
+            userId: user.id
+          }
+        });
+        console.log('New MCard notification email sent');
+      } catch (emailError) {
+        // Don't fail the creation if email fails
+        console.error('Failed to send notification email:', emailError);
+      }
+      
       await refetch();
       
       if (!options?.silent) {
