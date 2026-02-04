@@ -326,108 +326,113 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Megaphone className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg">Campagnes Marketing</CardTitle>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="flex items-center gap-1">
-            <Users className="h-3 w-3" />
-            {favoritesCount} favoris
-          </Badge>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-1" />
-                Nouvelle
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Créer une campagne</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <div>
-                  <label className="text-sm font-medium">Type de campagne</label>
-                  <Select 
-                    value={formData.campaign_type} 
-                    onValueChange={(value) => setFormData({ ...formData, campaign_type: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="promotion">
-                        <div className="flex items-center gap-2">
-                          <Gift className="h-4 w-4" />
-                          Promotion
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="announcement">
-                        <div className="flex items-center gap-2">
-                          <Bell className="h-4 w-4" />
-                          Annonce
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="event">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          Événement
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="reminder">
-                        <div className="flex items-center gap-2">
-                          <MessageSquare className="h-4 w-4" />
-                          Rappel
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-2 px-3 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Megaphone className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+            <CardTitle className="text-sm sm:text-lg">Campagnes Marketing</CardTitle>
+          </div>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Badge variant="outline" className="flex items-center gap-1 text-xs px-2 py-0.5">
+              <Users className="h-3 w-3" />
+              {favoritesCount}
+            </Badge>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" className="h-7 sm:h-8 text-xs px-2 sm:px-3">
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  <span className="hidden xs:inline">Nouvelle</span>
+                  <span className="xs:hidden">+</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="text-base sm:text-lg">Créer une campagne</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
+                  <div>
+                    <label className="text-xs sm:text-sm font-medium">Type de campagne</label>
+                    <Select 
+                      value={formData.campaign_type} 
+                      onValueChange={(value) => setFormData({ ...formData, campaign_type: value })}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="promotion">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Gift className="h-3.5 w-3.5" />
+                            Promotion
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="announcement">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Bell className="h-3.5 w-3.5" />
+                            Annonce
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="event">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="h-3.5 w-3.5" />
+                            Événement
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="reminder">
+                          <div className="flex items-center gap-2 text-sm">
+                            <MessageSquare className="h-3.5 w-3.5" />
+                            Rappel
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-xs sm:text-sm font-medium">Titre</label>
+                    <Input
+                      placeholder="Ex: -20% sur tous nos services !"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs sm:text-sm font-medium">Message</label>
+                    <Textarea
+                      placeholder="Décrivez votre offre en détail..."
+                      rows={3}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="text-sm"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="outline" size="sm" onClick={() => setIsDialogOpen(false)}>
+                      Annuler
+                    </Button>
+                    <Button size="sm" onClick={createCampaign}>
+                      Créer
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Titre</label>
-                  <Input
-                    placeholder="Ex: -20% sur tous nos services !"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Message</label>
-                  <Textarea
-                    placeholder="Décrivez votre offre en détail..."
-                    rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  />
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Annuler
-                  </Button>
-                  <Button onClick={createCampaign}>
-                    Créer la campagne
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Quota Display Section */}
+      <CardContent className="space-y-3 px-3 sm:px-6 pt-2">
+        {/* Quota Display Section - Compact */}
         <Collapsible open={isQuotaExpanded} onOpenChange={setIsQuotaExpanded}>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" className="w-full flex items-center justify-between p-2 h-auto">
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-blue-500" />
-                <span className="text-sm font-medium">
-                  {quota.totalRemaining} messages disponibles cette semaine
+            <Button variant="ghost" className="w-full flex items-center justify-between p-2 h-auto hover:bg-muted/50">
+              <div className="flex items-center gap-1.5">
+                <Zap className="h-3.5 w-3.5 text-blue-500" />
+                <span className="text-xs sm:text-sm font-medium">
+                  {quota.totalRemaining} msg dispo
                 </span>
               </div>
-              {isQuotaExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {isQuotaExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-2">
@@ -444,28 +449,28 @@ export const MCardMarketingCampaigns = ({ mcardId }: MCardMarketingCampaignsProp
           </CollapsibleContent>
         </Collapsible>
 
-        {/* Bouton envoi rapide */}
+        {/* Bouton envoi rapide - Compact */}
         <Button 
           onClick={sendQuickCampaign}
           disabled={favoritesCount === 0 || !quota.canSend}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          className="w-full h-9 text-xs sm:text-sm bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
         >
-          <Zap className="h-4 w-4 mr-2" />
-          Envoyer un message à tous vos fans ({favoritesCount})
+          <Zap className="h-3.5 w-3.5 mr-1.5" />
+          <span className="truncate">Envoyer à vos {favoritesCount} fans</span>
         </Button>
 
         {quota.totalRemaining === 0 && (
-          <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
-            <AlertCircle className="h-4 w-4 flex-shrink-0" />
-            <span>Vous avez épuisé vos messages gratuits cette semaine. Achetez un pack pour continuer.</span>
+          <div className="flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+            <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+            <span>Quota épuisé. Achetez un pack.</span>
           </div>
         )}
 
         {campaigns.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Megaphone className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>Aucune campagne créée</p>
-            <p className="text-sm">Créez votre première campagne pour toucher vos {favoritesCount} fans !</p>
+          <div className="text-center py-6 text-muted-foreground">
+            <Megaphone className="h-10 w-10 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">Aucune campagne</p>
+            <p className="text-xs">Créez votre première campagne !</p>
           </div>
         ) : (
           <ScrollArea className="max-h-64">

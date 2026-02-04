@@ -11,6 +11,7 @@ import { MCardViewAddProductDialog } from './MCardViewAddProductDialog';
 import { MCardViewEditProductDialog } from './MCardViewEditProductDialog';
 import { MCardContactDialog } from '../messaging/MCardContactDialog';
 import { ProductImageModal } from './ProductImageModal';
+import { ProductLikeButton } from '@/components/mcards/products/ProductLikeButton';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
 import { usePlanLimits } from '@/hooks/usePlanLimits';
@@ -308,16 +309,26 @@ export const MCardViewProducts = ({
                   </div>
 
                   {/* Boutons d'action - responsive */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
+                  <div className="grid grid-cols-3 gap-1.5 pt-1">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleShareProduct(product)}
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50 text-xs h-9 active:scale-95"
+                      className="text-blue-600 border-blue-600 hover:bg-blue-50 text-xs h-8 active:scale-95 px-2"
                     >
-                      <Share2 className="h-3.5 w-3.5 mr-1" />
-                      Partager
+                      <Share2 className="h-3 w-3 mr-1" />
+                      <span className="hidden sm:inline">Partager</span>
                     </Button>
+                    
+                    {!isOwner && (
+                      <ProductLikeButton
+                        productId={product.id}
+                        mcardId={mcardId}
+                        productName={product.name}
+                        size="sm"
+                        className="text-xs h-8 px-2"
+                      />
+                    )}
                     
                     {!isOwner ? (
                       <Button
@@ -329,17 +340,17 @@ export const MCardViewProducts = ({
                           isInCart(product.id)
                             ? "bg-green-600 text-white"
                             : "text-green-600 border-green-600 hover:bg-green-50"
-                        } text-xs h-9 active:scale-95`}
+                        } text-xs h-8 active:scale-95 px-2`}
                       >
-                        <ShoppingBag className="h-3.5 w-3.5 mr-1" />
-                        {isInCart(product.id) ? "Ajouté" : "Panier"}
+                        <ShoppingBag className="h-3 w-3 mr-1" />
+                        <span className="hidden sm:inline">{isInCart(product.id) ? "Ajouté" : "Panier"}</span>
                       </Button>
                     ) : (
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleProductClick(product)}
-                        className="text-gray-600 border-gray-300 hover:bg-gray-50 text-xs h-9"
+                        className="text-gray-600 border-gray-300 hover:bg-gray-50 text-xs h-8 col-span-2"
                       >
                         Détails
                       </Button>
