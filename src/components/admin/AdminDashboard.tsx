@@ -10,8 +10,9 @@ import {
   Users, 
   BarChart3, 
   Settings,
-  Mail,
-  ArrowLeft
+  ArrowLeft,
+  Download,
+  Smartphone
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -29,6 +30,25 @@ export const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_read', false);
       return count || 0;
+    },
+  });
+
+  // Compteur de téléchargements (basé sur les visites avec user_agent mobile + premier accès)
+  const { data: downloadStats } = useQuery({
+    queryKey: ['admin-app-downloads'],
+    queryFn: async () => {
+      // Compter les visiteurs uniques sur mobile (proxy pour les téléchargements)
+      const { count: mobileVisitors } = await supabase
+        .from('app_visits')
+        .select('visitor_id', { count: 'exact', head: true });
+      
+      // Compter les utilisateurs total inscrits
+      const { data: totalUsers } = await supabase.rpc('admin_get_all_users');
+      
+      return {
+        totalVisitors: mobileVisitors || 0,
+        totalUsers: totalUsers?.length || 0,
+      };
     },
   });
 
@@ -104,11 +124,11 @@ export const AdminDashboard = () => {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4 sm:p-6 space-y-6">
       <Button
         variant="ghost"
         onClick={() => navigate(-1)}
-        className="mb-6"
+        className="mb-4"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         Retour
@@ -117,16 +137,42 @@ export const AdminDashboard = () => {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-2">
           <Settings className="h-8 w-8" />
-          <h1 className="text-3xl font-bold">Panneau d'Administration</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Panneau d'Administration</h1>
         </div>
         <p className="text-muted-foreground">Accédez aux différentes sections d'administration</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Statistiques d'utilisation de l'app */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
+          <CardContent className="p-4 sm:p-6 flex items-center gap-3">
+            <div className="bg-emerald-500 p-2.5 rounded-xl">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm text-emerald-700 font-medium">Utilisateurs inscrits</p>
+              <p className="text-xl sm:text-2xl font-bold text-emerald-900">{downloadStats?.totalUsers ?? '...'}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <CardContent className="p-4 sm:p-6 flex items-center gap-3">
+            <div className="bg-blue-500 p-2.5 rounded-xl">
+              <Smartphone className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm text-blue-700 font-medium">Visites totales</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-900">{downloadStats?.totalVisitors ?? '...'}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {adminSections.map((section) => {
           const Icon = section.icon;
           return (
-            <Card key={section.path} className="relative hover:shadow-lg transition-shadow">
+            <Card key={section.path} className="relative hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(section.path)}>
               {section.badge && (
                 <Badge 
                   variant={section.badge.variant}
@@ -135,26 +181,17 @@ export const AdminDashboard = () => {
                   {section.badge.text}
                 </Badge>
               )}
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  <div className={`${section.iconBg} p-3 rounded-lg`}>
-                    <Icon className={`h-6 w-6 ${section.iconColor}`} />
+              <CardHeader className="p-4 sm:p-6">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className={`${section.iconBg} p-2.5 sm:p-3 rounded-lg`}>
+                    <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${section.iconColor}`} />
                   </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-xl mb-1">{section.title}</CardTitle>
-                    <CardDescription>{section.description}</CardDescription>
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-base sm:text-xl mb-1 truncate">{section.title}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">{section.description}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => navigate(section.path)}
-                  className="w-full"
-                  variant="outline"
-                >
-                  Accéder
-                </Button>
-              </CardContent>
             </Card>
           );
         })}

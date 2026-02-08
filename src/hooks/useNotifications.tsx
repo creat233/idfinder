@@ -15,6 +15,57 @@ interface Notification {
   action_url?: string;
 }
 
+// Play distinct notification sounds based on type
+const playNotificationSound = (type?: string) => {
+  try {
+    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const gainNode = audioContext.createGain();
+    gainNode.connect(audioContext.destination);
+    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+    const oscillator = audioContext.createOscillator();
+    oscillator.connect(gainNode);
+
+    // Different sounds for different notification types
+    switch (type) {
+      case 'payment':
+      case 'sale':
+        // Cash register sound - ascending notes
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1); // E5
+        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2); // G5
+        oscillator.type = 'sine';
+        break;
+      case 'message':
+        // Message ding - two soft tones
+        oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5
+        oscillator.frequency.setValueAtTime(1047, audioContext.currentTime + 0.15); // C6
+        oscillator.type = 'sine';
+        break;
+      case 'alert':
+      case 'warning':
+        // Alert - urgent beep
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.2);
+        oscillator.type = 'triangle';
+        break;
+      default:
+        // Default pleasant chime
+        oscillator.frequency.setValueAtTime(700, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(900, audioContext.currentTime + 0.15);
+        oscillator.type = 'sine';
+        break;
+    }
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.5);
+  } catch (error) {
+    console.log('Audio notification not supported');
+  }
+};
+
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,6 +122,9 @@ export const useNotifications = () => {
           const newNotification = payload.new as Notification;
           setNotifications(prev => [newNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
+          
+          // Jouer un son de notification
+          playNotificationSound(newNotification.type);
           
           // Afficher une toast pour les nouvelles notifications
           toast({
