@@ -19,23 +19,56 @@ export const useBusinessNotifications = (mcardId?: string) => {
   const [realtimeNotifications, setRealtimeNotifications] = useState<BusinessNotification[]>([]);
   const [isEnabled, setIsEnabled] = useState(true);
 
-  // Play notification sound
-  const playNotificationSound = useCallback(() => {
+  // Play distinct notification sounds based on business event type
+  const playNotificationSound = useCallback((type?: BusinessNotification['type']) => {
     try {
       const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 800;
-      oscillator.type = 'sine';
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      
+      gainNode.gain.setValueAtTime(0.35, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+
+      const oscillator = audioContext.createOscillator();
+      oscillator.connect(gainNode);
+
+      switch (type) {
+        case 'new_sale':
+        case 'payment_received':
+          // Cash register - celebratory ascending
+          oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+          oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+          oscillator.frequency.setValueAtTime(1047, audioContext.currentTime + 0.3);
+          oscillator.type = 'sine';
+          break;
+        case 'new_message':
+          // Message ping - two gentle tones
+          oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(1100, audioContext.currentTime + 0.15);
+          oscillator.type = 'sine';
+          break;
+        case 'new_appointment':
+          // Calendar chime - three soft bells
+          oscillator.frequency.setValueAtTime(660, audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(880, audioContext.currentTime + 0.12);
+          oscillator.frequency.setValueAtTime(660, audioContext.currentTime + 0.24);
+          oscillator.type = 'triangle';
+          break;
+        case 'new_client':
+          // Welcome sound - warm ascending
+          oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(554, audioContext.currentTime + 0.15);
+          oscillator.frequency.setValueAtTime(660, audioContext.currentTime + 0.3);
+          oscillator.type = 'sine';
+          break;
+        default:
+          oscillator.frequency.setValueAtTime(700, audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(900, audioContext.currentTime + 0.15);
+          oscillator.type = 'sine';
+      }
+
       oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
+      oscillator.stop(audioContext.currentTime + 0.6);
     } catch (error) {
       console.log('Audio notification not supported');
     }
@@ -47,7 +80,7 @@ export const useBusinessNotifications = (mcardId?: string) => {
     setRealtimeNotifications(prev => [notification, ...prev.slice(0, 9)]);
     
     // Play sound
-    playNotificationSound();
+    playNotificationSound(notification.type);
     
     // Show toast
     const icons: Record<BusinessNotification['type'], string> = {

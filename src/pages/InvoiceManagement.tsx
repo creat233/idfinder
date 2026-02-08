@@ -4,7 +4,7 @@ import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, FileText, BarChart3, ArrowLeft, Palette } from 'lucide-react';
+import { Plus, FileText, BarChart3, ArrowLeft, Palette, ClipboardList } from 'lucide-react';
 import { InvoiceCreateForm } from '@/components/mcards/invoices/InvoiceCreateForm';
 import { InvoiceList } from '@/components/mcards/invoices/InvoiceList';
 import { InvoiceDashboard } from '@/components/mcards/invoices/InvoiceDashboard';
@@ -150,6 +150,13 @@ export default function InvoiceManagement() {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Retour à la MCard</span>
                 <span className="sm:hidden">Retour</span>
+              </Button>
+            </Link>
+            <Link to={`/mcard/${slug}/quotes`} className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto">
+                <ClipboardList className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Gestion des Devis</span>
+                <span className="sm:hidden">Devis</span>
               </Button>
             </Link>
             {activeTab !== 'create' && activeTab !== 'view' && (
