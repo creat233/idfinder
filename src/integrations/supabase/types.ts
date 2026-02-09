@@ -450,6 +450,53 @@ export type Database = {
           },
         ]
       }
+      mcard_expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          currency: string
+          description: string
+          expense_date: string
+          id: string
+          mcard_id: string
+          receipt_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          currency?: string
+          description: string
+          expense_date?: string
+          id?: string
+          mcard_id: string
+          receipt_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          currency?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          mcard_id?: string
+          receipt_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_expenses_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_favorites: {
         Row: {
           created_at: string
@@ -1077,9 +1124,11 @@ export type Database = {
           image_urls: string[] | null
           is_active: boolean
           is_pinned: boolean
+          low_stock_threshold: number | null
           mcard_id: string
           name: string
           price: number
+          stock_quantity: number | null
           updated_at: string
         }
         Insert: {
@@ -1092,9 +1141,11 @@ export type Database = {
           image_urls?: string[] | null
           is_active?: boolean
           is_pinned?: boolean
+          low_stock_threshold?: number | null
           mcard_id: string
           name: string
           price?: number
+          stock_quantity?: number | null
           updated_at?: string
         }
         Update: {
@@ -1107,9 +1158,11 @@ export type Database = {
           image_urls?: string[] | null
           is_active?: boolean
           is_pinned?: boolean
+          low_stock_threshold?: number | null
           mcard_id?: string
           name?: string
           price?: number
+          stock_quantity?: number | null
           updated_at?: string
         }
         Relationships: [
@@ -1725,6 +1778,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       reported_cards: {
         Row: {

@@ -108,6 +108,16 @@ export const useNotifications = () => {
     
     if (!user) return;
 
+    // Request notification permission on setup
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
+    }
+
     const channel = supabase
       .channel('notifications_changes')
       .on(
@@ -123,15 +133,38 @@ export const useNotifications = () => {
           setNotifications(prev => [newNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
           
-          // Jouer un son de notification
+          // Play sound
           playNotificationSound(newNotification.type);
           
-          // Afficher une toast pour les nouvelles notifications
+          // Toast
           toast({
             title: newNotification.title,
             description: newNotification.message,
             duration: 5000,
           });
+
+          // Browser notification (works even when tab not focused)
+          if ('Notification' in window && window.Notification.permission === 'granted') {
+            try {
+              const browserNotif = new window.Notification(newNotification.title, {
+                body: newNotification.message,
+                icon: '/favicon.ico',
+                badge: '/favicon.ico',
+                tag: `notif-${newNotification.id}`,
+                requireInteraction: true,
+                data: { url: newNotification.action_url || '/' }
+              });
+              browserNotif.onclick = () => {
+                window.focus();
+                if (newNotification.action_url) {
+                  window.location.href = newNotification.action_url;
+                }
+                browserNotif.close();
+              };
+            } catch (e) {
+              console.log('Browser notification failed:', e);
+            }
+          }
         }
       )
       .on(
