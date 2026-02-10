@@ -30,7 +30,7 @@ export const MCardExpenseTracker = ({ mcardId }: MCardExpenseTrackerProps) => {
   const fmt = (n: number) => new Intl.NumberFormat('fr-FR').format(n) + ' FCFA';
 
   return (
-    <Card className="border shadow-sm">
+    <Card className="border shadow-sm" data-expense-tracker>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-base">
           <div className="flex items-center gap-2">

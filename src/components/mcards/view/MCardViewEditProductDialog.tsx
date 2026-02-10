@@ -46,6 +46,7 @@ export const MCardViewEditProductDialog = ({
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Service');
   const [currency, setCurrency] = useState('FCFA');
+  const [stockQuantity, setStockQuantity] = useState('');
   const [productImage, setProductImage] = useState<File | null>(null);
   const [productImageUrl, setProductImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,6 +59,7 @@ export const MCardViewEditProductDialog = ({
       setPrice(product.price.toString());
       setCategory(product.category);
       setCurrency(product.currency);
+      setStockQuantity((product as any).stock_quantity?.toString() || '');
       setProductImageUrl(product.image_url || '');
     }
   }, [product]);
@@ -126,6 +128,7 @@ export const MCardViewEditProductDialog = ({
           price: numericPrice,
           category,
           currency,
+          stock_quantity: stockQuantity ? parseInt(stockQuantity) : null,
           image_url: imageUrl || null,
           updated_at: new Date().toISOString(),
         })
@@ -272,6 +275,19 @@ export const MCardViewEditProductDialog = ({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Stock quantity */}
+          <div>
+            <Label htmlFor="editStockQuantity">Quantité en stock</Label>
+            <Input
+              id="editStockQuantity"
+              type="number"
+              value={stockQuantity}
+              onChange={(e) => setStockQuantity(e.target.value)}
+              placeholder="Laisser vide = illimité"
+              min="0"
+            />
           </div>
 
           <div>

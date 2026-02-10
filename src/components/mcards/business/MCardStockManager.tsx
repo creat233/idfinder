@@ -85,12 +85,14 @@ export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
             <Package className="h-4 w-4 text-purple-600" />
             Gestion des Stocks
           </div>
-          {lowStockProducts.length > 0 && (
-            <Badge variant="destructive" className="text-[10px]">
-              <AlertTriangle className="h-3 w-3 mr-1" />
-              {lowStockProducts.length} bas
-            </Badge>
-          )}
+          <div className="flex items-center gap-1.5">
+            {lowStockProducts.length > 0 && (
+              <Badge variant="destructive" className="text-[10px]">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                {lowStockProducts.length} bas
+              </Badge>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -117,9 +119,9 @@ export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
           </div>
         )}
 
-        {/* Product list */}
-        <ScrollArea className="max-h-52">
-          <div className="space-y-1.5">
+        {/* Product list - scrollable */}
+        <ScrollArea className="h-56">
+          <div className="space-y-1.5 pr-2">
             {products.map(p => (
               <div key={p.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg text-xs">
                 {editingId === p.id ? (
@@ -162,6 +164,22 @@ export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
             )}
           </div>
         </ScrollArea>
+
+        {/* View all products button */}
+        {products.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full text-xs"
+            onClick={() => {
+              const productsSection = document.getElementById('products-section');
+              if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <Package className="h-3 w-3 mr-1.5" />
+            Voir tous les produits ({products.length})
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
