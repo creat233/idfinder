@@ -238,13 +238,44 @@ export const MCardClientManager = ({ mcard, isOwner }: MCardClientManagerProps) 
                           </div>
                           
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button 
+                              variant="ghost" size="sm" className="h-8 w-8 p-0"
+                              onClick={() => client.phone && window.open(`tel:${client.phone}`, '_self')}
+                              disabled={!client.phone}
+                              title={client.phone ? `Appeler ${client.phone}` : 'Pas de téléphone'}
+                            >
                               <Phone className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button 
+                              variant="ghost" size="sm" className="h-8 w-8 p-0"
+                              onClick={() => {
+                                if (client.phone) {
+                                  window.open(`https://wa.me/${client.phone.replace(/\s/g, '')}`, '_blank');
+                                } else if (client.email) {
+                                  window.open(`mailto:${client.email}`, '_blank');
+                                }
+                              }}
+                              disabled={!client.phone && !client.email}
+                              title="Envoyer un message"
+                            >
                               <MessageCircle className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button 
+                              variant="ghost" size="sm" className="h-8 w-8 p-0"
+                              onClick={async () => {
+                                const { data: invoices } = await supabase
+                                  .from('mcard_invoices')
+                                  .select('id')
+                                  .eq('mcard_id', mcard.id)
+                                  .ilike('client_name', client.name)
+                                  .order('created_at', { ascending: false })
+                                  .limit(1);
+                                if (invoices?.[0]) {
+                                  window.open(`/mcard/${mcard.slug}?invoice=${invoices[0].id}`, '_blank');
+                                }
+                              }}
+                              title="Voir les factures"
+                            >
                               <FileText className="h-4 w-4" />
                             </Button>
                           </div>

@@ -1,13 +1,16 @@
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Calendar } from "lucide-react";
+import { RefreshCw, Calendar, RotateCcw, Loader2 } from "lucide-react";
 import { MCard } from "@/types/mcard";
 import { MCardSocialLinks } from "@/components/mcards/MCardSocialLinks";
 import { MCardViewContactInfo } from "./MCardViewContactInfo";
 import { MCardViewQuickActions } from "./MCardViewQuickActions";
 import { useMCardRenewal } from "@/hooks/useMCardRenewal";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface MCardViewProfileDetailsProps {
   mcard: MCard;
@@ -23,12 +26,59 @@ export const MCardViewProfileDetails = ({
   isOwner 
 }: MCardViewProfileDetailsProps) => {
   const { handleRenewalRequest, getDaysRemaining } = useMCardRenewal();
+  const { toast } = useToast();
+  const [requestingReactivation, setRequestingReactivation] = useState(false);
 
   const daysRemaining = getDaysRemaining(mcard.subscription_expires_at);
   const isExpiringSoon = daysRemaining <= 30;
+  const isExpired = mcard.subscription_status === 'expired' || daysRemaining === 0;
 
   const onRenewalClick = () => {
     handleRenewalRequest(mcard.id, mcard.plan);
+  };
+
+  const handleReactivationRequest = async () => {
+    setRequestingReactivation(true);
+    try {
+      // Get user info
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase.from('profiles').select('phone').eq('id', user?.id || '').single();
+
+      const { data, error } = await supabase.functions.invoke('send-reactivation-request', {
+        body: {
+          mcardId: mcard.id,
+          mcardName: mcard.full_name,
+          plan: mcard.plan,
+          userEmail: user?.email,
+          userPhone: profile?.phone,
+          expirationDate: mcard.subscription_expires_at,
+        }
+      });
+
+      if (error) throw error;
+
+      // Also insert a renewal request
+      await supabase.from('mcard_renewal_requests').insert({
+        mcard_id: mcard.id,
+        current_plan: mcard.plan,
+        requested_at: new Date().toISOString(),
+        status: 'pending'
+      });
+
+      toast({
+        title: "✅ Demande envoyée !",
+        description: "Votre demande de réactivation a été envoyée à l'administration. Vous serez contacté sous peu.",
+      });
+    } catch (error) {
+      console.error('Reactivation error:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'envoyer la demande. Réessayez.",
+      });
+    } finally {
+      setRequestingReactivation(false);
+    }
   };
 
   return (
@@ -70,8 +120,24 @@ export const MCardViewProfileDetails = ({
             </div>
           )}
 
+          {/* Bouton de réactivation pour les cartes expirées */}
+          {isOwner && isExpired && (
+            <Button
+              onClick={handleReactivationRequest}
+              disabled={requestingReactivation}
+              className="flex items-center gap-2 px-6 py-3 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white"
+            >
+              {requestingReactivation ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RotateCcw className="h-4 w-4" />
+              )}
+              {requestingReactivation ? 'Envoi en cours...' : 'Demander la réactivation'}
+            </Button>
+          )}
+
           {/* Bouton de renouvellement */}
-          {isOwner && (daysRemaining <= 60 || mcard.subscription_status !== 'active') && (
+          {isOwner && !isExpired && (daysRemaining <= 60 || mcard.subscription_status !== 'active') && (
             <Button 
               onClick={onRenewalClick}
               className={`flex items-center gap-2 px-6 py-3 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200 ${

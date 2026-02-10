@@ -58,6 +58,7 @@ export const MCardViewAddProductDialog = ({
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('Service');
   const [currency, setCurrency] = useState('FCFA');
+  const [stockQuantity, setStockQuantity] = useState('');
   const [productImages, setProductImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -184,7 +185,8 @@ export const MCardViewAddProductDialog = ({
           category,
           currency,
           image_url: mainImageUrl,
-          image_urls: uploadedUrls.length > 0 ? uploadedUrls : []
+          image_urls: uploadedUrls.length > 0 ? uploadedUrls : [],
+          stock_quantity: stockQuantity ? parseInt(stockQuantity) : null,
         });
 
       if (error) {
@@ -217,6 +219,7 @@ export const MCardViewAddProductDialog = ({
       setPrice('');
       setCategory('Service');
       setCurrency('FCFA');
+      setStockQuantity('');
       setProductImages([]);
       setImageUrls([]);
       setCurrentImageIndex(0);
@@ -309,6 +312,22 @@ export const MCardViewAddProductDialog = ({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Stock quantity */}
+          <div>
+            <Label htmlFor="stockQuantity">Quantité en stock (optionnel)</Label>
+            <Input
+              id="stockQuantity"
+              type="number"
+              value={stockQuantity}
+              onChange={(e) => setStockQuantity(e.target.value)}
+              placeholder="Laisser vide = illimité"
+              min="0"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Les visiteurs verront l'état du stock sur votre carte
+            </p>
           </div>
 
           {/* Multi-image upload section */}

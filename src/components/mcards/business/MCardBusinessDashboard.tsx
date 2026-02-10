@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { 
   TrendingUp, Target, Wallet, Calendar, ArrowUp, ArrowDown,
   DollarSign, ShoppingBag, MessageCircle, Star, BarChart3,
-  Clock, CheckCircle, AlertCircle, Users
+  Clock, CheckCircle, AlertCircle, Users, Receipt
 } from 'lucide-react';
 import { MCard } from '@/types/mcard';
 import { supabase } from '@/integrations/supabase/client';
@@ -191,8 +191,16 @@ export const MCardBusinessDashboard = ({ mcard, isOwner }: MCardBusinessDashboar
                 <Button variant="outline" size="sm" className="justify-start text-xs h-8" onClick={() => setIsClientDialogOpen(true)}>
                   <Users className="h-3.5 w-3.5 mr-1.5" />Clients
                 </Button>
-                <Button variant="outline" size="sm" className="justify-start text-xs h-8" onClick={() => navigate(`/mcard/${mcard.slug}#availability`)}>
-                  <Calendar className="h-3.5 w-3.5 mr-1.5" />RDV
+                <Button variant="outline" size="sm" className="justify-start text-xs h-8" onClick={() => {
+                  const expenseTracker = document.querySelector('[data-expense-tracker]');
+                  if (expenseTracker) {
+                    expenseTracker.scrollIntoView({ behavior: 'smooth' });
+                    // Trigger the add dialog
+                    const addBtn = expenseTracker.querySelector('button');
+                    if (addBtn) addBtn.click();
+                  }
+                }}>
+                  <Receipt className="h-3.5 w-3.5 mr-1.5" />Dépense
                 </Button>
                 <Button variant="outline" size="sm" className="justify-start text-xs h-8" onClick={() => setIsProductDialogOpen(true)}>
                   <ShoppingBag className="h-3.5 w-3.5 mr-1.5" />Produit
