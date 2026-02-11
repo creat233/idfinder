@@ -1,8 +1,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, LogOut } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { Separator } from "@/components/ui/separator";
+import { 
+  User, LogOut, CreditCard, Search, Tag, MessageSquare, 
+  LayoutGrid, Heart, ShoppingBag, Phone, Info, HelpCircle,
+  Bell, Shield, Eye
+} from "lucide-react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 type Props = {
   user: any;
@@ -14,119 +20,143 @@ type Props = {
 
 export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   if (!isMenuOpen) return null;
 
-  const handleNavigate = (path: string) => {
-    navigate(path);
-    onClose();
-  };
+  const isActive = (path: string) => location.pathname === path;
 
-  const renderLink = (to: string, text: string, requiresAuth = false) => (
-    <Link 
-      to={to} 
-      className="block px-4 py-2 text-sm text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg mx-2 transition-colors" 
+  const NavItem = ({ to, icon: Icon, label, requiresAuth = false }: { 
+    to: string; icon: any; label: string; requiresAuth?: boolean 
+  }) => (
+    <Link
+      to={to}
+      className={cn(
+        "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+        isActive(to)
+          ? "bg-primary/10 text-primary"
+          : "text-foreground/80 hover:bg-muted active:scale-[0.98]"
+      )}
       onClick={(e) => {
         if (requiresAuth && !user) {
           e.preventDefault();
           navigate("/auth");
-          onClose();
-          return;
         }
         onClose();
       }}
     >
-      {text}
+      <Icon className="h-4.5 w-4.5 shrink-0" />
+      <span>{label}</span>
     </Link>
   );
-  
-  const loggedInNav = (
-    <>
-      {isAdmin ? (
-        renderLink("/admin/codes-promo", "Administration")
-      ) : (
-        <>
-          {renderLink("/signaler", "Signaler une carte")}
-          {renderLink("/mes-cartes", "Mes cartes")}
-          {renderLink("/mcards-verifiees", "Vues MCard")}
-          {renderLink("/codes-promo", "Codes promo")}
-          {renderLink("/mcards", "Abonnement")}
-          {renderLink("/messages", "Messages")}
-          {renderLink("/mes-favoris", "Mes favoris")}
-          {renderLink("/panier", "Panier")}
-        </>
-      )}
-      {renderLink("/notifications", "Notifications")}
-    </>
-  );
 
-  const loggedOutNav = (
-    <>
-      {renderLink("/mcards-verifiees", "Vues MCard")}
-      {renderLink("/codes-promo", "Codes promo")}
-      {renderLink("/messages", "Messages", true)}
-      {renderLink("/notifications", "Notifications", true)}
-      {renderLink("/mes-favoris", "Mes favoris")}
-      {renderLink("/panier", "Panier")}
-      {renderLink("/demo", "Démo")}
-      {renderLink("/urgence", "Numéros d'urgence")}
-      {renderLink("/about", "À propos")}
-      {renderLink("/support", "Support")}
-    </>
-  );
-
-  const authButtons = (
-    <div className="px-4 pt-4 space-y-2 border-t border-gray-200">
-      {user ? (
-        <>
-          <Button 
-            variant="outline" 
-            onClick={() => handleNavigate("/profile")}
-            className="w-full justify-start text-sm"
-          >
-            <User className="mr-2 h-4 w-4" />
-            Mon profil
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => { onSignOut(); onClose(); }}
-            className="w-full justify-start text-sm text-red-600 border-red-600"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Déconnexion
-          </Button>
-        </>
-      ) : (
-        <Button 
-          variant="outline" 
-          onClick={() => handleNavigate("/auth")}
-          className="w-full text-sm"
-        >
-          Se connecter
-        </Button>
-      )}
-    </div>
+  const SectionLabel = ({ children }: { children: string }) => (
+    <p className="px-4 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      {children}
+    </p>
   );
 
   return (
-    <div className="md:hidden bg-white border-t border-gray-200 max-h-[80vh] overflow-y-auto">
-      <nav className="py-4 space-y-2">
-        {user && (
-          <div className="px-4 pb-2 mb-2 border-b border-gray-100">
-            <Badge variant="outline" className="border-green-500 text-green-600 bg-green-50 w-full justify-center">
-              <span className="relative flex h-2 w-2 mr-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              Vous êtes en ligne
-            </Badge>
+    <div className="flex flex-col h-full overflow-y-auto bg-background">
+      {/* User header */}
+      {user && (
+        <div className="p-5 pb-4 bg-gradient-to-br from-primary/5 to-primary/10">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <User className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground truncate">
+                {user.email}
+              </p>
+              <Badge variant="outline" className="mt-1 border-green-500/50 text-green-600 bg-green-50 text-[10px] h-5">
+                <span className="relative flex h-1.5 w-1.5 mr-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
+                </span>
+                En ligne
+              </Badge>
+            </div>
           </div>
-        )}
-        <div className="space-y-1">
-          {user ? loggedInNav : loggedOutNav}
         </div>
-        {authButtons}
-      </nav>
+      )}
+
+      <div className="flex-1 py-2 space-y-1">
+        {user ? (
+          isAdmin ? (
+            <>
+              <SectionLabel>Administration</SectionLabel>
+              <NavItem to="/admin/codes-promo" icon={Shield} label="Panneau Admin" />
+              <NavItem to="/notifications" icon={Bell} label="Notifications" />
+            </>
+          ) : (
+            <>
+              <SectionLabel>Cartes d'identité</SectionLabel>
+              <NavItem to="/signaler" icon={Search} label="Signaler une carte" />
+              <NavItem to="/mes-cartes" icon={CreditCard} label="Mes cartes" />
+
+              <SectionLabel>Cartes de visite MCard</SectionLabel>
+              <NavItem to="/mcards" icon={LayoutGrid} label="Abonnement mCard" />
+              <NavItem to="/mcards-verifiees" icon={Eye} label="MCards vérifiées" />
+
+              <SectionLabel>Services</SectionLabel>
+              <NavItem to="/codes-promo" icon={Tag} label="Codes promo" />
+              <NavItem to="/messages" icon={MessageSquare} label="Messages" />
+              <NavItem to="/notifications" icon={Bell} label="Notifications" />
+              <NavItem to="/mes-favoris" icon={Heart} label="Mes favoris" />
+              <NavItem to="/panier" icon={ShoppingBag} label="Panier" />
+            </>
+          )
+        ) : (
+          <>
+            <SectionLabel>Découvrir</SectionLabel>
+            <NavItem to="/mcards-verifiees" icon={Eye} label="MCards vérifiées" />
+            <NavItem to="/codes-promo" icon={Tag} label="Codes promo" />
+            <NavItem to="/demo" icon={LayoutGrid} label="Démo" />
+
+            <SectionLabel>Aide</SectionLabel>
+            <NavItem to="/urgence" icon={Phone} label="Numéros d'urgence" />
+            <NavItem to="/about" icon={Info} label="À propos" />
+            <NavItem to="/support" icon={HelpCircle} label="Support" />
+
+            <SectionLabel>Communication</SectionLabel>
+            <NavItem to="/messages" icon={MessageSquare} label="Messages" requiresAuth />
+            <NavItem to="/mes-favoris" icon={Heart} label="Mes favoris" />
+            <NavItem to="/panier" icon={ShoppingBag} label="Panier" />
+          </>
+        )}
+      </div>
+
+      {/* Footer actions */}
+      <div className="p-4 border-t border-border space-y-2 mt-auto">
+        {user ? (
+          <>
+            <Button
+              variant="outline"
+              onClick={() => { navigate("/profile"); onClose(); }}
+              className="w-full justify-start gap-2 h-11 rounded-xl"
+            >
+              <User className="h-4 w-4" />
+              Mon profil
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => { onSignOut(); onClose(); }}
+              className="w-full justify-start gap-2 h-11 rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <LogOut className="h-4 w-4" />
+              Déconnexion
+            </Button>
+          </>
+        ) : (
+          <Button
+            onClick={() => { navigate("/auth"); onClose(); }}
+            className="w-full h-11 rounded-xl font-semibold"
+          >
+            Se connecter
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
