@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit, Trash2, Copy, Eye, ExternalLink } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Copy, Eye, ExternalLink, RotateCcw, Loader2 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -24,6 +24,8 @@ import { useNavigate } from "react-router-dom";
 import { URL_CONFIG } from "@/utils/urlConfig";
 import { OnlineStatusIndicator } from "./OnlineStatusIndicator";
 import { useUserPresence } from "@/hooks/useUserPresence";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface MCardItemProps {
   mcard: MCard;
@@ -44,8 +46,52 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
   const { toast } = useToast();
   const navigate = useNavigate();
   
+  const [requestingReactivation, setRequestingReactivation] = useState(false);
+  
   // Activer la présence pour cette carte
   useUserPresence(mcard.user_id);
+
+  const handleReactivationRequest = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRequestingReactivation(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase.from('profiles').select('phone').eq('id', user?.id || '').single();
+
+      const { error } = await supabase.functions.invoke('send-reactivation-request', {
+        body: {
+          mcardId: mcard.id,
+          mcardName: mcard.full_name,
+          plan: mcard.plan,
+          userEmail: user?.email,
+          userPhone: profile?.phone,
+          expirationDate: mcard.subscription_expires_at,
+        }
+      });
+      if (error) throw error;
+
+      await supabase.from('mcard_renewal_requests').insert({
+        mcard_id: mcard.id,
+        current_plan: mcard.plan,
+        requested_at: new Date().toISOString(),
+        status: 'pending'
+      });
+
+      toast({
+        title: "✅ Demande envoyée !",
+        description: "Votre demande de réactivation a été envoyée. Vous serez contacté sous peu.",
+      });
+    } catch (error) {
+      console.error('Reactivation error:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'envoyer la demande. Réessayez.",
+      });
+    } finally {
+      setRequestingReactivation(false);
+    }
+  };
 
   const handleCopyLink = () => {
     if (mcard.subscription_status === 'pending_payment') {
@@ -242,8 +288,25 @@ export const MCardItem = ({ mcard, onEdit, onDelete, onStartUpgradeFlow }: MCard
           )}
         </div>
         
+        {/* Reactivation button for expired cards */}
+        {mcard.subscription_status === 'expired' && (
+          <Button 
+            size="sm" 
+            className="w-full sm:w-auto text-xs sm:text-sm bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white"
+            onClick={handleReactivationRequest}
+            disabled={requestingReactivation}
+          >
+            {requestingReactivation ? (
+              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+            ) : (
+              <RotateCcw className="h-3 w-3 mr-1" />
+            )}
+            {requestingReactivation ? 'Envoi...' : 'Demander la réactivation'}
+          </Button>
+        )}
+        
         {/* Upgrade button - Responsive */}
-        {(mcard.subscription_status === 'trial' || mcard.subscription_status === 'expired') && (
+        {mcard.subscription_status === 'trial' && (
           <Button 
             variant="outline" 
             size="sm" 
