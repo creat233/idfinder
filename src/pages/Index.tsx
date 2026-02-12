@@ -6,6 +6,7 @@ import { PublicCTA } from "@/components/public/PublicCTA";
 import { HomeSEO } from "@/components/seo/HomeSEO";
 import { SecurityProvider } from "@/components/SecurityProvider";
 import { MCardsCarousel } from "@/components/mcards/MCardsCarousel";
+import { PublicBusinessCTA } from "@/components/public/PublicBusinessCTA";
 const Index = () => {
   return (
     <SecurityProvider>
@@ -15,6 +16,7 @@ const Index = () => {
         <main className="flex-grow pt-16 pb-24 md:pb-0">
           <PublicHero />
           <MCardsCarousel />
+          <PublicBusinessCTA />
           <PublicFeatures />
           <PublicPricing />
           <PublicCTA />
