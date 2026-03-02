@@ -1,11 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { 
   User, LogOut, CreditCard, Search, Tag, MessageSquare, 
   LayoutGrid, Heart, ShoppingBag, Phone, Info, HelpCircle,
-  Bell, Shield, Eye
+  Bell, Shield, Eye, Download
 } from "lucide-react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -55,6 +54,12 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
       {children}
     </p>
   );
+
+  const handleUpdate = () => {
+    // Open the APK download URL - replace with your actual APK URL
+    window.open("https://idfinder.lovable.app", "_blank");
+    onClose();
+  };
 
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-background">
@@ -129,6 +134,16 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
 
       {/* Footer actions */}
       <div className="p-4 border-t border-border space-y-2 mt-auto">
+        {/* Update button */}
+        <Button
+          variant="outline"
+          onClick={handleUpdate}
+          className="w-full justify-start gap-2 h-11 rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+        >
+          <Download className="h-4 w-4" />
+          Mettre à jour l'application
+        </Button>
+
         {user ? (
           <>
             <Button
