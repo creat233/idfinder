@@ -1,31 +1,37 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, BarChart3, Users, CreditCard, ArrowRight, Store, Package, TrendingUp } from "lucide-react";
+import { ShoppingBag, BarChart3, Users, CreditCard, ArrowRight, Store, Package, TrendingUp, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const PublicBusinessCTA = () => {
   const navigate = useNavigate();
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const features = [
     {
       icon: Store,
       title: "Boutique en ligne",
       description: "Créez votre vitrine digitale et vendez vos produits 24h/24",
+      details: "Présentez vos produits avec photos, prix et descriptions détaillées. Vos clients peuvent parcourir votre catalogue, vous contacter directement et passer commande — le tout depuis votre carte MCard accessible partout.",
     },
     {
       icon: Package,
       title: "Gestion des stocks",
       description: "Suivez vos stocks en temps réel avec alertes automatiques",
+      details: "Définissez des seuils d'alerte pour ne jamais être en rupture. Visualisez l'état de vos stocks en un coup d'œil et recevez des notifications quand un produit atteint un niveau critique.",
     },
     {
       icon: BarChart3,
       title: "Analytics & KPIs",
       description: "Tableau de bord complet pour piloter votre activité",
+      details: "Suivez vos revenus, dépenses et bénéfices avec des graphiques interactifs. Analysez les vues de votre carte, les interactions clients et identifiez vos produits les plus populaires.",
     },
     {
       icon: Users,
       title: "Mini-CRM intégré",
       description: "Gérez vos clients, factures et relances facilement",
+      details: "Créez et envoyez des factures professionnelles, suivez les paiements en attente et relancez vos clients par WhatsApp ou email. Tout votre suivi client centralisé en un seul endroit.",
     },
   ];
 
@@ -115,13 +121,30 @@ export const PublicBusinessCTA = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 group"
+                onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 group cursor-pointer"
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform">
-                  <feature.icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                <div className="flex items-start justify-between">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform">
+                    <feature.icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                  </div>
+                  <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedIndex === index ? 'rotate-180' : ''}`} />
                 </div>
                 <h3 className="text-white font-semibold text-sm md:text-base mb-1 md:mb-2">{feature.title}</h3>
                 <p className="text-gray-400 text-xs md:text-sm leading-relaxed">{feature.description}</p>
+                <AnimatePresence>
+                  {expandedIndex === index && (
+                    <motion.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-gray-300 text-xs md:text-sm leading-relaxed mt-3 pt-3 border-t border-white/10"
+                    >
+                      {feature.details}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </motion.div>
