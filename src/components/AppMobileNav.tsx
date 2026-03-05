@@ -56,8 +56,12 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
   );
 
   const handleUpdate = () => {
-    // Open the APK download URL - replace with your actual APK URL
-    window.open("https://idfinder.lovable.app", "_blank");
+    const link = document.createElement('a');
+    link.href = '/FinderID (1).apk';
+    link.download = 'FinderID.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     onClose();
   };
 
