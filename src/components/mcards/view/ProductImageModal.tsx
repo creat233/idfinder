@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { X, ZoomIn, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ProductTranslationLanguage, translateProductText } from '@/hooks/useProductTextTranslation';
 
 interface ProductImageModalProps {
   imageUrl: string;
@@ -14,10 +15,14 @@ interface ProductImageModalProps {
     category: string;
   };
   children: React.ReactNode;
+  currentLanguage?: ProductTranslationLanguage;
 }
 
-export const ProductImageModal = ({ imageUrl, product, children }: ProductImageModalProps) => {
+export const ProductImageModal = ({ imageUrl, product, children, currentLanguage = 'fr' }: ProductImageModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const translatedName = translateProductText(product.name, currentLanguage);
+  const translatedDescription = translateProductText(product.description, currentLanguage);
+  const translatedCategory = translateProductText(product.category, currentLanguage);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -43,12 +48,12 @@ export const ProductImageModal = ({ imageUrl, product, children }: ProductImageM
             <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="font-bold text-2xl mb-2">{product.name}</h3>
+                  <h3 className="font-bold text-2xl mb-2">{translatedName}</h3>
                   <Badge variant="secondary" className="mb-3">
-                    {product.category}
+                    {translatedCategory}
                   </Badge>
-                  {product.description && (
-                    <p className="text-gray-600 mb-4">{product.description}</p>
+                  {translatedDescription && (
+                    <p className="text-gray-600 mb-4">{translatedDescription}</p>
                   )}
                   <div className="flex items-center gap-2">
                     <span className="text-2xl font-bold text-green-600">
@@ -62,7 +67,7 @@ export const ProductImageModal = ({ imageUrl, product, children }: ProductImageM
             <div className="p-6 flex justify-center bg-gray-50">
               <img
                 src={imageUrl}
-                alt={product.name}
+                alt={translatedName}
                 className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-lg"
               />
             </div>
