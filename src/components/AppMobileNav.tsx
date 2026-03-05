@@ -57,8 +57,8 @@ export const AppMobileNav = ({ user, isAdmin, isMenuOpen, onSignOut, onClose }: 
 
   const handleUpdate = () => {
     const link = document.createElement('a');
-    link.href = '/FinderID (1).apk';
-    link.download = 'FinderID.apk';
+    link.href = 'https://www.finderid.info/FinderID%20(1).apk';
+    link.download = 'Finder ID.apk';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
