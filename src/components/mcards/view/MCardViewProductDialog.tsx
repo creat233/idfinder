@@ -2,12 +2,13 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Send, X, Maximize2, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageCircle, X, Maximize2, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MCardProduct } from '@/types/mcard';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { ProductTranslationLanguage, translateProductText } from '@/hooks/useProductTextTranslation';
 
 interface MCardViewProductDialogProps {
   product: MCardProduct | null;
@@ -20,6 +21,7 @@ interface MCardViewProductDialogProps {
   allProducts?: MCardProduct[];
   currentIndex?: number;
   onNavigate?: (direction: 'prev' | 'next') => void;
+  currentLanguage?: ProductTranslationLanguage;
 }
 
 export const MCardViewProductDialog = ({ 
@@ -32,14 +34,14 @@ export const MCardViewProductDialog = ({
   mcardOwnerUserId,
   allProducts = [],
   currentIndex = 0,
-  onNavigate
+  onNavigate,
+  currentLanguage = 'fr'
 }: MCardViewProductDialogProps) => {
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
   const { toast } = useToast();
 
-  // Gestion des touches clavier pour navigation
   useEffect(() => {
     if (!isOpen || !onNavigate) return;
     
@@ -57,9 +59,17 @@ export const MCardViewProductDialog = ({
 
   if (!product) return null;
 
+  const translatedName = translateProductText(product.name, currentLanguage);
+  const translatedDescription = translateProductText(product.description, currentLanguage);
+  const translatedCategory = translateProductText(product.category, currentLanguage);
+  const translatedDetailsTitle = translateProductText('Détails du Produit', currentLanguage);
+  const translatedInCart = translateProductText('Dans le panier', currentLanguage);
+  const translatedAddToCart = translateProductText('Ajouter au panier', currentLanguage);
+  const translatedMessage = translateProductText('Message', currentLanguage);
+
   const handleWhatsAppContact = () => {
     if (phoneNumber) {
-      const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${product.name}" au prix de ${product.price} ${product.currency}.`);
+      const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${translatedName}" au prix de ${product.price} ${product.currency}.`);
       const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
       window.open(whatsappUrl, '_blank');
     }
@@ -67,7 +77,7 @@ export const MCardViewProductDialog = ({
 
   const handleTelegramContact = () => {
     if (phoneNumber) {
-      const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${product.name}" au prix de ${product.price} ${product.currency}.`);
+      const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre produit "${translatedName}" au prix de ${product.price} ${product.currency}.`);
       const telegramUrl = `https://t.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`;
       window.open(telegramUrl, '_blank');
     }
@@ -75,14 +85,12 @@ export const MCardViewProductDialog = ({
 
   const handleContactMessage = () => {
     if (mcardId && mcardOwnerUserId && product) {
-      // Message pré-rempli avec détails du produit
-      const preFilledMessage = `Bonjour, je suis intéressé(e) par votre produit "${product.name}" à ${product.price.toLocaleString()} ${product.currency}. Pourriez-vous me donner plus d'informations ?`;
-      const preFilledSubject = `Produit: ${product.name}`;
+      const preFilledMessage = `Bonjour, je suis intéressé(e) par votre produit "${translatedName}" à ${product.price.toLocaleString()} ${product.currency}. Pourriez-vous me donner plus d'informations ?`;
+      const preFilledSubject = `Produit: ${translatedName}`;
       
-      // Stocker les données du produit pour le message pré-rempli
       const productContext = {
         type: 'product' as const,
-        title: product.name,
+        title: translatedName,
         mcardId,
         mcardOwnerName: mcardOwnerName || 'Propriétaire',
         recipientId: mcardOwnerUserId,
@@ -90,10 +98,7 @@ export const MCardViewProductDialog = ({
         preFilledSubject
       };
       
-      // Stocker dans localStorage pour que la page Messages puisse récupérer
       localStorage.setItem('pendingMessage', JSON.stringify(productContext));
-      
-      // Rediriger vers la page des messages
       navigate('/messages');
       onClose();
     }
@@ -108,7 +113,7 @@ export const MCardViewProductDialog = ({
       });
       toast({
         title: "Produit ajouté au panier !",
-        description: `${product.name} a été ajouté à votre panier`
+        description: `${translatedName} a été ajouté à votre panier`
       });
     }
   };
@@ -130,7 +135,7 @@ export const MCardViewProductDialog = ({
                 </Button>
               )}
               <DialogTitle className="text-center text-lg md:text-xl flex-1">
-                Détails du Produit {onNavigate && allProducts.length > 1 && `(${currentIndex + 1}/${allProducts.length})`}
+                {translatedDetailsTitle} {onNavigate && allProducts.length > 1 && `(${currentIndex + 1}/${allProducts.length})`}
               </DialogTitle>
               {onNavigate && allProducts.length > 1 && (
                 <Button
@@ -146,12 +151,11 @@ export const MCardViewProductDialog = ({
           </DialogHeader>
           
           <div className="space-y-4 md:space-y-6">
-            {/* Image optimisée */}
             {product.image_url && (
               <div className="text-center relative">
                 <img 
                   src={product.image_url} 
-                  alt={product.name}
+                  alt={translatedName}
                   className="w-full max-h-96 object-contain rounded-lg shadow-lg cursor-pointer hover:opacity-90 transition-opacity"
                   onClick={() => setIsImageFullscreen(true)}
                 />
@@ -166,12 +170,11 @@ export const MCardViewProductDialog = ({
               </div>
             )}
             
-            {/* Informations du produit */}
             <div className="space-y-3 md:space-y-4">
               <div className="text-center">
-                <h3 className="text-xl md:text-2xl font-semibold text-gray-900">{product.name}</h3>
+                <h3 className="text-xl md:text-2xl font-semibold text-gray-900">{translatedName}</h3>
                 <Badge variant="secondary" className="mt-2">
-                  {product.category}
+                  {translatedCategory}
                 </Badge>
               </div>
               
@@ -181,16 +184,14 @@ export const MCardViewProductDialog = ({
                 </span>
               </div>
 
-              {product.description && (
+              {translatedDescription && (
                 <div className="text-center">
-                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">{product.description}</p>
+                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">{translatedDescription}</p>
                 </div>
               )}
             </div>
 
-            {/* Boutons d'action */}
             <div className="space-y-3">
-              {/* Bouton Ajouter au panier */}
               <Button
                 onClick={handleAddToCart}
                 disabled={isInCart(product.id)}
@@ -201,17 +202,16 @@ export const MCardViewProductDialog = ({
                 }`}
               >
                 <ShoppingBag className="h-5 w-5 mr-2" />
-                {isInCart(product.id) ? "Dans le panier" : "Ajouter au panier"}
+                {isInCart(product.id) ? translatedInCart : translatedAddToCart}
               </Button>
 
-              {/* Bouton Message */}
               {mcardId && mcardOwnerUserId && (
                 <Button 
                   onClick={handleContactMessage}
                   className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-base"
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
-                  Message
+                  {translatedMessage}
                 </Button>
               )}
             </div>
@@ -219,7 +219,6 @@ export const MCardViewProductDialog = ({
         </DialogContent>
       </Dialog>
 
-      {/* Modal plein écran pour l'image */}
       {isImageFullscreen && product.image_url && (
         <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
           <div className="relative max-w-full max-h-full">
@@ -233,7 +232,7 @@ export const MCardViewProductDialog = ({
             </Button>
             <img 
               src={product.image_url} 
-              alt={product.name}
+              alt={translatedName}
               className="max-w-full max-h-full object-contain rounded-lg"
             />
           </div>
