@@ -20,6 +20,7 @@ import { MCardRealtimeChat } from "../features/MCardRealtimeChat";
 import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
 import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
+import { MCardNFCShare } from "../features/MCardNFCShare";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
 import { MCardBusinessDashboard } from "../business/MCardBusinessDashboard";
 import { MCardClientManager } from "../business/MCardClientManager";
