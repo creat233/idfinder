@@ -164,7 +164,7 @@ export const MarketingQuotaDisplay = ({
               </div>
 
               <p className="text-xs text-muted-foreground text-center">
-                Les messages achetés n'expirent pas et s'ajoutent à votre quota
+                Les messages seront activés par l'administration après validation du paiement
               </p>
             </div>
           </DialogContent>
