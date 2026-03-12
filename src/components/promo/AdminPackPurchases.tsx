@@ -17,7 +17,6 @@ interface PackRequest {
   status: string;
   created_at: string;
   mcard_name?: string;
-  user_email?: string;
 }
 
 export const AdminPackPurchases = () => {
@@ -29,14 +28,14 @@ export const AdminPackPurchases = () => {
   const fetchRequests = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('mcard_pack_purchase_requests')
+        .from('mcard_pack_purchase_requests' as any)
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Enrich with mcard names
-      const enriched = await Promise.all((data || []).map(async (req) => {
+      const rawData = (data || []) as any[];
+      const enriched = await Promise.all(rawData.map(async (req: any) => {
         const { data: mcard } = await supabase
           .from('mcards')
           .select('full_name')
@@ -46,7 +45,7 @@ export const AdminPackPurchases = () => {
         return {
           ...req,
           mcard_name: mcard?.full_name || 'Inconnu',
-        };
+        } as PackRequest;
       }));
 
       setRequests(enriched);
@@ -64,7 +63,6 @@ export const AdminPackPurchases = () => {
   const handleApprove = async (request: PackRequest) => {
     setProcessing(request.id);
     try {
-      // Create the marketing pack
       const { error: packError } = await supabase
         .from('mcard_marketing_packs')
         .insert({
@@ -77,13 +75,12 @@ export const AdminPackPurchases = () => {
 
       if (packError) throw packError;
 
-      // Update request status
       const { error: updateError } = await supabase
-        .from('mcard_pack_purchase_requests')
+        .from('mcard_pack_purchase_requests' as any)
         .update({ 
           status: 'approved', 
           processed_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id', request.id);
 
       if (updateError) throw updateError;
@@ -110,11 +107,11 @@ export const AdminPackPurchases = () => {
     setProcessing(request.id);
     try {
       const { error } = await supabase
-        .from('mcard_pack_purchase_requests')
+        .from('mcard_pack_purchase_requests' as any)
         .update({ 
           status: 'rejected',
           processed_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id', request.id);
 
       if (error) throw error;
@@ -146,7 +143,7 @@ export const AdminPackPurchases = () => {
           <ShoppingCart className="h-5 w-5" />
           Achats de Packs Marketing
           {pendingRequests.length > 0 && (
-            <Badge className="bg-red-500 text-white">{pendingRequests.length}</Badge>
+            <Badge className="bg-destructive text-destructive-foreground">{pendingRequests.length}</Badge>
           )}
         </h2>
         <Button variant="outline" size="sm" onClick={fetchRequests}>
@@ -167,7 +164,6 @@ export const AdminPackPurchases = () => {
         </Card>
       ) : (
         <>
-          {/* Demandes en attente */}
           {pendingRequests.length > 0 && (
             <Card className="border-orange-200 bg-orange-50/30">
               <CardHeader>
@@ -177,7 +173,7 @@ export const AdminPackPurchases = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 {pendingRequests.map((req) => (
-                  <div key={req.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-white rounded-lg border shadow-sm">
+                  <div key={req.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-background rounded-lg border shadow-sm">
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm truncate">{req.mcard_name}</p>
                       <p className="text-xs text-muted-foreground">
@@ -206,7 +202,7 @@ export const AdminPackPurchases = () => {
                         variant="outline"
                         onClick={() => handleReject(req)}
                         disabled={processing === req.id}
-                        className="border-red-300 text-red-600 hover:bg-red-50"
+                        className="border-destructive/30 text-destructive hover:bg-destructive/10"
                       >
                         <X className="h-4 w-4 mr-1" />
                         Refuser
@@ -218,7 +214,6 @@ export const AdminPackPurchases = () => {
             </Card>
           )}
 
-          {/* Demandes traitées */}
           {processedRequests.length > 0 && (
             <Card>
               <CardHeader>
