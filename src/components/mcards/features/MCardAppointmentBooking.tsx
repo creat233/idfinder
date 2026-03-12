@@ -193,9 +193,10 @@ ${formData.message ? `💬 MESSAGE:\n${formData.message}\n` : ''}
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white">
-          <Calendar className="h-4 w-4 mr-2" />
-          Prendre rendez-vous
+        <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white transition-all duration-200 active:scale-95 text-xs sm:text-sm h-9 sm:h-10">
+          <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+          <span className="hidden xs:inline">Prendre rendez-vous</span>
+          <span className="xs:hidden">RDV</span>
         </Button>
       </DialogTrigger>
       

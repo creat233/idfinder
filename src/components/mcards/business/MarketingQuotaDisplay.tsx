@@ -4,13 +4,16 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useMarketingQuota, MARKETING_PACKS } from '@/hooks/useMarketingQuota';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Mail, 
   Zap, 
   ShoppingCart, 
   Users,
   Info,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -27,14 +30,45 @@ export const MarketingQuotaDisplay = ({
 }: MarketingQuotaDisplayProps) => {
   const { quota, loading } = useMarketingQuota(mcardId);
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const freeUsagePercent = ((quota.freeLimit - quota.freeRemaining) / quota.freeLimit) * 100;
 
-  const handleBuyPack = (pack: typeof MARKETING_PACKS[0]) => {
-    if (onBuyPack) {
-      onBuyPack(pack.size, pack.price);
+  const handleBuyPack = async (pack: typeof MARKETING_PACKS[0]) => {
+    setPurchaseLoading(pack.size);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Non authentifié');
+
+      const { error } = await supabase
+        .from('mcard_pack_purchase_requests' as any)
+        .insert({
+          mcard_id: mcardId,
+          user_id: user.id,
+          pack_size: pack.size,
+          price_fcfa: pack.price,
+          status: 'pending'
+        } as any);
+
+      if (error) throw error;
+
+      toast({
+        title: "✅ Demande envoyée !",
+        description: `Votre demande pour ${pack.size} messages (${pack.price.toLocaleString()} FCFA) a été envoyée à l'administration pour activation.`
+      });
+
+      setIsPurchaseDialogOpen(false);
+    } catch (error: any) {
+      console.error('Error purchasing pack:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'envoyer la demande. Réessayez."
+      });
+    } finally {
+      setPurchaseLoading(null);
     }
-    setIsPurchaseDialogOpen(false);
   };
 
   return (
@@ -109,7 +143,8 @@ export const MarketingQuotaDisplay = ({
                   <button
                     key={pack.size}
                     onClick={() => handleBuyPack(pack)}
-                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors text-left"
+                    disabled={purchaseLoading === pack.size}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors text-left disabled:opacity-50"
                   >
                     <div>
                       <p className="font-semibold">{pack.label}</p>
@@ -117,15 +152,19 @@ export const MarketingQuotaDisplay = ({
                         {(pack.price / pack.size).toFixed(0)} FCFA/message
                       </p>
                     </div>
-                    <Badge className="bg-primary text-primary-foreground">
-                      {pack.price.toLocaleString()} FCFA
-                    </Badge>
+                    {purchaseLoading === pack.size ? (
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    ) : (
+                      <Badge className="bg-primary text-primary-foreground">
+                        {pack.price.toLocaleString()} FCFA
+                      </Badge>
+                    )}
                   </button>
                 ))}
               </div>
 
               <p className="text-xs text-muted-foreground text-center">
-                Les messages achetés n'expirent pas et s'ajoutent à votre quota
+                Les messages seront activés par l'administration après validation du paiement
               </p>
             </div>
           </DialogContent>

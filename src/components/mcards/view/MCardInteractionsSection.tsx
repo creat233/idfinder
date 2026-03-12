@@ -208,7 +208,7 @@ export const MCardInteractionsSection = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
           {interactionButtons.map((button, index) => (
             <motion.div
               key={button.label}
@@ -219,11 +219,11 @@ export const MCardInteractionsSection = ({
               whileTap={{ scale: 0.95 }}
             >
               {button.component ? (
-                <div className={`${button.bgColor} rounded-2xl p-5 h-full flex flex-col items-center justify-center gap-3 border-2 border-gray-200/50 hover:border-gray-300 hover:shadow-xl transition-all duration-300`}>
+                <div className={`${button.bgColor} rounded-xl sm:rounded-2xl p-2.5 sm:p-4 h-full flex flex-col items-center justify-center gap-1.5 sm:gap-2 border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300`}>
                   {button.component}
-                  <span className="text-sm font-bold ${button.textColor}">{button.label}</span>
+                  <span className={`text-[10px] sm:text-xs font-bold ${button.textColor}`}>{button.label}</span>
                   {button.count !== undefined && button.count > 0 && (
-                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md">
+                    <span className="text-[9px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-sm">
                       {button.count}
                     </span>
                   )}
@@ -232,14 +232,14 @@ export const MCardInteractionsSection = ({
                 <Button
                   variant="ghost"
                   onClick={button.onClick}
-                  className={`${button.bgColor} ${button.textColor} rounded-2xl p-5 h-full w-full flex flex-col items-center justify-center gap-3 hover:shadow-xl transition-all duration-300 border-2 border-gray-200/50 hover:border-gray-300 ${
+                  className={`${button.bgColor} ${button.textColor} rounded-xl sm:rounded-2xl p-2.5 sm:p-4 h-full w-full flex flex-col items-center justify-center gap-1.5 sm:gap-2 hover:shadow-lg transition-all duration-300 border border-border/50 hover:border-border min-h-[70px] sm:min-h-[90px] ${
                     button.active ? `bg-gradient-to-br ${button.color} text-white shadow-lg border-transparent` : ''
                   }`}
                 >
-                  <button.icon className={`w-7 h-7 ${button.active ? 'fill-current' : ''}`} />
-                  <span className="text-sm font-bold">{button.label}</span>
+                  <button.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${button.active ? 'fill-current' : ''}`} />
+                  <span className="text-[10px] sm:text-xs font-bold leading-tight">{button.label}</span>
                   {button.count !== undefined && button.count > 0 && (
-                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${button.active ? 'bg-white/20' : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'} shadow-md`}>
+                    <span className={`text-[9px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full ${button.active ? 'bg-white/20' : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'} shadow-sm`}>
                       {button.count}
                     </span>
                   )}

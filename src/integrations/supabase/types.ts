@@ -1113,6 +1113,56 @@ export type Database = {
           },
         ]
       }
+      mcard_pack_purchase_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          id: string
+          mcard_id: string
+          pack_size: number
+          price_fcfa: number
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          mcard_id: string
+          pack_size: number
+          price_fcfa: number
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          id?: string
+          mcard_id?: string
+          pack_size?: number
+          price_fcfa?: number
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_pack_purchase_requests_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_products: {
         Row: {
           category: string

@@ -20,6 +20,7 @@ import { MCardRealtimeChat } from "../features/MCardRealtimeChat";
 import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
 import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
+import { MCardNFCShare } from "../features/MCardNFCShare";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
 import { MCardBusinessDashboard } from "../business/MCardBusinessDashboard";
 import { MCardClientManager } from "../business/MCardClientManager";
@@ -281,12 +282,15 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
               )}
 
               {/* Actions rapides */}
-              <div className="bg-gradient-to-br from-blue-50/30 to-indigo-50/30 rounded-xl p-3 sm:p-4 border border-blue-100 shadow-sm">
+               <div className="bg-gradient-to-br from-blue-50/30 to-indigo-50/30 rounded-xl p-3 sm:p-4 border border-blue-100 shadow-sm space-y-3">
                 <MCardViewQuickActions 
                   onCopyLink={handleCopyLink} 
                   onShare={handleShare}
                   disabled={isPendingPayment}
                 />
+                {isOwner && !isPendingPayment && (
+                  <MCardNFCShare mcardSlug={mcard.slug} mcardName={mcard.full_name} />
+                )}
               </div>
 
               {/* Section Interactions améliorée */}

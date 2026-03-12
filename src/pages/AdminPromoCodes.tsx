@@ -23,6 +23,7 @@ import { AdminEmailSettings } from "@/components/promo/AdminEmailSettings";
 import { InfluencerEmailTemplate } from "@/components/admin/InfluencerEmailTemplate";
 import { SystemStatusChecker } from "@/components/admin/SystemStatusChecker";
 import { AdminMCardVerifications } from "@/components/promo/AdminMCardVerifications";
+import { AdminPackPurchases } from "@/components/promo/AdminPackPurchases";
 
 const AdminPromoCodes = () => {
   const navigate = useNavigate();
@@ -51,11 +52,12 @@ const AdminPromoCodes = () => {
           </div>
           
           <Tabs defaultValue="status" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-14 mb-8">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-15 mb-8">
               <TabsTrigger value="status">Statut</TabsTrigger>
               <TabsTrigger value="mcards">mCards</TabsTrigger>
               <TabsTrigger value="verifications">Vérifications</TabsTrigger>
               <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
+              <TabsTrigger value="packs">Packs</TabsTrigger>
               <TabsTrigger value="codes-promo">Codes</TabsTrigger>
               <TabsTrigger value="recuperations">Récupérations</TabsTrigger>
               <TabsTrigger value="revenus">Revenus</TabsTrigger>
@@ -82,6 +84,10 @@ const AdminPromoCodes = () => {
 
             <TabsContent value="renewals">
               <AdminMCardRenewals />
+            </TabsContent>
+
+            <TabsContent value="packs">
+              <AdminPackPurchases />
             </TabsContent>
 
             <TabsContent value="codes-promo">
