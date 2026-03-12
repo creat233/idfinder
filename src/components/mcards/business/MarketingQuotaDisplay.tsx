@@ -30,14 +30,45 @@ export const MarketingQuotaDisplay = ({
 }: MarketingQuotaDisplayProps) => {
   const { quota, loading } = useMarketingQuota(mcardId);
   const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const freeUsagePercent = ((quota.freeLimit - quota.freeRemaining) / quota.freeLimit) * 100;
 
-  const handleBuyPack = (pack: typeof MARKETING_PACKS[0]) => {
-    if (onBuyPack) {
-      onBuyPack(pack.size, pack.price);
+  const handleBuyPack = async (pack: typeof MARKETING_PACKS[0]) => {
+    setPurchaseLoading(pack.size);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Non authentifié');
+
+      const { error } = await supabase
+        .from('mcard_pack_purchase_requests' as any)
+        .insert({
+          mcard_id: mcardId,
+          user_id: user.id,
+          pack_size: pack.size,
+          price_fcfa: pack.price,
+          status: 'pending'
+        } as any);
+
+      if (error) throw error;
+
+      toast({
+        title: "✅ Demande envoyée !",
+        description: `Votre demande pour ${pack.size} messages (${pack.price.toLocaleString()} FCFA) a été envoyée à l'administration pour activation.`
+      });
+
+      setIsPurchaseDialogOpen(false);
+    } catch (error: any) {
+      console.error('Error purchasing pack:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'envoyer la demande. Réessayez."
+      });
+    } finally {
+      setPurchaseLoading(null);
     }
-    setIsPurchaseDialogOpen(false);
   };
 
   return (
