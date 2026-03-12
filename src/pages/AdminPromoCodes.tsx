@@ -86,6 +86,10 @@ const AdminPromoCodes = () => {
               <AdminMCardRenewals />
             </TabsContent>
 
+            <TabsContent value="packs">
+              <AdminPackPurchases />
+            </TabsContent>
+
             <TabsContent value="codes-promo">
               <div className="space-y-8">
                 <AdminPendingCodes />
