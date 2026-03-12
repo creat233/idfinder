@@ -4,13 +4,16 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useMarketingQuota, MARKETING_PACKS } from '@/hooks/useMarketingQuota';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Mail, 
   Zap, 
   ShoppingCart, 
   Users,
   Info,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react';
 import { useState } from 'react';
 
