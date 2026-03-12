@@ -23,6 +23,7 @@ import { AdminEmailSettings } from "@/components/promo/AdminEmailSettings";
 import { InfluencerEmailTemplate } from "@/components/admin/InfluencerEmailTemplate";
 import { SystemStatusChecker } from "@/components/admin/SystemStatusChecker";
 import { AdminMCardVerifications } from "@/components/promo/AdminMCardVerifications";
+import { AdminPackPurchases } from "@/components/promo/AdminPackPurchases";
 
 const AdminPromoCodes = () => {
   const navigate = useNavigate();
