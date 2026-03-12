@@ -52,11 +52,12 @@ const AdminPromoCodes = () => {
           </div>
           
           <Tabs defaultValue="status" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-14 mb-8">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-15 mb-8">
               <TabsTrigger value="status">Statut</TabsTrigger>
               <TabsTrigger value="mcards">mCards</TabsTrigger>
               <TabsTrigger value="verifications">Vérifications</TabsTrigger>
               <TabsTrigger value="renewals">Renouvellements</TabsTrigger>
+              <TabsTrigger value="packs">Packs</TabsTrigger>
               <TabsTrigger value="codes-promo">Codes</TabsTrigger>
               <TabsTrigger value="recuperations">Récupérations</TabsTrigger>
               <TabsTrigger value="revenus">Revenus</TabsTrigger>
