@@ -143,7 +143,8 @@ export const MarketingQuotaDisplay = ({
                   <button
                     key={pack.size}
                     onClick={() => handleBuyPack(pack)}
-                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors text-left"
+                    disabled={purchaseLoading === pack.size}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors text-left disabled:opacity-50"
                   >
                     <div>
                       <p className="font-semibold">{pack.label}</p>
@@ -151,9 +152,13 @@ export const MarketingQuotaDisplay = ({
                         {(pack.price / pack.size).toFixed(0)} FCFA/message
                       </p>
                     </div>
-                    <Badge className="bg-primary text-primary-foreground">
-                      {pack.price.toLocaleString()} FCFA
-                    </Badge>
+                    {purchaseLoading === pack.size ? (
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                    ) : (
+                      <Badge className="bg-primary text-primary-foreground">
+                        {pack.price.toLocaleString()} FCFA
+                      </Badge>
+                    )}
                   </button>
                 ))}
               </div>
