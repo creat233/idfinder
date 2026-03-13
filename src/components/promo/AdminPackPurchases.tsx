@@ -76,11 +76,11 @@ export const AdminPackPurchases = () => {
       if (packError) throw packError;
 
       const { error: updateError } = await supabase
-        .from('mcard_pack_purchase_requests' as any)
+        .from('mcard_pack_purchase_requests')
         .update({ 
           status: 'approved', 
           processed_at: new Date().toISOString()
-        } as any)
+        })
         .eq('id', request.id);
 
       if (updateError) throw updateError;
