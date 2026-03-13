@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Wifi, WifiOff, Check, Loader2 } from 'lucide-react';
+import { Wifi, Check, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { URL_CONFIG } from '@/utils/urlConfig';
 
@@ -12,9 +12,12 @@ interface MCardNFCShareProps {
 export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
   const [isActive, setIsActive] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
+  const [isNFCSupported, setIsNFCSupported] = useState(false);
   const { toast } = useToast();
 
-  const isNFCSupported = 'NDEFReader' in window;
+  useEffect(() => {
+    setIsNFCSupported('NDEFReader' in window);
+  }, []);
 
   const handleActivateNFC = async () => {
     if (!isNFCSupported) {
@@ -90,8 +93,8 @@ export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
       variant={isActive ? "default" : "outline"}
       className={`w-full transition-all duration-300 active:scale-95 text-xs sm:text-sm h-9 sm:h-10 ${
         isActive 
-          ? 'bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-lg' 
-          : 'border-blue-200 text-blue-700 hover:bg-blue-50'
+          ? 'bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 text-primary-foreground shadow-lg' 
+          : 'border-primary/20 text-primary hover:bg-primary/5'
       }`}
     >
       {isWriting ? (
