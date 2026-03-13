@@ -290,7 +290,14 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   disabled={isPendingPayment}
                 />
                 {isOwner && !isPendingPayment && (
-                  <MCardNFCShare mcardSlug={mcard.slug} mcardName={mcard.full_name} />
+                  <div className="space-y-2">
+                    <MCardNFCShare mcardSlug={mcard.slug} mcardName={mcard.full_name} />
+                    <MCardMarketingEmailSender 
+                      mcardId={mcard.id} 
+                      mcardName={mcard.full_name}
+                      mcardOwnerId={mcard.user_id}
+                    />
+                  </div>
                 )}
               </div>
 
