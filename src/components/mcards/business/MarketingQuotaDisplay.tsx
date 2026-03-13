@@ -42,14 +42,14 @@ export const MarketingQuotaDisplay = ({
       if (!user) throw new Error('Non authentifié');
 
       const { error } = await supabase
-        .from('mcard_pack_purchase_requests' as any)
+        .from('mcard_pack_purchase_requests')
         .insert({
           mcard_id: mcardId,
           user_id: user.id,
           pack_size: pack.size,
           price_fcfa: pack.price,
           status: 'pending'
-        } as any);
+        });
 
       if (error) throw error;
 

@@ -28,7 +28,7 @@ export const AdminPackPurchases = () => {
   const fetchRequests = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('mcard_pack_purchase_requests' as any)
+        .from('mcard_pack_purchase_requests')
         .select('*')
         .order('created_at', { ascending: false });
 
