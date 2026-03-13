@@ -107,11 +107,11 @@ export const AdminPackPurchases = () => {
     setProcessing(request.id);
     try {
       const { error } = await supabase
-        .from('mcard_pack_purchase_requests' as any)
+        .from('mcard_pack_purchase_requests')
         .update({ 
           status: 'rejected',
           processed_at: new Date().toISOString()
-        } as any)
+        })
         .eq('id', request.id);
 
       if (error) throw error;
