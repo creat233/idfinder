@@ -38,14 +38,14 @@ export const MarketingQuotaDisplay = ({
   const handleBuyPack = async (pack: typeof MARKETING_PACKS[0]) => {
     setPurchaseLoading(pack.size);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Non authentifié');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) throw new Error('Non authentifié');
 
       const { error } = await supabase
         .from('mcard_pack_purchase_requests')
         .insert({
           mcard_id: mcardId,
-          user_id: user.id,
+          user_id: session.user.id,
           pack_size: pack.size,
           price_fcfa: pack.price,
           status: 'pending'

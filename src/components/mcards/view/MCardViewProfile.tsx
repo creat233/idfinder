@@ -21,6 +21,7 @@ import { MCardAppointmentBooking } from "../features/MCardAppointmentBooking";
 import { MCardRecommendations } from "../features/MCardRecommendations";
 import { MCardAvailabilityManager } from "../features/MCardAvailabilityManager";
 import { MCardNFCShare } from "../features/MCardNFCShare";
+import { MCardMarketingEmailSender } from "../features/MCardMarketingEmailSender";
 import { MCardAIAssistant } from "../features/MCardAIAssistant";
 import { MCardBusinessDashboard } from "../business/MCardBusinessDashboard";
 import { MCardClientManager } from "../business/MCardClientManager";
@@ -289,7 +290,14 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
                   disabled={isPendingPayment}
                 />
                 {isOwner && !isPendingPayment && (
-                  <MCardNFCShare mcardSlug={mcard.slug} mcardName={mcard.full_name} />
+                  <div className="space-y-2">
+                    <MCardNFCShare mcardSlug={mcard.slug} mcardName={mcard.full_name} />
+                    <MCardMarketingEmailSender 
+                      mcardId={mcard.id} 
+                      mcardName={mcard.full_name}
+                      mcardOwnerId={mcard.user_id}
+                    />
+                  </div>
                 )}
               </div>
 
