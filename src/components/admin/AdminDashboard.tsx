@@ -12,8 +12,10 @@ import {
   Settings,
   ArrowLeft,
   Download,
-  Smartphone
+  Smartphone,
+  Wifi
 } from "lucide-react";
+import { useConnectedUsersCount } from "@/hooks/useConnectedUsersCount";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
