@@ -145,26 +145,40 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Statistiques d'utilisation de l'app */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
         <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
-          <CardContent className="p-4 sm:p-6 flex items-center gap-3">
+          <CardContent className="p-3 sm:p-6 flex items-center gap-3">
             <div className="bg-emerald-500 p-2.5 rounded-xl">
               <Users className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-xs sm:text-sm text-emerald-700 font-medium">Utilisateurs inscrits</p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-900">{downloadStats?.totalUsers ?? '...'}</p>
+              <p className="text-xs text-emerald-700 font-medium">Inscrits</p>
+              <p className="text-lg sm:text-2xl font-bold text-emerald-900">{downloadStats?.totalUsers ?? '...'}</p>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-4 sm:p-6 flex items-center gap-3">
+          <CardContent className="p-3 sm:p-6 flex items-center gap-3">
             <div className="bg-blue-500 p-2.5 rounded-xl">
               <Smartphone className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-xs sm:text-sm text-blue-700 font-medium">Visites totales</p>
-              <p className="text-xl sm:text-2xl font-bold text-blue-900">{downloadStats?.totalVisitors ?? '...'}</p>
+              <p className="text-xs text-blue-700 font-medium">Visites</p>
+              <p className="text-lg sm:text-2xl font-bold text-blue-900">{downloadStats?.totalVisitors ?? '...'}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
+          <CardContent className="p-3 sm:p-6 flex items-center gap-3">
+            <div className="bg-amber-500 p-2.5 rounded-xl">
+              <Wifi className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-xs text-amber-700 font-medium">En ligne</p>
+              <p className="text-lg sm:text-2xl font-bold text-amber-900">
+                {connectedUsers}
+                <span className="inline-block ml-1 h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              </p>
             </div>
           </CardContent>
         </Card>
