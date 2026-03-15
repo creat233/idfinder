@@ -22,7 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
-
+  const connectedUsers = useConnectedUsersCount();
   // Récupérer le nombre de messages admin non lus
   const { data: unreadMessagesCount } = useQuery({
     queryKey: ['admin-unread-messages'],
