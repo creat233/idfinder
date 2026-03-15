@@ -5,19 +5,14 @@ export const useConnectedUsersCount = () => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const channel = supabase.channel('admin-presence-monitor', {
-      config: { presence: { key: 'global' } },
-    });
+    const channel = supabase.channel('global-user-presence');
 
     channel
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
-        // Count all unique user_ids across all presence keys
-        const allPresences = Object.values(state).flat();
-        const uniqueUsers = new Set(
-          allPresences.map((p: any) => p.user_id).filter(Boolean)
-        );
-        setCount(uniqueUsers.size);
+        // Each key in the presence state represents a unique user
+        const uniqueUsers = Object.keys(state).filter(key => state[key]?.length > 0);
+        setCount(uniqueUsers.length);
       })
       .subscribe();
 
