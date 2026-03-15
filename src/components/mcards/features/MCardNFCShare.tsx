@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Wifi, Check, Loader2, Share2 } from 'lucide-react';
+import { Wifi, Check, Loader2, Share2, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { URL_CONFIG } from '@/utils/urlConfig';
 
@@ -14,6 +14,7 @@ export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
   const [isWriting, setIsWriting] = useState(false);
   const [isNFCSupported, setIsNFCSupported] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
 
   const mcardUrl = URL_CONFIG.getMCardUrl(mcardSlug);
 
-  const handleShareiOS = async () => {
+  const handleShare = async () => {
     try {
       if (navigator.share) {
         await navigator.share({
@@ -38,7 +39,10 @@ export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
           description: "Votre carte a été partagée avec succès."
         });
       } else {
+        // Fallback: copier dans le presse-papiers
         await navigator.clipboard.writeText(mcardUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
         toast({
           title: "✅ Lien copié !",
           description: "Le lien de votre carte a été copié dans le presse-papiers."
@@ -46,11 +50,22 @@ export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
       }
     } catch (error: any) {
       if (error.name !== 'AbortError') {
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Impossible de partager. Réessayez."
-        });
+        // Dernier fallback si tout échoue
+        try {
+          await navigator.clipboard.writeText(mcardUrl);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+          toast({
+            title: "✅ Lien copié !",
+            description: "Le lien de votre carte a été copié dans le presse-papiers."
+          });
+        } catch {
+          toast({
+            variant: "destructive",
+            title: "Erreur",
+            description: "Impossible de partager. Copiez ce lien manuellement : " + mcardUrl
+          });
+        }
       }
     }
   };
@@ -110,58 +125,47 @@ export const MCardNFCShare = ({ mcardSlug, mcardName }: MCardNFCShareProps) => {
     }
   };
 
-  // iOS: show share button (Apple doesn't support Web NFC)
-  if (isIOS) {
-    return (
+  return (
+    <div className="space-y-2">
+      {/* Bouton de partage universel - fonctionne sur TOUS les appareils */}
       <Button
-        onClick={handleShareiOS}
+        onClick={handleShare}
         variant="outline"
         className="w-full transition-all duration-300 active:scale-95 text-xs sm:text-sm h-9 sm:h-10 border-primary/20 text-primary hover:bg-primary/5"
       >
-        <Share2 className="h-4 w-4 mr-2" />
-        Partager ma carte (AirDrop / Lien)
-      </Button>
-    );
-  }
-
-  // Android with NFC support
-  if (isNFCSupported) {
-    return (
-      <Button
-        onClick={handleActivateNFC}
-        disabled={isWriting}
-        variant={isActive ? "default" : "outline"}
-        className={`w-full transition-all duration-300 active:scale-95 text-xs sm:text-sm h-9 sm:h-10 ${
-          isActive 
-            ? 'bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 text-primary-foreground shadow-lg' 
-            : 'border-primary/20 text-primary hover:bg-primary/5'
-        }`}
-      >
-        {isWriting ? (
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-        ) : isActive ? (
-          <Check className="h-4 w-4 mr-2" />
+        {copied ? (
+          <Check className="h-4 w-4 mr-2 text-green-500" />
         ) : (
-          <Wifi className="h-4 w-4 mr-2" />
+          <Share2 className="h-4 w-4 mr-2" />
         )}
-        {isWriting ? 'Activation...' : isActive ? 'NFC actif' : 'Partager via NFC'}
+        {isIOS 
+          ? (copied ? 'Lien copié !' : 'Partager ma carte (AirDrop / Lien)')
+          : (copied ? 'Lien copié !' : 'Partager ma carte')
+        }
       </Button>
-    );
-  }
 
-  // No NFC, no iOS - show generic share
-  if (navigator.share) {
-    return (
-      <Button
-        onClick={handleShareiOS}
-        variant="outline"
-        className="w-full transition-all duration-300 active:scale-95 text-xs sm:text-sm h-9 sm:h-10 border-primary/20 text-primary hover:bg-primary/5"
-      >
-        <Share2 className="h-4 w-4 mr-2" />
-        Partager ma carte
-      </Button>
-    );
-  }
-
-  return null;
+      {/* Bouton NFC uniquement sur Android avec support NFC */}
+      {isNFCSupported && !isIOS && (
+        <Button
+          onClick={handleActivateNFC}
+          disabled={isWriting}
+          variant={isActive ? "default" : "outline"}
+          className={`w-full transition-all duration-300 active:scale-95 text-xs sm:text-sm h-9 sm:h-10 ${
+            isActive 
+              ? 'bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 text-primary-foreground shadow-lg' 
+              : 'border-primary/20 text-primary hover:bg-primary/5'
+          }`}
+        >
+          {isWriting ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : isActive ? (
+            <Check className="h-4 w-4 mr-2" />
+          ) : (
+            <Wifi className="h-4 w-4 mr-2" />
+          )}
+          {isWriting ? 'Activation...' : isActive ? 'NFC actif ✅' : 'Partager via NFC'}
+        </Button>
+      )}
+    </div>
+  );
 };
