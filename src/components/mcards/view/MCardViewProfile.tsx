@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RobustAvatar } from "@/components/ui/robust-avatar";
 import { MCardViewContactInfo } from "./MCardViewContactInfo";
+import { MCardCoverPhoto } from "./MCardCoverPhoto";
 import { MCardViewQuickActions } from "./MCardViewQuickActions";
 import { MCardVerificationDialog } from "../MCardVerificationDialog";
 import { MCardVerifiedBadge } from "../MCardVerifiedBadge";
@@ -132,8 +133,10 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
   return (
     <div className="relative">
       <Card className="relative shadow-xl border border-gray-100 bg-white rounded-2xl sm:rounded-3xl overflow-hidden">
+        {/* Cover Photo Banner */}
+        <MCardCoverPhoto mcard={mcard} isOwner={isOwner} />
         
-        <CardContent className="relative p-3 sm:p-5 md:p-6 lg:p-8">
+        <CardContent className="relative p-3 sm:p-5 md:p-6 lg:p-8 -mt-10 sm:-mt-12">
           {/* Message d'avertissement pour carte en attente */}
           {isPendingPayment && (
             <div className="mb-4 p-3 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl shadow-sm">

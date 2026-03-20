@@ -32,7 +32,11 @@ export const MCardCustomized = ({ mcardId, children, className = '' }: MCardCust
 
       setCustomization(data ? {
         ...data,
-        mask_enabled: data.mask_enabled ?? false
+        mask_enabled: data.mask_enabled ?? false,
+        primary_color: data.primary_color ?? '#6366f1',
+        secondary_color: data.secondary_color ?? '#ec4899',
+        border_radius: data.border_radius ?? 16,
+        card_opacity: data.card_opacity ?? 100,
       } : null);
     } catch (error) {
       console.error('Erreur:', error);
@@ -41,25 +45,17 @@ export const MCardCustomized = ({ mcardId, children, className = '' }: MCardCust
     }
   };
 
-  if (loading) {
+  if (loading || !customization) {
     return <div className={className}>{children}</div>;
   }
 
-  if (!customization) {
-    return <div className={className}>{children}</div>;
-  }
-
-  const styles = applyCustomizationToCard(customization);
-  
-  // Désactiver les particules pour éviter les artefacts visuels sur mobile
-  const particlesComponent = null;
+  const result = applyCustomizationToCard(customization);
 
   return (
     <div 
-      className={`${styles.container} ${className} transition-all duration-500`}
-      style={{ fontFamily: customization.custom_font }}
+      className={`${result.container} ${className} transition-all duration-500`}
+      style={result.customStyles}
     >
-      {particlesComponent}
       <div className="relative z-10">
         {children}
       </div>

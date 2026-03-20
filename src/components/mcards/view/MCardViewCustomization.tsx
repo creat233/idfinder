@@ -10,6 +10,7 @@ import { ThemeSelector } from './customization/ThemeSelector';
 import { AnimationSettings } from './customization/AnimationSettings';
 import { VisualEffects } from './customization/VisualEffects';
 import { FontCustomization } from './customization/FontCustomization';
+import { ColorCustomization } from './customization/ColorCustomization';
 import { PremiumUpgrade } from './customization/PremiumUpgrade';
 import { CustomizationActions } from './customization/CustomizationActions';
 
@@ -110,6 +111,17 @@ export const MCardViewCustomization = ({
             <FontCustomization
               selectedFont={customization.custom_font}
               onFontChange={(font) => updateCustomization({ custom_font: font })}
+            />
+
+            <ColorCustomization
+              primaryColor={customization.primary_color || '#6366f1'}
+              secondaryColor={customization.secondary_color || '#ec4899'}
+              borderRadius={customization.border_radius || 16}
+              cardOpacity={customization.card_opacity || 100}
+              onPrimaryColorChange={(color) => updateCustomization({ primary_color: color })}
+              onSecondaryColorChange={(color) => updateCustomization({ secondary_color: color })}
+              onBorderRadiusChange={(radius) => updateCustomization({ border_radius: radius })}
+              onCardOpacityChange={(opacity) => updateCustomization({ card_opacity: opacity })}
             />
 
             <CustomizationActions

@@ -14,6 +14,11 @@ export interface MCardCustomization {
   shadows_enabled: boolean;
   mask_enabled: boolean;
   custom_font: string;
+  background_image_url?: string | null;
+  primary_color?: string;
+  secondary_color?: string;
+  border_radius?: number;
+  card_opacity?: number;
 }
 
 export const useMCardCustomization = (mcardId: string) => {
@@ -27,7 +32,12 @@ export const useMCardCustomization = (mcardId: string) => {
     gradients_enabled: true,
     shadows_enabled: true,
     mask_enabled: false,
-    custom_font: 'Inter'
+    custom_font: 'Inter',
+    background_image_url: null,
+    primary_color: '#6366f1',
+    secondary_color: '#ec4899',
+    border_radius: 16,
+    card_opacity: 100
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -52,7 +62,11 @@ export const useMCardCustomization = (mcardId: string) => {
       if (data) {
         setCustomization({
           ...data,
-          mask_enabled: data.mask_enabled ?? false
+          mask_enabled: data.mask_enabled ?? false,
+          primary_color: data.primary_color ?? '#6366f1',
+          secondary_color: data.secondary_color ?? '#ec4899',
+          border_radius: data.border_radius ?? 16,
+          card_opacity: data.card_opacity ?? 100,
         });
       }
     } catch (error) {
