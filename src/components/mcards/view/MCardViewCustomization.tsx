@@ -10,6 +10,7 @@ import { ThemeSelector } from './customization/ThemeSelector';
 import { AnimationSettings } from './customization/AnimationSettings';
 import { VisualEffects } from './customization/VisualEffects';
 import { FontCustomization } from './customization/FontCustomization';
+import { ColorCustomization } from './customization/ColorCustomization';
 import { PremiumUpgrade } from './customization/PremiumUpgrade';
 import { CustomizationActions } from './customization/CustomizationActions';
 

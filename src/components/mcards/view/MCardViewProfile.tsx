@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RobustAvatar } from "@/components/ui/robust-avatar";
 import { MCardViewContactInfo } from "./MCardViewContactInfo";
+import { MCardCoverPhoto } from "./MCardCoverPhoto";
 import { MCardViewQuickActions } from "./MCardViewQuickActions";
 import { MCardVerificationDialog } from "../MCardVerificationDialog";
 import { MCardVerifiedBadge } from "../MCardVerifiedBadge";
