@@ -1,7 +1,7 @@
 import { MCardCustomization } from '@/hooks/useMCardCustomization';
 
 export const getThemeClasses = (theme: string) => {
-  const themes = {
+  const themes: Record<string, string> = {
     default: 'bg-gradient-to-br from-blue-500 to-purple-600',
     modern: 'bg-gradient-to-br from-gray-800 to-gray-900 text-white',
     elegant: 'bg-gradient-to-br from-purple-600 to-pink-600 text-white',
@@ -10,7 +10,7 @@ export const getThemeClasses = (theme: string) => {
     nature: 'bg-gradient-to-br from-green-500 to-emerald-500 text-white'
   };
   
-  return themes[theme as keyof typeof themes] || themes.default;
+  return themes[theme] || themes.default;
 };
 
 export const getAnimationClasses = (customization: MCardCustomization) => {
@@ -23,7 +23,7 @@ export const getAnimationClasses = (customization: MCardCustomization) => {
 };
 
 export const getFontFamily = (font: string) => {
-  const fontMap = {
+  const fontMap: Record<string, string> = {
     'Inter': 'font-sans',
     'Roboto': 'font-sans',
     'Open Sans': 'font-sans',
@@ -36,7 +36,7 @@ export const getFontFamily = (font: string) => {
     'Pacifico': 'font-cursive'
   };
   
-  return fontMap[font as keyof typeof fontMap] || 'font-sans';
+  return fontMap[font] || 'font-sans';
 };
 
 export const getVisualEffects = (customization: MCardCustomization) => {
@@ -57,14 +57,40 @@ export const getVisualEffects = (customization: MCardCustomization) => {
   return effects.join(' ');
 };
 
+export const getCustomStyles = (customization: MCardCustomization): React.CSSProperties => {
+  const styles: React.CSSProperties = {};
+
+  if (customization.primary_color && customization.secondary_color) {
+    styles.background = `linear-gradient(135deg, ${customization.primary_color}, ${customization.secondary_color})`;
+  }
+
+  if (customization.border_radius !== undefined) {
+    styles.borderRadius = `${customization.border_radius}px`;
+  }
+
+  if (customization.card_opacity !== undefined) {
+    styles.opacity = customization.card_opacity / 100;
+  }
+
+  if (customization.custom_font) {
+    styles.fontFamily = customization.custom_font;
+  }
+
+  return styles;
+};
+
 export const applyCustomizationToCard = (customization: MCardCustomization) => {
   const themeClasses = getThemeClasses(customization.theme);
   const animationClasses = getAnimationClasses(customization);
   const fontClass = getFontFamily(customization.custom_font);
   const effectsClasses = getVisualEffects(customization);
+  const customStyles = getCustomStyles(customization);
+  const hasCustomColors = customization.primary_color && customization.secondary_color && 
+    customization.primary_color !== '#6366f1';
   
   return {
-    container: `${themeClasses} ${animationClasses} ${effectsClasses} ${fontClass}`,
+    container: `${hasCustomColors ? '' : themeClasses} ${animationClasses} ${effectsClasses} ${fontClass}`.trim(),
+    customStyles,
     particles: customization.particles_enabled,
     gradients: customization.gradients_enabled,
     shadows: customization.shadows_enabled,
