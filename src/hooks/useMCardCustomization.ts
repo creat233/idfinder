@@ -62,7 +62,11 @@ export const useMCardCustomization = (mcardId: string) => {
       if (data) {
         setCustomization({
           ...data,
-          mask_enabled: data.mask_enabled ?? false
+          mask_enabled: data.mask_enabled ?? false,
+          primary_color: data.primary_color ?? '#6366f1',
+          secondary_color: data.secondary_color ?? '#ec4899',
+          border_radius: data.border_radius ?? 16,
+          card_opacity: data.card_opacity ?? 100,
         });
       }
     } catch (error) {
