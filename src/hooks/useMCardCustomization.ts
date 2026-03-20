@@ -32,7 +32,12 @@ export const useMCardCustomization = (mcardId: string) => {
     gradients_enabled: true,
     shadows_enabled: true,
     mask_enabled: false,
-    custom_font: 'Inter'
+    custom_font: 'Inter',
+    background_image_url: null,
+    primary_color: '#6366f1',
+    secondary_color: '#ec4899',
+    border_radius: 16,
+    card_opacity: 100
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
