@@ -399,6 +399,9 @@ export type Database = {
           animation_speed: number | null
           animation_type: string | null
           animations_enabled: boolean | null
+          background_image_url: string | null
+          border_radius: number | null
+          card_opacity: number | null
           created_at: string
           custom_font: string | null
           gradients_enabled: boolean | null
@@ -406,6 +409,8 @@ export type Database = {
           mask_enabled: boolean | null
           mcard_id: string
           particles_enabled: boolean | null
+          primary_color: string | null
+          secondary_color: string | null
           shadows_enabled: boolean | null
           theme: string | null
           updated_at: string
@@ -414,6 +419,9 @@ export type Database = {
           animation_speed?: number | null
           animation_type?: string | null
           animations_enabled?: boolean | null
+          background_image_url?: string | null
+          border_radius?: number | null
+          card_opacity?: number | null
           created_at?: string
           custom_font?: string | null
           gradients_enabled?: boolean | null
@@ -421,6 +429,8 @@ export type Database = {
           mask_enabled?: boolean | null
           mcard_id: string
           particles_enabled?: boolean | null
+          primary_color?: string | null
+          secondary_color?: string | null
           shadows_enabled?: boolean | null
           theme?: string | null
           updated_at?: string
@@ -429,6 +439,9 @@ export type Database = {
           animation_speed?: number | null
           animation_type?: string | null
           animations_enabled?: boolean | null
+          background_image_url?: string | null
+          border_radius?: number | null
+          card_opacity?: number | null
           created_at?: string
           custom_font?: string | null
           gradients_enabled?: boolean | null
@@ -436,6 +449,8 @@ export type Database = {
           mask_enabled?: boolean | null
           mcard_id?: string
           particles_enabled?: boolean | null
+          primary_color?: string | null
+          secondary_color?: string | null
           shadows_enabled?: boolean | null
           theme?: string | null
           updated_at?: string
@@ -1550,6 +1565,7 @@ export type Database = {
       mcards: {
         Row: {
           company: string | null
+          cover_image_url: string | null
           created_at: string
           description: string | null
           email: string | null
@@ -1583,6 +1599,7 @@ export type Database = {
         }
         Insert: {
           company?: string | null
+          cover_image_url?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
@@ -1616,6 +1633,7 @@ export type Database = {
         }
         Update: {
           company?: string | null
+          cover_image_url?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
@@ -2230,6 +2248,9 @@ export type Database = {
           animation_speed: number | null
           animation_type: string | null
           animations_enabled: boolean | null
+          background_image_url: string | null
+          border_radius: number | null
+          card_opacity: number | null
           created_at: string
           custom_font: string | null
           gradients_enabled: boolean | null
@@ -2237,6 +2258,8 @@ export type Database = {
           mask_enabled: boolean | null
           mcard_id: string
           particles_enabled: boolean | null
+          primary_color: string | null
+          secondary_color: string | null
           shadows_enabled: boolean | null
           theme: string | null
           updated_at: string
