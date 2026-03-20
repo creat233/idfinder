@@ -14,6 +14,11 @@ export interface MCardCustomization {
   shadows_enabled: boolean;
   mask_enabled: boolean;
   custom_font: string;
+  background_image_url?: string | null;
+  primary_color?: string;
+  secondary_color?: string;
+  border_radius?: number;
+  card_opacity?: number;
 }
 
 export const useMCardCustomization = (mcardId: string) => {
