@@ -35,6 +35,7 @@ export const createDefaultCard = (): MCard => ({
   telegram_url: null,
   google_business_url: null,
   maps_location_url: null,
+  cover_image_url: null,
   is_verified: false,
   verification_status: 'not_requested'
 });
