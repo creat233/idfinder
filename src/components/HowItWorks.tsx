@@ -47,7 +47,7 @@ export const HowItWorks = () => {
   };
   
   const handleCallSupport = () => {
-    window.location.href = "tel:+221781540779";
+    window.location.href = "mailto:support@finderid.com";
   };
 
   return (
