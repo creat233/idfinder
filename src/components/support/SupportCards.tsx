@@ -20,7 +20,7 @@ export const SupportCards = ({ supportEmail, handleContactSupport }: SupportCard
   };
   
   const handleCallSupport = () => {
-    window.location.href = "tel:+221710117579";
+    window.location.href = "mailto:support@finderid.com";
   };
 
   const fadeInUp = {
@@ -57,7 +57,7 @@ export const SupportCards = ({ supportEmail, handleContactSupport }: SupportCard
             </Button>
             <Button size="lg" variant="outline" onClick={handleCallSupport} className="w-full">
               <PhoneCall className="mr-2 h-5 w-5" />
-              {t("call")}: +221710117579
+              {t("call")}: support@finderid.com
             </Button>
           </div>
         </Card>

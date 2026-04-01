@@ -22,7 +22,7 @@ export const HowItWorks = () => {
     {
       icon: <PhoneCall className="w-16 h-16 text-secondary mx-auto mb-6" />,
       title: "3. Contactez FinderID",
-      description: "Appelez notre service client au +221781540779 pour organiser la récupération de votre carte"
+      description: "Contactez notre service client pour organiser la récupération de votre carte"
     },
     {
       icon: <CreditCard className="w-16 h-16 text-secondary mx-auto mb-6" />,
@@ -47,7 +47,7 @@ export const HowItWorks = () => {
   };
   
   const handleCallSupport = () => {
-    window.location.href = "tel:+221781540779";
+    window.location.href = "mailto:support@finderid.com";
   };
 
   return (
@@ -126,7 +126,7 @@ export const HowItWorks = () => {
               className="flex items-center gap-2"
             >
               <PhoneCall className="w-5 h-5" />
-              Appeler maintenant: +221781540779
+              Contacter le support
             </Button>
           </div>
         </motion.div>

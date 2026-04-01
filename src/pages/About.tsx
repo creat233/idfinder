@@ -171,13 +171,10 @@ const About = () => {
                     {t("about_contact_email_label")}
                   </p>
                   <a 
-                    href="https://wa.me/221710117579" 
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="mailto:support@finderid.com" 
                     className="text-[#9b87f5] hover:text-[#7E69AB] font-medium text-lg flex items-center justify-center gap-2"
                   >
-                    <Phone className="w-6 h-6" />
-                    +221 71 011 75 79
+                    ✉️ support@finderid.com
                   </a>
                 </div>
               </motion.div>
