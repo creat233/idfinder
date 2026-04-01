@@ -113,6 +113,18 @@ export const useAuth = () => {
     setError(null);
     
     try {
+      // Vérifier si l'utilisateur est bloqué après trop de tentatives
+      const attemptsKey = `login_attempts_${values.email}`;
+      const blockedUntilKey = `login_blocked_until_${values.email}`;
+      const blockedUntil = localStorage.getItem(blockedUntilKey);
+      
+      if (blockedUntil && Date.now() < parseInt(blockedUntil)) {
+        const remainingMinutes = Math.ceil((parseInt(blockedUntil) - Date.now()) / 60000);
+        setError(t('login_blocked_error')?.replace('{minutes}', String(remainingMinutes)) || 
+          `Compte temporairement bloqué. Réessayez dans ${remainingMinutes} minute(s). Un email de réinitialisation vous a été envoyé.`);
+        return false;
+      }
+
       // Nettoyer l'état d'authentification avant de se connecter
       cleanupAuthState();
       
@@ -120,7 +132,6 @@ export const useAuth = () => {
       try {
         await supabase.auth.signOut({ scope: 'global' });
       } catch (err) {
-        // Continuer même si la déconnexion échoue
         console.log('Déconnexion préventive ignorée');
       }
 
@@ -130,9 +141,43 @@ export const useAuth = () => {
       });
 
       if (error) {
-        setError(error.message);
+        // Incrémenter le compteur de tentatives échouées
+        const currentAttempts = parseInt(localStorage.getItem(attemptsKey) || '0') + 1;
+        localStorage.setItem(attemptsKey, String(currentAttempts));
+        
+        if (currentAttempts >= 4) {
+          // Bloquer pendant 15 minutes
+          localStorage.setItem(blockedUntilKey, String(Date.now() + 15 * 60 * 1000));
+          localStorage.removeItem(attemptsKey);
+          
+          // Envoyer automatiquement un email de réinitialisation
+          try {
+            await supabase.auth.resetPasswordForEmail(values.email, {
+              redirectTo: `${window.location.origin}/login`,
+            });
+            console.log("📧 Email de réinitialisation envoyé après 4 tentatives échouées");
+          } catch (resetErr) {
+            console.error("Erreur envoi email reset:", resetErr);
+          }
+          
+          setError(t('login_blocked_after_attempts') || 
+            'Trop de tentatives échouées. Votre compte est temporairement bloqué pendant 15 minutes. Un email de réinitialisation de mot de passe vous a été envoyé.');
+          toast({
+            variant: "destructive",
+            title: t('login_blocked_toast_title') || "Compte bloqué",
+            description: t('login_blocked_toast_desc') || "Un email de réinitialisation de mot de passe a été envoyé à votre adresse email.",
+          });
+          return false;
+        }
+        
+        const remaining = 4 - currentAttempts;
+        setError(`${error.message} (${remaining} tentative(s) restante(s))`);
         return false;
       }
+      
+      // Connexion réussie - réinitialiser les tentatives
+      localStorage.removeItem(attemptsKey);
+      localStorage.removeItem(blockedUntilKey);
       
       if (data.user) {
         await supabase.rpc('log_login_event');
