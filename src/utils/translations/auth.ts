@@ -26,6 +26,10 @@ export const authTranslations: Translations = {
   login_error_invalid_email: { fr: "Email invalide", en: "Invalid email" },
   login_error_password_required: { fr: "Le mot de passe est requis", en: "Password is required" },
   login_general_error: { fr: "Une erreur s'est produite lors de la connexion", en: "An error occurred during login" },
+  login_blocked_error: { fr: "Compte temporairement bloqué. Réessayez dans {minutes} minute(s). Un email de réinitialisation vous a été envoyé.", en: "Account temporarily locked. Try again in {minutes} minute(s). A reset email has been sent to you." },
+  login_blocked_after_attempts: { fr: "Trop de tentatives échouées. Votre compte est temporairement bloqué pendant 15 minutes. Un email de réinitialisation de mot de passe vous a été envoyé.", en: "Too many failed attempts. Your account is temporarily locked for 15 minutes. A password reset email has been sent." },
+  login_blocked_toast_title: { fr: "Compte bloqué", en: "Account locked" },
+  login_blocked_toast_desc: { fr: "Un email de réinitialisation de mot de passe a été envoyé à votre adresse email.", en: "A password reset email has been sent to your email address." },
 
   // Register Page
   register_title: { fr: "Créer un compte", en: "Create an account" },
