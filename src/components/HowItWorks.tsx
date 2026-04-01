@@ -22,7 +22,7 @@ export const HowItWorks = () => {
     {
       icon: <PhoneCall className="w-16 h-16 text-secondary mx-auto mb-6" />,
       title: "3. Contactez FinderID",
-      description: "Appelez notre service client au +221781540779 pour organiser la récupération de votre carte"
+      description: "Contactez notre service client pour organiser la récupération de votre carte"
     },
     {
       icon: <CreditCard className="w-16 h-16 text-secondary mx-auto mb-6" />,
