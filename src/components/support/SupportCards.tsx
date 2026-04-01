@@ -20,7 +20,7 @@ export const SupportCards = ({ supportEmail, handleContactSupport }: SupportCard
   };
   
   const handleCallSupport = () => {
-    window.location.href = "tel:+221710117579";
+    window.location.href = "mailto:support@finderid.com";
   };
 
   const fadeInUp = {
