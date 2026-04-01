@@ -126,7 +126,7 @@ export const HowItWorks = () => {
               className="flex items-center gap-2"
             >
               <PhoneCall className="w-5 h-5" />
-              Appeler maintenant: +221781540779
+              Contacter le support
             </Button>
           </div>
         </motion.div>

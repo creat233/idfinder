@@ -12,7 +12,7 @@ export const PromoCodeActivation = ({ promoCode }: PromoCodeActivationProps) => 
 
   const openWhatsApp = (code: string) => {
     const message = encodeURIComponent(t("whatsapp_activation_message", { code }));
-    window.open(`https://wa.me/221710117579?text=${message}`, '_blank');
+    window.open(`mailto:support@finderid.com?subject=${message}`, '_blank');
   };
 
   return (

@@ -23,8 +23,8 @@ export const promoTranslations: Translations = {
     en: "Contact on WhatsApp"
   },
   paymentInstructions: {
-    fr: "Contactez le service client sur WhatsApp avec le numéro +221710117579 pour payer 1000 FCFA et activer votre code.",
-    en: "Contact customer service on WhatsApp at +221710117579 to pay 1000 FCFA and activate your code."
+    fr: "Contactez le service client par email à support@finderid.com pour payer 1000 FCFA et activer votre code.",
+    en: "Contact customer service at support@finderid.com to pay 1000 FCFA and activate your code."
   },
   codeGenerated: {
     fr: "Code généré avec succès",
