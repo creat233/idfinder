@@ -97,8 +97,7 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
             <input
               id={`cover-upload-${mcard.id}`}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              capture={false as any}
+              accept="image/*"
               className="sr-only"
               onChange={handleUpload}
               disabled={uploading}
