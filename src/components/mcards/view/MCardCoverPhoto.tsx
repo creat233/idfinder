@@ -48,7 +48,7 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
       if (updateError) throw updateError;
 
       setCoverUrl(publicUrl);
-      toast({ title: "Bannière mise à jour !" });
+      toast({ title: "Photo de couverture mise à jour !" });
       onUpdate?.();
     } catch (error) {
       console.error(error);
@@ -62,7 +62,7 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
     try {
       await supabase.from('mcards').update({ cover_image_url: null }).eq('id', mcard.id);
       setCoverUrl(null);
-      toast({ title: "Bannière supprimée" });
+      toast({ title: "Photo de couverture supprimée" });
       onUpdate?.();
     } catch {
       toast({ title: "Erreur", variant: "destructive" });
@@ -104,7 +104,7 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
             >
               <span>
                 <Camera className="h-3 w-3 mr-1" />
-                {uploading ? '...' : 'Bannière'}
+                {uploading ? '...' : 'Couverture'}
               </span>
             </Button>
           </label>
