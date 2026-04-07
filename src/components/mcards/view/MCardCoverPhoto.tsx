@@ -104,7 +104,7 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
             >
               <span>
                 <Camera className="h-3 w-3 mr-1" />
-                {uploading ? '...' : 'Bannière'}
+                {uploading ? '...' : 'Couverture'}
               </span>
             </Button>
           </label>
