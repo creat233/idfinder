@@ -88,26 +88,28 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
 
       {isOwner && (
         <div className="absolute bottom-2 right-2 flex gap-1.5">
-          <label>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleUpload}
-              disabled={uploading}
-            />
-            <Button
-              size="sm"
-              variant="secondary"
-              className="cursor-pointer bg-white/90 hover:bg-white text-xs h-7 px-2"
-              asChild
-            >
-              <span>
-                <Camera className="h-3 w-3 mr-1" />
-                {uploading ? '...' : 'Couverture'}
-              </span>
-            </Button>
-          </label>
+          <input
+            ref={(el) => { if (el) (window as any).__coverInput = el; }}
+            id={`cover-upload-${mcard.id}`}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleUpload}
+            disabled={uploading}
+          />
+          <Button
+            size="sm"
+            variant="secondary"
+            className="cursor-pointer bg-white/90 hover:bg-white text-xs h-7 px-2"
+            onClick={() => {
+              const input = document.getElementById(`cover-upload-${mcard.id}`) as HTMLInputElement;
+              input?.click();
+            }}
+            disabled={uploading}
+          >
+            <Camera className="h-3 w-3 mr-1" />
+            {uploading ? '...' : 'Couverture'}
+          </Button>
           {coverUrl && (
             <Button
               size="sm"
