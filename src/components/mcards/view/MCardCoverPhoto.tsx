@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Camera, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { MCard } from '@/types/mcard';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +16,7 @@ interface MCardCoverPhotoProps {
 export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoProps) => {
   const [coverUrl, setCoverUrl] = useState(mcard.cover_image_url);
   const [uploading, setUploading] = useState(false);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -150,7 +152,8 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
           <img
             src={coverUrl}
             alt={`Couverture de ${mcard.full_name}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={() => setIsViewerOpen(true)}
           />
         ) : (
           <div className={`w-full h-full ${defaultGradient}`} />
@@ -201,6 +204,33 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
           </div>
         )}
       </div>
+
+      {/* Dialog pour voir la couverture en grand */}
+      <Dialog open={isViewerOpen} onOpenChange={setIsViewerOpen}>
+        <DialogContent className="max-w-3xl w-[95vw] p-2 sm:p-4">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-bold">
+              Photo de couverture
+            </DialogTitle>
+          </DialogHeader>
+          {coverUrl && (
+            <div className="flex flex-col items-center gap-4">
+              <img
+                src={coverUrl}
+                alt={`Couverture de ${mcard.full_name}`}
+                className="w-full max-h-[70vh] rounded-xl object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => window.open(coverUrl, '_blank')}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                Voir en taille réelle
+              </button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
