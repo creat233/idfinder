@@ -1,11 +1,10 @@
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Image as ImageIcon, X, Upload, Camera } from 'lucide-react';
-import { useTranslation } from "@/hooks/useTranslation";
 
 interface MCardProfilePictureUploadProps {
   preview: string | null;
@@ -14,8 +13,6 @@ interface MCardProfilePictureUploadProps {
 }
 
 export const MCardProfilePictureUpload = ({ preview, onFileChange, onPreviewChange }: MCardProfilePictureUploadProps) => {
-  const { t } = useTranslation();
-
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
@@ -26,7 +23,7 @@ export const MCardProfilePictureUpload = ({ preview, onFileChange, onPreviewChan
     }
   }, [onFileChange, onPreviewChange]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: { 'image/*': ['.jpeg', '.png', '.jpg', '.gif', '.webp'] },
     multiple: false,
@@ -62,19 +59,19 @@ export const MCardProfilePictureUpload = ({ preview, onFileChange, onPreviewChan
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-full flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
                   <Button 
+                    type="button"
                     variant="secondary" 
                     size="sm"
                     className="rounded-full bg-white text-gray-700 hover:bg-gray-100"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // Déclencher une nouvelle sélection de fichier
-                      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-                      fileInput?.click();
+                      open();
                     }}
                   >
                     <Camera className="h-4 w-4" />
                   </Button>
                   <Button 
+                    type="button"
                     variant="destructive" 
                     size="sm"
                     className="rounded-full"

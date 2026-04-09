@@ -9,7 +9,9 @@ export const useMCardFormInitializer = (
   mcard: MCard | null | undefined,
   reset: UseFormReset<MCardFormData>,
   setPreview: (preview: string | null) => void,
-  setProfilePictureFile: (file: File | null) => void
+  setProfilePictureFile: (file: File | null) => void,
+  setCoverPreview: (preview: string | null) => void,
+  setCoverPictureFile: (file: File | null) => void
 ) => {
   useEffect(() => {
     if (isOpen) {
@@ -33,9 +35,12 @@ export const useMCardFormInitializer = (
       reset(defaultValues);
       // Forcer le refresh de la preview avec l'URL de la photo existante
       const profileUrl = mcard?.profile_picture_url;
+      const coverUrl = mcard?.cover_image_url;
       console.log('Setting preview with profile URL:', profileUrl);
       setPreview(profileUrl || null);
       setProfilePictureFile(null);
+      setCoverPreview(coverUrl || null);
+      setCoverPictureFile(null);
     }
-  }, [isOpen, mcard, reset, setPreview, setProfilePictureFile]);
+  }, [isOpen, mcard, reset, setPreview, setProfilePictureFile, setCoverPreview, setCoverPictureFile]);
 };

@@ -23,9 +23,14 @@ const generateSlug = (fullName: string): string => {
 };
 
 export const useMCardFormSubmission = (
-  onSubmit: (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => Promise<MCard | null>,
+  onSubmit: (
+    data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>,
+    profilePictureFile: File | null,
+    coverPictureFile: File | null
+  ) => Promise<MCard | null>,
   mcard?: MCard | null,
   preview?: string | null,
+  coverPreview?: string | null,
   onOpenChange?: (isOpen: boolean) => void
 ) => {
   const { toast } = useToast();
@@ -35,6 +40,7 @@ export const useMCardFormSubmission = (
   const handleFormSubmit = async (
     values: MCardFormData, 
     profilePictureFile: File | null,
+    coverPictureFile: File | null,
     setIsSubmitting: (submitting: boolean) => void
   ) => {
     console.log('=== DÉBUT SOUMISSION FORMULAIRE ===');
@@ -95,11 +101,23 @@ export const useMCardFormSubmission = (
         console.log('Conservation de la photo existante');
         // Ne pas modifier profile_picture_url
       }
+
+      if (coverPictureFile) {
+        console.log('Nouveau fichier couverture détecté');
+      } else if (coverPreview === null || coverPreview === '') {
+        console.log('Suppression de la photo de couverture');
+        data.cover_image_url = null;
+      } else if (coverPreview && mcard && coverPreview !== mcard.cover_image_url) {
+        console.log('Nouvelle URL de couverture détectée');
+        data.cover_image_url = coverPreview;
+      } else if (mcard && mcard.cover_image_url) {
+        console.log('Conservation de la couverture existante');
+      }
       
       console.log('Données à soumettre:', data);
       console.log('=== APPEL DE onSubmit ===');
       
-      const result = await onSubmit(data, profilePictureFile);
+      const result = await onSubmit(data, profilePictureFile, coverPictureFile);
       console.log('=== RÉSULTAT DE onSubmit ===');
       console.log('Résultat:', result);
       
