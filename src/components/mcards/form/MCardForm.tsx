@@ -9,6 +9,7 @@ import { MCard } from "@/types/mcard";
 import { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import { formSchema, MCardFormData } from "./mcardFormSchema";
 import { MCardProfilePictureUpload } from "./MCardProfilePictureUpload";
+import { MCardCoverPhotoUpload } from "./MCardCoverPhotoUpload";
 import { MCardBasicInfoSection } from "./MCardBasicInfoSection";
 import { MCardContactSection } from "./MCardContactSection";
 import { MCardSocialMediaSection } from "./MCardSocialMediaSection";
@@ -20,7 +21,11 @@ import { Separator } from "@/components/ui/separator";
 
 interface MCardFormProps {
   isOpen: boolean;
-  onSubmit: (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => Promise<MCard | null>;
+  onSubmit: (
+    data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>,
+    profilePictureFile: File | null,
+    coverPictureFile: File | null
+  ) => Promise<MCard | null>;
   mcard?: MCard | null;
   loading: boolean;
   onOpenChange: (isOpen: boolean) => void;
@@ -51,6 +56,8 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
   
   const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [coverPictureFile, setCoverPictureFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Watch for form changes to provide feedback
@@ -64,10 +71,18 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
   }, [isOpen]);
 
   // Initialize form when dialog opens
-  useMCardFormInitializer(isOpen, mcard, reset, setPreview, setProfilePictureFile);
+  useMCardFormInitializer(
+    isOpen,
+    mcard,
+    reset,
+    setPreview,
+    setProfilePictureFile,
+    setCoverPreview,
+    setCoverPictureFile
+  );
 
   // Handle form submission
-  const { handleFormSubmit } = useMCardFormSubmission(onSubmit, mcard, preview, onOpenChange);
+  const { handleFormSubmit } = useMCardFormSubmission(onSubmit, mcard, preview, coverPreview, onOpenChange);
 
   const onFormSubmit = (values: MCardFormData) => {
     console.log('=== onFormSubmit appelé ===');
@@ -79,7 +94,7 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
       return;
     }
     
-    handleFormSubmit(values, profilePictureFile, setIsSubmitting);
+    handleFormSubmit(values, profilePictureFile, coverPictureFile, setIsSubmitting);
   };
 
   const handleClose = () => {
@@ -89,6 +104,8 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
       setIsSubmitting(false);
       setProfilePictureFile(null);
       setPreview(null);
+      setCoverPictureFile(null);
+      setCoverPreview(null);
       onOpenChange(false);
     }
   };
@@ -109,11 +126,19 @@ export const MCardForm = ({ isOpen, onSubmit, mcard, loading, onOpenChange }: MC
       <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
         {/* Photo de profil - Section mise en avant */}
         <Card className="border-2 border-dashed border-gray-200 bg-gradient-to-br from-blue-50 to-purple-50">
-          <CardContent className="p-6">
+          <CardContent className="p-6 space-y-6">
             <MCardProfilePictureUpload 
               preview={preview}
               onFileChange={setProfilePictureFile}
               onPreviewChange={setPreview}
+            />
+
+            <Separator />
+
+            <MCardCoverPhotoUpload
+              preview={coverPreview}
+              onFileChange={setCoverPictureFile}
+              onPreviewChange={setCoverPreview}
             />
           </CardContent>
         </Card>

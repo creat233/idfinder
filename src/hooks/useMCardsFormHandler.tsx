@@ -7,8 +7,19 @@ import { MCard, MCardCreateData, MCardUpdateData } from '@/types/mcard';
 
 interface UseMCardsFormHandlerProps {
   mcards: MCard[];
-  createMCard: (data: MCardCreateData, file: File | null, options?: { silent: boolean }) => Promise<MCard | null>;
-  updateMCard: (id: string, data: MCardUpdateData, file: File | null, originalCard: MCard) => Promise<MCard | null>;
+  createMCard: (
+    data: MCardCreateData,
+    profileFile: File | null,
+    coverFile: File | null,
+    options?: { silent?: boolean }
+  ) => Promise<MCard | null>;
+  updateMCard: (
+    id: string,
+    data: MCardUpdateData,
+    profileFile: File | null,
+    coverFile: File | null,
+    originalCard: MCard
+  ) => Promise<MCard | null>;
   loading: boolean;
 }
 
@@ -67,10 +78,15 @@ export const useMCardsFormHandler = ({
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = async (data: MCardCreateData | MCardUpdateData, profilePictureFile: File | null): Promise<MCard | null> => {
+  const handleFormSubmit = async (
+    data: MCardCreateData | MCardUpdateData,
+    profilePictureFile: File | null,
+    coverPictureFile: File | null
+  ): Promise<MCard | null> => {
     console.log('=== handleFormSubmit appelé ===');
     console.log('Data:', data);
     console.log('Profile picture file:', profilePictureFile);
+    console.log('Cover picture file:', coverPictureFile);
     console.log('Editing mCard:', editingMCard);
     console.log('Plan for new card:', planForNewCard);
     
@@ -79,7 +95,7 @@ export const useMCardsFormHandler = ({
         console.log('=== MODE ÉDITION ===');
         console.log('ID de la carte à modifier:', editingMCard.id);
         
-        const result = await updateMCard(editingMCard.id, data, profilePictureFile, editingMCard);
+        const result = await updateMCard(editingMCard.id, data, profilePictureFile, coverPictureFile, editingMCard);
         console.log('Résultat de updateMCard:', result);
         
         if (result) {
@@ -114,7 +130,7 @@ export const useMCardsFormHandler = ({
         
         console.log('Données de création:', newCardData);
         
-        const result = await createMCard(newCardData, profilePictureFile, { silent: false });
+        const result = await createMCard(newCardData, profilePictureFile, coverPictureFile, { silent: false });
         console.log('Résultat de createMCard:', result);
 
         if (result) {

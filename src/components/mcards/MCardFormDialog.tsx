@@ -12,7 +12,11 @@ import { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 interface MCardFormDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSubmit: (data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>, profilePictureFile: File | null) => Promise<MCard | null>;
+  onSubmit: (
+    data: TablesInsert<'mcards'> | TablesUpdate<'mcards'>,
+    profilePictureFile: File | null,
+    coverPictureFile: File | null
+  ) => Promise<MCard | null>;
   loading: boolean;
   mcard?: MCard | null;
 }

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MCard, MCardCreateData, MCardUpdateData } from "@/types/mcard";
 import { useAuthState } from "@/hooks/useAuthState";
 import { useToast } from "@/hooks/use-toast";
+import { deleteCoverPhoto, uploadCoverPhoto } from "@/services/mcardCoverPhotoService";
 
 export const useMCards = () => {
   const [mcards, setMCards] = useState<MCard[]>([]);
@@ -51,6 +52,7 @@ export const useMCards = () => {
   const createMCard = async (
     mcardData: MCardCreateData, 
     profilePictureFile: File | null = null,
+    coverPictureFile: File | null = null,
     options?: { silent?: boolean }
   ): Promise<MCard | null> => {
     if (!user) {
@@ -64,8 +66,12 @@ export const useMCards = () => {
 
     try {
       console.log('Creating MCard with data:', mcardData);
+
+      const nextMCardId = mcardData.id || crypto.randomUUID();
       
       let profile_picture_url = mcardData.profile_picture_url || null;
+      let cover_image_url = mcardData.cover_image_url || null;
+      let uploadedCoverUrl: string | null = null;
       
       // Upload profile picture if provided
       if (profilePictureFile) {
@@ -88,18 +94,30 @@ export const useMCards = () => {
         profile_picture_url = publicUrl;
       }
 
+      if (coverPictureFile) {
+        uploadedCoverUrl = await uploadCoverPhoto(coverPictureFile, nextMCardId);
+        cover_image_url = uploadedCoverUrl;
+      }
+
       // Create the mcard
       const { data, error } = await supabase
         .from('mcards')
         .insert({ 
           ...mcardData, 
+          id: nextMCardId,
           user_id: user.id,
-          profile_picture_url 
+          profile_picture_url,
+          cover_image_url
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (uploadedCoverUrl) {
+          await deleteCoverPhoto(uploadedCoverUrl);
+        }
+        throw error;
+      }
       
       // Send notification email for new MCard creation
       try {
@@ -152,10 +170,14 @@ export const useMCards = () => {
     id: string, 
     updates: MCardUpdateData,
     profilePictureFile: File | null = null,
+    coverPictureFile: File | null = null,
     originalCard: MCard
   ): Promise<MCard | null> => {
     try {
       let profile_picture_url = updates.profile_picture_url || originalCard.profile_picture_url;
+      let cover_image_url = originalCard.cover_image_url;
+      let uploadedCoverUrl: string | null = null;
+      let previousCoverUrlToDelete: string | null = null;
       
       // Upload new profile picture if provided
       if (profilePictureFile) {
@@ -178,15 +200,39 @@ export const useMCards = () => {
         profile_picture_url = publicUrl;
       }
 
+      if (coverPictureFile) {
+        uploadedCoverUrl = await uploadCoverPhoto(coverPictureFile, id);
+        cover_image_url = uploadedCoverUrl;
+
+        if (originalCard.cover_image_url) {
+          previousCoverUrlToDelete = originalCard.cover_image_url;
+        }
+      } else if (updates.cover_image_url === null) {
+        cover_image_url = null;
+
+        if (originalCard.cover_image_url) {
+          previousCoverUrlToDelete = originalCard.cover_image_url;
+        }
+      }
+
       const { data, error } = await supabase
         .from('mcards')
-        .update({ ...updates, profile_picture_url })
+        .update({ ...updates, profile_picture_url, cover_image_url })
         .eq('id', id)
         .eq('user_id', user?.id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (uploadedCoverUrl) {
+          await deleteCoverPhoto(uploadedCoverUrl);
+        }
+        throw error;
+      }
+
+      if (previousCoverUrlToDelete) {
+        await deleteCoverPhoto(previousCoverUrlToDelete);
+      }
       
       await refetch();
       
