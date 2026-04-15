@@ -147,19 +147,13 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
         onChange={handleInputChange}
       />
 
-      <div
-        className="relative w-full h-32 sm:h-40 md:h-48 rounded-t-2xl overflow-hidden"
-        onClick={() => {
-          if (coverUrl && !uploading) {
-            setIsViewerOpen(true);
-          }
-        }}
-      >
+      <div className="relative w-full h-32 sm:h-40 md:h-48 rounded-t-2xl overflow-hidden">
         {coverUrl ? (
           <img
             src={coverUrl}
             alt={`Couverture de ${mcard.full_name}`}
             className="w-full h-full object-cover cursor-pointer"
+            onClick={() => setIsViewerOpen(true)}
           />
         ) : (
           <div className={`w-full h-full ${defaultGradient}`} />
