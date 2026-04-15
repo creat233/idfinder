@@ -147,20 +147,26 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
         onChange={handleInputChange}
       />
 
-      <div className="relative w-full h-32 sm:h-40 md:h-48 rounded-t-2xl overflow-hidden">
+      <div
+        className="relative w-full h-32 sm:h-40 md:h-48 rounded-t-2xl overflow-hidden"
+        onClick={() => {
+          if (coverUrl && !uploading) {
+            setIsViewerOpen(true);
+          }
+        }}
+      >
         {coverUrl ? (
           <img
             src={coverUrl}
             alt={`Couverture de ${mcard.full_name}`}
             className="w-full h-full object-cover cursor-pointer"
-            onClick={() => setIsViewerOpen(true)}
           />
         ) : (
           <div className={`w-full h-full ${defaultGradient}`} />
         )}
 
         {/* Overlay gradient for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
 
         {uploading && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/20 backdrop-blur-[1px]">
