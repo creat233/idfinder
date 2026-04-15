@@ -39,7 +39,20 @@ export const MCardRecommendations = ({
     try {
       setLoading(true);
       
-      // Si currentMCardId est fourni, récupérer d'abord le user_id du propriétaire
+      // 1. Récupérer la MCard sponsorisée (featured) pour la publicité
+      let featuredMCardId: string | null = null;
+      const { data: featuredData } = await supabase
+        .from('featured_mcards')
+        .select('mcard_id')
+        .eq('is_active', true)
+        .limit(1)
+        .maybeSingle();
+      
+      if (featuredData) {
+        featuredMCardId = featuredData.mcard_id;
+      }
+
+      // 2. Si currentMCardId est fourni, récupérer le user_id du propriétaire
       let ownerUserId = null;
       if (currentMCardId) {
         const { data: currentMCard } = await supabase
@@ -51,7 +64,7 @@ export const MCardRecommendations = ({
         ownerUserId = currentMCard?.user_id;
       }
       
-      // Récupérer uniquement les cartes du même propriétaire si on est sur une MCard
+      // 3. Récupérer les cartes recommandées
       let query = supabase
         .from('mcards')
         .select(`
@@ -61,7 +74,6 @@ export const MCardRecommendations = ({
         .eq('is_published', true)
         .neq('id', currentMCardId || '');
       
-      // Filtrer par propriétaire si on est sur une MCard spécifique
       if (ownerUserId) {
         query = query.eq('user_id', ownerUserId);
       }
@@ -69,6 +81,23 @@ export const MCardRecommendations = ({
       const { data: mcards, error } = await query
         .order('view_count', { ascending: false })
         .limit(6);
+      
+      // 4. Récupérer la MCard sponsorisée si elle n'est pas déjà dans la liste
+      let featuredMCard = null;
+      if (featuredMCardId && featuredMCardId !== currentMCardId) {
+        const alreadyInList = mcards?.some(m => m.id === featuredMCardId);
+        if (!alreadyInList) {
+          const { data: fmcard } = await supabase
+            .from('mcards')
+            .select(`
+              *,
+              mcard_analytics (likes_count, favorites_count, shares_count)
+            `)
+            .eq('id', featuredMCardId)
+            .single();
+          if (fmcard) featuredMCard = fmcard;
+        }
+      }
 
       if (error) throw error;
 
@@ -102,6 +131,21 @@ export const MCardRecommendations = ({
           category
         };
       });
+
+      // Ajouter la MCard sponsorisée en premier si elle existe
+      if (featuredMCard) {
+        const fAnalytics = featuredMCard.mcard_analytics?.[0];
+        const fEngagement = (fAnalytics?.likes_count || 0) + 
+                           (fAnalytics?.favorites_count || 0) + 
+                           (fAnalytics?.shares_count || 0);
+        processedRecommendations.unshift({
+          id: featuredMCard.id,
+          mcard: featuredMCard,
+          score: featuredMCard.view_count + fEngagement * 5,
+          reason: '⭐ Sponsorisé - Profil recommandé',
+          category: 'featured'
+        });
+      }
 
       setRecommendations(processedRecommendations);
     } catch (error) {
