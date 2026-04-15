@@ -160,7 +160,7 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
         )}
 
         {/* Overlay gradient for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
 
         {uploading && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/20 backdrop-blur-[1px]">
