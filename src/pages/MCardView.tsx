@@ -136,11 +136,6 @@ const MCardView = () => {
               onOptimisticProductAdd={addProduct}
             />
 
-            {/* Physical Products Section */}
-            <MCardPhysicalProducts 
-              mcard={mcard}
-              isOwner={isOwner}
-            />
 
             {/* Loyalty Tasks for Visitors - Gain points by completing actions */}
             {!isOwner && mcard.plan !== 'free' && (
