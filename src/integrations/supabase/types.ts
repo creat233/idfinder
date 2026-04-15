@@ -2296,6 +2296,7 @@ export type Database = {
         Args: { p_slug: string }
         Returns: {
           company: string
+          cover_image_url: string
           created_at: string
           description: string
           email: string
