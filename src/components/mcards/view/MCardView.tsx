@@ -118,11 +118,6 @@ const MCardView = () => {
               onProductsChange={refreshData}
             />
 
-            {/* Physical Products Section */}
-            <MCardPhysicalProducts 
-              mcard={mcard}
-              isOwner={isOwner}
-            />
           </MCardCustomized>
 
 
