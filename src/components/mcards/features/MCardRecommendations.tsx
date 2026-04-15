@@ -132,6 +132,21 @@ export const MCardRecommendations = ({
         };
       });
 
+      // Ajouter la MCard sponsorisée en premier si elle existe
+      if (featuredMCard) {
+        const fAnalytics = featuredMCard.mcard_analytics?.[0];
+        const fEngagement = (fAnalytics?.likes_count || 0) + 
+                           (fAnalytics?.favorites_count || 0) + 
+                           (fAnalytics?.shares_count || 0);
+        processedRecommendations.unshift({
+          id: featuredMCard.id,
+          mcard: featuredMCard,
+          score: featuredMCard.view_count + fEngagement * 5,
+          reason: '⭐ Sponsorisé - Profil recommandé',
+          category: 'featured'
+        });
+      }
+
       setRecommendations(processedRecommendations);
     } catch (error) {
       console.error('Erreur lors du chargement des recommandations:', error);
