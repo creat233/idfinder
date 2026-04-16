@@ -1,8 +1,30 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
+
+const videos = [
+  {
+    src: "/videos/mcard-boutique-tutoriel.mp4",
+    badge: "🛍️ Boutique en ligne",
+    title: "Créez votre boutique en ligne",
+    description: "Découvrez comment lancer votre MCard et vendre vos produits",
+  },
+  {
+    src: "/videos/finder-id-signalement.mp4",
+    badge: "🔍 Signalement",
+    title: "Signalez un document trouvé",
+    description: "Gagnez 2 000 Fr en signalant un document trouvé",
+  },
+  {
+    src: "/videos/finder-id-fonctionnalites.mp4",
+    badge: "🚀 Fonctionnalités",
+    title: "Découvrez Finder ID",
+    description: "Toutes les fonctionnalités de l'application en un coup d'œil",
+  },
+];
 
 export const PublicVideoTutorial = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -23,6 +45,19 @@ export const PublicVideoTutorial = () => {
     setIsMuted(!isMuted);
   };
 
+  const switchVideo = (index: number) => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+    setIsPlaying(false);
+    setActiveIndex(index);
+  };
+
+  const prev = () => switchVideo(activeIndex === 0 ? videos.length - 1 : activeIndex - 1);
+  const next = () => switchVideo(activeIndex === videos.length - 1 ? 0 : activeIndex + 1);
+
+  const current = videos[activeIndex];
+
   return (
     <section className="py-12 md:py-20 px-4">
       <div className="max-w-4xl mx-auto">
@@ -34,14 +69,43 @@ export const PublicVideoTutorial = () => {
           className="text-center mb-8"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            🎬 Tutoriel vidéo
+            🎬 Tutoriels vidéo
           </span>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            Créez votre boutique en ligne en quelques minutes
+            Découvrez Finder ID en vidéo
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Découvrez comment lancer votre MCard et commencer à vendre vos produits en ligne
+            Apprenez à utiliser toutes les fonctionnalités de l'application
           </p>
+        </motion.div>
+
+        {/* Video selector tabs */}
+        <div className="flex gap-2 justify-center mb-6 flex-wrap">
+          {videos.map((video, i) => (
+            <button
+              key={i}
+              onClick={() => switchVideo(i)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                i === activeIndex
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              {video.badge}
+            </button>
+          ))}
+        </div>
+
+        {/* Current video info */}
+        <motion.div
+          key={activeIndex}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-center mb-4"
+        >
+          <h3 className="text-lg font-semibold text-foreground">{current.title}</h3>
+          <p className="text-sm text-muted-foreground">{current.description}</p>
         </motion.div>
 
         <motion.div
@@ -53,7 +117,8 @@ export const PublicVideoTutorial = () => {
         >
           <video
             ref={videoRef}
-            src="/videos/mcard-boutique-tutoriel.mp4"
+            key={current.src}
+            src={current.src}
             className="w-full aspect-[9/16] object-cover"
             muted={isMuted}
             playsInline
@@ -62,7 +127,7 @@ export const PublicVideoTutorial = () => {
             onPause={() => setIsPlaying(false)}
           />
 
-          {/* Overlay controls */}
+          {/* Play overlay */}
           <div
             className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity cursor-pointer"
             onClick={togglePlay}
@@ -73,6 +138,20 @@ export const PublicVideoTutorial = () => {
             </div>
           </div>
 
+          {/* Nav arrows */}
+          <button
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
           {/* Bottom controls */}
           <div className="absolute bottom-3 right-3 flex gap-2">
             <button
@@ -81,6 +160,18 @@ export const PublicVideoTutorial = () => {
             >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
+          </div>
+
+          {/* Dots */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {videos.map((_, i) => (
+              <div
+                key={i}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  i === activeIndex ? "bg-white w-6" : "bg-white/40"
+                }`}
+              />
+            ))}
           </div>
         </motion.div>
       </div>
