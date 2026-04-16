@@ -147,7 +147,7 @@ export const SceneOutro = () => {
           letterSpacing: 1,
         }}
       >
-        idfinder.lovable.app
+        www.finderid.info
       </p>
     </AbsoluteFill>
   );
