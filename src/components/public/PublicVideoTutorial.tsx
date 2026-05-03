@@ -5,7 +5,7 @@ import { Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide
 const videos = [
   {
     src: "/videos/mcard-boutique-tutoriel.mp4",
-    badge: "🛍️ Boutique en ligne",
+    badge: "🛍️ Boutique",
     title: "Créez votre boutique en ligne",
     description: "Découvrez comment lancer votre MCard et vendre vos produits",
   },
@@ -19,7 +19,25 @@ const videos = [
     src: "/videos/finder-id-fonctionnalites.mp4",
     badge: "🚀 Fonctionnalités",
     title: "Découvrez Finder ID",
-    description: "Toutes les fonctionnalités de l'application en un coup d'œil",
+    description: "Toutes les fonctionnalités en un coup d'œil",
+  },
+  {
+    src: "/videos/finder-id-protection.mp4",
+    badge: "🛡️ Protection",
+    title: "Protégez vos documents",
+    description: "Enregistrez vos documents en 30 secondes",
+  },
+  {
+    src: "/videos/finder-id-nfc-mcard.mp4",
+    badge: "💼 NFC",
+    title: "Carte de visite digitale NFC",
+    description: "Partagez vos contacts d'un simple geste",
+  },
+  {
+    src: "/videos/finder-id-temoignage.mp4",
+    badge: "🏆 Témoignage",
+    title: "J'ai retrouvé mon passeport",
+    description: "L'histoire d'Amadou et la communauté solidaire",
   },
 ];
 
