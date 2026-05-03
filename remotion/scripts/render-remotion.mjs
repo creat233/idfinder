@@ -19,21 +19,36 @@ const browser = await openBrowser("chrome", {
   chromeMode: "chrome-for-testing",
 });
 
-const composition = await selectComposition({
-  serveUrl: bundled,
-  id: compositionId,
-  puppeteerInstance: browser,
-});
+async function renderComp(id, output) {
+  const composition = await selectComposition({
+    serveUrl: bundled,
+    id,
+    puppeteerInstance: browser,
+  });
+  await renderMedia({
+    composition,
+    serveUrl: bundled,
+    codec: "h264",
+    outputLocation: output,
+    puppeteerInstance: browser,
+    muted: true,
+    concurrency: 1,
+  });
+  console.log(`Done: ${output}`);
+}
 
-await renderMedia({
-  composition,
-  serveUrl: bundled,
-  codec: "h264",
-  outputLocation: `/mnt/documents/${outputName}`,
-  puppeteerInstance: browser,
-  muted: true,
-  concurrency: 1,
-});
+if (compositionId === "all") {
+  const videos = [
+    ["protect", "/dev-server/public/videos/finder-id-protection.mp4"],
+    ["nfc", "/dev-server/public/videos/finder-id-nfc-mcard.mp4"],
+    ["story", "/dev-server/public/videos/finder-id-temoignage.mp4"],
+  ];
+  for (const [id, out] of videos) {
+    await renderComp(id, out);
+  }
+} else {
+  await renderComp(compositionId, `/mnt/documents/${outputName}`);
+}
 
 await browser.close({ silent: false });
-console.log(`Done! Video saved to /mnt/documents/${outputName}`);
+console.log("All rendering complete!");
