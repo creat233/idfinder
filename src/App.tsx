@@ -47,6 +47,9 @@ import InvoiceManagement from "./pages/InvoiceManagement";
 import MCardQuotes from "./pages/MCardQuotes";
 import AllMCardProducts from "./pages/AllMCardProducts";
 import AllMCardStatuses from "./pages/AllMCardStatuses";
+import DocumentsMap from "./pages/DocumentsMap";
+import Referral from "./pages/Referral";
+import { AIChatbot } from "./components/chatbot/AIChatbot";
 
 const queryClient = new QueryClient({
   defaultOptions: {
