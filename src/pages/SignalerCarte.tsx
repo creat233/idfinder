@@ -65,6 +65,14 @@ const SignalerCarte = () => {
     };
 
     getUserPhone();
+
+    // Get geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setGeoCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => console.log('Geolocation denied')
+      );
+    }
   }, []);
 
   const onSubmit = async (data: FormValues) => {
