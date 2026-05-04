@@ -136,7 +136,10 @@ function NavigationWrapper() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/mcard/:slug/all-products" element={<AllMCardProducts />} />
         <Route path="/mcard/:slug/all-statuses" element={<AllMCardStatuses />} />
+        <Route path="/documents-trouves" element={<DocumentsMap />} />
+        <Route path="/parrainage" element={<Referral />} />
       </Routes>
+      <AIChatbot />
       {shouldShowBottomNav && <MobileBottomNav />}
     </>
   );
