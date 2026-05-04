@@ -25,6 +25,7 @@ interface FormValues {
 const SignalerCarte = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userPhone, setUserPhone] = useState("");
+  const [geoCoords, setGeoCoords] = useState<{ lat: number; lng: number } | null>(null);
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
