@@ -96,7 +96,9 @@ const SignalerCarte = () => {
         reporter_id: user.id,
         reporter_phone: userPhone,
         status: status,
-      });
+        latitude: geoCoords?.lat || null,
+        longitude: geoCoords?.lng || null,
+      } as any);
 
       if (error) throw error;
 
