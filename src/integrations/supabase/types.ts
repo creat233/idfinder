@@ -1877,6 +1877,63 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          user_id: string
+          uses_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          user_id: string
+          uses_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          uses_count?: number
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          reward_amount: number
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          reward_amount?: number
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referred_id?: string
+          referrer_id?: string
+          reward_amount?: number
+          status?: string
+        }
+        Relationships: []
+      }
       reported_cards: {
         Row: {
           card_number: string
@@ -1885,7 +1942,9 @@ export type Database = {
           document_type: string
           found_date: string
           id: string
+          latitude: number | null
           location: string
+          longitude: number | null
           photo_url: string | null
           promo_code_id: string | null
           recovery_base_fee: number | null
@@ -1903,7 +1962,9 @@ export type Database = {
           document_type?: string
           found_date: string
           id?: string
+          latitude?: number | null
           location: string
+          longitude?: number | null
           photo_url?: string | null
           promo_code_id?: string | null
           recovery_base_fee?: number | null
@@ -1921,7 +1982,9 @@ export type Database = {
           document_type?: string
           found_date?: string
           id?: string
+          latitude?: number | null
           location?: string
+          longitude?: number | null
           photo_url?: string | null
           promo_code_id?: string | null
           recovery_base_fee?: number | null
@@ -2180,6 +2243,7 @@ export type Database = {
       delete_inactive_mcards: { Args: never; Returns: undefined }
       generate_invoice_number: { Args: never; Returns: string }
       generate_promo_code: { Args: never; Returns: string }
+      generate_referral_code: { Args: never; Returns: string }
       get_audit_logs: {
         Args: never
         Returns: {

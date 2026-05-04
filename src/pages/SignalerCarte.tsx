@@ -25,6 +25,7 @@ interface FormValues {
 const SignalerCarte = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userPhone, setUserPhone] = useState("");
+  const [geoCoords, setGeoCoords] = useState<{ lat: number; lng: number } | null>(null);
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
   const { t } = useTranslation();
@@ -64,6 +65,14 @@ const SignalerCarte = () => {
     };
 
     getUserPhone();
+
+    // Get geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setGeoCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => console.log('Geolocation denied')
+      );
+    }
   }, []);
 
   const onSubmit = async (data: FormValues) => {
@@ -87,7 +96,9 @@ const SignalerCarte = () => {
         reporter_id: user.id,
         reporter_phone: userPhone,
         status: status,
-      });
+        latitude: geoCoords?.lat || null,
+        longitude: geoCoords?.lng || null,
+      } as any);
 
       if (error) throw error;
 

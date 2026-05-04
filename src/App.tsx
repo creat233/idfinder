@@ -47,6 +47,9 @@ import InvoiceManagement from "./pages/InvoiceManagement";
 import MCardQuotes from "./pages/MCardQuotes";
 import AllMCardProducts from "./pages/AllMCardProducts";
 import AllMCardStatuses from "./pages/AllMCardStatuses";
+import DocumentsMap from "./pages/DocumentsMap";
+import Referral from "./pages/Referral";
+import { AIChatbot } from "./components/chatbot/AIChatbot";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -133,7 +136,10 @@ function NavigationWrapper() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/mcard/:slug/all-products" element={<AllMCardProducts />} />
         <Route path="/mcard/:slug/all-statuses" element={<AllMCardStatuses />} />
+        <Route path="/documents-trouves" element={<DocumentsMap />} />
+        <Route path="/parrainage" element={<Referral />} />
       </Routes>
+      <AIChatbot />
       {shouldShowBottomNav && <MobileBottomNav />}
     </>
   );
