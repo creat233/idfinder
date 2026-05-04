@@ -8,10 +8,13 @@ import { SecurityProvider } from "@/components/SecurityProvider";
 import { MCardsCarousel } from "@/components/mcards/MCardsCarousel";
 import { PublicBusinessCTA } from "@/components/public/PublicBusinessCTA";
 import { PublicVideoTutorial } from "@/components/public/PublicVideoTutorial";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
+import { homeTourSteps } from "@/components/onboarding/HomeTourSteps";
 const Index = () => {
   return (
     <SecurityProvider>
       <HomeSEO />
+      <OnboardingTour tourId="home" steps={homeTourSteps} />
       <div className="flex flex-col min-h-screen">
         <PublicHeader />
         <main className="flex-grow pt-16 pb-24 md:pb-0">
