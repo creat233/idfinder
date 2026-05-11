@@ -180,22 +180,23 @@ export const PhoneShowcase: React.FC<Props> = ({
               style={{
                 position: "absolute",
                 top: `${c.y * 100}%`,
-                [isRight ? "left" : "right"]: phoneW - 40,
+                [isRight ? "left" : "right"]: phoneW - 60,
                 transform: `translateX(${offsetX}px)`,
                 opacity: cOpacity,
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                whiteSpace: "nowrap",
+                gap: 10,
+                maxWidth: 240,
                 pointerEvents: "none",
               }}
             >
               {isRight && (
                 <div
                   style={{
-                    width: 60,
+                    width: 40,
                     height: 2,
                     background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.6))",
+                    flexShrink: 0,
                   }}
                 />
               )}
