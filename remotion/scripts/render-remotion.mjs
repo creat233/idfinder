@@ -39,6 +39,9 @@ async function renderComp(id, output) {
 
 if (compositionId === "all") {
   const videos = [
+    ["main", "/dev-server/public/videos/mcard-boutique-tutoriel.mp4"],
+    ["report", "/dev-server/public/videos/finder-id-signalement.mp4"],
+    ["features", "/dev-server/public/videos/finder-id-fonctionnalites.mp4"],
     ["protect", "/dev-server/public/videos/finder-id-protection.mp4"],
     ["nfc", "/dev-server/public/videos/finder-id-nfc-mcard.mp4"],
     ["story", "/dev-server/public/videos/finder-id-temoignage.mp4"],
