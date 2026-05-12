@@ -1,0 +1,1 @@
+UPDATE public.mcards SET is_published = true WHERE slug = 'tableaux-385888';
