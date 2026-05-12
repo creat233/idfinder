@@ -116,8 +116,8 @@ export const SceneIntro = () => {
         <p style={{ fontSize: 36, color: "rgba(255,255,255,0.7)", margin: 0, fontWeight: 400 }}>
           avec MCard sur Finder ID
         </p>
-        <p style={{ fontSize: 28, color: "rgba(255,255,255,0.5)", margin: 0, marginTop: 10 }}>
-          En 3 étapes simples
+        <p style={{ fontSize: 26, color: "rgba(255,255,255,0.55)", margin: 0, marginTop: 14 }}>
+          Exemple réel : <b style={{ color: "#F59E0B" }}>Momo Design</b>
         </p>
       </div>
     </AbsoluteFill>
