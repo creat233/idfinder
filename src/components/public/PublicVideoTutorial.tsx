@@ -131,13 +131,13 @@ export const PublicVideoTutorial = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="relative rounded-2xl overflow-hidden shadow-2xl bg-black max-w-sm mx-auto"
+          className="relative rounded-2xl overflow-hidden shadow-2xl bg-black w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto"
         >
           <video
             ref={videoRef}
             key={current.src}
             src={current.src}
-            className="w-full aspect-[9/16] object-cover"
+            className="w-full h-auto aspect-[9/16] object-contain bg-black"
             muted={isMuted}
             playsInline
             loop
