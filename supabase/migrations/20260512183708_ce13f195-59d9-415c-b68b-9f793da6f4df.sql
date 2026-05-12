@@ -1,0 +1,1 @@
+UPDATE public.mcards SET subscription_status = 'active', subscription_expires_at = now() + interval '1 year' WHERE slug = 'tableaux-385888';
