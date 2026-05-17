@@ -25,6 +25,7 @@ import Demo from "./pages/Demo";
 import About from "./pages/About";
 import MCards from "./pages/MCards";
 import MCardView from "./pages/MCardView";
+import MCardCustomize from "./pages/MCardCustomize";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminExpiredCards from "./pages/AdminExpiredCards";
@@ -114,6 +115,7 @@ function NavigationWrapper() {
         <Route path="/about" element={<About />} />
         <Route path="/mcards" element={<MCards />} />
         <Route path="/mcard/:slug" element={<MCardView />} />
+        <Route path="/mcard/:slug/customize" element={<MCardCustomize />} />
         <Route path="/mcard/:slug/invoices" element={<InvoiceManagement />} />
         <Route path="/mcard/:slug/quotes" element={<MCardQuotes />} />
         <Route path="/m/:slug" element={<MCardView />} />
