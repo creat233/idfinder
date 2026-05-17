@@ -48,24 +48,41 @@ export const PublicVideoTutorial = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      // iOS Safari: ensure muted state matches to satisfy autoplay policy if needed
+      if (!v.muted && isMuted) v.muted = true;
+      const p = v.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {
+          // Fallback: force mute and retry (Safari requires muted for programmatic play without gesture chain)
+          v.muted = true;
+          setIsMuted(true);
+          v.play().catch(() => {});
+        });
+      }
     } else {
-      videoRef.current.play();
+      v.pause();
     }
-    setIsPlaying(!isPlaying);
   };
 
   const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
+    const v = videoRef.current;
+    if (!v) return;
+    const next = !isMuted;
+    v.muted = next;
+    setIsMuted(next);
+    // If unmuting while paused, kick playback within the gesture
+    if (!next && v.paused) {
+      v.play().catch(() => {});
+    }
   };
 
   const switchVideo = (index: number) => {
-    if (videoRef.current) {
-      videoRef.current.pause();
+    const v = videoRef.current;
+    if (v) {
+      v.pause();
     }
     setIsPlaying(false);
     setActiveIndex(index);
