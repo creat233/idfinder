@@ -157,6 +157,10 @@ export const PublicVideoTutorial = () => {
             className="w-full h-auto aspect-[9/16] object-contain bg-black"
             muted={isMuted}
             playsInline
+            // @ts-ignore - iOS Safari legacy attribute
+            webkit-playsinline="true"
+            preload="metadata"
+            controls={false}
             loop
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
