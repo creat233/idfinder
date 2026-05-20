@@ -2,6 +2,7 @@ import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig, Seq
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { PremiumOverlay } from "./components/PremiumOverlay";
 import { SceneIntro } from "./scenes/SceneIntro";
 import { SceneStep1 } from "./scenes/SceneStep1";
 import { SceneStep2 } from "./scenes/SceneStep2";
@@ -89,6 +90,7 @@ export const MainVideo = () => {
           <SceneOutro />
         </TransitionSeries.Sequence>
       </TransitionSeries>
+      <PremiumOverlay accent="#A855F7" />
     </AbsoluteFill>
   );
 };

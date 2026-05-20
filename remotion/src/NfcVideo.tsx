@@ -2,6 +2,7 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { PremiumOverlay } from "./components/PremiumOverlay";
 import { NfcIntro } from "./scenes/nfc/NfcIntro";
 import { NfcStep1 } from "./scenes/nfc/NfcStep1";
 import { NfcStep2 } from "./scenes/nfc/NfcStep2";
@@ -42,6 +43,7 @@ export const NfcVideo = () => {
         <TransitionSeries.Transition presentation={slide({ direction: "from-right" })} timing={springTiming({ config: { damping: 200 }, durationInFrames: 20 })} />
         <TransitionSeries.Sequence durationInFrames={150}><NfcOutro /></TransitionSeries.Sequence>
       </TransitionSeries>
+      <PremiumOverlay accent="#A855F7" />
     </AbsoluteFill>
   );
 };

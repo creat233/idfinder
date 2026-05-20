@@ -2,6 +2,7 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { PremiumOverlay } from "./components/PremiumOverlay";
 import { ReportIntro } from "./scenes/report/ReportIntro";
 import { ReportStep1 } from "./scenes/report/ReportStep1";
 import { ReportStep2 } from "./scenes/report/ReportStep2";
@@ -76,6 +77,7 @@ export const ReportVideo = () => {
           <ReportOutro />
         </TransitionSeries.Sequence>
       </TransitionSeries>
+      <PremiumOverlay accent="#10B981" />
     </AbsoluteFill>
   );
 };
