@@ -2,6 +2,7 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { PremiumOverlay } from "./components/PremiumOverlay";
 import { StoryIntro } from "./scenes/story/StoryIntro";
 import { StoryStep1 } from "./scenes/story/StoryStep1";
 import { StoryStep2 } from "./scenes/story/StoryStep2";
@@ -42,6 +43,7 @@ export const StoryVideo = () => {
         <TransitionSeries.Transition presentation={slide({ direction: "from-right" })} timing={springTiming({ config: { damping: 200 }, durationInFrames: 20 })} />
         <TransitionSeries.Sequence durationInFrames={150}><StoryOutro /></TransitionSeries.Sequence>
       </TransitionSeries>
+      <PremiumOverlay accent="#FBBF24" />
     </AbsoluteFill>
   );
 };

@@ -51,6 +51,8 @@ export const PhoneShowcase: React.FC<Props> = ({
   const phoneW = 520;
   const phoneH = 1100;
 
+  const titleBlur = interpolate(frame, [5, 25], [8, 0], { extrapolateRight: "clamp" });
+
   return (
     <AbsoluteFill style={{ fontFamily, alignItems: "center", padding: "60px 40px" }}>
       {/* Step badge */}
@@ -65,22 +67,25 @@ export const PhoneShowcase: React.FC<Props> = ({
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 22,
-          boxShadow: `0 10px 40px ${badgeColor}66`,
+          boxShadow: `0 10px 40px ${badgeColor}66, 0 0 60px ${badgeColor}55, inset 0 2px 8px rgba(255,255,255,0.3)`,
+          border: "2px solid rgba(255,255,255,0.15)",
         }}
       >
-        <span style={{ color: "white", fontSize: 44, fontWeight: 800 }}>{step}</span>
+        <span style={{ color: "white", fontSize: 44, fontWeight: 800, textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}>{step}</span>
       </div>
 
       <h2
         style={{
-          fontSize: 56,
-          fontWeight: 700,
+          fontSize: 58,
+          fontWeight: 800,
           color: "white",
           textAlign: "center",
           margin: 0,
           opacity: titleOpacity,
           transform: `translateY(${titleY}px)`,
-          letterSpacing: -1,
+          letterSpacing: -1.5,
+          textShadow: "0 4px 24px rgba(0,0,0,0.5)",
+          filter: `blur(${titleBlur}px)`,
         }}
       >
         {title}
@@ -90,11 +95,12 @@ export const PhoneShowcase: React.FC<Props> = ({
         <p
           style={{
             fontSize: 26,
-            color: "rgba(255,255,255,0.7)",
+            color: "rgba(255,255,255,0.78)",
             textAlign: "center",
-            margin: "12px 0 30px",
+            margin: "14px 0 30px",
             opacity: subOpacity,
             maxWidth: 800,
+            fontWeight: 500,
           }}
         >
           {subtitle}
@@ -112,16 +118,27 @@ export const PhoneShowcase: React.FC<Props> = ({
           marginTop: 10,
         }}
       >
+        {/* Colored glow under phone */}
+        <div
+          style={{
+            position: "absolute",
+            inset: -40,
+            borderRadius: 80,
+            background: `radial-gradient(circle at 50% 60%, ${badgeColor}55, transparent 65%)`,
+            filter: "blur(30px)",
+            zIndex: -1,
+          }}
+        />
         {/* Phone frame */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             borderRadius: 60,
-            background: "linear-gradient(135deg, #1a1a1f 0%, #0a0a0d 100%)",
+            background: "linear-gradient(135deg, #2a2a32 0%, #0a0a0d 100%)",
             padding: 14,
             boxShadow:
-              "0 50px 100px rgba(0,0,0,0.55), 0 25px 50px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(255,255,255,0.08)",
+              "0 60px 120px rgba(0,0,0,0.65), 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 2px rgba(255,255,255,0.12), inset 0 2px 4px rgba(255,255,255,0.15)",
           }}
         >
           {/* Screen */}
@@ -202,16 +219,17 @@ export const PhoneShowcase: React.FC<Props> = ({
               )}
               <div
                 style={{
-                  background: "rgba(255,255,255,0.95)",
+                  background: "rgba(255,255,255,0.92)",
                   color: "#0a0a14",
                   padding: "12px 20px",
                   borderRadius: 16,
                   fontSize: 22,
-                  fontWeight: 600,
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                  fontWeight: 700,
+                  boxShadow: `0 12px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.4) inset, 0 0 24px ${badgeColor}44`,
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 {c.emoji && <span style={{ fontSize: 26 }}>{c.emoji}</span>}

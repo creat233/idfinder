@@ -2,6 +2,7 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { PremiumOverlay } from "./components/PremiumOverlay";
 import { ProtectIntro } from "./scenes/protect/ProtectIntro";
 import { ProtectStep1 } from "./scenes/protect/ProtectStep1";
 import { ProtectStep2 } from "./scenes/protect/ProtectStep2";
@@ -42,6 +43,7 @@ export const ProtectVideo = () => {
         <TransitionSeries.Transition presentation={slide({ direction: "from-right" })} timing={springTiming({ config: { damping: 200 }, durationInFrames: 20 })} />
         <TransitionSeries.Sequence durationInFrames={150}><ProtectOutro /></TransitionSeries.Sequence>
       </TransitionSeries>
+      <PremiumOverlay accent="#3B82F6" />
     </AbsoluteFill>
   );
 };

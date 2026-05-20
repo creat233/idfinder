@@ -2,6 +2,7 @@ import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { PremiumOverlay } from "./components/PremiumOverlay";
 import { FeaturesIntro } from "./scenes/features/FeaturesIntro";
 import { FeaturesCards } from "./scenes/features/FeaturesCards";
 import { FeaturesMCard } from "./scenes/features/FeaturesMCard";
@@ -74,6 +75,7 @@ export const FeaturesVideo = () => {
           <FeaturesOutro />
         </TransitionSeries.Sequence>
       </TransitionSeries>
+      <PremiumOverlay accent="#EC4899" />
     </AbsoluteFill>
   );
 };
