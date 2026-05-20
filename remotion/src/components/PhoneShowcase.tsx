@@ -118,16 +118,27 @@ export const PhoneShowcase: React.FC<Props> = ({
           marginTop: 10,
         }}
       >
+        {/* Colored glow under phone */}
+        <div
+          style={{
+            position: "absolute",
+            inset: -40,
+            borderRadius: 80,
+            background: `radial-gradient(circle at 50% 60%, ${badgeColor}55, transparent 65%)`,
+            filter: "blur(30px)",
+            zIndex: -1,
+          }}
+        />
         {/* Phone frame */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             borderRadius: 60,
-            background: "linear-gradient(135deg, #1a1a1f 0%, #0a0a0d 100%)",
+            background: "linear-gradient(135deg, #2a2a32 0%, #0a0a0d 100%)",
             padding: 14,
             boxShadow:
-              "0 50px 100px rgba(0,0,0,0.55), 0 25px 50px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(255,255,255,0.08)",
+              "0 60px 120px rgba(0,0,0,0.65), 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 2px rgba(255,255,255,0.12), inset 0 2px 4px rgba(255,255,255,0.15)",
           }}
         >
           {/* Screen */}
