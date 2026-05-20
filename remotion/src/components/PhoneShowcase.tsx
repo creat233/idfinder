@@ -219,16 +219,17 @@ export const PhoneShowcase: React.FC<Props> = ({
               )}
               <div
                 style={{
-                  background: "rgba(255,255,255,0.95)",
+                  background: "rgba(255,255,255,0.92)",
                   color: "#0a0a14",
                   padding: "12px 20px",
                   borderRadius: 16,
                   fontSize: 22,
-                  fontWeight: 600,
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                  fontWeight: 700,
+                  boxShadow: `0 12px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.4) inset, 0 0 24px ${badgeColor}44`,
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 {c.emoji && <span style={{ fontSize: 26 }}>{c.emoji}</span>}
