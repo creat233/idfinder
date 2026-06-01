@@ -283,42 +283,6 @@ export type Database = {
           },
         ]
       }
-      hero_ab_events: {
-        Row: {
-          created_at: string
-          cta_label: string | null
-          event_type: string
-          id: string
-          path: string | null
-          user_agent: string | null
-          user_id: string | null
-          variant: string
-          visitor_id: string
-        }
-        Insert: {
-          created_at?: string
-          cta_label?: string | null
-          event_type: string
-          id?: string
-          path?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-          variant: string
-          visitor_id: string
-        }
-        Update: {
-          created_at?: string
-          cta_label?: string | null
-          event_type?: string
-          id?: string
-          path?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-          variant?: string
-          visitor_id?: string
-        }
-        Relationships: []
-      }
       mcard_analytics: {
         Row: {
           created_at: string
