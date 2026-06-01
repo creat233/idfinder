@@ -128,6 +128,7 @@ function NavigationWrapper() {
         <Route path="/admin/utilisateurs" element={<AdminUsers />} />
         <Route path="/admin/signalements" element={<AdminReports />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/hero-ab" element={<AdminHeroAB />} />
         <Route path="/admin/parametres" element={<AdminSettings />} />
         <Route path="/mcards-verifiees" element={<VerifiedMCards />} />
         <Route path="/mes-favoris" element={<MyFavorites />} />
