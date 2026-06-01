@@ -34,6 +34,7 @@ import AdminMessages from "./pages/AdminMessages";
 import AdminUsers from "./pages/AdminUsers";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import AdminHeroAB from "./pages/AdminHeroAB";
 import AdminSettings from "./pages/AdminSettings";
 import VerifiedMCards from "./pages/VerifiedMCards";
 import MyFavorites from "./pages/MyFavorites";
