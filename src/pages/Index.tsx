@@ -1,5 +1,5 @@
 import { PublicHeader } from "@/components/PublicHeader";
-import { PublicHero } from "@/components/public/PublicHero";
+import { PublicHeroAB } from "@/components/public/PublicHeroAB";
 import { PublicFeatures } from "@/components/public/PublicFeatures";
 import { PublicPricing } from "@/components/public/PublicPricing";
 import { PublicCTA } from "@/components/public/PublicCTA";
