@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import AdminRoute from "@/components/AdminRoute";
+import { AdminRoute } from "@/components/AdminRoute";
 
 type Row = { variant: string; event_type: string; visitor_id: string };
 
