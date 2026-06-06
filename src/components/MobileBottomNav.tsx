@@ -57,9 +57,9 @@ export const MobileBottomNav = () => {
       {/* Ombre douce au-dessus de la barre */}
       <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
       
-      <div className="relative bg-white/95 backdrop-blur-xl border-t border-gray-200/50 shadow-2xl">
+      <div className="relative bg-[hsl(var(--vapor-ink))]/90 backdrop-blur-xl border-t border-white/10 shadow-2xl">
         {/* Ligne décorative en haut */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'linear-gradient(90deg, hsl(var(--vapor-cyan)), hsl(var(--vapor-lavender)), hsl(var(--vapor-indigo)))' }} />
         
         <div className="grid grid-cols-4 h-20 py-1">
           {navItems.map((item) => {
@@ -90,8 +90,8 @@ export const MobileBottomNav = () => {
                 
                 <div className={`flex flex-col items-center justify-center space-y-1 relative z-10 transition-all duration-300 ${
                   active 
-                    ? "text-primary transform scale-110" 
-                    : "text-gray-500 group-hover:text-primary group-hover:scale-105"
+                    ? "text-white transform scale-110" 
+                    : "text-slate-400 group-hover:text-white group-hover:scale-105"
                 }`}>
                   <div className={`relative ${active ? "drop-shadow-lg" : ""}`}>
                     {/* Effet de lueur pour l'icône active */}
@@ -154,7 +154,7 @@ export const MobileBottomNav = () => {
                   
                   <motion.span 
                     className={`text-[10px] font-medium transition-all duration-300 leading-tight ${
-                      active ? "font-bold text-primary" : "text-gray-500"
+                      active ? "font-bold text-white" : "text-slate-400"
                     }`}
                     animate={active ? { y: -1 } : { y: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
