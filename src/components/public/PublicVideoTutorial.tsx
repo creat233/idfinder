@@ -97,19 +97,18 @@ export const PublicVideoTutorial = () => {
     <section className="py-12 md:py-20 px-4">
       <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-4 border border-white/15 backdrop-blur-md"
+            style={{ background: 'hsl(var(--vapor-cyan) / 0.12)', color: 'hsl(var(--vapor-cyan))' }}>
             🎬 Tutoriels vidéo
           </span>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
             Découvrez Finder ID en vidéo
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-slate-400 max-w-2xl mx-auto">
             Apprenez à utiliser toutes les fonctionnalités de l'application
           </p>
         </motion.div>
@@ -122,9 +121,10 @@ export const PublicVideoTutorial = () => {
               onClick={() => switchVideo(i)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 i === activeIndex
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  ? "text-slate-900 shadow-md"
+                  : "bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10"
               }`}
+              style={i === activeIndex ? { background: 'linear-gradient(135deg, hsl(var(--vapor-mist)), hsl(var(--vapor-lavender)))' } : {}}
             >
               {video.badge}
             </button>
@@ -139,8 +139,8 @@ export const PublicVideoTutorial = () => {
           transition={{ duration: 0.3 }}
           className="text-center mb-4"
         >
-          <h3 className="text-lg font-semibold text-foreground">{current.title}</h3>
-          <p className="text-sm text-muted-foreground">{current.description}</p>
+          <h3 className="font-display text-lg font-semibold text-white">{current.title}</h3>
+          <p className="text-sm text-slate-400">{current.description}</p>
         </motion.div>
 
         <motion.div
