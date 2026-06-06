@@ -50,7 +50,7 @@ export const PublicHeader = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
+    <header className="bg-[hsl(var(--vapor-ink))]/80 backdrop-blur-xl border-b border-white/10 fixed w-full top-0 z-50">
       <PublicAdsDisplay />
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -61,7 +61,7 @@ export const PublicHeader = () => {
               alt="FinderID Logo" 
               className="w-8 h-8"
             />
-            <span className="text-xl font-bold text-gray-900">{t("appName")}</span>
+            <span className="font-display text-xl font-bold text-white">{t("appName")}</span>
           </div>
 
           {/* Navigation Desktop et Boutons */}
@@ -73,7 +73,7 @@ export const PublicHeader = () => {
 
           {/* Menu Mobile */}
           <button
-            className="md:hidden"
+            className="md:hidden text-white"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
