@@ -76,7 +76,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm">
+    <header className="bg-[hsl(var(--vapor-ink))]/85 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-lg text-white">
       <PublicAdsDisplay />
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
@@ -86,7 +86,7 @@ export const Header = () => {
             alt="FinderID Logo" 
             className="h-9 w-9 transition-transform group-hover:scale-105"
           />
-          <span className="text-xl font-bold text-primary tracking-tight">FinderID</span>
+          <span className="font-display text-xl font-bold text-white tracking-tight">FinderID</span>
         </Link>
 
         {/* Desktop Navigation */}
