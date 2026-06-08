@@ -17,8 +17,8 @@ const NavLink = ({ to, children, active }: { to: string; children: React.ReactNo
     className={cn(
       "px-3 py-2 rounded-lg text-sm font-medium transition-colors",
       active 
-        ? "bg-primary/10 text-primary" 
-        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+        ? "bg-white/15 text-white" 
+        : "text-slate-300 hover:text-white hover:bg-white/10"
     )}
   >
     {children}
