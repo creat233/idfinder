@@ -4,47 +4,71 @@ import { Play, Pause, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide
 
 const videos = [
   {
-    src: "/videos/mcard-boutique-tutoriel.mp4",
-    badge: "🛍️ Boutique",
-    title: "Créez votre boutique en ligne",
-    description: "Découvrez comment lancer votre MCard et vendre vos produits",
+    src: "/__l5e/assets-v1/d0ddbb97-20ba-4455-b4d4-b547d5ae1eac/01-hook-cni-perdue.mp4",
+    badge: "01 · CNI perdue",
+    title: "CNI perdue : le réflexe Finder ID",
+    description: "Une vidéo réaliste d'une minute pour comprendre comment protéger et retrouver ses documents",
   },
   {
-    src: "/videos/finder-id-signalement.mp4",
-    badge: "🔍 Signalement",
-    title: "Signalez un document trouvé",
-    description: "Gagnez 2 000 Fr en signalant un document trouvé",
+    src: "/__l5e/assets-v1/e3b2e295-d374-4c0d-a2b8-843706cbec9e/02-temoignage-24h.mp4",
+    badge: "02 · Témoignage",
+    title: "Témoignage : retrouvé en 24h",
+    description: "Une histoire claire qui montre comment Finder ID accélère la récupération",
   },
   {
-    src: "/videos/finder-id-fonctionnalites.mp4",
-    badge: "🚀 Fonctionnalités",
-    title: "Découvrez Finder ID",
-    description: "Toutes les fonctionnalités en un coup d'œil",
+    src: "/__l5e/assets-v1/7773e8c3-89fe-49ee-9a84-43151db45821/03-signaler-tuto.mp4",
+    badge: "03 · Signaler",
+    title: "Tutoriel : signaler un document",
+    description: "Les bons gestes pour signaler une carte trouvée sans exposer les données sensibles",
   },
   {
-    src: "/videos/finder-id-protection.mp4",
-    badge: "🛡️ Protection",
-    title: "Protégez vos documents",
-    description: "Enregistrez vos documents en 30 secondes",
+    src: "/__l5e/assets-v1/3ff0bb62-1e46-47bd-a07b-c21d6bb4405f/04-nfc-mcard.mp4",
+    badge: "04 · NFC",
+    title: "MCard NFC : carte pro moderne",
+    description: "Une carte digitale professionnelle, partageable par NFC, lien ou QR code",
   },
   {
-    src: "/videos/finder-id-nfc-mcard.mp4",
-    badge: "💼 NFC",
-    title: "Carte de visite digitale NFC",
-    description: "Partagez vos contacts d'un simple geste",
+    src: "/__l5e/assets-v1/5447f21d-e167-4be6-ba8f-773568d1dc3f/05-boutique-mcard.mp4",
+    badge: "05 · Boutique",
+    title: "Boutique MCard : vendre plus simplement",
+    description: "Présentez produits, prix et services directement depuis votre MCard",
   },
   {
-    src: "/videos/finder-id-temoignage.mp4",
-    badge: "🏆 Témoignage",
-    title: "J'ai retrouvé mon passeport",
-    description: "L'histoire d'Amadou et la communauté solidaire",
+    src: "/__l5e/assets-v1/79fbd152-43aa-47e8-bfbb-b72bebacfd3e/06-geolocalisation.mp4",
+    badge: "06 · Localisation",
+    title: "Géolocalisation : retrouver plus vite",
+    description: "Le lieu du signalement aide à organiser la récupération plus efficacement",
+  },
+  {
+    src: "/__l5e/assets-v1/a25f99a2-665c-4008-a6d8-fea0baaa67af/07-livraison.mp4",
+    badge: "07 · Livraison",
+    title: "Récupération & livraison encadrée",
+    description: "Une explication claire de la dernière étape : ramener le document au propriétaire",
+  },
+  {
+    src: "/__l5e/assets-v1/c2053043-2436-41ac-8347-6cf1855f61f1/08-stats-choc.mp4",
+    badge: "08 · Prévention",
+    title: "Pourquoi enregistrer maintenant ?",
+    description: "Une minute pour comprendre pourquoi il faut préparer ses documents avant l'urgence",
+  },
+  {
+    src: "/__l5e/assets-v1/672424e9-0a8f-4022-ad8d-f042508d6c30/09-avant-apres.mp4",
+    badge: "09 · Avant/Après",
+    title: "Avant / Après Finder ID",
+    description: "La différence entre une recherche désordonnée et un parcours structuré",
+  },
+  {
+    src: "/__l5e/assets-v1/f6605577-a362-4012-bf93-221f8401e7c7/10-cta-telechargement.mp4",
+    badge: "10 · App",
+    title: "Téléchargez et préparez-vous",
+    description: "Le résumé final : protéger, signaler, retrouver et partager votre identité pro",
   },
 ];
 
 export const PublicVideoTutorial = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const togglePlay = () => {
@@ -103,13 +127,13 @@ export const PublicVideoTutorial = () => {
         >
           <span className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-4 border border-white/15 backdrop-blur-md"
             style={{ background: 'hsl(var(--vapor-cyan) / 0.12)', color: 'hsl(var(--vapor-cyan))' }}>
-            🎬 Tutoriels vidéo
+            🎬 Vidéos marketing
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
-            Découvrez Finder ID en vidéo
+            10 vidéos professionnelles d’une minute
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Apprenez à utiliser toutes les fonctionnalités de l'application
+            Des scénarios réalistes avec voix française et images de l'application
           </p>
         </motion.div>
 
