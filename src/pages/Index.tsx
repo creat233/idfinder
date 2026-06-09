@@ -7,7 +7,7 @@ import { HomeSEO } from "@/components/seo/HomeSEO";
 import { SecurityProvider } from "@/components/SecurityProvider";
 import { MCardsCarousel } from "@/components/mcards/MCardsCarousel";
 import { PublicBusinessCTA } from "@/components/public/PublicBusinessCTA";
-import { PublicVideoTutorial } from "@/components/public/PublicVideoTutorial";
+
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { homeTourSteps } from "@/components/onboarding/HomeTourSteps";
 const Index = () => {
@@ -21,7 +21,7 @@ const Index = () => {
           <PublicHero />
           <MCardsCarousel />
           <PublicBusinessCTA />
-          <PublicVideoTutorial />
+          
           <PublicFeatures />
           <PublicPricing />
           <PublicCTA />
