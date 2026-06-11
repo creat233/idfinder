@@ -25,7 +25,7 @@ export const PublicHero = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden pt-24 pb-20 bg-[hsl(var(--vapor-ink))] text-white font-body">
+    <section className="relative overflow-hidden pt-8 md:pt-12 pb-20 bg-[hsl(var(--vapor-ink))] text-white font-body">
       {/* Animated iridescent mesh */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-32 -left-32 w-[55%] h-[55%] rounded-full blur-[120px] opacity-40 animate-vapor-blob"
