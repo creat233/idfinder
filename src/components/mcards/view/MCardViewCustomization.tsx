@@ -85,33 +85,6 @@ export const MCardViewCustomization = ({
           <PremiumUpgrade />
         ) : (
           <div className="space-y-6">
-            <ThemeSelector
-              selectedTheme={customization.theme}
-              onThemeChange={(theme) => updateCustomization({ theme })}
-            />
-
-            <AnimationSettings
-              animationsEnabled={customization.animations_enabled}
-              animationSpeed={customization.animation_speed}
-              onAnimationsEnabledChange={(enabled) => updateCustomization({ animations_enabled: enabled })}
-              onAnimationSpeedChange={(speed) => updateCustomization({ animation_speed: speed })}
-            />
-
-            <VisualEffects
-              particlesEnabled={customization.particles_enabled}
-              gradientsEnabled={customization.gradients_enabled}
-              shadowsEnabled={customization.shadows_enabled}
-              maskEnabled={customization.mask_enabled}
-              onParticlesChange={(enabled) => updateCustomization({ particles_enabled: enabled })}
-              onGradientsChange={(enabled) => updateCustomization({ gradients_enabled: enabled })}
-              onShadowsChange={(enabled) => updateCustomization({ shadows_enabled: enabled })}
-              onMaskChange={(enabled) => updateCustomization({ mask_enabled: enabled })}
-            />
-
-            <FontCustomization
-              selectedFont={customization.custom_font}
-              onFontChange={(font) => updateCustomization({ custom_font: font })}
-            />
 
             <ColorCustomization
               primaryColor={customization.primary_color || '#6366f1'}
