@@ -180,10 +180,11 @@ const MCardCustomize = () => {
               <TabsContent value="visuel" className="space-y-6">
                 <BackgroundImageUpload
                   mcardId={mcard.id}
-                  currentUrl={customization.background_image_url}
-                  onChange={(url) => update({ background_image_url: url })}
+                  currentUrl={mcard.cover_image_url}
+                  onChange={(url) => setMcard({ ...mcard, cover_image_url: url })}
                 />
               </TabsContent>
+
 
               <TabsContent value="effets" className="space-y-6">
                 <AnimationSettings
