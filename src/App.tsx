@@ -51,6 +51,7 @@ import AllMCardStatuses from "./pages/AllMCardStatuses";
 import DocumentsMap from "./pages/DocumentsMap";
 import Referral from "./pages/Referral";
 import { AIChatbot } from "./components/chatbot/AIChatbot";
+import { SplashScreen } from "./components/SplashScreen";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -155,6 +156,7 @@ function AppContent() {
       <TranslationProvider>
         <CartProvider>
           <TooltipProvider>
+          <SplashScreen />
           <Toaster />
           <Sonner />
           <BrowserRouter>

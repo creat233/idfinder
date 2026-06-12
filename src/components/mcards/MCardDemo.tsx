@@ -13,9 +13,13 @@ export const MCardDemo = () => {
   const [featuredMCard, setFeaturedMCard] = useState<MCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
     fetchFeaturedMCard();
+    supabase.auth.getUser().then(({ data }) => setIsAuthed(!!data.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setIsAuthed(!!s?.user));
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchFeaturedMCard = async () => {
@@ -262,13 +266,15 @@ export const MCardDemo = () => {
             )}
 
             {/* CTA */}
-            <Card className="p-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-              <h4 className="text-xl font-semibold mb-2">Prêt à créer votre carte ?</h4>
-              <p className="text-blue-100 mb-4">Rejoignez des milliers de professionnels qui utilisent nos cartes digitales.</p>
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto">
-                Commencer maintenant
-              </Button>
-            </Card>
+            {!isAuthed && (
+              <Card className="p-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                <h4 className="text-xl font-semibold mb-2">Prêt à créer votre carte ?</h4>
+                <p className="text-blue-100 mb-4">Rejoignez des milliers de professionnels qui utilisent nos cartes digitales.</p>
+                <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto">
+                  <Link to="/login">Commencer maintenant</Link>
+                </Button>
+              </Card>
+            )}
           </div>
         </div>
       </div>

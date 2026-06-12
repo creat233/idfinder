@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-// ID éditeur fourni par l’utilisateur
-const ADSENSE_CLIENT = "ca-pub-5957048815311602";
-const ADSENSE_SLOT = ""; // tu peux renseigner le slot précis si souhaité
+// ID éditeur fourni par l'utilisateur
+const ADSENSE_CLIENT = "ca-pub-2470909766437244";
+const ADSENSE_SLOT = "";
 
 /**
  * Props : open, onClose (fermer la modale)
