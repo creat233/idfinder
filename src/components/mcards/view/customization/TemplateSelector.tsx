@@ -1,11 +1,25 @@
-import { Briefcase, Utensils, ShoppingBag, Palette, Heart, Dumbbell } from 'lucide-react';
+import { Briefcase, Utensils, ShoppingBag, Palette, Heart, Dumbbell, RotateCcw } from 'lucide-react';
 import { MCardCustomization } from '@/hooks/useMCardCustomization';
+import { Button } from '@/components/ui/button';
 
 export type TemplatePreset = Partial<MCardCustomization>;
 
 interface TemplateSelectorProps {
   onApply: (preset: TemplatePreset) => void;
 }
+
+const DEFAULT_PRESET: TemplatePreset = {
+  theme: 'default',
+  primary_color: '#6366f1',
+  secondary_color: '#ec4899',
+  custom_font: 'Inter',
+  gradients_enabled: true,
+  shadows_enabled: true,
+  animations_enabled: false,
+  particles_enabled: false,
+  border_radius: 16,
+  card_opacity: 100,
+};
 
 const TEMPLATES: Array<{
   id: string;
@@ -111,13 +125,27 @@ const TEMPLATES: Array<{
 export const TemplateSelector = ({ onApply }: TemplateSelectorProps) => {
   return (
     <div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-        <Briefcase className="h-5 w-5 text-purple-600" />
-        Modèles par métier
-      </h3>
-      <p className="text-sm text-gray-500 mb-4">
-        Appliquez en un clic un style adapté à votre activité.
-      </p>
+      <div className="flex items-start justify-between mb-2 gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Briefcase className="h-5 w-5 text-purple-600" />
+            Modèles par métier
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            Appliquez en un clic un style adapté à votre activité.
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => onApply(DEFAULT_PRESET)}
+          className="shrink-0 gap-1.5"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+          Réinitialiser
+        </Button>
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {TEMPLATES.map((tpl) => {
           const Icon = tpl.icon;

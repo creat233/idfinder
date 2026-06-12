@@ -3,9 +3,17 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const PublicPricing = () => {
   const navigate = useNavigate();
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setIsAuthed(!!data.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setIsAuthed(!!s?.user));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const tiers = [
     {
@@ -70,17 +78,19 @@ export const PublicPricing = () => {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }} viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <Button size="lg" onClick={() => navigate("/login")}
-            className="text-slate-900 font-semibold px-8 py-6 text-base rounded-full shadow-xl"
-            style={{ background: 'linear-gradient(135deg, hsl(var(--vapor-mist)), hsl(var(--vapor-lavender)))' }}>
-            Commencer maintenant
-          </Button>
-        </motion.div>
+        {!isAuthed && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }} viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Button size="lg" onClick={() => navigate("/login")}
+              className="text-slate-900 font-semibold px-8 py-6 text-base rounded-full shadow-xl"
+              style={{ background: 'linear-gradient(135deg, hsl(var(--vapor-mist)), hsl(var(--vapor-lavender)))' }}>
+              Commencer maintenant
+            </Button>
+          </motion.div>
+        )}
       </div>
     </section>
   );
