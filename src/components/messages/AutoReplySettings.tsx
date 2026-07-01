@@ -89,7 +89,9 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
           setSettings({
             enabled: data.enabled,
             selectedMessage: data.selected_message,
-            customMessage: data.custom_message || ""
+            customMessage: data.custom_message || "",
+            aiAgentEnabled: (data as any).ai_agent_enabled ?? false,
+            aiContext: (data as any).ai_context ?? "",
           });
         }
       } catch (error) {
@@ -112,8 +114,10 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
           enabled: settings.enabled,
           selected_message: settings.selectedMessage,
           custom_message: settings.customMessage || null,
+          ai_agent_enabled: settings.aiAgentEnabled,
+          ai_context: settings.aiContext || null,
           updated_at: new Date().toISOString()
-        }, {
+        } as any, {
           onConflict: 'user_id'
         });
 
