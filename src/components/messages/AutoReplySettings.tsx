@@ -62,7 +62,9 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
   const [settings, setSettings] = useState<AutoReplySettings>({
     enabled: false,
     selectedMessage: "vacation",
-    customMessage: ""
+    customMessage: "",
+    aiAgentEnabled: false,
+    aiContext: "",
   });
   const { toast } = useToast();
 
