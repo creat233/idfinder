@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Settings, MessageSquareText, Loader2 } from "lucide-react";
+import { Settings, MessageSquareText, Loader2, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -19,6 +19,8 @@ interface AutoReplySettings {
   enabled: boolean;
   selectedMessage: string;
   customMessage: string;
+  aiAgentEnabled: boolean;
+  aiContext: string;
 }
 
 const PREDEFINED_MESSAGES = [
