@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { AdminNavigation } from "./AdminNavigation";
 import { AdminFeaturedMCard } from "./AdminFeaturedMCard";
+import { AdminUpdateBroadcast } from "./AdminUpdateBroadcast";
 import { Settings, Database, Mail, Shield, Globe, Bell, Save } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
