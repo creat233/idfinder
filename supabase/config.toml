@@ -1,5 +1,12 @@
 project_id = "jrnznosfclfepqdxyhjh"
 
+[functions.ai-auto-reply]
+verify_jwt = false
+
+[functions.broadcast-app-update]
+verify_jwt = true
+
+
 [api]
 enabled = true
 port = 54321

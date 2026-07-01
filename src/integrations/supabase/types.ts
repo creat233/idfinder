@@ -193,6 +193,8 @@ export type Database = {
       }
       auto_reply_settings: {
         Row: {
+          ai_agent_enabled: boolean
+          ai_context: string | null
           created_at: string
           custom_message: string | null
           enabled: boolean
@@ -202,6 +204,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_agent_enabled?: boolean
+          ai_context?: string | null
           created_at?: string
           custom_message?: string | null
           enabled?: boolean
@@ -211,6 +215,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_agent_enabled?: boolean
+          ai_context?: string | null
           created_at?: string
           custom_message?: string | null
           enabled?: boolean

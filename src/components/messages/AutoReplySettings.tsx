@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Settings, MessageSquareText, Loader2 } from "lucide-react";
+import { Settings, MessageSquareText, Loader2, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -19,6 +19,8 @@ interface AutoReplySettings {
   enabled: boolean;
   selectedMessage: string;
   customMessage: string;
+  aiAgentEnabled: boolean;
+  aiContext: string;
 }
 
 const PREDEFINED_MESSAGES = [
@@ -60,7 +62,9 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
   const [settings, setSettings] = useState<AutoReplySettings>({
     enabled: false,
     selectedMessage: "vacation",
-    customMessage: ""
+    customMessage: "",
+    aiAgentEnabled: false,
+    aiContext: "",
   });
   const { toast } = useToast();
 
@@ -85,7 +89,9 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
           setSettings({
             enabled: data.enabled,
             selectedMessage: data.selected_message,
-            customMessage: data.custom_message || ""
+            customMessage: data.custom_message || "",
+            aiAgentEnabled: (data as any).ai_agent_enabled ?? false,
+            aiContext: (data as any).ai_context ?? "",
           });
         }
       } catch (error) {
@@ -108,8 +114,10 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
           enabled: settings.enabled,
           selected_message: settings.selectedMessage,
           custom_message: settings.customMessage || null,
+          ai_agent_enabled: settings.aiAgentEnabled,
+          ai_context: settings.aiContext || null,
           updated_at: new Date().toISOString()
-        }, {
+        } as any, {
           onConflict: 'user_id'
         });
 
@@ -195,6 +203,46 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
                 <p className="text-sm text-green-700">
                   ✓ Les réponses automatiques fonctionneront même si vous êtes déconnecté de l'application.
                 </p>
+              </div>
+            )}
+
+            {/* Agent IA */}
+            {settings.enabled && (
+              <div className="p-4 rounded-lg border border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="ai-agent-toggle" className="font-medium flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4 text-purple-600" />
+                      Agent IA (répond aux questions clients)
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      L'agent lit vos produits, services et statuts pour répondre automatiquement aux clients.
+                    </p>
+                  </div>
+                  <Switch
+                    id="ai-agent-toggle"
+                    checked={settings.aiAgentEnabled}
+                    onCheckedChange={(v) => setSettings(prev => ({ ...prev, aiAgentEnabled: v }))}
+                  />
+                </div>
+                {settings.aiAgentEnabled && (
+                  <div className="space-y-2">
+                    <Label htmlFor="ai-context" className="text-sm">
+                      Contexte supplémentaire (horaires, livraison, ton, règles…)
+                    </Label>
+                    <Textarea
+                      id="ai-context"
+                      placeholder="Ex: Nous livrons à Dakar en 24h. Horaires 9h-18h du lundi au samedi. Toujours proposer un devis avant paiement."
+                      value={settings.aiContext}
+                      onChange={(e) => setSettings(prev => ({ ...prev, aiContext: e.target.value }))}
+                      className="min-h-[100px] resize-none text-sm"
+                      maxLength={1500}
+                    />
+                    <p className="text-xs text-muted-foreground text-right">
+                      {settings.aiContext.length}/1500
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
