@@ -43,6 +43,10 @@ export const AdminSettings = () => {
       
       {/* mCard Sponsorisée */}
       <AdminFeaturedMCard />
+
+      {/* Broadcast APK update */}
+      <AdminUpdateBroadcast />
+
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Paramètres Généraux */}
