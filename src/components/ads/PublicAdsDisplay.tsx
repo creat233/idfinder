@@ -1,53 +1,68 @@
-
-import React, { useState, useEffect } from 'react';
-import { usePublicAds } from '@/hooks/usePublicAds';
-import { PublicAd } from './PublicAd';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
+declare global {
+  interface Window {
+    adsbygoogle?: unknown[];
+  }
+}
+
+const ADSENSE_CLIENT = 'ca-pub-2470909766437244';
+// TODO: replace with your real AdSense slot ID
+const ADSENSE_SLOT = '1234567890';
+
 export const PublicAdsDisplay: React.FC = () => {
-  const { ads, loading } = usePublicAds();
-  const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [isDismissed, setIsDismissed] = useState(false);
+  const insRef = useRef<HTMLModElement | null>(null);
 
   useEffect(() => {
-    if (ads.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
-      }, 7000); // Change ad every 7 seconds
+    if (isDismissed) return;
 
-      return () => clearInterval(interval);
+    // Load AdSense script once
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[data-adsense="finderid"]'
+    );
+    if (!existing) {
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
+      s.crossOrigin = 'anonymous';
+      s.setAttribute('data-adsense', 'finderid');
+      document.head.appendChild(s);
     }
-  }, [ads.length]);
 
-  if (loading || ads.length === 0 || isDismissed) {
-    return null;
-  }
+    // Push ad slot
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      // AdSense push may fail silently before script loads; safe to ignore
+    }
+  }, [isDismissed]);
+
+  if (isDismissed) return null;
 
   return (
-    <div className="relative bg-yellow-50 border-b border-yellow-200">
-      <div className="container mx-auto px-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentAdIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <PublicAd ad={ads[currentAdIndex]} />
-          </motion.div>
-        </AnimatePresence>
+    <div className="relative bg-white/60 dark:bg-black/40 border-b border-white/10 backdrop-blur-sm">
+      <div className="container mx-auto px-4 py-2 flex items-center justify-center min-h-[90px]">
+        <ins
+          ref={insRef}
+          className="adsbygoogle"
+          style={{ display: 'block', width: '100%', minHeight: '90px' }}
+          data-ad-client={ADSENSE_CLIENT}
+          data-ad-slot={ADSENSE_SLOT}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
       </div>
       <Button
         variant="ghost"
         size="icon"
         className="absolute top-1 right-1 h-6 w-6 text-gray-500 hover:text-gray-800"
         onClick={() => setIsDismissed(true)}
+        aria-label="Fermer la publicité"
       >
         <X className="h-4 w-4" />
-        <span className="sr-only">Fermer la publicité</span>
       </Button>
     </div>
   );

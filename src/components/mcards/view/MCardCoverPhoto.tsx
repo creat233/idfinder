@@ -24,7 +24,8 @@ export const MCardCoverPhoto = ({ mcard, isOwner, onUpdate }: MCardCoverPhotoPro
     setCoverUrl(mcard.cover_image_url);
   }, [mcard.cover_image_url]);
 
-  const defaultGradient = 'bg-gradient-to-r from-primary via-primary/70 to-accent';
+  const defaultGradient =
+    'bg-[linear-gradient(120deg,#6366f1_0%,#8b5cf6_35%,#ec4899_70%,#f59e0b_100%)] relative before:content-[""] before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_45%),radial-gradient(circle_at_80%_60%,rgba(255,255,255,0.2),transparent_50%)]';
 
   const handleCoverUpdated = (newUrl: string | null) => {
     setCoverUrl(newUrl);
