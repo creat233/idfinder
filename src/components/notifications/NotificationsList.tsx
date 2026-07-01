@@ -86,18 +86,27 @@ export const NotificationsList = () => {
       await markAsRead(notification.id);
     }
 
+    // Cas spécial : notification de mise à jour d'app → télécharger l'APK
+    if (notification.type === 'app_update' && notification.action_url) {
+      window.location.href = notification.action_url;
+      return;
+    }
+
     // Rediriger selon le type de notification et action_url
     if (notification.action_url) {
-      navigate(notification.action_url);
+      // URL externe (http/https) → ouvrir directement
+      if (/^https?:\/\//i.test(notification.action_url)) {
+        window.location.href = notification.action_url;
+      } else {
+        navigate(notification.action_url);
+      }
     } else if (notification.type === 'new_message') {
       navigate('/messages');
     } else if (notification.type === 'new_status' || notification.type === 'new_product') {
-      // Ces types doivent avoir un action_url, mais au cas où
       if (notification.action_url) {
         navigate(notification.action_url);
       }
     } else if (notification.type === 'mcard_subscription_activated') {
-      // Rediriger vers la page MCards pour voir la carte activée
       navigate('/mcards');
     }
   };
