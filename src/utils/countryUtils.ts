@@ -22,8 +22,9 @@ export function detectCountryFromPhone(phoneNumber: string): string {
   return detectedCountry;
 }
 
-export function getCountryInfo(countryCode: string, language: 'fr' | 'en' = 'fr') {
+export function getCountryInfo(countryCode: string, language: string = 'fr') {
   const info = countryInfo[countryCode];
+  const lang: 'fr' | 'en' = language === 'en' ? 'en' : 'fr';
   if (!info) {
     return {
       name: countryCode === 'SN' ? 'Sénégal' : 'Pays inconnu',
@@ -39,9 +40,9 @@ export function getCountryInfo(countryCode: string, language: 'fr' | 'en' = 'fr'
   }
   
   return {
-    name: info.name[language],
+    name: info.name[lang],
     flag: info.flag,
-    currency: info.currency[language],
+    currency: info.currency[lang],
     timezone: info.timezone,
     emergencyNumbers: info.emergencyNumbers
   };
