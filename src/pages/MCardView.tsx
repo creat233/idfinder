@@ -74,9 +74,9 @@ const MCardView = () => {
         onShare={() => !isPendingPayment && setIsShareDialogOpen(true)}
       />
 
-      {/* Main Content - Responsive */}
-      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
-        <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4 md:space-y-6">
+      {/* Main Content - Responsive full width on desktop */}
+      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-10 xl:px-14 py-3 sm:py-4 md:py-6">
+        <div className="w-full max-w-none md:max-w-6xl xl:max-w-none mx-auto space-y-3 sm:space-y-4 md:space-y-6">
           {/* Error Alert */}
           {error && (
             <Alert variant="destructive" className="shadow-lg">
