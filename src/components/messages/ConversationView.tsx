@@ -114,6 +114,7 @@ export function ConversationView({
         otherUserName={conversation.otherUserName}
         mcardName={conversation.mcardName}
         mcardSlug={conversation.mcardSlug}
+        mcardProfilePicture={conversation.mcardProfilePicture}
         isUserBlocked={isUserBlocked}
         isBlocking={isBlocking}
         onBack={onBack}
