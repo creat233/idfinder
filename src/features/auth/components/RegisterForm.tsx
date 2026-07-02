@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CountrySelect } from "@/components/auth/CountrySelect";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -35,6 +37,7 @@ type RegisterFormProps = {
 
 const RegisterForm = ({ onSubmit, loading, onSwitchToLogin }: RegisterFormProps) => {
   const { t } = useTranslation();
+  const [acceptedPolicy, setAcceptedPolicy] = useState(false);
   // Initialize registration form with validation
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -157,11 +160,32 @@ const RegisterForm = ({ onSubmit, loading, onSwitchToLogin }: RegisterFormProps)
         <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg">
           <strong>{t('register_important_note_title')}</strong> {t('register_important_note_text')}
         </div>
-        
+
+        <div className="flex items-start gap-3 bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <Checkbox
+            id="accept-policy"
+            checked={acceptedPolicy}
+            onCheckedChange={(v) => setAcceptedPolicy(v === true)}
+            className="mt-0.5"
+          />
+          <label htmlFor="accept-policy" className="text-xs text-gray-700 leading-relaxed cursor-pointer select-none">
+            J'ai lu et j'accepte la{' '}
+            <a
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#7E69AB] underline font-medium"
+            >
+              Politique de confidentialité
+            </a>{' '}
+            de Finder ID et je consens au traitement de mes données personnelles pour créer mon compte.
+          </label>
+        </div>
+
         <Button 
           type="submit" 
-          className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90"
-          disabled={loading}
+          className="w-full px-4 py-3 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white font-medium rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading || !acceptedPolicy}
         >
           {loading ? t('register_loading_button') : t('register_button')}
         </Button>
