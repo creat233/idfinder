@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { MessageTranslateButton } from "./MessageTranslateButton";
 
 interface MessageBubbleProps {
   message: {
@@ -62,6 +63,7 @@ export function MessageBubble({
           )}
           <p className="text-[15px] leading-[1.4] break-words whitespace-pre-wrap">{message.message}</p>
         </div>
+        <MessageTranslateButton text={message.message} isCurrentUser={isCurrentUser} />
         <div className={`flex mt-1 px-2 items-center justify-between ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">

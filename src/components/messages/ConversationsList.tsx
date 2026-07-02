@@ -104,9 +104,27 @@ export function ConversationsList({
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                      {conversation.otherUserName.charAt(0) || 'U'}
-                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (conversation.mcardSlug) {
+                          window.open(`${window.location.origin}/mcard/${conversation.mcardSlug}`, '_blank');
+                        }
+                      }}
+                      disabled={!conversation.mcardSlug}
+                      className={`w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ${conversation.mcardSlug ? 'cursor-pointer hover:ring-2 hover:ring-blue-400 transition' : ''}`}
+                      title={conversation.mcardSlug ? "Voir la MCard" : undefined}
+                      aria-label="Voir la MCard"
+                    >
+                      {conversation.mcardProfilePicture ? (
+                        <img src={conversation.mcardProfilePicture} alt={conversation.otherUserName} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                          {conversation.otherUserName.charAt(0) || 'U'}
+                        </div>
+                      )}
+                    </button>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="font-semibold text-gray-900 text-sm truncate">

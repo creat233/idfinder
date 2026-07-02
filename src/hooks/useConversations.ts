@@ -16,7 +16,7 @@ export const useConversations = (user: any) => {
         .from('mcard_messages')
         .select(`
           *,
-          mcards!mcard_messages_mcard_id_fkey(full_name)
+          mcards!mcard_messages_mcard_id_fkey(full_name, slug, profile_picture_url)
         `)
         .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
         .order('created_at', { ascending: false });
@@ -38,7 +38,9 @@ export const useConversations = (user: any) => {
           ...msg,
           sender_name: senderProfile ? `${senderProfile.first_name || ''} ${senderProfile.last_name || ''}`.trim() || 'Utilisateur' : 'Utilisateur',
           recipient_name: recipientProfile ? `${recipientProfile.first_name || ''} ${recipientProfile.last_name || ''}`.trim() || 'Utilisateur' : 'Utilisateur',
-          mcard_name: msg.mcards?.full_name || 'Carte supprimée'
+          mcard_name: msg.mcards?.full_name || 'Carte supprimée',
+          mcard_slug: msg.mcards?.slug || undefined,
+          mcard_profile_picture: msg.mcards?.profile_picture_url || null,
         };
       }) || [];
 
@@ -61,6 +63,8 @@ export const useConversations = (user: any) => {
             otherUserName: displayName,
             mcardId: msg.mcard_id,
             mcardName: msg.mcard_name,
+            mcardSlug: msg.mcard_slug,
+            mcardProfilePicture: msg.mcard_profile_picture,
             messages: [],
             lastMessage: msg,
             unreadCount: 0
@@ -81,6 +85,8 @@ export const useConversations = (user: any) => {
           // Mettre à jour aussi les infos de la mcard du dernier message
           conversation.mcardId = msg.mcard_id;
           conversation.mcardName = msg.mcard_name;
+          conversation.mcardSlug = msg.mcard_slug;
+          conversation.mcardProfilePicture = msg.mcard_profile_picture;
           // Mettre à jour le nom d'affichage aussi
           conversation.otherUserName = displayName;
         }
