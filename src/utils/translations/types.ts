@@ -4,6 +4,16 @@ export type Language = "fr" | "en" | "es" | "pt" | "ar" | "wo" | "de" | "it" | "
 
 export interface Translations {
   [key: string]: {
-    [key in Language]: string;
+    fr: string;
+    en?: string;
+    es?: string;
+    pt?: string;
+    ar?: string;
+    wo?: string;
+    de?: string;
+    it?: string;
+    zh?: string;
+    ru?: string;
   };
 }
+
