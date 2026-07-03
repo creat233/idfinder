@@ -2,14 +2,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Share2, TrendingUp, Users, Gift, Sparkles, Copy, CheckCircle2 } from "lucide-react";
+import { Plus, Share2, TrendingUp, Users, Gift, Sparkles, Copy, CheckCircle2, Trash2 } from "lucide-react";
 import { usePromoCodes } from "@/hooks/usePromoCodes";
 import { PromoCodesList } from "./PromoCodesList";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion } from "framer-motion";
 
 export const PromoCodesManager = () => {
-  const { promoCodes, loading, createPromoCode } = usePromoCodes();
+  const { promoCodes, loading, createPromoCode, deleteExpiredCodes } = usePromoCodes();
   const { t } = useTranslation();
 
   const handleGenerateCode = async () => {
