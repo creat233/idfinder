@@ -178,6 +178,28 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
             })}
           </div>
         )}
+          </div>
+        )}
+
+        {isOwner && (
+          <div className="mt-6 pt-4 border-t space-y-2">
+            <Label className="flex items-center gap-2 text-sm font-semibold">
+              <Truck className="h-4 w-4 text-amber-600" />
+              Horaires de livraison (visibles dans le panier)
+            </Label>
+            <Textarea
+              value={deliveryHours}
+              onChange={(e) => setDeliveryHours(e.target.value)}
+              placeholder="Ex: Lun-Ven 9h-18h · Sam 10h-14h · Livraison en 24-48h"
+              rows={2}
+              className="resize-none"
+            />
+            <Button size="sm" onClick={saveDeliveryHours} disabled={savingDelivery} className="gap-2">
+              <Save className="h-4 w-4" />
+              {savingDelivery ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
+          </div>
+        )}
         </CardContent>
       )}
     </Card>
