@@ -6,7 +6,8 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Clock } from "lucide-react";
+import { Shield, Clock, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "@/hooks/useAuthState";
 
