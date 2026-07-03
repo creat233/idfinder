@@ -200,7 +200,7 @@ export const AIChatbot = () => {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Posez votre question..."
+                  placeholder={PLACEHOLDERS[currentLanguage] ?? PLACEHOLDERS.fr}
                   className="text-sm rounded-full"
                   disabled={isLoading}
                 />
