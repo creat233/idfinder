@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "@/hooks/useTranslation";
+import { getAvailableLanguages } from "@/utils/translations/languages";
 
 interface LanguageSelectProps {
   control: Control<any>;
@@ -17,10 +18,7 @@ interface LanguageSelectProps {
   onLanguageChange: (language: string) => void;
 }
 
-const languages = [
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "en", name: "English", flag: "🇬🇧" },
-];
+const languages = getAvailableLanguages();
 
 export function LanguageSelect({ control, name, currentLanguage, onLanguageChange }: LanguageSelectProps) {
   const { t } = useTranslation();

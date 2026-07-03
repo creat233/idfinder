@@ -4,19 +4,51 @@ import { Input } from '@/components/ui/input';
 import { Bot, X, Send, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chatbot`;
 
+const GREETINGS: Record<string, string> = {
+  fr: "Bonjour ! 👋 Je suis l'assistant Finder ID. Comment puis-je vous aider ?",
+  en: "Hello! 👋 I'm the Finder ID assistant. How can I help you?",
+  es: "¡Hola! 👋 Soy el asistente de Finder ID. ¿Cómo puedo ayudarte?",
+  pt: "Olá! 👋 Sou o assistente Finder ID. Como posso ajudar?",
+  ar: "مرحبا! 👋 أنا مساعد Finder ID. كيف يمكنني مساعدتك؟",
+  wo: "Salaam! 👋 Man laa Finder ID assistant. Nan la mën dimbali?",
+  de: "Hallo! 👋 Ich bin der Finder ID Assistent. Wie kann ich helfen?",
+  it: "Ciao! 👋 Sono l'assistente Finder ID. Come posso aiutarti?",
+  zh: "你好！👋 我是 Finder ID 助手。有什么可以帮您？",
+  ru: "Здравствуйте! 👋 Я ассистент Finder ID. Чем могу помочь?",
+};
+
+const PLACEHOLDERS: Record<string, string> = {
+  fr: "Posez votre question...", en: "Ask your question...", es: "Haga su pregunta...",
+  pt: "Faça sua pergunta...", ar: "اطرح سؤالك...", wo: "Bind sa laaj...",
+  de: "Stellen Sie Ihre Frage...", it: "Fai la tua domanda...",
+  zh: "请提问...", ru: "Задайте вопрос...",
+};
+
 export const AIChatbot = () => {
+  const { currentLanguage } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Bonjour ! 👋 Je suis l\'assistant Finder ID. Comment puis-je vous aider ?' }
+    { role: 'assistant', content: GREETINGS[currentLanguage] ?? GREETINGS.fr }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Re-greet in new language when user switches
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length <= 1) {
+        return [{ role: 'assistant', content: GREETINGS[currentLanguage] ?? GREETINGS.fr }];
+      }
+      return prev;
+    });
+  }, [currentLanguage]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,7 +71,7 @@ export const AIChatbot = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: allMessages }),
+        body: JSON.stringify({ messages: allMessages, language: currentLanguage }),
       });
 
       if (!resp.ok || !resp.body) {
@@ -168,7 +200,7 @@ export const AIChatbot = () => {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Posez votre question..."
+                  placeholder={PLACEHOLDERS[currentLanguage] ?? PLACEHOLDERS.fr}
                   className="text-sm rounded-full"
                   disabled={isLoading}
                 />

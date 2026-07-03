@@ -2,14 +2,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Share2, TrendingUp, Users, Gift, Sparkles, Copy, CheckCircle2 } from "lucide-react";
+import { Plus, Share2, TrendingUp, Users, Gift, Sparkles, Copy, CheckCircle2, Trash2 } from "lucide-react";
 import { usePromoCodes } from "@/hooks/usePromoCodes";
 import { PromoCodesList } from "./PromoCodesList";
 import { useTranslation } from "@/hooks/useTranslation";
 import { motion } from "framer-motion";
 
 export const PromoCodesManager = () => {
-  const { promoCodes, loading, createPromoCode } = usePromoCodes();
+  const { promoCodes, loading, createPromoCode, deleteExpiredCodes } = usePromoCodes();
   const { t } = useTranslation();
 
   const handleGenerateCode = async () => {
@@ -149,7 +149,22 @@ export const PromoCodesManager = () => {
 
       {/* Codes list */}
       <div>
-        <h2 className="font-semibold text-foreground mb-3 text-sm px-1">Mes Codes Promo</h2>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <h2 className="font-semibold text-foreground text-sm">Mes Codes Promo</h2>
+          {promoCodes.some((c: any) => c.isExpired) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (confirm("Supprimer tous les codes promo expirés ?")) deleteExpiredCodes();
+              }}
+              className="text-red-600 border-red-300 hover:bg-red-50 h-8 text-xs"
+            >
+              <Trash2 className="h-3.5 w-3.5 mr-1" />
+              Supprimer expirés
+            </Button>
+          )}
+        </div>
         {loading ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>

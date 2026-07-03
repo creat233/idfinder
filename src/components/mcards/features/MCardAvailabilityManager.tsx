@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { CalendarClock, Plus, Trash2, Clock } from 'lucide-react';
+import { CalendarClock, Plus, Trash2, Clock, Truck, Save } from 'lucide-react';
 import { useMCardAvailability, AvailabilitySlot } from '@/hooks/useMCardAvailability';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface MCardAvailabilityManagerProps {
   mcardId: string;
@@ -23,6 +26,30 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
   const [isOpen, setIsOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState<AvailabilitySlot | null>(null);
   const [isVisible, setIsVisible] = useState(true);
+  const [deliveryHours, setDeliveryHours] = useState<string>('');
+  const [savingDelivery, setSavingDelivery] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('mcards')
+        .select('delivery_hours')
+        .eq('id', mcardId)
+        .maybeSingle();
+      setDeliveryHours((data as any)?.delivery_hours || '');
+    })();
+  }, [mcardId]);
+
+  const saveDeliveryHours = async () => {
+    setSavingDelivery(true);
+    const { error } = await supabase
+      .from('mcards')
+      .update({ delivery_hours: deliveryHours.trim() || null } as any)
+      .eq('id', mcardId);
+    setSavingDelivery(false);
+    if (error) toast.error("Erreur lors de l'enregistrement");
+    else toast.success('Horaires de livraison enregistrés');
+  };
 
   const handleSaveSlot = async (slotData: AvailabilitySlot) => {
     await saveSlot(slotData);
@@ -149,6 +176,27 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
                 </div>
               );
             })}
+          </div>
+        )}
+
+
+        {isOwner && (
+          <div className="mt-6 pt-4 border-t space-y-2">
+            <Label className="flex items-center gap-2 text-sm font-semibold">
+              <Truck className="h-4 w-4 text-amber-600" />
+              Horaires de livraison (visibles dans le panier)
+            </Label>
+            <Textarea
+              value={deliveryHours}
+              onChange={(e) => setDeliveryHours(e.target.value)}
+              placeholder="Ex: Lun-Ven 9h-18h · Sam 10h-14h · Livraison en 24-48h"
+              rows={2}
+              className="resize-none"
+            />
+            <Button size="sm" onClick={saveDeliveryHours} disabled={savingDelivery} className="gap-2">
+              <Save className="h-4 w-4" />
+              {savingDelivery ? 'Enregistrement...' : 'Enregistrer'}
+            </Button>
           </div>
         )}
         </CardContent>

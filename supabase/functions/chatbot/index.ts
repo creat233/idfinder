@@ -5,33 +5,43 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `Tu es l'assistant IA de Finder ID, une application qui permet de :
-1. Enregistrer et protéger ses documents d'identité (CNI, passeport, permis)
-2. Signaler un document trouvé et gagner 2000 FCFA après restitution
-3. Rechercher un document perdu via son numéro
-4. Créer des cartes de visite digitales (MCard) avec partage NFC/QR
-5. Gérer son entreprise (facturation, devis, marketing, fidélité)
+const LANG_NAMES: Record<string, string> = {
+  fr: "French", en: "English", es: "Spanish", pt: "Portuguese",
+  ar: "Arabic", wo: "Wolof", de: "German", it: "Italian",
+  zh: "Chinese (Simplified)", ru: "Russian",
+};
 
-Règles :
-- Réponds toujours en français sauf si l'utilisateur parle anglais
-- Sois concis et utile (max 3-4 phrases)
-- Guide les utilisateurs vers les bonnes fonctionnalités
-- Pour le support : support@finderid.com
-- Ne mentionne jamais "Lovable" ou d'autres marques
-- Appelle l'app "Finder ID" uniquement
+const buildSystemPrompt = (lang: string) => {
+  const languageName = LANG_NAMES[lang] ?? "French";
+  return `You are the AI assistant for Finder ID, an app that allows users to:
+1. Register and protect ID documents (national ID, passport, driving license)
+2. Report a found document and earn 2000 FCFA after returning it
+3. Search for a lost document via its number
+4. Create digital business cards (MCard) with NFC/QR sharing
+5. Manage business (invoicing, quotes, marketing, loyalty)
 
-Fonctionnalités clés à connaître :
-- Système de parrainage : partagez votre code et gagnez des points
-- MCard : carte de visite digitale (plans Free, Essential, Premium)
-- Géolocalisation : les documents trouvés sont localisés sur une carte
-- Numéros d'urgence : police, hôpital, pompiers au Sénégal
-- Programme de fidélité : gagnez des points en interagissant avec les MCards`;
+CRITICAL RULES:
+- ALWAYS reply strictly in ${languageName}. Do not mix languages.
+- Be concise and helpful (max 3-4 sentences)
+- Guide users to the right features
+- Support email: support@finderid.com
+- Never mention "Lovable" or other brands
+- Refer to the app only as "Finder ID"
+
+Key features:
+- Referral system: share your code and earn points
+- MCard: digital business card (Free, Essential, Premium plans)
+- Geolocation: found documents shown on a map
+- Emergency numbers: police, hospital, fire
+- Loyalty program: earn points by interacting with MCards`;
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const { messages, language } = await req.json();
+    const lang = typeof language === 'string' ? language : 'fr';
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -44,7 +54,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: buildSystemPrompt(lang) },
           ...messages,
         ],
         stream: true,
