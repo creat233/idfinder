@@ -26,6 +26,30 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
   const [isOpen, setIsOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState<AvailabilitySlot | null>(null);
   const [isVisible, setIsVisible] = useState(true);
+  const [deliveryHours, setDeliveryHours] = useState<string>('');
+  const [savingDelivery, setSavingDelivery] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('mcards')
+        .select('delivery_hours')
+        .eq('id', mcardId)
+        .maybeSingle();
+      setDeliveryHours((data as any)?.delivery_hours || '');
+    })();
+  }, [mcardId]);
+
+  const saveDeliveryHours = async () => {
+    setSavingDelivery(true);
+    const { error } = await supabase
+      .from('mcards')
+      .update({ delivery_hours: deliveryHours.trim() || null } as any)
+      .eq('id', mcardId);
+    setSavingDelivery(false);
+    if (error) toast.error("Erreur lors de l'enregistrement");
+    else toast.success('Horaires de livraison enregistrés');
+  };
 
   const handleSaveSlot = async (slotData: AvailabilitySlot) => {
     await saveSlot(slotData);
