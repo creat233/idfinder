@@ -190,12 +190,12 @@ const RegisterForm = ({ onSubmit, loading, onSwitchToLogin }: RegisterFormProps)
           {loading ? t('register_loading_button') : t('register_button')}
         </Button>
 
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-gray-600 pb-4">
           {t('alreadyHaveAccount')}{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="text-[#7E69AB] hover:underline font-medium"
+            className="text-[#7E69AB] hover:underline font-semibold"
           >
             {t('signIn')}
           </button>
