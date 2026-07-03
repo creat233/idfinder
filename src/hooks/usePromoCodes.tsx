@@ -111,6 +111,29 @@ export const usePromoCodes = () => {
     }
   };
 
+  const deleteExpiredCodes = async () => {
+    try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Non connecté");
+
+      const { error, count } = await supabase
+        .from("promo_codes")
+        .delete({ count: 'exact' })
+        .eq("user_id", user.id)
+        .lt("expires_at", new Date().toISOString());
+
+      if (error) throw error;
+      showSuccess("Codes supprimés", `${count ?? 0} code(s) promo expiré(s) supprimé(s).`);
+      await fetchPromoCodes();
+    } catch (error: any) {
+      console.error("Erreur deleteExpiredCodes:", error);
+      showError("Erreur", error.message || "Impossible de supprimer les codes expirés");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchPromoCodes();
   }, []);
@@ -120,6 +143,7 @@ export const usePromoCodes = () => {
     loading,
     fetchPromoCodes,
     createPromoCode,
-    validatePromoCode
+    validatePromoCode,
+    deleteExpiredCodes
   };
 };
