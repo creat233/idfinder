@@ -4,6 +4,7 @@ import { MessageCircle, Search } from "lucide-react";
 import { Conversation } from "@/types/messages";
 import { supabase } from "@/integrations/supabase/client";
 import { AutoReplySettingsDialog } from "./AutoReplySettings";
+import { SwipeableConversationItem } from "./SwipeableConversationItem";
 
 interface ConversationsListProps {
   conversations: Conversation[];
