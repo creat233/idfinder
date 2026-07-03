@@ -1609,6 +1609,7 @@ export type Database = {
           company: string | null
           cover_image_url: string | null
           created_at: string
+          delivery_hours: string | null
           description: string | null
           email: string | null
           facebook_url: string | null
@@ -1643,6 +1644,7 @@ export type Database = {
           company?: string | null
           cover_image_url?: string | null
           created_at?: string
+          delivery_hours?: string | null
           description?: string | null
           email?: string | null
           facebook_url?: string | null
@@ -1677,6 +1679,7 @@ export type Database = {
           company?: string | null
           cover_image_url?: string | null
           created_at?: string
+          delivery_hours?: string | null
           description?: string | null
           email?: string | null
           facebook_url?: string | null

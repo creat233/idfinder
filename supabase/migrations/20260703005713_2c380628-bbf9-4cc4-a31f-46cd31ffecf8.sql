@@ -1,0 +1,1 @@
+ALTER TABLE public.mcards ADD COLUMN IF NOT EXISTS delivery_hours TEXT;
