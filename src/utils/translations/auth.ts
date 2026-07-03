@@ -10,6 +10,8 @@ export const authTranslations: Translations = {
   resetPassword: { fr: "Réinitialiser le mot de passe", en: "Reset Password" },
   forgotPassword: { fr: "Mot de passe oublié ?", en: "Forgot password?" },
   signUp: { fr: "Inscription", en: "Sign Up" },
+  signIn: { fr: "Se connecter", en: "Sign in" },
+  alreadyHaveAccount: { fr: "Vous avez déjà un compte ?", en: "Already have an account?" },
   noAccount: { fr: "Pas de compte", en: "No account" },
   
   logout: { fr: "Déconnexion", en: "Logout" },
