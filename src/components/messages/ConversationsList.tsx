@@ -65,8 +65,13 @@ export function ConversationsList({
           ) : (
             <div className="space-y-1 pb-4">
               {filteredConversations.map((conversation) => (
-                <div
+                <SwipeableConversationItem
                   key={conversation.otherUserId}
+                  otherUserId={conversation.otherUserId}
+                  currentUserId={currentUserId}
+                  onDeleted={() => window.dispatchEvent(new CustomEvent('conversationDeleted'))}
+                >
+                <div
                   className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 ${
                     selectedConversation?.otherUserId === conversation.otherUserId
                       ? 'bg-blue-50 border-l-blue-500' 
