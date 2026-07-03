@@ -162,6 +162,7 @@ export function ConversationsList({
                     </div>
                   </div>
                 </div>
+                </SwipeableConversationItem>
               ))}
             </div>
           )}
