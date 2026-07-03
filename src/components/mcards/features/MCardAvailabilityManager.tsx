@@ -178,8 +178,7 @@ export const MCardAvailabilityManager: React.FC<MCardAvailabilityManagerProps> =
             })}
           </div>
         )}
-          </div>
-        )}
+
 
         {isOwner && (
           <div className="mt-6 pt-4 border-t space-y-2">
