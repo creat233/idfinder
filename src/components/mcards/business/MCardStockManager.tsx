@@ -175,8 +175,11 @@ export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
             size="sm"
             className="w-full text-xs"
             onClick={() => {
-              const productsSection = document.getElementById('products-section');
-              if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth' });
+              // Navigate to all-products page within current mcard route
+              const base = location.pathname.replace(/\/$/, '');
+              navigate(`${base}/all-products`, {
+                state: { products, mcardId, ownerName: '', ownerUserId: '', currentLanguage: 'fr' }
+              });
             }}
           >
             <Package className="h-3 w-3 mr-1.5" />
