@@ -25,6 +25,8 @@ interface MCardStockManagerProps {
 
 export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
