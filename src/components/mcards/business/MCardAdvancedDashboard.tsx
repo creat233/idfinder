@@ -22,10 +22,21 @@ interface MonthlyData {
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 export const MCardAdvancedDashboard = ({ mcardId }: MCardAdvancedDashboardProps) => {
+  const storageKey = `mcard_dashboard_hidden_${mcardId}`;
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
   const [categoryData, setCategoryData] = useState<{ name: string; value: number }[]>([]);
   const [totals, setTotals] = useState({ revenue: 0, expenses: 0, profit: 0, profitMargin: 0 });
   const [loading, setLoading] = useState(true);
+  const [hidden, setHidden] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(storageKey) === '1';
+  });
+
+  const toggleHidden = () => {
+    const next = !hidden;
+    setHidden(next);
+    localStorage.setItem(storageKey, next ? '1' : '0');
+  };
 
   useEffect(() => {
     loadDashboardData();
