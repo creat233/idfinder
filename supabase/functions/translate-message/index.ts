@@ -6,6 +6,11 @@ const LANG_NAMES: Record<string, string> = {
   fr: 'French', en: 'English', es: 'Spanish', pt: 'Portuguese',
   ar: 'Arabic', wo: 'Wolof', de: 'German', it: 'Italian',
   zh: 'Chinese (Simplified)', ru: 'Russian',
+  ja: 'Japanese', ko: 'Korean', hi: 'Hindi', tr: 'Turkish',
+  nl: 'Dutch', pl: 'Polish', sv: 'Swedish', no: 'Norwegian',
+  da: 'Danish', fi: 'Finnish', el: 'Greek', he: 'Hebrew',
+  th: 'Thai', vi: 'Vietnamese', id: 'Indonesian', ms: 'Malay',
+  sw: 'Swahili', uk: 'Ukrainian', cs: 'Czech', ro: 'Romanian',
 };
 
 Deno.serve(async (req) => {
