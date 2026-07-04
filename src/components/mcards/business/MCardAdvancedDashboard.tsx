@@ -118,13 +118,26 @@ export const MCardAdvancedDashboard = ({ mcardId }: MCardAdvancedDashboardProps)
   return (
     <Card className="border shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <BarChart3 className="h-4 w-4 text-indigo-600" />
-          Tableau de Bord Avancé
-          <Badge variant="outline" className="text-[10px]">6 mois</Badge>
+        <CardTitle className="flex items-center justify-between gap-2 text-base">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-indigo-600" />
+            Tableau de Bord Avancé
+            <Badge variant="outline" className="text-[10px]">6 mois</Badge>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleHidden}
+            className="h-7 w-7 p-0"
+            aria-label={hidden ? 'Afficher' : 'Masquer'}
+          >
+            {hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+          </Button>
         </CardTitle>
       </CardHeader>
+      {!hidden && (
       <CardContent className="space-y-4">
+
         {/* Summary cards */}
         <div className="grid grid-cols-3 gap-2">
           <div className="p-2.5 bg-green-50 rounded-lg text-center">
