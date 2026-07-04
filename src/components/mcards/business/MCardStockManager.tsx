@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +25,8 @@ interface MCardStockManagerProps {
 
 export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -172,8 +175,11 @@ export const MCardStockManager = ({ mcardId }: MCardStockManagerProps) => {
             size="sm"
             className="w-full text-xs"
             onClick={() => {
-              const productsSection = document.getElementById('products-section');
-              if (productsSection) productsSection.scrollIntoView({ behavior: 'smooth' });
+              // Navigate to all-products page within current mcard route
+              const base = location.pathname.replace(/\/$/, '');
+              navigate(`${base}/all-products`, {
+                state: { products, mcardId, ownerName: '', ownerUserId: '', currentLanguage: 'fr' }
+              });
             }}
           >
             <Package className="h-3 w-3 mr-1.5" />

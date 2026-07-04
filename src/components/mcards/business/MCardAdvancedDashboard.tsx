@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BarChart3, TrendingUp, DollarSign, Receipt, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BarChart3, TrendingUp, DollarSign, Receipt, ArrowUpRight, ArrowDownRight, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
@@ -21,10 +22,21 @@ interface MonthlyData {
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 export const MCardAdvancedDashboard = ({ mcardId }: MCardAdvancedDashboardProps) => {
+  const storageKey = `mcard_dashboard_hidden_${mcardId}`;
   const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
   const [categoryData, setCategoryData] = useState<{ name: string; value: number }[]>([]);
   const [totals, setTotals] = useState({ revenue: 0, expenses: 0, profit: 0, profitMargin: 0 });
   const [loading, setLoading] = useState(true);
+  const [hidden, setHidden] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(storageKey) === '1';
+  });
+
+  const toggleHidden = () => {
+    const next = !hidden;
+    setHidden(next);
+    localStorage.setItem(storageKey, next ? '1' : '0');
+  };
 
   useEffect(() => {
     loadDashboardData();
@@ -106,13 +118,26 @@ export const MCardAdvancedDashboard = ({ mcardId }: MCardAdvancedDashboardProps)
   return (
     <Card className="border shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <BarChart3 className="h-4 w-4 text-indigo-600" />
-          Tableau de Bord Avancé
-          <Badge variant="outline" className="text-[10px]">6 mois</Badge>
+        <CardTitle className="flex items-center justify-between gap-2 text-base">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-indigo-600" />
+            Tableau de Bord Avancé
+            <Badge variant="outline" className="text-[10px]">6 mois</Badge>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleHidden}
+            className="h-7 w-7 p-0"
+            aria-label={hidden ? 'Afficher' : 'Masquer'}
+          >
+            {hidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+          </Button>
         </CardTitle>
       </CardHeader>
+      {!hidden && (
       <CardContent className="space-y-4">
+
         {/* Summary cards */}
         <div className="grid grid-cols-3 gap-2">
           <div className="p-2.5 bg-green-50 rounded-lg text-center">
@@ -211,6 +236,7 @@ export const MCardAdvancedDashboard = ({ mcardId }: MCardAdvancedDashboardProps)
           </div>
         </div>
       </CardContent>
+      )}
     </Card>
   );
 };

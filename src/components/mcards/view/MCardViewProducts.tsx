@@ -322,7 +322,20 @@ export const MCardViewProducts = ({
                       <span className="text-lg sm:text-xl font-bold text-green-600">
                         {product.price.toLocaleString()} {product.currency}
                       </span>
-                      <ShoppingCart className="h-5 w-5 text-green-500" />
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const stock = (product as any).stock_quantity;
+                          if (stock === null || stock === undefined) return null;
+                          const low = (product as any).low_stock_threshold ?? 5;
+                          const color = stock === 0 ? 'bg-red-100 text-red-700' : stock <= low ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700';
+                          return (
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${color}`}>
+                              {stock === 0 ? translateText('Rupture') : `${translateText('Stock')}: ${stock}`}
+                            </span>
+                          );
+                        })()}
+                        <ShoppingCart className="h-5 w-5 text-green-500" />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-3 gap-1.5 pt-1">
