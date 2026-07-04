@@ -236,6 +236,7 @@ export const MCardAdvancedDashboard = ({ mcardId }: MCardAdvancedDashboardProps)
           </div>
         </div>
       </CardContent>
+      )}
     </Card>
   );
 };
