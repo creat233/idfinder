@@ -123,7 +123,7 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
     if (!replacements) return s;
     let out = s;
     Object.keys(replacements).forEach(p => {
-      out = out.replaceAll(`{${p}}`, String(replacements[p]));
+      out = out.split(`{${p}}`).join(String(replacements[p]));
     });
     return out;
   };
