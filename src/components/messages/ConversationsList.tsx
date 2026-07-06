@@ -72,7 +72,7 @@ export function ConversationsList({
                   onDeleted={() => window.dispatchEvent(new CustomEvent('conversationDeleted'))}
                 >
                 <div
-                  className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 ${
+                  className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors border-l-4 bg-white ${
                     selectedConversation?.otherUserId === conversation.otherUserId
                       ? 'bg-blue-50 border-l-blue-500' 
                       : 'border-l-transparent'
