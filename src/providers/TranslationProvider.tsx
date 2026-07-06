@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useRef, useCallback, ReactNo
 import { getTranslation, Country, Language, getAvailableLanguages, translations as dict } from "@/utils/translations";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from '@supabase/supabase-js';
+import { DomAutoTranslator } from './DomAutoTranslator';
 
 interface TranslationContextType {
   t: (key: string, replacements?: Record<string, string | number>) => string;
