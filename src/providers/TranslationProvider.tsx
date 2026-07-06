@@ -165,6 +165,7 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TranslationContext.Provider value={value}>
+      <DomAutoTranslator />
       {children}
     </TranslationContext.Provider>
   );
