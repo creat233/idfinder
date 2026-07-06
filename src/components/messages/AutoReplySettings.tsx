@@ -221,8 +221,39 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
                 <Switch
                   id="ai-agent-toggle"
                   checked={settings.aiAgentEnabled}
-                  onCheckedChange={(v) => setSettings(prev => ({ ...prev, aiAgentEnabled: v }))}
+                  onCheckedChange={async (v) => {
+                    setSettings(prev => ({ ...prev, aiAgentEnabled: v }));
+                    try {
+                      const { error } = await supabase
+                        .from('auto_reply_settings')
+                        .upsert({
+                          user_id: userId,
+                          enabled: settings.enabled,
+                          selected_message: settings.selectedMessage,
+                          custom_message: settings.customMessage || null,
+                          ai_agent_enabled: v,
+                          ai_context: settings.aiContext || null,
+                          updated_at: new Date().toISOString(),
+                        } as any, { onConflict: 'user_id' });
+                      if (error) throw error;
+                      toast({
+                        title: v ? "Agent IA activé" : "Agent IA désactivé",
+                        description: v
+                          ? "L'agent répondra automatiquement à tous vos messages."
+                          : "L'agent IA ne répondra plus automatiquement.",
+                      });
+                    } catch (err) {
+                      console.error('Erreur toggle agent IA:', err);
+                      setSettings(prev => ({ ...prev, aiAgentEnabled: !v }));
+                      toast({
+                        variant: 'destructive',
+                        title: 'Erreur',
+                        description: "Impossible de mettre à jour l'agent IA.",
+                      });
+                    }
+                  }}
                 />
+
               </div>
               {settings.aiAgentEnabled && (
                 <div className="space-y-2">
