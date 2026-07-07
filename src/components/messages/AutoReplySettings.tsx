@@ -287,6 +287,7 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
                   </p>
                 </div>
               )}
+              </div>
             </div>
 
             {/* Sélection du message */}
