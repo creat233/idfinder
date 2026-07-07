@@ -178,46 +178,60 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
           </div>
         ) : (
           <div className="space-y-6 py-4">
-            {/* Activation */}
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-              <div className="space-y-0.5">
-                <Label htmlFor="auto-reply-toggle" className="font-medium">
-                  Activer les réponses automatiques
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  Envoyer un message automatique quand vous êtes absent
-                </p>
+            {/* SECTION 1 : Message d'absence automatique */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="h-6 w-1 rounded-full bg-blue-500" />
+                <h3 className="font-semibold text-sm text-blue-900 uppercase tracking-wide">
+                  1. Message d'absence (texte fixe)
+                </h3>
               </div>
-              <Switch
-                id="auto-reply-toggle"
-                checked={settings.enabled}
-                onCheckedChange={(enabled) => 
-                  setSettings(prev => ({ ...prev, enabled }))
-                }
-              />
-            </div>
-
-            {/* Info: fonctionne même déconnecté */}
-            {settings.enabled && (
-              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-700">
-                  ✓ Les réponses automatiques fonctionneront même si vous êtes déconnecté de l'application.
-                </p>
-              </div>
-            )}
-
-            {/* Agent IA - indépendant de l'auto-réponse */}
-            <div className="p-4 rounded-lg border border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="space-y-0.5">
-                  <Label htmlFor="ai-agent-toggle" className="font-medium flex items-center gap-1.5">
-                    <Sparkles className="h-4 w-4 text-purple-600" />
-                    Agent IA (répond aux questions clients)
+              <div className="flex items-center justify-between p-4 bg-blue-50/60 border border-blue-100 rounded-lg">
+                <div className="space-y-0.5 pr-3">
+                  <Label htmlFor="auto-reply-toggle" className="font-medium">
+                    Activer les réponses automatiques
                   </Label>
-                  <p className="text-xs text-muted-foreground">
-                    L'agent lit vos produits, services et statuts pour répondre automatiquement aux clients en français.
+                  <p className="text-sm text-muted-foreground">
+                    Envoie un texte fixe (message d'absence) aux clients quand vous êtes indisponible.
                   </p>
                 </div>
+                <Switch
+                  id="auto-reply-toggle"
+                  checked={settings.enabled}
+                  onCheckedChange={(enabled) =>
+                    setSettings(prev => ({ ...prev, enabled }))
+                  }
+                />
+              </div>
+
+              {settings.enabled && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-700">
+                    ✓ Le message d'absence fonctionne même si vous êtes déconnecté.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* SECTION 2 : Agent IA */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="h-6 w-1 rounded-full bg-purple-500" />
+                <h3 className="font-semibold text-sm text-purple-900 uppercase tracking-wide">
+                  2. Agent IA (réponses intelligentes)
+                </h3>
+              </div>
+              <div className="p-4 rounded-lg border border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="ai-agent-toggle" className="font-medium flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4 text-purple-600" />
+                      Activer l'agent IA
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      L'IA lit vos produits, services et statuts pour répondre à chaque question client de façon personnalisée. Reste actif jusqu'à ce que vous le désactiviez.
+                    </p>
+                  </div>
                 <Switch
                   id="ai-agent-toggle"
                   checked={settings.aiAgentEnabled}
@@ -273,6 +287,7 @@ export function AutoReplySettingsDialog({ userId }: AutoReplySettingsProps) {
                   </p>
                 </div>
               )}
+              </div>
             </div>
 
             {/* Sélection du message */}
