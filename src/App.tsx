@@ -145,7 +145,7 @@ function NavigationWrapper() {
         <Route path="/documents-trouves" element={<DocumentsMap />} />
         <Route path="/parrainage" element={<Referral />} />
       </Routes>
-      <AIChatbot />
+      {shouldShowChatbot && <AIChatbot />}
       {shouldShowBottomNav && <MobileBottomNav />}
     </>
   );
