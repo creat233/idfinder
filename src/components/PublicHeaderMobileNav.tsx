@@ -24,12 +24,9 @@ export const PublicHeaderMobileNav = ({ user, isMenuOpen, onSignOut, onClose }: 
   return (
     <div className="md:hidden bg-[hsl(var(--vapor-ink))]/95 backdrop-blur-xl border-t border-white/10">
       <nav className="py-4 space-y-4">
-        <a href="/#fonctionnalites" className={linkClass} onClick={onClose}>{t('features')}</a>
-        <a href="/#tarifs" className={linkClass} onClick={onClose}>{t('pricing')}</a>
         <button onClick={() => { navigate("/demo"); onClose(); }} className={linkClass}>{t('demo')}</button>
         <button onClick={() => { navigate("/urgence"); onClose(); }} className={linkClass}>{t('emergencyNumbersLink')}</button>
         <button onClick={() => { navigate("/about"); onClose(); }} className={linkClass}>{t('about')}</button>
-        <button onClick={() => { navigate("/verified-mcards"); onClose(); }} className={`${linkClass} font-medium`}>✅ Services</button>
         {user && <button onClick={() => { navigate("/mes-cartes"); onClose(); }} className={linkClass}>{t('myCards')}</button>}
         {user && <button onClick={() => { navigate("/notifications"); onClose(); }} className={linkClass}>{t('notifications')}</button>}
         <div className="px-4 pt-4 space-y-2">
