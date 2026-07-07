@@ -23,15 +23,9 @@ export const PublicHeaderDesktopNav = ({ user, onSignOut }: Props) => {
   return (
     <>
       <nav className="hidden md:flex items-center space-x-7">
-        <a href="/#fonctionnalites" className={linkClass}>{t('features')}</a>
-        <a href="/#tarifs" className={linkClass}>{t('pricing')}</a>
         <button onClick={() => navigate("/demo")} className={linkClass}>{t('demo')}</button>
         <button onClick={() => navigate("/urgence")} className={linkClass}>{t('emergencyNumbersLink')}</button>
         <button onClick={() => navigate("/about")} className={linkClass}>{t('about')}</button>
-        <button onClick={() => navigate("/verified-mcards")}
-          className="text-white font-medium px-3 py-1 rounded-md border border-emerald-400/30 bg-emerald-400/10 hover:bg-emerald-400/20 transition-colors">
-          ✅ Services
-        </button>
         {user && <button onClick={() => navigate("/mes-cartes")} className={linkClass}>{t('myCards')}</button>}
         {user && <button onClick={() => navigate("/notifications")} className={linkClass}>{t('notifications')}</button>}
       </nav>
