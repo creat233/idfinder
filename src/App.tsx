@@ -90,6 +90,9 @@ function NavigationWrapper() {
 
   const hiddenBottomNavPaths = ['/mcards-verifiees'];
   const shouldShowBottomNav = !isInConversation && !hiddenBottomNavPaths.includes(location.pathname);
+  const isMCardPage = location.pathname.startsWith('/mcard/') || location.pathname === '/mcards' || location.pathname === '/mcards-verifiees';
+  const isMessagesPage = location.pathname.startsWith('/messages');
+  const shouldShowChatbot = !isMCardPage && !isMessagesPage && !isInConversation;
 
   return (
     <>
@@ -142,7 +145,7 @@ function NavigationWrapper() {
         <Route path="/documents-trouves" element={<DocumentsMap />} />
         <Route path="/parrainage" element={<Referral />} />
       </Routes>
-      <AIChatbot />
+      {shouldShowChatbot && <AIChatbot />}
       {shouldShowBottomNav && <MobileBottomNav />}
     </>
   );
