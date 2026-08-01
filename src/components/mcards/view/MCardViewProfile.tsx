@@ -357,8 +357,16 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
             <MCardSocialLinks mcard={mcard} />
           </div>
 
+          {/* Horaires de disponibilité visibles par les visiteurs (si configurés) */}
+          {!isOwner && !isPendingPayment && (
+            <div className="mt-4 sm:mt-6">
+              <MCardAvailabilityManager mcardId={mcard.id} isOwner={false} />
+            </div>
+          )}
+
           {/* Fonctionnalités avancées pour les propriétaires */}
           {isOwner && (
+
             <div className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
               {/* Tableau de bord Business 2026 - uniquement pour les plans payants */}
               {mcard.plan !== 'free' && (

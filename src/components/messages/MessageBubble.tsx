@@ -2,6 +2,7 @@ import { formatMessageTime } from "@/utils/dateUtils";
 import { Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { MessageTranslateButton } from "./MessageTranslateButton";
+import { LinkifiedText } from "./LinkifiedText";
 
 interface MessageBubbleProps {
   message: {
@@ -93,7 +94,7 @@ export function MessageBubble({ message, isCurrentUser, onDelete }: MessageBubbl
               {message.subject}
             </p>
           )}
-          <p className="text-[15px] leading-[1.4] break-words whitespace-pre-wrap">{message.message}</p>
+          <LinkifiedText text={message.message} isCurrentUser={isCurrentUser} />
         </div>
         <MessageTranslateButton text={message.message} isCurrentUser={isCurrentUser} />
         <div className={`flex mt-1 px-2 items-center ${isCurrentUser ? 'justify-end' : 'justify-start'} gap-2`}>

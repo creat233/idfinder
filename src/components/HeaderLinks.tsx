@@ -49,7 +49,7 @@ export const HeaderLinks = ({ user, isAdmin, onSignOut }: HeaderLinksProps) => {
     return (
       <>
         <NavLink to="/signaler" active={isActive("/signaler")}>Signaler</NavLink>
-        <NavLink to="/mes-cartes" active={isActive("/mes-cartes")}>Mes cartes</NavLink>
+
         <NavLink to="/codes-promo" active={isActive("/codes-promo")}>Promos</NavLink>
         <NavLink to="/messages" active={isActive("/messages")}>Messages</NavLink>
         <NavLink to="/mcards" active={isActive("/mcards")}>mCards</NavLink>

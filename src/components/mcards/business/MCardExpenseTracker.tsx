@@ -18,6 +18,7 @@ interface MCardExpenseTrackerProps {
 export const MCardExpenseTracker = ({ mcardId }: MCardExpenseTrackerProps) => {
   const { expenses, stats, loading, addExpense, deleteExpense, categories } = useExpenses(mcardId);
   const [isOpen, setIsOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const [form, setForm] = useState({ description: '', amount: '', category: 'Autre', expense_date: new Date().toISOString().split('T')[0], currency: 'FCFA' });
 
   const handleSubmit = async () => {
@@ -120,6 +121,49 @@ export const MCardExpenseTracker = ({ mcardId }: MCardExpenseTrackerProps) => {
             ))}
           </div>
         </ScrollArea>
+
+        {/* Voir toutes les dépenses */}
+        {expenses.length > 0 && (
+          <Dialog open={showAll} onOpenChange={setShowAll}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="w-full text-xs">
+                <Receipt className="h-3 w-3 mr-1.5" />
+                Voir toutes les dépenses ({expenses.length})
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Toutes les dépenses ({expenses.length})</DialogTitle>
+              </DialogHeader>
+              <div className="flex items-center justify-between text-xs bg-red-50 rounded-lg p-2 mb-2">
+                <span className="text-muted-foreground">Total général</span>
+                <span className="font-bold text-red-700">{fmt(stats.totalExpenses)}</span>
+              </div>
+              <ScrollArea className="h-[60vh] pr-2">
+                <div className="space-y-1.5">
+                  {expenses.map(e => (
+                    <div key={e.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg text-xs">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{e.description}</p>
+                        <div className="flex gap-1.5 items-center text-muted-foreground">
+                          <Badge variant="outline" className="text-[10px] px-1 py-0">{e.category}</Badge>
+                          <span>{format(new Date(e.expense_date), 'dd MMM yyyy', { locale: fr })}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-red-600">{fmt(Number(e.amount))}</span>
+                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => deleteExpense(e.id)}>
+                          <Trash2 className="h-3 w-3 text-red-400" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        )}
+
       </CardContent>
     </Card>
   );
