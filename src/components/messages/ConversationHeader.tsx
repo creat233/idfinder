@@ -29,7 +29,7 @@ export function ConversationHeader({
 }: ConversationHeaderProps) {
   const openMCard = () => {
     if (mcardSlug) {
-      window.open(`${window.location.origin}/mcard/${mcardSlug}`, '_blank');
+      window.location.href = `/mcard/${mcardSlug}`;
     }
   };
   const canOpen = Boolean(mcardSlug);
