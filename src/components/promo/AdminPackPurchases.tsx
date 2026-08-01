@@ -92,7 +92,7 @@ export const AdminPackPurchases = () => {
 
       toast({
         title: "✅ Pack activé !",
-        description: `${request.pack_size} messages ajoutés pour ${request.mcard_name}`
+        description: `${request.pack_size} messages ajoutés pour ${request.mcard_name} (valable 1 mois)`
       });
 
       fetchRequests();
