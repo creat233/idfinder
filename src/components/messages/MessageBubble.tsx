@@ -2,6 +2,7 @@ import { formatMessageTime } from "@/utils/dateUtils";
 import { Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { MessageTranslateButton } from "./MessageTranslateButton";
+import { LinkifiedText } from "./LinkifiedText";
 
 interface MessageBubbleProps {
   message: {
