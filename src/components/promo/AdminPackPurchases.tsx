@@ -63,6 +63,10 @@ export const AdminPackPurchases = () => {
   const handleApprove = async (request: PackRequest) => {
     setProcessing(request.id);
     try {
+      const now = new Date();
+      const expiresAt = new Date(now);
+      expiresAt.setMonth(expiresAt.getMonth() + 1);
+
       const { error: packError } = await supabase
         .from('mcard_marketing_packs')
         .insert({
@@ -70,7 +74,8 @@ export const AdminPackPurchases = () => {
           pack_size: request.pack_size,
           price_fcfa: request.price_fcfa,
           messages_remaining: request.pack_size,
-          purchased_at: new Date().toISOString()
+          purchased_at: now.toISOString(),
+          expires_at: expiresAt.toISOString()
         });
 
       if (packError) throw packError;
