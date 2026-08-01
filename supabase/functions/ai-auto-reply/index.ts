@@ -50,13 +50,21 @@ Deno.serve(async (req) => {
 
     // Load mcard + products + statuses for knowledge base
     const [{ data: mcard }, { data: products }, { data: statuses }] = await Promise.all([
-      supabase.from('mcards').select('full_name, job_title, company, description, phone_number, email, website_url').eq('id', msg.mcard_id).single(),
+      supabase.from('mcards').select('full_name, job_title, company, description, phone_number, email, website_url, google_business_url, maps_location_url, delivery_hours, slug').eq('id', msg.mcard_id).single(),
       supabase.from('mcard_products').select('name, description, price, currency, category, stock_quantity').eq('mcard_id', msg.mcard_id).eq('is_active', true).limit(30),
       supabase.from('mcard_statuses').select('status_text').eq('mcard_id', msg.mcard_id).eq('is_active', true).limit(20),
     ]);
 
     const kb = {
       profil: mcard,
+      contact: {
+        telephone: mcard?.phone_number ?? null,
+        email: mcard?.email ?? null,
+        site_web: mcard?.website_url ?? null,
+        google_business: mcard?.google_business_url ?? null,
+        localisation: mcard?.maps_location_url ?? null,
+        horaires_livraison: mcard?.delivery_hours ?? null,
+      },
       contexte_metier: settings.ai_context ?? null,
       produits_services: (products ?? []).map(p => ({
         nom: p.name, description: p.description, prix: p.price, devise: p.currency,
@@ -75,7 +83,7 @@ Deno.serve(async (req) => {
           'Lovable-API-Key': LOVABLE_API_KEY,
         },
         body: JSON.stringify({
-          model: 'google/gemini-3-flash-preview',
+          model: 'google/gemini-3.6-flash',
           messages: [
             {
               role: 'system',
@@ -87,14 +95,15 @@ RÈGLE DE LANGUE (TRÈS IMPORTANTE) :
 - Si le client écrit en anglais, réponds en anglais. En espagnol, réponds en espagnol. En arabe, en arabe. En wolof, en wolof. Etc.
 - Les produits, services et statuts fournis ci-dessous peuvent être dans une autre langue : traduis-les à la volée dans la langue du client.
 
+RÈGLE DE CONTACT :
+- Quand c'est utile (demande de rendez-vous, commande, question de disponibilité, livraison), donne les coordonnées présentes dans "contact".
+- Écris le téléphone en clair (ex: +221 77 000 00 00), l'email en clair, et les liens en URL complète (https://...) pour qu'ils soient cliquables.
+- Ne donne jamais un contact qui n'existe pas dans la base.
+
 Réponds chaleureusement, brièvement (3 à 6 phrases maximum), en utilisant UNIQUEMENT les informations de la base de connaissances ci-dessous.
 Si une information (prix, disponibilité, horaires) n'est pas dans la base, dis honnêtement que tu vas transmettre la question au propriétaire.
 Ne promets jamais de rendez-vous, de livraison ou de tarifs qui ne figurent pas dans la base.
-Signe par: "— Assistant de ${mcard?.full_name ?? 'l\'équipe'}" (traduis aussi cette signature dans la langue du client).
-
-BASE DE CONNAISSANCES:
-${JSON.stringify(kb, null, 2)}`,
-            },
+Signe par: "— Assistant de ${mcard?.full_name ?? "l'équipe"}" (traduis aussi cette signature dans la langue du client).
 
 BASE DE CONNAISSANCES:
 ${JSON.stringify(kb, null, 2)}`,
