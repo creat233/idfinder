@@ -18,6 +18,7 @@ interface MCardExpenseTrackerProps {
 export const MCardExpenseTracker = ({ mcardId }: MCardExpenseTrackerProps) => {
   const { expenses, stats, loading, addExpense, deleteExpense, categories } = useExpenses(mcardId);
   const [isOpen, setIsOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const [form, setForm] = useState({ description: '', amount: '', category: 'Autre', expense_date: new Date().toISOString().split('T')[0], currency: 'FCFA' });
 
   const handleSubmit = async () => {
