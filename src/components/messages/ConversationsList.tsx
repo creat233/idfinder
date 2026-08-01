@@ -115,7 +115,7 @@ export function ConversationsList({
                       onClick={(e) => {
                         e.stopPropagation();
                         if (conversation.mcardSlug) {
-                          window.open(`${window.location.origin}/mcard/${conversation.mcardSlug}`, '_blank');
+                          window.location.href = `/mcard/${conversation.mcardSlug}`;
                         }
                       }}
                       disabled={!conversation.mcardSlug}
