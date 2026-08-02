@@ -39,7 +39,7 @@ export const ProfileAvatarUpload = ({ userId, firstName, lastName }: ProfileAvat
       setUploading(true);
       try {
         const ext = file.name.split(".").pop() || "jpg";
-        const path = `avatars/${userId}/${Date.now()}.${ext}`;
+        const path = `${userId}/avatar-${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage
           .from("mcard-profile-pictures")
           .upload(path, file, { upsert: true });

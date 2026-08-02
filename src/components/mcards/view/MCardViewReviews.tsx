@@ -50,19 +50,17 @@ export const MCardViewReviews = ({
             .from('profiles')
             .select('first_name, last_name')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           setUserProfile(profile);
 
           // Pré-remplir les champs
-          if (profile) {
-            const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
-            setNewReview(prev => ({
-              ...prev,
-              visitor_name: fullName || user.email?.split('@')[0] || '',
-              visitor_email: user.email || ''
-            }));
-          }
+          const fullName = `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim();
+          setNewReview(prev => ({
+            ...prev,
+            visitor_name: fullName || user.email?.split('@')[0] || 'Visiteur',
+            visitor_email: user.email || ''
+          }));
         }
       } catch (error) {
         console.error('Erreur lors de la récupération des données utilisateur:', error);
@@ -245,8 +243,7 @@ export const MCardViewReviews = ({
                   </label>
                   <Input
                     value={newReview.visitor_name}
-                    disabled
-                    className="bg-gray-50 text-gray-700"
+                    onChange={(e) => setNewReview(prev => ({ ...prev, visitor_name: e.target.value }))}
                     placeholder="Votre nom"
                   />
                 </div>
