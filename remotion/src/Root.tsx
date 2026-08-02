@@ -5,6 +5,7 @@ import { FeaturesVideo } from "./FeaturesVideo";
 import { ProtectVideo } from "./ProtectVideo";
 import { NfcVideo } from "./NfcVideo";
 import { StoryVideo } from "./StoryVideo";
+import { BoutiqueVideo } from "./BoutiqueVideo";
 
 export const RemotionRoot = () => (
   <>
@@ -13,6 +14,7 @@ export const RemotionRoot = () => (
     <Composition id="features" component={FeaturesVideo} durationInFrames={600} fps={30} width={1080} height={1920} />
     <Composition id="protect" component={ProtectVideo} durationInFrames={600} fps={30} width={1080} height={1920} />
     <Composition id="nfc" component={NfcVideo} durationInFrames={600} fps={30} width={1080} height={1920} />
+    <Composition id="boutique" component={BoutiqueVideo} durationInFrames={1350} fps={30} width={1080} height={1920} />
     <Composition id="story" component={StoryVideo} durationInFrames={600} fps={30} width={1080} height={1920} />
   </>
 );

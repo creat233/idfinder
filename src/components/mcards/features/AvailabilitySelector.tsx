@@ -63,6 +63,7 @@ export const AvailabilitySelector: React.FC<AvailabilitySelectorProps> = ({
       return;
     }
 
+
     // Générer les créneaux d'une heure entre start_time et end_time
     const timeSlots: Array<{value: string, label: string}> = [];
     
@@ -132,9 +133,9 @@ export const AvailabilitySelector: React.FC<AvailabilitySelectorProps> = ({
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="" disabled>
+                <div className="px-3 py-2 text-sm text-muted-foreground">
                   Aucun créneau disponible ce jour
-                </SelectItem>
+                </div>
               )}
             </SelectContent>
           </Select>

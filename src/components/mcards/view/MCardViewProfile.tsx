@@ -89,28 +89,38 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
     });
     
     if (isAndroid) {
-      // Pour Android, créer un blob et utiliser l'API de partage si disponible
-      const blob = new Blob([vcard], { type: 'text/vcard' });
-      const file = new File([blob], `${mcard.full_name.replace(/\s+/g, '_')}.vcf`, { type: 'text/vcard' });
-      
-      if (navigator.share && navigator.canShare({ files: [file] })) {
+      // Sur Android, le fichier .vcf n'est pas toujours ouvrable : on partage
+      // d'abord le lien de la carte (toujours ouvrable), avec le contact en pièce jointe.
+      const blob = new Blob([vcard], { type: 'text/x-vcard' });
+      const file = new File([blob], `${mcard.full_name.replace(/\s+/g, '_')}.vcf`, { type: 'text/x-vcard' });
+
+      if (navigator.share) {
         try {
-          await navigator.share({
-            files: [file],
-            title: `Contact ${mcard.full_name}`,
-            text: `Carte de visite de ${mcard.full_name}`
-          });
+          const canShareFile = typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] });
+          await navigator.share(
+            canShareFile
+              ? {
+                  files: [file],
+                  title: `Carte de ${mcard.full_name}`,
+                  text: `Carte de visite de ${mcard.full_name} : ${mcardUrl}`,
+                }
+              : {
+                  title: `Carte de ${mcard.full_name}`,
+                  text: `Carte de visite de ${mcard.full_name}`,
+                  url: mcardUrl,
+                }
+          );
           toast({
-            title: "Contact partagé",
-            description: "Choisissez où enregistrer le contact"
+            title: "Carte enregistrée",
+            description: "Enregistrez le contact ou le lien pour ouvrir la carte à tout moment"
           });
           return;
         } catch (err) {
-          console.log('Share failed, falling back to download');
+          console.log('Share annulé/échoué, fallback téléchargement');
         }
       }
-      
-      // Fallback: téléchargement direct
+
+      // Fallback: téléchargement direct du contact
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -123,12 +133,13 @@ export const MCardViewProfile = ({ mcard, onCopyLink, onShare, isOwner }: MCardV
       // Pour iOS et autres
       downloadVCard(vcard, mcard.full_name);
     }
-    
+
     toast({
       title: "Contact enregistré",
       description: "Carte avec toutes les informations et le lien sauvegardés"
     });
   };
+
 
   return (
     <div className="relative">
