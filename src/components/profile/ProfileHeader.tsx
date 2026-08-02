@@ -2,6 +2,7 @@
 import { useTranslation } from "@/hooks/useTranslation";
 import { PersonalStats } from "./PersonalStats";
 import { ProfileBadges } from "./ProfileBadges";
+import { ProfileAvatarUpload } from "./ProfileAvatarUpload";
 
 interface ProfileHeaderProps {
   title: string;
@@ -9,6 +10,9 @@ interface ProfileHeaderProps {
   totalEarnings: number;
   topReporterEarned: boolean;
   premiumMemberEarned: boolean;
+  userId?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export const ProfileHeader = ({
@@ -16,12 +20,17 @@ export const ProfileHeader = ({
   cardCount,
   totalEarnings,
   topReporterEarned,
-  premiumMemberEarned
+  premiumMemberEarned,
+  userId,
+  firstName,
+  lastName
 }: ProfileHeaderProps) => {
   return (
     <>
-      <h1 className="text-2xl font-bold mb-2">{title}</h1>
-      
+      <h1 className="text-2xl font-bold mb-4">{title}</h1>
+
+      <ProfileAvatarUpload userId={userId} firstName={firstName} lastName={lastName} />
+
       <PersonalStats 
         cardCount={cardCount} 
         totalEarnings={totalEarnings} 
@@ -34,3 +43,4 @@ export const ProfileHeader = ({
     </>
   );
 };
+
