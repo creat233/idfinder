@@ -1761,6 +1761,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           country: string | null
           created_at: string
           enable_security_notifications: boolean
@@ -1771,6 +1772,7 @@ export type Database = {
           phone: string | null
         }
         Insert: {
+          avatar_url?: string | null
           country?: string | null
           created_at?: string
           enable_security_notifications?: boolean
@@ -1781,6 +1783,7 @@ export type Database = {
           phone?: string | null
         }
         Update: {
+          avatar_url?: string | null
           country?: string | null
           created_at?: string
           enable_security_notifications?: boolean
