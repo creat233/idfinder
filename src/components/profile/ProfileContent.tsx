@@ -92,6 +92,9 @@ export const ProfileContent = ({
               totalEarnings={totalEarnings}
               topReporterEarned={badgesLoading ? false : topReporterEarned}
               premiumMemberEarned={badgesLoading ? false : premiumMemberEarned}
+              userId={session?.user?.id}
+              firstName={firstName}
+              lastName={lastName}
             />
           </Card>
           
