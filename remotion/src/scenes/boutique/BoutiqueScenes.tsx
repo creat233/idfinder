@@ -7,6 +7,31 @@ const { fontFamily } = loadFont("normal", { weights: ["400", "600", "700", "800"
 const GOLD = "#FBBF24";
 const CYAN = "#22D3EE";
 
+
+/* --- Minimal vector icons (no emoji font in the render sandbox) --- */
+const Icon: React.FC<{ name: string; size?: number; color?: string }> = ({ name, size = 44, color = "#fff" }) => {
+  const paths: Record<string, string> = {
+    cart: "M7 4h-2l-1 2h2l2.6 7.6L8 17h11v-2H9.4l.5-1.5H19l3-8H7.6L7 4Z",
+    invoice: "M6 2h9l5 5v15H6V2Zm3 8h8v2H9v-2Zm0 4h8v2H9v-2Zm0 4h5v2H9v-2Z",
+    chart: "M4 20h16v2H4v-2Zm2-8h3v7H6v-7Zm5-6h3v13h-3V6Zm5 3h3v10h-3V9Z",
+    chat: "M4 4h16v12H9l-5 4V4Zm4 4h8v2H8V8Zm0 4h5v2H8v-2Z",
+    star: "M12 2l3 6.5 7 .8-5.2 4.7 1.5 6.9L12 17.6 5.7 20.9l1.5-6.9L2 9.3l7-.8L12 2Z",
+    megaphone: "M3 10v4h3l6 4V6L6 10H3Zm13-3.5a6 6 0 0 1 0 11v-2.2a3.8 3.8 0 0 0 0-6.6V6.5Z",
+    shop: "M4 4h16l2 5H2l2-5Zm0 7h16v10H4V11Zm4 2v6h4v-6H8Z",
+    card: "M2 5h20v14H2V5Zm2 3v2h16V8H4Zm0 5h7v2H4v-2Z",
+    crown: "M2 8l4 4 6-8 6 8 4-4v11H2V8Z",
+    truck: "M2 5h11v10H2V5Zm12 3h4l3 4v3h-7V8ZM6 17.5A1.5 1.5 0 1 0 6 20a1.5 1.5 0 0 0 0-2.5Zm11 0a1.5 1.5 0 1 0 0 2.5 1.5 1.5 0 0 0 0-2.5Z",
+    box: "M3 7l9-4 9 4-9 4-9-4Zm0 3l9 4 9-4v7l-9 4-9-4v-7Z",
+    money: "M2 6h20v12H2V6Zm10 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
+    badge: "M12 2l2.4 2.1 3.2-.4 1 3 2.8 1.6-1.3 3 1.3 3-2.8 1.6-1 3-3.2-.4L12 22l-2.4-2.1-3.2.4-1-3L2.6 15.7l1.3-3-1.3-3 2.8-1.6 1-3 3.2.4L12 2Z",
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+      <path d={paths[name] ?? paths.shop} />
+    </svg>
+  );
+};
+
 const useIn = (delay = 0, damping = 15) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -28,7 +53,9 @@ export const BoutiqueHook = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily, justifyContent: "center", alignItems: "center", padding: 70 }}>
-      <div style={{ fontSize: 120, transform: `scale(${pulse})`, marginBottom: 30 }}>🛍️</div>
+      <div style={{ transform: `scale(${pulse})`, marginBottom: 34 }}>
+        <Icon name="shop" size={140} color={CYAN} />
+      </div>
       <div
         style={{
           fontSize: 62,
@@ -82,23 +109,23 @@ export const BoutiqueShop = () => (
     badgeColor="#0EA5E9"
     title="Votre boutique en 3 minutes"
     subtitle="Produits, prix, photos, commandes"
-    screenshot="screenshots/momo-products.png"
+    screenshot="screenshots/momo-products-clean.png"
     callouts={[
-      { text: "Ajoutez vos produits", y: 0.2, side: "left", delay: 20, emoji: "📦" },
-      { text: "Prix & stock en direct", y: 0.5, side: "right", delay: 40, emoji: "💰" },
-      { text: "Commande WhatsApp", y: 0.78, side: "left", delay: 60, emoji: "🛒" },
+      { text: "Ajoutez vos produits", y: 0.2, side: "left", delay: 20 },
+      { text: "Prix & stock en direct", y: 0.5, side: "right", delay: 40 },
+      { text: "Commande WhatsApp", y: 0.78, side: "left", delay: 60 },
     ]}
   />
 );
 
 /* ---------------- 3. FEATURES LIST ---------------- */
 const FEATURES: { icon: string; label: string }[] = [
-  { icon: "🛒", label: "Panier & commandes clients" },
-  { icon: "🧾", label: "Factures et devis pro" },
-  { icon: "📊", label: "Chiffre d'affaires & dépenses" },
-  { icon: "💬", label: "Messagerie + Agent IA 24/7" },
-  { icon: "⭐", label: "Avis clients & fidélité" },
-  { icon: "📢", label: "Campagnes marketing" },
+  { icon: "cart", label: "Panier & commandes clients" },
+  { icon: "invoice", label: "Factures et devis pro" },
+  { icon: "chart", label: "Chiffre d'affaires & dépenses" },
+  { icon: "chat", label: "Messagerie + Agent IA 24/7" },
+  { icon: "star", label: "Avis clients & fidélité" },
+  { icon: "megaphone", label: "Campagnes marketing" },
 ];
 
 export const BoutiqueFeatures = () => {
@@ -139,7 +166,9 @@ export const BoutiqueFeatures = () => {
               transform: `translateX(${interpolate(s, [0, 1], [-70, 0])}px)`,
             }}
           >
-            <span style={{ fontSize: 44 }}>{f.icon}</span>
+            <span style={{ width: 52, display: "flex", justifyContent: "center" }}>
+              <Icon name={f.icon} size={42} color={i % 2 === 0 ? CYAN : GOLD} />
+            </span>
             <span style={{ fontSize: 31, fontWeight: 600, color: "white" }}>{f.label}</span>
           </div>
         );
@@ -154,8 +183,8 @@ const PlanScene: React.FC<{
   cards: string;
   accent: string;
   perks: string[];
-  emoji: string;
-}> = ({ name, cards, accent, perks, emoji }) => {
+  icon: string;
+}> = ({ name, cards, accent, perks, icon }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const head = useIn(0);
@@ -190,7 +219,9 @@ const PlanScene: React.FC<{
           transform: `scale(${interpolate(cardIn, [0, 1], [0.8, 1])})`,
         }}
       >
-        <div style={{ fontSize: 78 }}>{emoji}</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 6 }}>
+          <Icon name={icon} size={84} color={accent} />
+        </div>
         <div style={{ fontSize: 96, fontWeight: 800, color: "white", lineHeight: 1 }}>{cards}</div>
         <div style={{ fontSize: 34, fontWeight: 700, color: accent, marginTop: 10 }}>
           cartes de visite OFFERTES
@@ -237,7 +268,7 @@ export const BoutiqueEssentiel = () => (
     name="Essentiel"
     cards="50"
     accent={CYAN}
-    emoji="💳"
+    icon="card"
     perks={["Boutique en ligne illimitée", "QR code + partage NFC", "Factures & statistiques"]}
   />
 );
@@ -247,7 +278,7 @@ export const BoutiquePremium = () => (
     name="Premium"
     cards="100"
     accent={GOLD}
-    emoji="👑"
+    icon="crown"
     perks={["Toutes les fonctions Essentiel", "Agent IA & campagnes marketing", "Badge vérifié & fidélité clients"]}
   />
 );
@@ -262,7 +293,9 @@ export const BoutiqueDelivery = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily, justifyContent: "center", alignItems: "center", padding: 70 }}>
-      <div style={{ fontSize: 100, transform: `rotate(${interpolate(s, [0, 1], [-25, 0])}deg)` }}>🚚</div>
+      <div style={{ transform: `rotate(${interpolate(s, [0, 1], [-18, 0])}deg)`, marginBottom: 8 }}>
+        <Icon name="truck" size={120} color={GOLD} />
+      </div>
       <div
         style={{
           fontSize: 150,
@@ -319,7 +352,7 @@ export const BoutiqueCTA = () => {
           boxShadow: "0 24px 70px rgba(34,211,238,0.35)",
         }}
       >
-        🪪
+        <Icon name="badge" size={100} color="#fff" />
       </div>
       <div
         style={{
