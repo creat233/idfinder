@@ -363,6 +363,62 @@ export type Database = {
           },
         ]
       }
+      mcard_appointments: {
+        Row: {
+          appointment_date: string
+          client_email: string
+          client_name: string
+          client_phone: string | null
+          created_at: string
+          end_time: string
+          id: string
+          mcard_id: string
+          message: string | null
+          start_time: string
+          subject: string | null
+          updated_at: string
+          visitor_id: string | null
+        }
+        Insert: {
+          appointment_date: string
+          client_email: string
+          client_name: string
+          client_phone?: string | null
+          created_at?: string
+          end_time: string
+          id?: string
+          mcard_id: string
+          message?: string | null
+          start_time: string
+          subject?: string | null
+          updated_at?: string
+          visitor_id?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          client_email?: string
+          client_name?: string
+          client_phone?: string | null
+          created_at?: string
+          end_time?: string
+          id?: string
+          mcard_id?: string
+          message?: string | null
+          start_time?: string
+          subject?: string | null
+          updated_at?: string
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mcard_appointments_mcard_id_fkey"
+            columns: ["mcard_id"]
+            isOneToOne: false
+            referencedRelation: "mcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mcard_availability_slots: {
         Row: {
           created_at: string
@@ -2259,6 +2315,20 @@ export type Database = {
         }
         Returns: Json
       }
+      book_mcard_appointment: {
+        Args: {
+          p_client_email: string
+          p_client_name: string
+          p_client_phone?: string
+          p_date: string
+          p_mcard_id: string
+          p_message?: string
+          p_subject?: string
+          p_time: string
+          p_timezone?: string
+        }
+        Returns: string
+      }
       can_activate_promo_codes: {
         Args: { user_email: string }
         Returns: boolean
@@ -2325,6 +2395,14 @@ export type Database = {
         Returns: {
           count: number
           signup_date: string
+        }[]
+      }
+      get_mcard_booking_slots: {
+        Args: { p_date: string; p_mcard_id: string }
+        Returns: {
+          end_time: string
+          is_reserved: boolean
+          start_time: string
         }[]
       }
       get_mcard_favorite_emails: {
