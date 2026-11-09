@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { CalendarClock, Clock } from 'lucide-react';
-import { useMCardAvailability } from '@/hooks/useMCardAvailability';
+import { supabase } from '@/integrations/supabase/client';
+import { BookingSlot, canBookSlot, localDateValue } from './bookingSlots';
 
 interface AvailabilitySelectorProps {
   mcardId: string;
@@ -11,152 +12,58 @@ interface AvailabilitySelectorProps {
   selectedTime: string;
   onDateChange: (date: string) => void;
   onTimeChange: (time: string) => void;
+  refreshKey?: number;
 }
 
-export const AvailabilitySelector: React.FC<AvailabilitySelectorProps> = ({
-  mcardId,
-  selectedDate,
-  selectedTime,
-  onDateChange,
-  onTimeChange
-}) => {
-  const { slots, DAYS_OF_WEEK } = useMCardAvailability(mcardId);
-  const [availableSlots, setAvailableSlots] = useState<Array<{value: string, label: string}>>([]);
-
-  const getMinDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  };
-
-  const getMaxDate = () => {
-    const maxDate = new Date();
-    maxDate.setMonth(maxDate.getMonth() + 3);
-    return maxDate.toISOString().split('T')[0];
-  };
-
-  // Générer les créneaux disponibles en fonction de la date sélectionnée
+export const AvailabilitySelector = ({ mcardId, selectedDate, selectedTime, onDateChange, onTimeChange, refreshKey = 0 }: AvailabilitySelectorProps) => {
+  const [slots, setSlots] = useState<BookingSlot[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
-    if (!selectedDate || slots.length === 0) {
-      // Créneaux par défaut si aucune configuration
-      const defaultSlots = [
-        { value: '09:00', label: '09:00' },
-        { value: '10:00', label: '10:00' },
-        { value: '11:00', label: '11:00' },
-        { value: '14:00', label: '14:00' },
-        { value: '15:00', label: '15:00' },
-        { value: '16:00', label: '16:00' }
-      ];
-      setAvailableSlots(defaultSlots);
-      return;
-    }
-
-    const selectedDateObj = new Date(selectedDate);
-    const dayOfWeek = selectedDateObj.getDay();
-    
-    // Filtrer les créneaux pour le jour sélectionné
-    const daySlots = slots.filter(slot => 
-      slot.day_of_week === dayOfWeek && slot.is_active
-    );
-
-    if (daySlots.length === 0) {
-      setAvailableSlots([]);
-      return;
-    }
-
-
-    // Générer les créneaux d'une heure entre start_time et end_time
-    const timeSlots: Array<{value: string, label: string}> = [];
-    
-    daySlots.forEach(slot => {
-      const [startHour, startMin] = slot.start_time.split(':').map(Number);
-      const [endHour, endMin] = slot.end_time.split(':').map(Number);
-      
-      let currentHour = startHour;
-      let currentMin = startMin;
-      
-      while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
-        const timeStr = `${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`;
-        
-        if (!timeSlots.find(t => t.value === timeStr)) {
-          timeSlots.push({
-            value: timeStr,
-            label: timeStr
-          });
-        }
-        
-        // Incrémenter d'une heure
-        currentHour += 1;
-        if (currentHour >= 24) break;
-      }
+    let active = true;
+    setSlots([]);
+    setError('');
+    if (!selectedDate) return;
+    setLoading(true);
+    supabase.rpc('get_mcard_booking_slots', { p_mcard_id: mcardId, p_date: selectedDate }).then(({ data, error: queryError }) => {
+      if (!active) return;
+      if (queryError) setError('Impossible de charger les créneaux. Vérifiez votre connexion.');
+      else setSlots(data ?? []);
+      setLoading(false);
     });
-    
-    setAvailableSlots(timeSlots.sort((a, b) => a.value.localeCompare(b.value)));
-  }, [selectedDate, slots]);
+    return () => { active = false; };
+  }, [mcardId, selectedDate, refreshKey, retry]);
 
-  // Reset selectedTime si plus disponible
   useEffect(() => {
-    if (selectedTime && !availableSlots.find(slot => slot.value === selectedTime)) {
-      onTimeChange('');
-    }
-  }, [availableSlots, selectedTime, onTimeChange]);
+    if (!loading && selectedTime && !slots.some(slot => slot.start_time.slice(0, 5) === selectedTime && canBookSlot(selectedDate, slot))) onTimeChange('');
+  }, [slots, selectedTime, selectedDate, loading, onTimeChange]);
 
+  const maxDate = new Date();
+  maxDate.setMonth(maxDate.getMonth() + 3);
+  const freeCount = slots.filter(slot => canBookSlot(selectedDate, slot)).length;
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="date">Date souhaitée</Label>
-          <input
-            id="date"
-            type="date"
-            min={getMinDate()}
-            max={getMaxDate()}
-            value={selectedDate}
-            onChange={(e) => onDateChange(e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            required
-          />
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="appointment-date">Date souhaitée</Label>
+          <Input id="appointment-date" type="date" min={localDateValue()} max={localDateValue(maxDate)} value={selectedDate} onChange={event => { onTimeChange(''); onDateChange(event.target.value); }} required />
         </div>
-        <div>
-          <Label htmlFor="time">Heure préférée</Label>
-          <Select value={selectedTime} onValueChange={onTimeChange} required>
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionner l'heure" />
-            </SelectTrigger>
+        <div className="space-y-2">
+          <Label htmlFor="appointment-time">Créneau disponible</Label>
+          <Select value={selectedTime} onValueChange={onTimeChange} disabled={!selectedDate || loading || !!error || !freeCount}>
+            <SelectTrigger id="appointment-time"><SelectValue placeholder={loading ? 'Chargement…' : 'Choisir un créneau'} /></SelectTrigger>
             <SelectContent>
-              {availableSlots.length > 0 ? (
-                availableSlots.map((slot) => (
-                  <SelectItem key={slot.value} value={slot.value}>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      {slot.label}
-                    </div>
-                  </SelectItem>
-                ))
-              ) : (
-                <div className="px-3 py-2 text-sm text-muted-foreground">
-                  Aucun créneau disponible ce jour
-                </div>
-              )}
+              {slots.map(slot => <SelectItem key={slot.start_time} value={slot.start_time.slice(0, 5)} disabled={!canBookSlot(selectedDate, slot)}>
+                {slot.start_time.slice(0, 5)} – {slot.end_time.slice(0, 5)}{slot.is_reserved ? ' · Réservé' : !canBookSlot(selectedDate, slot) ? ' · Passé' : ''}
+              </SelectItem>)}
             </SelectContent>
           </Select>
         </div>
       </div>
-
-      {selectedDate && (
-        <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-          <CalendarClock className="h-4 w-4 text-blue-600" />
-          <span className="text-sm">
-            {availableSlots.length > 0 ? (
-              <>Créneaux disponibles le {DAYS_OF_WEEK[new Date(selectedDate).getDay()]} : {availableSlots.length} créneaux</>
-            ) : (
-              <>Aucun créneau configuré pour le {DAYS_OF_WEEK[new Date(selectedDate).getDay()]}</>
-            )}
-          </span>
-          {availableSlots.length === 0 && (
-            <Badge variant="secondary">Jour non disponible</Badge>
-          )}
-        </div>
-      )}
+      <div aria-live="polite" className="text-sm text-muted-foreground">
+        {error ? <><p role="alert">{error}</p><Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)}>Réessayer</Button></> : selectedDate && !loading ? (freeCount ? `${freeCount} créneau(x) disponible(s). Les créneaux réservés ne peuvent pas être choisis.` : 'Aucun créneau disponible pour cette date. Choisissez un autre jour.') : 'Choisissez une date pour voir les disponibilités.'}
+      </div>
     </div>
   );
 };
